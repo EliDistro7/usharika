@@ -1,0 +1,259 @@
+
+@use "sass:math";
+
+
+.snowtree-container {
+  position: relative;
+  background: radial-gradient(ellipse at bottom, #a4ceff 0%, #670ae9 100%);
+  height: 400px; // Adjust as per your design
+  width: 400px;  // Adjust as per your design
+  margin: auto; // Center it
+  overflow: hidden;
+}
+
+  
+  .tree {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 15%;
+    left: 12%;
+    transform: translateX(-50%);
+    
+  
+    .stump {
+      margin: 0 auto;
+      background-color: #654321;
+      width: 20px;
+      height: 40px;
+    }
+  
+    .tree-section {
+      margin-left: 50%;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 100px solid #57857D;
+      border-bottom-left-radius: 50% 20px;
+      border-bottom-right-radius: 50% 20px;
+      width: 0;
+      height: 0;
+  
+      &.section-one {
+        border-left: 60px solid transparent;
+        border-right: 60px solid transparent;
+        border-bottom: 60px solid #79a83f;
+        transform: translate(-50%, 82%);
+        z-index: 3;
+      }
+  
+      &.section-two {
+        border-left: 80px solid transparent;
+        border-right: 80px solid transparent;
+        border-bottom: 80px solid #709c3b;
+        transform: translate(-50%, 35%);
+        z-index: 2;
+      }
+      &.section-three {
+        border-left: 80px solid transparent;
+        border-right: 80px solid transparent;
+        border-bottom: 80px solid #689137;
+        transform: translateX(-50%);
+        z-index: 1;
+      }
+    }
+  
+    .star {
+      display: inline-block;
+      position: absolute;
+      left: 50%;
+      margin-right: .9em;
+      margin-bottom: 1.2em;
+      margin-left: .9em;
+      border-right:  .3em solid transparent;
+      border-bottom: .7em  solid #FC0;
+      border-left:   .3em solid transparent;
+      width: 0;
+      height: 0;
+      transform: translate(-196%, 164%);
+      font-size: 22px;
+      z-index: -2;
+  
+      &:before, &:after {
+        display: block;
+        position: absolute;
+        top: .6em;
+        left: -1em;
+        border-right:  1em solid transparent;
+        border-bottom: .7em  solid #FC0;
+        border-left:   1em solid transparent;
+        width: 0;
+        height: 0;
+        transform: rotate(-35deg);
+        content: '';
+      }
+  
+      &:after {
+        transform: rotate(35deg);
+      }
+    }
+  
+    .decorations {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 160px;
+      height: 100%;
+      z-index: 4;
+  
+      .tinsel {
+        background-color: #FF0000;
+        width: 44%;
+        height: 2px;
+  
+        &.tinsel-one {
+          width: 44%;
+          transform: translate(77% , 86px) rotate(30deg);
+        }
+  
+        &.tinsel-two {
+          width: 56%;
+          transform: translate(46% , 139px) rotate(30deg);
+        }
+  
+        &.tinsel-three {
+          width: 54%;
+          transform: translate(46% , 191px) rotate(30deg);
+        }
+      }
+  
+    }
+  }
+  
+  .mound {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    border-radius: 50% 50% 0 0;
+    width: 100%;
+    height: 15%;
+  }
+  
+  @keyframes snowfall-1 {
+    0% {
+      top: -100%;
+      right: -20%;
+    }
+  
+    100% {
+      top: 100%;
+      right: 20%;
+    }
+  }
+  
+  @keyframes snowfall-2 {
+    0% {
+      top: -100%;
+      right: -20%;
+    }
+  
+    50% {
+      transform: translate(-25px,10px);
+    }
+  
+    100% {
+      top: 100%;
+      right: 20%;
+      transform: translate(25px,10px);
+    }
+  }
+  
+  @keyframes snowfall-3 {
+    0% {
+      top: -100%;
+      right: -20%;
+    }
+  
+    50% {
+      transform: translate(15px,10px);
+    }
+  
+    100% {
+      top: 100%;
+      right: 20%;
+      transform: translate(-5px,10px);
+    }
+  }
+  
+  @keyframes snowfall-4 {
+    0% {
+      top: -100%;
+      right: -20%;
+    }
+  
+    50% {
+      transform: translate(25px,10px);
+    }
+  
+    100% {
+      top: 100%;
+      right: 20%;
+      transform: translate(25px,10px);
+    }
+  }
+  
+  .group-1 {
+    animation: snowfall-3 9s linear infinite;
+  }
+  
+  .group-2 {
+    animation: snowfall-2 8s -2.5s linear infinite;
+  }
+  
+  .group-3 {
+    animation: snowfall-4 9s -5.5s linear infinite;
+  }
+  
+  .group-4 {
+    animation: snowfall-1 8s -7.5s linear infinite;
+  }
+  
+  .snowfall {
+    position: absolute;
+    top: -100%;
+    right: -20%;
+    width: 120%;
+    height: 100%;
+  
+    .inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+  
+      i {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background-color: white;
+      }
+    }
+  
+  
+
+  
+
+    @for $i from 0 to 400 {
+      i:nth-child(#{$i + 1}) {
+        top: math.div(math.random(100), 100) * 100%;
+        right: math.div(math.random(100), 100) * 100%;
+      }
+    
+      i:nth-child(2n) {
+        width: 2px;
+        height: 2px;
+      }
+    }
+    
+    
+  }
+  

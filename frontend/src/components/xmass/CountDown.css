@@ -1,0 +1,187 @@
+
+
+@import url(https://fonts.bunny.net/css?family=aclonica:400|economica:400,700);
+:root {
+  --clr-primary: rgb(220, 38, 38);
+}
+.countdow-body {
+  background-color: #91a1b0;
+  font-family: "Aclonica", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--clr-primary);
+}
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://images.pexels.com/photos/1303098/pexels-photo-1303098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+h1 {
+  font-size: clamp(1.2rem, 4.5vw - 0.5rem, 3rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+.countdown {
+  width: min(100% - 2rem, 48rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  color: #0a3d4c;
+  font-size: clamp(2rem, 4.5vw - 0.5rem, 3rem);
+}
+.countdown > div:last-child {
+  grid-column-end: 4;
+}
+
+@media (min-width: 500px) {
+  .countdown {
+    grid-template-columns: repeat(10, 1fr);
+  }
+  .countdown > div:last-child {
+    grid-column-end: auto;
+  }
+}
+.countdown > div {
+  grid-column: span 2;
+
+  background-color: rgba(5 46 22 / .75);
+  color: white;
+  padding: 1rem 1rem 3rem;
+  border-radius: 0.5rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.countdown > div > span {
+  display: grid;
+  place-content: center;
+  font-weight: bold;
+  transition: translate 150ms ease, scale 150ms ease;
+}
+.countdown > div::after {
+  content: attr(data-desc);
+  font-size: 0.8rem;
+  position: absolute;
+  text-transform: capitalize;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  @starting-style {
+    scale: 0;
+    opacity: 0;
+    translate: 0 100px;
+  }
+  transition: 300ms ease-in-out var(--d);
+}
+
+
+
+/* Snowflake container */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10; /* Make sure it's above other elements */
+    overflow: hidden;
+  }
+  
+  /* Snowflake animation */
+  .snowflake {
+    position: absolute;
+    top: -10px;
+    background: white;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: fall linear infinite;
+  }
+  
+  /* Generate snowflakes with varying properties */
+  .snowflake:nth-child(odd) {
+    width: 5px;
+    height: 5px;
+    opacity: 0.6;
+  }
+  .snowflake:nth-child(even) {
+    width: 5px;
+    height: 5px;
+    opacity: 0.9;
+  }
+  
+  /* Snowfall animation */
+  @keyframes fall {
+    0% {
+      transform: translateY(-10px) translateX(0);
+    }
+    100% {
+      transform: translateY(100vh) translateX(calc(100vw * 0.3 - 50%));
+    }
+  }
+  
+  /* Randomize snowflake positions and speeds */
+.snowflake:nth-child(1) { left: 10%; animation-duration: 5s; }
+.snowflake:nth-child(2) { left: 20%; animation-duration: 5.5s; }
+.snowflake:nth-child(3) { left: 30%; animation-duration: 4s; }
+.snowflake:nth-child(4) { left: 40%; animation-duration: 7s; }
+.snowflake:nth-child(5) { left: 50%; animation-duration: 5.5s; }
+.snowflake:nth-child(6) { left: 60%; animation-duration: 6s; }
+.snowflake:nth-child(7) { left: 70%; animation-duration: 4.5s; }
+.snowflake:nth-child(8) { left: 80%; animation-duration: 6.5s; }
+.snowflake:nth-child(9) { left: 90%; animation-duration: 7s; }
+.snowflake:nth-child(10) { left: 5%; animation-duration: 5.2s; }
+.snowflake:nth-child(11) { left: 15%; animation-duration: 6.2s; }
+.snowflake:nth-child(12) { left: 25%; animation-duration: 4.7s; }
+.snowflake:nth-child(13) { left: 35%; animation-duration: 6.5s; }
+.snowflake:nth-child(14) { left: 45%; animation-duration: 5.8s; }
+.snowflake:nth-child(15) { left: 55%; animation-duration: 4.2s; }
+.snowflake:nth-child(16) { left: 65%; animation-duration: 5.9s; }
+.snowflake:nth-child(17) { left: 75%; animation-duration: 6.8s; }
+.snowflake:nth-child(18) { left: 85%; animation-duration: 7.1s; }
+.snowflake:nth-child(19) { left: 95%; animation-duration: 5.6s; }
+.snowflake:nth-child(20) { left: 3%; animation-duration: 6.3s; }
+/* Continue for more snowflakes */
+  
+
+/* Additional snowflakes */
+.snowflake:nth-child(21) { left: 7%; animation-duration: 5.1s; }
+.snowflake:nth-child(22) { left: 17%; animation-duration: 6.4s; }
+.snowflake:nth-child(23) { left: 27%; animation-duration: 4.6s; }
+.snowflake:nth-child(24) { left: 37%; animation-duration: 7.2s; }
+.snowflake:nth-child(25) { left: 47%; animation-duration: 5.7s; }
+.snowflake:nth-child(26) { left: 57%; animation-duration: 6.1s; }
+.snowflake:nth-child(27) { left: 67%; animation-duration: 4.8s; }
+.snowflake:nth-child(28) { left: 77%; animation-duration: 5.3s; }
+.snowflake:nth-child(29) { left: 87%; animation-duration: 6.7s; }
+.snowflake:nth-child(30) { left: 97%; animation-duration: 5.4s; }
+.snowflake:nth-child(31) { left: 12%; animation-duration: 4.9s; }
+.snowflake:nth-child(32) { left: 22%; animation-duration: 7.3s; }
+.snowflake:nth-child(33) { left: 32%; animation-duration: 5.8s; }
+.snowflake:nth-child(34) { left: 42%; animation-duration: 6.2s; }
+.snowflake:nth-child(35) { left: 52%; animation-duration: 5.6s; }
+.snowflake:nth-child(36) { left: 62%; animation-duration: 4.4s; }
+.snowflake:nth-child(37) { left: 72%; animation-duration: 6.9s; }
+.snowflake:nth-child(38) { left: 82%; animation-duration: 5.0s; }
+.snowflake:nth-child(39) { left: 92%; animation-duration: 7.4s; }
+.snowflake:nth-child(40) { left: 2%; animation-duration: 5.7s; }
+
+
