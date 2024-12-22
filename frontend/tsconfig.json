@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/BootstrapProvider.js", "src/components/HeroCarousel.tsx", "src/components/about/About.js", "src/components/FadeCarousel.js", "src/components/Pledge.jsx", "src/components/Team.jsx", "src/components/usajili/Msharika.js", "src/app/akaunti/[id]/page.jsx", "src/app/admin/page.jsx", "src/app/admins/attendance/[id]/page.jsx"],
+  "exclude": ["node_modules"]
+}
