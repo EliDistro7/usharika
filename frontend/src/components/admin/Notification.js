@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchAdminById, markNotificationAsRead } from '@/actions/admin'; // Adjust your import paths
-
+import { fetchAdminById, markNotificationAsRead, deleteNotification } from '@/actions/admin'; // Adjust your import paths
 import { BsBell, BsCheckCircle, BsCircle } from 'react-icons/bs';
 import FullUserModal from '@/components/admin/FullUserModal';
 import axios from 'axios';
@@ -14,7 +13,6 @@ const Notification = () => {
   const [error, setError] = useState("");
   const [showDropdown, setShowDropdown] = useState(false); // Dropdown visibility
   const [showModal, setShowModal] = useState(false); // Modal visibility
-  const [selectedUserId, setSelectedUserId] = useState(null); // Track selected user
   const adminId = process.env.NEXT_PUBLIC_MKUU; // Replace with dynamic admin ID if necessary
 
   // Fetch admin notifications
@@ -59,10 +57,28 @@ const Notification = () => {
     }
   };
 
+  const handleDeleteNotification = async (userId) => {
+    try {
+      // Optimistically update the UI
+      setNotifications((prev) =>
+        prev.filter((notification) => notification.userId !== userId)
+      );
+
+      // Update the backend
+      await deleteNotification({ userId });
+      console.log('Notification deleted successfully');
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+
+      // Reload notifications in case of error
+      const adminData = await fetchAdminById(adminId);
+      setNotifications(adminData?.admin.registeringNotifications || []);
+    }
+  };
+
   const fetchUserById = async (userId) => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/users/${userId}`); // Adjust URL as needed
-      console.log('user data', response.data)
       setUser(response.data);
       setShowModal(true); // Show modal after user data is fetched
     } catch (error) {
@@ -129,7 +145,6 @@ const Notification = () => {
                     <div>
                       <h6 className="mb-1" onClick={() => handleNotificationClick(notification.userId)}>
                         {notification.name}
-                        {/* Badge for registration requests */}
                         {notification.type === 'registering' && (
                           <span className="badge bg-warning ms-2">maombi ya usajili</span>
                         )}
@@ -139,14 +154,22 @@ const Notification = () => {
                       </small>
                     </div>
                   </div>
-                  {notification.status === 'unread' && (
+                  <div className="d-flex flex-column gap-2">
+                    {notification.status === 'unread' && (
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleMarkAsRead(notification.userId)}
+                      >
+                        Mark as Read
+                      </button>
+                    )}
                     <button
-                      className="btn btn-sm btn-outline-primary"
-                      onClick={() => handleMarkAsRead(notification.userId)}
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => handleDeleteNotification(notification.userId)}
                     >
-                      Mark as Read
+                      Delete
                     </button>
-                  )}
+                  </div>
                 </li>
               ))}
             </ul>

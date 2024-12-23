@@ -2,13 +2,17 @@
 import React, { useState } from "react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {addRegisterNotification} from '@/actions/admin'
+import {uploadToCloudinary} from "@/actions/uploadToCloudinary";
 import axios from "axios";
 
 
 const userRoles = [
   "kiongozi_jumuiya",
   "mzee_kanisa",
-  "vijana",
+  'praise_team',
+  'kiongozi_praise_team',
+  "umoja_vijana",
+  'kiongozi_umoja_vijana',
   "kwaya_vijana",
   "kiongozi_kwaya_vijana",
   "kwaya_uinjilisti",
@@ -60,7 +64,7 @@ const Msharika= () => {
     kipaimara:false,
     ubatizo:false,
   });
-  
+  const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
      // Determine marital status options based on gender
   const maritalStatusOptions =
   formData.gender === "me"
@@ -105,14 +109,24 @@ const Msharika= () => {
     };
   
     // Handle File Upload
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
       const file = e.target.files[0];
       if (file) {
         setFormData((prevData) => ({
           ...prevData,
-          photo: file,
           previewUrl: URL.createObjectURL(file),
         }));
+    
+        try {
+          const result = await uploadToCloudinary(file, setUploadProgress);
+          setFormData((prevData) => ({
+            ...prevData,
+            profilePicture: result.secureUrl, // Store the secure URL
+          }));
+          console.log("Uploaded to Cloudinary:", result.secureUrl);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
       }
     };
   
@@ -267,6 +281,12 @@ const Msharika= () => {
                 />
               </div>
             )}
+               {uploadProgress > 0 && (
+    <p>
+      Ina-upload picha ya wasifu... {uploadProgress}% 
+      {uploadProgress === 100 && <span className="text-success ms-2">Umefanikiwa!</span>}
+    </p>
+  )}
           </div>
 
           <div className="form-group">

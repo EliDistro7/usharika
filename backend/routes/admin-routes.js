@@ -6,6 +6,7 @@ const {
            loginAdmin,
            addRegisteringNotification,
            markRegisteringNotificationAsRead,
+           deleteRegisteringNotification,
            getAdminById } = require('../controllers/admin-controller.js');
 const { verifyUser, unverifyUser } = require('../controllers/user-controller.js');
 
@@ -15,6 +16,7 @@ const { verifyUser, unverifyUser } = require('../controllers/user-controller.js'
 router.post('/admin/register', registerAdmin);
 
 router.post('/admin/addRegisterNotifications', addRegisteringNotification);
+router.post('/admin/deleteRegisterNotification', deleteRegisteringNotification);
 
 // Admin login route
 router.post('/admin/login', loginAdmin);

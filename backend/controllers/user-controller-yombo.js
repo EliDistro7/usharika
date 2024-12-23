@@ -16,7 +16,8 @@ const userRegister = async (req, res) => {
       console.log('Form Data:', req.body); // For debugging purposes
   
         // Parse the form data (including roles, dob, etc.)
-        const { name, password, selectedRoles, jumuiya,occupation,phone,pledges,gender, dob,maritalStatus,kipaimara,ubatizo,marriageType } = req.body;
+        const { name, password, selectedRoles, jumuiya,occupation,phone,pledges,gender,
+           dob,maritalStatus,kipaimara,ubatizo,marriageType,profilePicture } = req.body;
         // const selectedRoles = roles; 
   
        
@@ -45,7 +46,7 @@ const userRegister = async (req, res) => {
           selectedRoles, // Make sure roles are saved as an array
           jumuiya,
           dob, // Ensure dob is properly formatted
-          profilePicture: '/img/team-1.jpg', // Save the file path if file is uploaded
+          profilePicture, // Save the file path if file is uploaded
           occupation,phone,pledges,gender,maritalStatus,
           marriageType:marriageType==='' ? 'bado':marriageType,
           kipaimara: kipaimara === 'on' ? true : false,
@@ -432,7 +433,9 @@ const markNotificationAsRead = async (req, res) => {
   try {
     const { userId, notificationId } = req.params;
 
-    const result = await YomboUser.updateOne(
+    console.log('params', req.params)
+
+    const result = await User.updateOne(
       { _id: userId, "matangazoNotifications._id": notificationId },
       {
         $set: {
@@ -456,6 +459,37 @@ const markNotificationAsRead = async (req, res) => {
   }
 };
 
+const removeNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    console.log('params', req.params);
+
+    // Use $pull to remove the notification from the array
+    const result = await User.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          matangazoNotifications: { _id: notificationId },
+        },
+      }
+    );
+
+    // Check if any document was modified
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ error: "Notification not found or already removed" });
+    }
+
+    res.status(200).json({ message: "Notification removed successfully" });
+  } catch (error) {
+    console.error("Error removing notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 
 
 
@@ -471,4 +505,5 @@ module.exports = {
     addPaymentMain,
     getUserNotifications,
     markNotificationAsRead,
+    removeNotification,
   };

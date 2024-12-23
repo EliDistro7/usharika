@@ -1,46 +1,39 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchAdminById, markNotificationAsRead } from '@/actions/admin'; // Adjust your import paths
+import { markNotificationAsRead,removeNotification } from '@/actions/users'; // Adjust your import paths
 import { BsBell, BsCheckCircle, BsCircle } from 'react-icons/bs';
-import FullUserModal from '@/components/admin/FullUserModal';
+import { getLoggedInUserId } from '@/hooks/useUser';
 import axios from 'axios';
 
-
-const Notification = ({notifications,group}) => {
-   console.log('group', group)
-   console.log('notifications', notifications);
- 
+const Notification = ({ notifications, group, userId }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [showDropdown, setShowDropdown] = useState(false); // Dropdown visibility
   const [showModal, setShowModal] = useState(false); // Modal visibility
   const [selectedUserId, setSelectedUserId] = useState(null); // Track selected user
+  const [notificationList, setNotificationList] = useState(notifications);
 
-
- 
-
-  const handleMarkAsRead = async (userId) => {
+  const handleMarkAsRead = async (notificationId) => {
     try {
       // Optimistically update the UI
-      setNotifications((prev) =>
+      setNotificationList((prev) =>
         prev.map((notification) =>
-          notification.userId === userId
+          notification._id === notificationId
             ? { ...notification, status: 'read' }
             : notification
         )
       );
 
       // Update the backend
-      await markNotificationAsRead({ userId });
+      await markNotificationAsRead({ userId:getLoggedInUserId(), notificationId });
     } catch (error) {
       console.error('Error marking notification as read:', error);
 
       // Revert optimistic UI update in case of error
-      setNotifications((prev) =>
+      setNotificationList((prev) =>
         prev.map((notification) =>
-          notification.userId === userId
+          notification._id === notificationId
             ? { ...notification, status: 'unread' }
             : notification
         )
@@ -48,11 +41,29 @@ const Notification = ({notifications,group}) => {
     }
   };
 
+  const handleRemoveNotification = async (notificationId) => {
+    try {
+      // Remove from UI optimistically
+      setNotificationList((prev) =>
+        prev.filter((notification) => notification._id !== notificationId)
+      );
+
+      // Remove from backend
+      await removeNotification({ userId:getLoggedInUserId(), notificationId });
+    } catch (error) {
+      console.error('Error removing notification:', error);
+
+      // Revert optimistic UI update in case of error
+      // You may choose to handle this differently if you need
+    }
+  };
+
+
   const fetchUserById = async (userId) => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/users/${userId}`); // Adjust URL as needed
-      console.log('user data', response.data)
       setUser(response.data);
+      console.log('user data', response.data)
       setShowModal(true); // Show modal after user data is fetched
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -64,78 +75,75 @@ const Notification = ({notifications,group}) => {
     setShowDropdown((prev) => !prev);
   };
 
-  const handleNotificationClick = (userId) => {
-    fetchUserById(userId); // Fetch the user details when the notification is clicked
+  const handleNotificationClick = (notificationId) => {
+    fetchUserById(notificationId); // Fetch the user details when the notification is clicked
   };
-
-
 
   return (
     <div className="container-fluid">
-      {/* Bell Icon */}
-     
-
       {/* Notifications Dropdown */}
-      
-        <div
-          className="modal-overlay d-flex align-items-center justify-content-center"
-          
-        >
-         
-          {notifications.length > 0 ? (
-            <ul className="list-group">
-              {notifications.map((notification) => {
-                if(notification.group === group){
-                    return (
-                        <li
-                      key={notification._id}
-                      className={`list-group-item d-flex justify-content-between align-items-center ${
-                        notification.status === 'unread' ? 'bg-light border-start border-primary border-4' : ''
-                      }`}
-                    >
-                      <div className="d-flex align-items-center">
-                        {notification.status === 'unread' ? (
-                          <BsCircle className="text-primary me-3" />
-                        ) : (
-                          <BsCheckCircle className="text-success me-3" />
-                        )}
-                        <div>
-                          <h6 className="mb-1" onClick={() => handleNotificationClick(notification._id)}>
-                            {notification.message}
-                            {/* Badge for registration requests */}
-                           
-                              <span className="badge bg-warning ms-2">{notification.group}</span>
-                        
-                          </h6>
-                          <small className={`text-muted`}>
-                            {notification.status === 'unread' ? 'New' : 'Read'}
-                          </small>
-                        </div>
+      <div className="modal-overlay d-flex align-items-center justify-content-center">
+        {notificationList.length > 0 ? (
+          <ul className="list-group">
+            {notificationList.map((notification) => {
+              if (notification.group === group) {
+                return (
+                  <li
+                    key={notification._id}
+                    className={`list-group-item d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 shadow-sm ${
+                      notification.status === 'unread'
+                        ? 'bg-light border-start border-4 border-warning'
+                        : 'bg-white'
+                    }`}
+                  >
+                    <div className="d-flex align-items-center">
+                      {notification.status === 'unread' ? (
+                        <BsCircle className="text-warning me-3" size={20} />
+                      ) : (
+                        <BsCheckCircle className="text-success me-3" size={20} />
+                      )}
+                      <div>
+                        <h6
+                          className="mb-1 text-dark font-weight-bold cursor-pointer"
+                          onClick={() => handleNotificationClick(notification._id)}
+                        >
+                          {notification.message}
+                          <span className="badge bg-secondary ms-2">{notification.group}</span>
+                        </h6>
+                        <small className="text-muted">
+                          {notification.status === 'unread' ? 'Mpya' : 'Tayari Imesomwa'}
+                        </small>
                       </div>
+                    </div>
+                    <div className="d-flex flex-column gap-2 mt-2">
                       {notification.status === 'unread' && (
                         <button
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-warning rounded-pill"
                           onClick={() => handleMarkAsRead(notification._id)}
                         >
-                          Mark as Read
+                          <small>Mark as Read</small>
                         </button>
                       )}
-                    </li>
-                    )
-                }
+                      <button
+                        className="btn btn-sm btn-outline-danger rounded-pill"
+                        onClick={() => handleRemoveNotification(notification._id)}
+                      >
+                        <small>Ondoa</small>
+                      </button>
+                    </div>
+                  </li>
+                );
+              }
               return null;
-                
-})}
-            </ul>
-          ) : (
-            <p className="text-muted text-center">No notifications available</p>
-          )}
-        </div>
-      
-
-      
+            })}
+          </ul>
+        ) : (
+          <p className="text-muted text-center">No notifications available</p>
+        )}
+      </div>
     </div>
   );
+  
 };
 
 export default Notification;

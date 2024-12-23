@@ -22,8 +22,11 @@ const RoleDropdown = ({
   showNotifications,
 }) => {
   const notificationCount = Array.isArray(notifications)
-    ? notifications.filter((n) => n.group === role).length
-    : 0;
+  ? notifications.filter(
+      (n) => n.group === role
+    ).length
+  : 0;
+
 
   // Function to check if the role starts with "kiongozi"
   function startsWithKiongozi(value) {
@@ -100,7 +103,11 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(null);
 
-  
+  const notificationCount = Array.isArray(notifications)
+  ? notifications.filter(
+      (n) => n.status === "unread"
+    ).length
+  : 0;
 
   // Handle navigation based on the role and action
   const handleNavigation = (role, path) => {
@@ -128,6 +135,7 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
 
 {/* Mobile Toggle Button */}
 
+<div className="position-relative">
   <button
     className="navbar-toggler ms-auto text-black"
     type="button"
@@ -137,9 +145,18 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
     aria-expanded="false"
     aria-label="Toggle navigation"
   >
-    <span className="navbar-toggler-icon  
-            " ></span>
+    <span className="navbar-toggler-icon"></span>
   </button>
+  {notificationCount > 0 && (
+    <span
+      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+      style={{ fontSize: "0.75rem" }}
+    >
+      {notificationCount}
+    </span>
+  )}
+</div>
+
         </div>
        
       

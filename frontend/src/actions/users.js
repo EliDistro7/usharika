@@ -69,3 +69,18 @@ export const markNotificationAsRead = async ({ userId, notificationId }) => {
     );
   }
 };
+
+// Mark a specific notification as read
+export const removeNotification = async ({ userId, notificationId }) => {
+  try {
+    const response = await axios.delete(
+      `${api}/users/${userId}/notifications/${notificationId}/remove`
+    );
+    return response.data.message; // Success message
+  } catch (error) {
+    console.error('Error marking notification as read:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to mark notification as read. Please try again later.'
+    );
+  }
+};

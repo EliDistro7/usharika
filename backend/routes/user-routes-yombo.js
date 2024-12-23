@@ -16,6 +16,7 @@ const {
     pushMatangazoNotification,
     getUserNotifications,
     markNotificationAsRead,
+    removeNotification,
 } = require('../controllers/user-controller-yombo.js');
 
 // User Routes
@@ -37,6 +38,10 @@ router.put(
     markNotificationAsRead
   );
 
+  router.delete(
+    "/users/:userId/notifications/:notificationId/remove",
+    removeNotification
+  );
 
 
 /*// Log in a user

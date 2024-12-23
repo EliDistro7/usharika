@@ -180,11 +180,50 @@ const markRegisteringNotificationAsRead = async (req, res) => {
   }
 };
 
+const deleteRegisteringNotification = async (req, res) => {
+  const { adminId, userId } = req.body; // Extract adminId and userId from the request body
+
+  try {
+    // Find the admin by ID
+    const admin = await Admin.findById(adminId);
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    // Find the index of the notification to delete
+    const notificationIndex = admin.registeringNotifications.findIndex(
+      (notif) => notif.userId.toString() === userId
+    );
+
+    if (notificationIndex === -1) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+
+    // Remove the notification from the array
+    admin.registeringNotifications.splice(notificationIndex, 1);
+
+    // Save the updated admin document
+    await admin.save();
+
+    res.status(200).json({
+      message: 'Notification deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error deleting notification',
+      error: error.message,
+    });
+  }
+};
+
+
 
 module.exports = {
   registerAdmin,
   loginAdmin,
   addRegisteringNotification,
   getAdminById,
-  markRegisteringNotificationAsRead
+  markRegisteringNotificationAsRead,
+  deleteRegisteringNotification
 };

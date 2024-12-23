@@ -67,4 +67,30 @@ export const markNotificationAsRead = async ({ userId}) => {
 };
 
 
+/**
+ * Deletes a notification for the admin.
+ * 
+ * @param {string} userId - The ID of the user whose notification needs to be deleted.
+ * @returns {Promise<void>} Resolves on success or throws an error.
+ */
+export const deleteNotification = async ({ userId }) => {
+  const adminId = process.env.NEXT_PUBLIC_MKUU; // Admin ID from environment variables
+  try {
+    // Send a POST request to the backend endpoint
+    const response = await axios.post(`${api}/admin/deleteRegisterNotification`, {
+      adminId,
+      userId,
+    });
+
+    if (response.status === 200) {
+      console.log('Notification deleted successfully:', response.data.message);
+      return response.data.message;
+    }
+  } catch (error) {
+    console.error('Error deleting notification:', error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+
 
