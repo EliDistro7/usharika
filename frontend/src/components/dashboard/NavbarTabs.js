@@ -33,18 +33,34 @@ const RoleDropdown = ({
   return (
     <li className="nav-item dropdown">
       <button
-        className="nav-link dropdown-toggle d-flex align-items-center"
-        onClick={() => toggleNotifications(role)}
+        className="nav-link d-flex align-items-center"
+      
       >
-        <span className="fw-bold">{formatRoleName(role)}</span>
+        <span className="fw-bold" 
+        
+        >{formatRoleName(role)}</span>
         {notificationCount > 0 && (
-          <span className="badge bg-danger ms-2">{notificationCount}</span>
+          <span className="badge bg-danger ms-2"
+          onClick={() => toggleNotifications(role)}
+          >{notificationCount}</span>
         )}
       </button>
 
       {showNotifications && <Notification notifications={notifications} group={role} />}
 
-      <ul className="dropdown-menu shadow">
+      <div className="dropdown shadow">
+  {startsWithKiongozi(role) && (
+    <>
+      <button
+        className="btn btn-primary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Options
+      </button>
+      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li>
           <button
             className="dropdown-item d-flex align-items-center"
@@ -53,28 +69,28 @@ const RoleDropdown = ({
             <FaUsers className="me-2 text-primary" /> Wanakikundi
           </button>
         </li>
-
-        {startsWithKiongozi(role) && (
-          <>
-            <li>
-              <button
-                className="dropdown-item d-flex align-items-center"
-                onClick={() => handleNavigation(role, "matangazo")}
-              >
-                <MdVolumeUp className="me-2 text-success" /> Unda Tangazo
-              </button>
-            </li>
-            <li>
-              <button
-                className="dropdown-item d-flex align-items-center"
-                onClick={() => handleNavigation(role, "attendance")}
-              >
-                <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
-              </button>
-            </li>
-          </>
-        )}
+        <li>
+          <button
+            className="dropdown-item d-flex align-items-center"
+            onClick={() => handleNavigation(role, "matangazo")}
+          >
+            <MdVolumeUp className="me-2 text-success" /> Unda Tangazo
+          </button>
+        </li>
+        <li>
+          <button
+            className="dropdown-item d-flex align-items-center"
+            onClick={() => handleNavigation(role, "attendance")}
+          >
+            <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
+          </button>
+        </li>
       </ul>
+    </>
+  )}
+</div>
+
+
     </li>
   );
 };
@@ -107,22 +123,26 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
   return (
     <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded">
       <div className="container-fluid">
+        <div className='w-100 d-flex justify-content-between'>
         <Profile user={user} />
 
-        {/* Mobile Toggle Button */}
-        {roles.some((role) => role.startsWith("kiongozi")) && (
-          <button
-            className="navbar-toggler ms-auto text-black"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarTabs"
-            aria-controls="navbarTabs"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-        )}
+{/* Mobile Toggle Button */}
+
+  <button
+    className="navbar-toggler ms-auto text-black"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarTabs"
+    aria-controls="navbarTabs"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span className="navbar-toggler-icon  
+            " ></span>
+  </button>
+        </div>
+       
+      
 
         {/* Navbar Content */}
         <div className="collapse navbar-collapse" id="navbarTabs">
