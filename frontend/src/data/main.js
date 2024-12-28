@@ -244,7 +244,7 @@ export const slides = [
 
   
 export const churchContent = {
-  name:'Matukio kati picha Kipaimara 2024',
+  name:'Matukio kati picha Ubarikio 2024',
   content: [
     {
       groupName: "Watumishi waliohudumu",
@@ -252,13 +252,12 @@ export const churchContent = {
         {
           title: "",
           description: "Ibada iliongozwa na mkuu wa jimbo",
-          imageUrl: "/img/mkuuwajimbo2.jpg", // Optional image
-          //videoUrl: "https://example.com/worship-video.mp4", // Optional video URL
+          imageUrl: "/img/mkuuwajimbo2.jpg", // Optional Material 
         },
         {
           title: "Kwaya",
           description: "Parish worker...",
-          videoUrl: "/videos/worthy.mp4", // Optional video URL
+          videoUrl: "/videos/worthy.mp4", // Optional video URL;
         },
         {
           title: "Wabarikia",

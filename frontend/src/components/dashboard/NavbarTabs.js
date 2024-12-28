@@ -83,6 +83,14 @@ const RoleDropdown = ({
         <li>
           <button
             className="dropdown-item d-flex align-items-center"
+            onClick={() => handleNavigation(role, "donations")}
+          >
+            <FaBook className="me-2 text-warning" /> Ingiza Michango
+          </button>
+        </li>
+        <li>
+          <button
+            className="dropdown-item d-flex align-items-center"
             onClick={() => handleNavigation(role, "attendance")}
           >
             <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio

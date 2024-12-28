@@ -9,7 +9,7 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
     <div className="container-fluid">
       <div className="row">
         {/* Main Carousel */}
-        <div className="col-lg-7 px-0">
+        <div className=" px-0">
           <FadeCarousel>
             {mainSlides.map((slide, index) => (
               <div

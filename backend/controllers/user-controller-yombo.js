@@ -410,6 +410,67 @@ const pushMatangazoNotification = async (req, res) => {
   }
 };
 
+// Function to create a new donation
+const createDonation = async (req, res) => {
+  try {
+    const { name, details, startingDate, deadline, group, total } = req.body;
+
+    // Validate request input
+    if (!name || !details || !startingDate || !deadline) {
+      return res
+        .status(400)
+        .json({ error: "Name, details, startingDate, and deadline are required." });
+    }
+
+    // Validate dates
+    const start = new Date(startingDate);
+    const end = new Date(deadline);
+
+    if (isNaN(start) || isNaN(end)) {
+      return res.status(400).json({ error: "Invalid date format for startingDate or deadline." });
+    }
+
+    if (start >= end) {
+      return res
+        .status(400)
+        .json({ error: "Starting date must be earlier than the deadline." });
+    }
+
+    // Create the donation object
+    const donation = {
+      name,
+      details,
+      startingDate: start,
+      deadline: end,
+      group,
+      total,
+      createdAt: new Date(),
+    };
+
+    
+     // Find users where `selectedRoles` matches the provided group
+     const users = await User.find({ selectedRoles: group });
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found to assign the donation." });
+    }
+
+    for (const user of users) {
+      user.donations.push(donation);
+      await user.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Donation created and assigned to all users.",
+      totalUsers: users.length,
+    });
+  } catch (error) {
+    console.error("Error creating donation:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 const getUserNotifications = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -424,6 +485,26 @@ const getUserNotifications = async (req, res) => {
     res.status(200).json({ notifications: user.matangazoNotifications });
   } catch (error) {
     console.error("Error fetching notifications:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+const getUserDonations = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID and retrieve only the donations field
+    const user = await User.findById(userId, "donations");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Send donations with their unique _id
+    res.status(200).json({ donations: user.donations });
+  } catch (error) {
+    console.error("Error fetching donations:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -490,6 +571,90 @@ const removeNotification = async (req, res) => {
 };
 
 
+const pinNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    console.log('params', req.params);
+
+    // Set the `pinned` field to true for the specified notification
+    const result = await User.updateOne(
+      { _id: userId, "matangazoNotifications._id": notificationId },
+      {
+        $set: {
+          "matangazoNotifications.$.pinned": true,
+        },
+      }
+    );
+
+    // Check if any document was modified
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ error: "Notification not found or already pinned" });
+    }
+
+    res.status(200).json({ message: "Notification pinned successfully" });
+  } catch (error) {
+    console.error("Error pinning notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+const getUsersByGroupAndFieldType = async (req, res) => {
+  try {
+    const { userId, group, field_type } = req.body;
+
+    // Find the user by userId and check their roles
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user's selected roles contains "kiongozi_" + group
+    const selectedRole = "kiongozi_" + group;
+    if (!user.selectedRoles.includes(selectedRole)) {
+      return res.status(403).json({ error: "User does not have the required role" });
+    }
+
+    // Find users who have the selected group in their selectedRoles
+    const usersInGroup = await User.find({ selectedRoles: group });
+    if (!usersInGroup.length) {
+      return res.status(404).json({ error: "No users found in the specified group" });
+    }
+
+    // If field_type is 'michango', filter donations for users with the specified group
+    if (field_type === "michango") {
+      const donationsData = usersInGroup.map(user => {
+        // Filter donations by group and return necessary donation details
+        const donations = user.donations.filter(donation => donation.group === group);
+        return {
+          username: user.name,  // Assuming the user model has a 'username' field
+          donations: donations,
+          userId: user._id,
+        };
+      });
+
+      // Return the aggregated donation data for the group
+      return res.status(200).json({ donationsData });
+    }
+
+    // If the field_type is not 'michango', return an error
+    return res.status(400).json({ error: "Invalid field_type" });
+
+  } catch (error) {
+    console.error("Error fetching donations:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
 
 
 
@@ -506,4 +671,8 @@ module.exports = {
     getUserNotifications,
     markNotificationAsRead,
     removeNotification,
+    pinNotification,
+    createDonation,
+    getUserDonations,
+    getUsersByGroupAndFieldType,
   };

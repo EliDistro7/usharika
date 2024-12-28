@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '@/components/admin/PaymentModal';
 import {formatRoleName} from "@/actions/utils"
+import { Dropdown } from 'react-bootstrap';
 
 import UserTableRows from '@/components/admin/UserTableRows';
 import Notification from '@/components/admin/Notification';  // Import Notification component
@@ -171,28 +172,32 @@ const AdminDashboard = () => {
      
     
 {/* Tabs Navigation */}
+{/* Dropdown for Tab Names */}
 {!isLoading && (
-  <ul className="nav nav-tabs mb-4">
-    <li className="nav-item">
-      <button
-        className={`nav-link ${activeTab === "all" ? "active" : ""}`}
-        onClick={() => setActiveTab("all")}
-      >
-        Washarika ({users.length})
-      </button>
-    </li>
-    {categories.map((category) => (
-      <li className="nav-item" key={category._id}>
-        <button
-          className={`nav-link fw-bold ${activeTab === category._id ? "active" : ""}`}
-          onClick={() => setActiveTab(category._id)}
-        >
-          {formatRoleName(category._id.toUpperCase())} ({category.count})
-        </button>
-      </li>
-    ))}
-  </ul>
-)}
+        <Dropdown className="mb-3">
+          <Dropdown.Toggle variant="primary" id="dropdown-basic">
+            {activeTab || 'Select Category'}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item
+              onClick={() => setActiveTab('all')}
+              active={activeTab === 'all'}
+            >
+              All Users ({users.length})
+            </Dropdown.Item>
+            {categories.map((category) => (
+              <Dropdown.Item
+                key={category._id}
+                onClick={() => setActiveTab(category._id)}
+                active={activeTab === category._id}
+              >
+                {formatRoleName(category._id.toUpperCase())} ({category.count})
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
+
 
 
   

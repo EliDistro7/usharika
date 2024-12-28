@@ -111,3 +111,40 @@ export const fetchSessionsByGroup = async (group) => {
       };
     }
   };
+
+  /**
+ * Function to get an attendance record by ID
+ * @param {string} attendanceId - The ID of the attendance record to fetch
+ * @returns {Promise<Object>} - The attendance record object
+ */
+export const getAttendanceById = async (attendanceId) => {
+  try {
+    console.log(`Fetching attendance record for ID: ${attendanceId}`);
+    
+    // Validate the input attendanceId
+    if (!attendanceId) {
+      throw new Error('Attendance ID parameter is required.');
+    }
+
+    // Define the API endpoint
+    const apiUrl = `${api}/getAttendanceById/${attendanceId}`; // Adjust URL to match your backend route
+    console.log(`API URL: ${apiUrl}`);
+
+    // Send the GET request to the server
+    const response = await axios.get(apiUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Log the success response
+    console.log(`Attendance record for ID ${attendanceId} retrieved successfully:`, response.data);
+
+    // Return attendance record
+    return response.data.data; // Assuming the attendance record is returned in `data` property
+  } catch (error) {
+    // Log and handle errors
+    console.error(`Error fetching attendance record for ID ${attendanceId}:`, error.response?.data || error.message);
+    throw error; // Rethrow the error for higher-level handling if needed
+  }
+};

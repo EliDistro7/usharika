@@ -1,6 +1,29 @@
+
+
+'use client';
+
 import React from "react";
+import { useRouter } from "next/navigation";
+import { getDesanitezedCookie } from "@/hooks/useUser";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Header() {
+
+  const router = useRouter();
+
+  const handleAkauntiNavigation = () => {
+    const cookieValue = getDesanitezedCookie();
+    if (cookieValue) {
+      router.push(`/akaunti/${cookieValue}`);
+      toast.success("Umefanikiwa kuingia kwenye akaunti yako!");
+    } else {
+      router.push("/auth");
+      toast.warning("Tafadhali, ingia kwenye akaunti yako!");
+    }
+  };
+
   return (
     <>
       {/* Navbar Start */}
@@ -44,8 +67,8 @@ export default function Header() {
           <nav className="navbar navbar-light navbar-expand-xl py-3">
             <a href="/" className="navbar-brand d-flex align-items-center">
               <h1 className="m-0 fw-bold">
-                <span className="text-primary display-6">KKKT</span>
-                <span className="text-secondary display-6">Yombo Kuu</span>
+                <span className="text-primary display-6 fw-bold">KKKT</span>
+                <span className="text-secondary display-6 fw-bold">Yombo Kuu</span>
               </h1>
             </a>
             <button
@@ -89,10 +112,18 @@ export default function Header() {
                     <a href="/usajili" className="dropdown-item">
                       Kujisajili
                     </a>
-                    <a href="/akaunti" className="dropdown-item">
+                    <a
+                      onClick={handleAkauntiNavigation}
+                      className="dropdown-item"
+                      style={{ cursor: "pointer" }}
+                    >
                       akaunti
                     </a>
-                    <a href="/auth" className="dropdown-item">
+                    <a
+                      onClick={handleAkauntiNavigation}
+                      className="dropdown-item"
+                      style={{ cursor: "pointer" }}
+                    >
                       login
                     </a>
                    

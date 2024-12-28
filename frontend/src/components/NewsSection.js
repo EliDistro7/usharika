@@ -25,8 +25,8 @@ const churchNews = [
   },
   {
     id: 2,
-    title: "Misa Maalum Ya Watoto Itafanyika Jumapili",
-    image: "img/mkutano.jpg",
+    title: "Ibada ya Mwaka Mpya 2025",
+    image: "img/usharika.jpg",
     category: "Watoto",
     date: "Novemba 25, 2024",
     subtitle: "A special mass for children will take place this Sunday.",

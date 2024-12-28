@@ -40,7 +40,7 @@ const createStaticAdmin = async () => {
   }
 };
 
-createStaticAdmin();
+// createStaticAdmin();
 
 const registerAdmin = async (req, res) => {
   const { username, email, password } = req.body;

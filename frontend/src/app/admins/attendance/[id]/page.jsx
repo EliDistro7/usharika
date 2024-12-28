@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Attendance from '@/components/admins/Attendance';
 import AttendanceRecords from '@/components/admins/AttendanceRecords';
+import AttendanceModal from '@/components/admins/AttendanceModal'; // Import AttendanceModal
 import { getUsersByRole } from '@/hooks/useUser';
 import { createAttendance, fetchSessionsByGroup } from '@/actions/attendance';
+import { Accordion, Card, Button } from 'react-bootstrap';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -13,8 +15,13 @@ export default function Home() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [previousSessions, setPreviousSessions] = useState([]);
+  const [groupedSessions, setGroupedSessions] = useState({});
   const [activeTab, setActiveTab] = useState('attendance'); // Default tab
   const [activeSession, setActiveSession] = useState(null);
+  
+  // State for Attendance Modal
+  const [showModal, setShowModal] = useState(false);
+  const [attendanceId, setAttendanceId] = useState(null);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -33,8 +40,22 @@ export default function Home() {
         // Fetch previous sessions for the group
         const { success, data, message } = await fetchSessionsByGroup(role);
         if (success) {
-          console.log('data', data);
-          setPreviousSessions(data);
+          console.log('Fetched sessions data:', data);
+
+          // Group sessions by session_name and sort by date
+          const grouped = data.reduce((acc, session) => {
+            const { session_name, date, _id } = session;
+            if (!acc[session_name]) acc[session_name] = [];
+            acc[session_name].push({ date: new Date(date), session_name, _id });
+            return acc;
+          }, {});
+
+          // Sort each group by date in descending order
+          for (const key in grouped) {
+            grouped[key] = grouped[key].sort((a, b) => b.date - a.date);
+          }
+
+          setGroupedSessions(grouped);
         } else {
           console.error('Failed to fetch sessions:', message);
         }
@@ -68,13 +89,24 @@ export default function Home() {
 
       await createAttendance(payload);
 
-      // Dynamically update the sessions list
-      setPreviousSessions((prev) => [...new Set([attendanceData.sessionName, ...prev])]);
       setSuccessMessage('Attendance submitted successfully!');
     } catch (error) {
       console.error('Error creating attendance:', error);
       setError('Failed to submit attendance. Please try again.');
     }
+  };
+
+  // Handle view button click to open modal
+  const handleView = (session) => {
+    console.log('session clicked', session)
+    setAttendanceId(session._id); // Set attendance ID
+    setShowModal(true); // Show modal
+  };
+
+  // Handle closing the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setAttendanceId(null); // Reset attendance ID when closing
   };
 
   if (loading) {
@@ -108,39 +140,54 @@ export default function Home() {
         </li>
       </ul>
 
-               {/* Previous Sessions Navigation */}
-<nav className="bg-white shadow-sm rounded mt-4 p-3">
-  <h5 className="fw-bold mb-3">Vipindi vya Nyuma</h5>
-  {previousSessions.length > 0 ? (
-    <div className="d-flex flex-wrap gap-2">
-      {previousSessions.map((session, index) => (
-        <button
-          key={index}
-          onClick={() => {
-          
-            setActiveTab('records');
-            setActiveSession(session);
-          }}
-          className="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm"
-        >
-          {session}
-        </button>
-      ))}
-    </div>
-  ) : (
-    <div className="text-muted">Hakuna vipindi vilivyorekodiwa</div>
-  )}
-</nav>
+      {/* Previous Sessions */}
+      <Accordion defaultActiveKey="0">
+        {Object.keys(groupedSessions).map((sessionName, idx) => (
+          <Accordion.Item eventKey={idx.toString()} key={idx} className="mb-3 shadow-sm">
+            <Accordion.Header className="fw-bold">{sessionName}</Accordion.Header>
+            <Accordion.Body>
+              <div className="row g-3">
+                {groupedSessions[sessionName].map((session, index) => (
+                  <div key={index} className="col-md-6 col-lg-4">
+                    <div className="card border-primary shadow-sm">
+                      <div className="card-body">
+                        <h5 className="card-title text-primary">
+                          {new Date(session.date).toLocaleDateString()}
+                        </h5>
+                        <p className="card-text text-muted">{session.session_name}</p>
+                        <div className="d-flex justify-content-between">
+                          <button
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() => handleView(session)} // Open modal with session data
+                          >
+                            <i className="bi bi-eye me-2"></i>View
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary btn-sm"
+                            onClick={() => handleArchive(session)}
+                          >
+                            <i className="bi bi-archive me-2"></i>Archive
+                          </button>
+                          <button
+                            className="btn btn-outline-success btn-sm"
+                            onClick={() => handleDownload(session)}
+                          >
+                            <i className="bi bi-download me-2"></i>Download
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Accordion.Body>
+          </Accordion.Item>
+        ))}
+      </Accordion>
 
       {/* Content Rendering */}
       {activeTab === 'attendance' && (
-        <>
-          {/* Attendance Component */}
-          <Attendance data={users} onSubmit={handleAttendanceSubmit} />
-
-
-
-        </>
+        <Attendance data={users} onSubmit={handleAttendanceSubmit} />
       )}
 
       {activeTab === 'records' && activeSession && (
@@ -150,6 +197,17 @@ export default function Home() {
       {/* Success/Error Messages */}
       {error && <div className="alert alert-danger mt-4">{error}</div>}
       {successMessage && <div className="alert alert-success mt-4">{successMessage}</div>}
+
+      {/* Attendance Modal */}
+     {showModal && (
+                  <AttendanceModal
+                  attendanceId={attendanceId}
+                  showModal={showModal}
+                  handleClose={handleCloseModal} // Close modal
+                />
+     )
+     
+     } 
     </div>
   );
 }

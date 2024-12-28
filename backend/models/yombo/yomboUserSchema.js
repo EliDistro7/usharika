@@ -149,6 +149,53 @@ const YomboUserSchema = new mongoose.Schema(
           type: Date,
           default: Date.now, // Automatically sets the current timestamp
         },
+        pinned: {
+          type: Boolean,
+          default: false
+        },
+      },
+    ],
+
+    donations: [
+      {
+        name: {
+          type: String,
+          required: true, // Name of the donation or purpose is required
+          trim: true,
+        },
+        group: {
+          type:String,
+        required: true,
+        trim: true
+        },
+        
+        details: {
+          type: String,
+          required: true, // Details about the donation are required
+          trim: true,
+        },
+        startingDate: {
+          type: Date,
+          required: true, // A starting date for collecting donations is required
+        },
+        deadline: {
+          type: Date,
+          required: true, // Deadline for collecting donations is required
+        },
+        amountPaid: {
+          type: Number,
+          default: 0, // Default amount paid is 0
+          min: 0, // Prevent negative values
+        },
+        total: {
+          type: Number,
+          default: 0, // Default amount paid is 0
+          min: 0, // Prevent negative values
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now, // Automatically sets the timestamp when the field is created
+        },
       },
     ],
     

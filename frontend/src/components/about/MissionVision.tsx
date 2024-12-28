@@ -26,7 +26,7 @@ const MissionVision = () => (
   
       {/* Button */}
       <div className="text-center mt-4">
-        <a href="#leadership" className="btn btn-primary px-4 py-2 btn-border-radius">
+        <a href="/uongozi" className="btn btn-primary px-4 py-2 btn-border-radius">
           Ujue Uongozi Wetu
         </a>
       </div>

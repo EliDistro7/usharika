@@ -17,6 +17,8 @@ const attendanceSchema = new Schema(
         "kiongozi_jumuiya",
         "mzee_kanisa",
         "vijana",
+        "praise_team",
+        "kiongozi_praise_team",
         "kiongozi_vijana",
         "kwaya_vijana",
         "kiongozi_kwaya_vijana",

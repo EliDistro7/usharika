@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeCalendar } from '@/hooks/initializeCalendar';
 import EventModal from '@/components/EventModal'; // Optional: if you plan to add event modals
 import SnowyTree from '../xmass/SnowyTree';
-import {CountdownDisplay} from '../xmass/CountDown';
+import {CountdownDisplay} from '../xmass/Countdown';
 
 
 
@@ -45,6 +45,7 @@ const Calendar = () => {
             {/* Calendar will render here */}
           </div>
         </div>
+       
       </section>
 
       {/* Event Modal (Optional) */}

@@ -26,8 +26,8 @@ export const getUsersByRole = async ({ adminId, role, page = 1, limit = 10 }) =>
 
 // Push a new matangazo notification
 export const pushMatangazoNotification = async ({ group, message }) => {
-  console.log('group', group);
-  console.log('message', message);
+ // console.log('group', group);
+//  console.log('message', message);
   try {
     const response = await axios.post(`${api}/users/pushMatangazoNotifications`, {
       group,
@@ -42,6 +42,29 @@ export const pushMatangazoNotification = async ({ group, message }) => {
   }
 };
 
+// Create a new donation
+export const createDonation = async ({ name, details, startingDate, deadline, group,total }) => {
+  console.log('Creating donation:', { name, details, startingDate, deadline, group });
+  
+  try {
+    const response = await axios.post(`${api}/users/createDonation`, {
+      name,
+      details,
+      startingDate,
+      deadline,
+      group,
+      total,
+    });
+    return response.data; // Contains success message or updated donations
+  } catch (error) {
+    console.error('Error creating donation:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to create donation. Please try again later.'
+    );
+  }
+};
+
+
 // Fetch notifications for a user
 export const getUserNotifications = async (userId) => {
   try {
@@ -51,6 +74,20 @@ export const getUserNotifications = async (userId) => {
     console.error('Error fetching user notifications:', error.response?.data || error.message);
     throw new Error(
       error.response?.data?.message || 'Failed to fetch notifications. Please try again later.'
+    );
+  }
+};
+
+
+// Fetch donations for a user
+export const getUserDonations = async (userId) => {
+  try {
+    const response = await axios.get(`${api}/users/${userId}/donations`);
+    return response.data.donations; // Array of donations
+  } catch (error) {
+    console.error('Error fetching user donations:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch donations. Please try again later.'
     );
   }
 };
@@ -81,6 +118,41 @@ export const removeNotification = async ({ userId, notificationId }) => {
     console.error('Error marking notification as read:', error.response?.data || error.message);
     throw new Error(
       error.response?.data?.message || 'Failed to mark notification as read. Please try again later.'
+    );
+  }
+};
+
+
+// Pin a specific notification
+export const pinNotification = async ({ userId, notificationId }) => {
+  try {
+    const response = await axios.patch(
+      `${api}/users/${userId}/notifications/${notificationId}/pin`
+    );
+    return response.data.message; // Success message
+  } catch (error) {
+    console.error('Error pinning notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to pin notification. Please try again later.'
+    );
+  }
+};
+
+
+// Fetch donations by group and field type
+export const getDonationsByGroupAndFieldType = async ({ userId, group, field_type }) => {
+  console.log('group', group)
+  try {
+    const response = await axios.post(`${api}/users/getDonations`, {
+      userId,
+      group,
+      field_type
+    });
+    return response.data.donationsData; // Array of donations along with username details
+  } catch (error) {
+    console.error('Error fetching donations by group and field type:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch donations. Please try again later.'
     );
   }
 };

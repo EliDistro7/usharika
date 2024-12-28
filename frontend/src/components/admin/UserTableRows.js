@@ -10,7 +10,7 @@ const UserTableRows = ({
     return (
       <tr>
         <td colSpan="8" className="text-center text-muted p-3">
-          No users found.
+          Hakuna mtumiaji aliyesajiliwa 
         </td>
       </tr>
     );
