@@ -156,3 +156,20 @@ export const getDonationsByGroupAndFieldType = async ({ userId, group, field_typ
     );
   }
 };
+
+
+// Add amount to a specific donation
+export const addDonationAmount = async ({ userId, donationId, amount }) => {
+  try {
+    const response = await axios.patch(
+      `${api}/users/${userId}/donations/${donationId}/add`,
+      { amount }
+    );
+    return response.data.message; // Success message
+  } catch (error) {
+    console.error('Error adding donation amount:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to add donation amount. Please try again later.'
+    );
+  }
+};

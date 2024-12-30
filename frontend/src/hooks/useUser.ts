@@ -46,6 +46,7 @@ export const setSecureCookie = (key: string, value: string): void => {
 
 export const removeCookie = (): void => {
   removeSecureCookie('yomboChurchUserId');
+  removeSecureCookie('yomboChurchUsername');
 };
 
 export const getCookie =() =>{

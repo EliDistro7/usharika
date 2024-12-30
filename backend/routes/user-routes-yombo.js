@@ -17,6 +17,7 @@ const {
     pushMatangazoNotification,
     getUserNotifications,
     getUserDonations,
+    addDonationAmount,
     markNotificationAsRead,
     removeNotification,
     pinNotification,
@@ -41,6 +42,9 @@ router.get("/users/:userId/donations", getUserDonations);
 
 // Fetch donations by group and field type
 router.post("/users/getDonations", getUsersByGroupAndFieldType);
+
+router.patch("/users/:userId/donations/:donationId/add", addDonationAmount);
+
 
 
 // Pin a specific notification

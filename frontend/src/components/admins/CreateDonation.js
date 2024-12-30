@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { createDonation } from "@/actions/users"; // Import the helper function
 import { toast, ToastContainer } from "react-toastify"; // Import Toastify
 import Cookies from "js-cookie";
+import { Form, Button, Card, Container, Spinner } from "react-bootstrap";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 const CreateDonation = () => {
@@ -20,7 +21,7 @@ const CreateDonation = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // If the field is 'total', convert the value to a number
     if (name === 'total') {
       setFormData({ ...formData, [name]: value ? parseFloat(value) : '' });
@@ -51,110 +52,105 @@ const CreateDonation = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <Container className="mt-5">
       <ToastContainer position="top-right" autoClose={3000} /> {/* Toast Container */}
-      <div className="card shadow-sm">
-        <div className="card-header bg-success text-white">
-          <h4 className="mb-0">Unda Mchango</h4>
-        </div>
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
+      <Card className="shadow-sm">
+        <Card.Header className="bg-success text-white">
+          <Card.Title as="h4" className="mb-0 text-white">Unda Mchango</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          <Form onSubmit={handleSubmit}>
             {/* Name Input */}
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Donation Name
-              </label>
-              <input
-                id="name"
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Donation Name</Form.Label>
+              <Form.Control
+                type="text"
                 name="name"
-                className="form-control"
                 placeholder="Jina la mchango"
                 value={formData.name}
                 onChange={handleChange}
                 required
               />
-            </div>
+            </Form.Group>
 
             {/* Details Input */}
-            <div className="mb-3">
-              <label htmlFor="details" className="form-label">
-                Maelezo
-              </label>
-              <textarea
-                id="details"
+            <Form.Group className="mb-3" controlId="details">
+              <Form.Label>Maelezo</Form.Label>
+              <Form.Control
+                as="textarea"
                 name="details"
-                className="form-control"
+                rows={4}
                 placeholder="Maelezo ya mchango"
-                rows="4"
                 value={formData.details}
                 onChange={handleChange}
                 required
-              ></textarea>
-            </div>
+              />
+            </Form.Group>
 
             {/* Starting Date Input */}
-            <div className="mb-3">
-              <label htmlFor="startingDate" className="form-label">
-                Tarehe ya kuanza kuchanga
-              </label>
-              <input
+            <Form.Group className="mb-3" controlId="startingDate">
+              <Form.Label>Tarehe ya kuanza kuchanga</Form.Label>
+              <Form.Control
                 type="date"
-                id="startingDate"
                 name="startingDate"
-                className="form-control"
                 value={formData.startingDate}
                 onChange={handleChange}
                 required
               />
-            </div>
+            </Form.Group>
 
             {/* Deadline Input */}
-            <div className="mb-3">
-              <label htmlFor="deadline" className="form-label">
-                Tarehe ya Mwisho
-              </label>
-              <input
+            <Form.Group className="mb-3" controlId="deadline">
+              <Form.Label>Tarehe ya Mwisho</Form.Label>
+              <Form.Control
                 type="date"
-                id="deadline"
                 name="deadline"
-                className="form-control"
                 value={formData.deadline}
                 onChange={handleChange}
                 required
               />
-            </div>
+            </Form.Group>
 
             {/* Total Input */}
-            <div className="mb-3">
-              <label htmlFor="total" className="form-label">
-                Kiasi kinachotakiwa
-              </label>
-              <input
+            <Form.Group className="mb-3" controlId="total">
+              <Form.Label>Kiasi kinachotakiwa</Form.Label>
+              <Form.Control
                 type="number"
-                id="total"
                 name="total"
-                className="form-control"
-                placeholder="Kiasi "
+                placeholder="Kiasi"
                 value={formData.total}
                 onChange={handleChange}
                 required
               />
-            </div>
+            </Form.Group>
 
             {/* Submit Button */}
             <div className="d-flex justify-content-end">
-              <button
+              <Button
+                variant="success"
                 type="submit"
-                className="btn btn-success"
                 disabled={loading}
               >
-                {loading ? "Inaunda..." : "Ingiza"}
-              </button>
+                {loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />{" "}
+                    Inaunda...
+                  </>
+                ) : (
+                  "Ingiza"
+                )}
+              </Button>
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

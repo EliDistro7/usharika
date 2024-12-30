@@ -1,8 +1,4 @@
-
-
-
-const mongoose= require('mongoose');
-
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // Define the Attendance schema
@@ -45,6 +41,20 @@ const attendanceSchema = new Schema(
       required: true,
       trim: true,
     },
+    archived: {
+      type: Boolean,
+      default: false,
+    },
+    ratingEnabled: {
+      type: Boolean,
+      default: false, // Optional rating system for sessions
+    },
+    sessionStartTime: {
+      type: String, // Time in HH:mm format (e.g., "12:00")
+      required: function () {
+        return this.ratingEnabled;
+      }, // Required if ratings are enabled
+    },
     attendees: [
       {
         name: {
@@ -57,6 +67,18 @@ const attendanceSchema = new Schema(
           ref: "YomboUser", // Reference to the User model
           required: true,
         },
+        arrivalTime: {
+          type: String, // Time in HH:mm format
+          required: function () {
+            return this.parent().ratingEnabled;
+          }, // Required if ratings are enabled
+        },
+        rating: {
+          type: Number,
+          default: 0, // Keeps track of the cumulative rating for this attendee across sessions
+          min: 0,
+          max: 5,
+        },
       },
     ],
   },
@@ -68,4 +90,4 @@ const attendanceSchema = new Schema(
 // Export the model
 const Attendance = mongoose.model("Attendance", attendanceSchema);
 
-module.exports= Attendance;
+module.exports = Attendance;

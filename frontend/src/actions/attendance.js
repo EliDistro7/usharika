@@ -4,38 +4,64 @@ import axios from 'axios';
 
 const api = process.env.NEXT_PUBLIC_SERVER;
 
+
+
 /**
  * Function to create attendance
  * @param {Object} attendanceData - Attendance data to send to the server
  * @param {string} attendanceData.group - Group name (e.g., vijana_kwaya)
- * @param {string} attendanceData.date - Date of the attendance (ISO string or date format)
+ * @param {string} [attendanceData.date] - Date of the attendance (ISO string or date format, defaults to current date if not provided)
  * @param {string} attendanceData.session_name - Name of the session
- * @param {Array} attendanceData.attendees - Array of attendee objects (e.g., [{ name: 'John', userId: '123' }])
+ * @param {boolean} [attendanceData.ratingEnabled] - Whether ratings are enabled for this session
+ * @param {string} [attendanceData.sessionStartTime] - Start time of the session (HH:mm format, required if ratings are enabled)
+ * @param {Array} attendanceData.attendees - Array of attendee objects (e.g., [{ name: 'John', userId: '123', arrivalTime: '12:20' }])
  */
 export const createAttendance = async (attendanceData) => {
   try {
-    console.log('attendance', attendanceData);
+    console.log("attendance", attendanceData);
+
+    // Validate rating-specific fields if rating is enabled
+    if (attendanceData.ratingEnabled) {
+      if (!attendanceData.sessionStartTime) {
+        throw new Error(
+          "Session start time is required when ratings are enabled."
+        );
+      }
+
+      attendanceData.attendees.forEach((attendee) => {
+        if (!attendee.arrivalTime) {
+          throw new Error(
+            `Arrival time is required for attendee ${attendee.name} when ratings are enabled.`
+          );
+        }
+      });
+    }
+
     // Define the API endpoint
     const apiUrl = `${api}/createAttendance`; // Update with your actual backend URL
 
     // Send the POST request to the server
     const response = await axios.post(apiUrl, attendanceData, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     // Log the success response
-    console.log('Attendance created successfully:', response.data);
+    console.log("Attendance created successfully:", response.data);
 
     // Return success message or data
     return response.data;
   } catch (error) {
     // Log and handle errors
-    console.error('Error creating attendance:', error.response?.data || error.message);
+    console.error(
+      "Error creating attendance:",
+      error.response?.data || error.message
+    );
     throw error; // Rethrow the error for higher-level handling if needed
   }
 };
+
 
 
 /**
@@ -146,5 +172,91 @@ export const getAttendanceById = async (attendanceId) => {
     // Log and handle errors
     console.error(`Error fetching attendance record for ID ${attendanceId}:`, error.response?.data || error.message);
     throw error; // Rethrow the error for higher-level handling if needed
+  }
+};
+
+
+
+/**
+ * Function to archive an attendance record by ID
+ * @param {string} attendanceId - The ID of the attendance record to archive
+ * @returns {Promise<{success: boolean, data?: object, message?: string}>} - Result object containing the updated record or an error message
+ */
+export const archiveAttendance = async (attendanceId) => {
+  try {
+    console.log(`Archiving attendance record for ID: ${attendanceId}`);
+    
+    // Validate the input attendanceId
+    if (!attendanceId) {
+      throw new Error('Attendance ID parameter is required.');
+    }
+
+    // Define the API endpoint
+    const apiUrl = `${api}/attendance/${attendanceId}/archive`; // Adjust URL to match your backend route
+
+    // Send the PATCH request to the server
+    const response = await axios.patch(apiUrl, {}, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Log the success response
+    console.log(`Attendance record for ID ${attendanceId} archived successfully:`, response.data);
+
+    return {
+      success: true,
+      data: response.data.data, // Updated attendance record
+      message: response.data.message,
+    };
+  } catch (error) {
+    console.error(`Error archiving attendance record for ID ${attendanceId}:`, error.response?.data || error.message);
+
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || 'Server error.',
+    };
+  }
+};
+
+/**
+ * Function to unarchive an attendance record by ID
+ * @param {string} attendanceId - The ID of the attendance record to unarchive
+ * @returns {Promise<{success: boolean, data?: object, message?: string}>} - Result object containing the updated record or an error message
+ */
+export const unarchiveAttendance = async (attendanceId) => {
+  try {
+    console.log(`Unarchiving attendance record for ID: ${attendanceId}`);
+    
+    // Validate the input attendanceId
+    if (!attendanceId) {
+      throw new Error('Attendance ID parameter is required.');
+    }
+
+    // Define the API endpoint
+    const apiUrl = `${api}/attendance/${attendanceId}/unarchive`; // Adjust URL to match your backend route
+
+    // Send the PATCH request to the server
+    const response = await axios.patch(apiUrl, {}, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Log the success response
+    console.log(`Attendance record for ID ${attendanceId} unarchived successfully:`, response.data);
+
+    return {
+      success: true,
+      data: response.data.data, // Updated attendance record
+      message: response.data.message,
+    };
+  } catch (error) {
+    console.error(`Error unarchiving attendance record for ID ${attendanceId}:`, error.response?.data || error.message);
+
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || 'Server error.',
+    };
   }
 };

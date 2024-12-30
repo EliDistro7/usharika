@@ -7,6 +7,7 @@ import AttendanceRecords from '@/components/admins/AttendanceRecords';
 import AttendanceModal from '@/components/admins/AttendanceModal'; // Import AttendanceModal
 import { getUsersByRole } from '@/hooks/useUser';
 import { createAttendance, fetchSessionsByGroup } from '@/actions/attendance';
+import SessionList from '@/components/admins/SessionList';
 import { Accordion, Card, Button } from 'react-bootstrap';
 
 export default function Home() {
@@ -40,13 +41,13 @@ export default function Home() {
         // Fetch previous sessions for the group
         const { success, data, message } = await fetchSessionsByGroup(role);
         if (success) {
-          console.log('Fetched sessions data:', data);
+          ///console.log('Fetched sessions data:', data);
 
           // Group sessions by session_name and sort by date
           const grouped = data.reduce((acc, session) => {
-            const { session_name, date, _id } = session;
+            const { session_name, date, _id, num_attendees, archived } = session;
             if (!acc[session_name]) acc[session_name] = [];
-            acc[session_name].push({ date: new Date(date), session_name, _id });
+            acc[session_name].push({ date: new Date(date), session_name, _id, num_attendees, archived });
             return acc;
           }, {});
 
@@ -109,6 +110,44 @@ export default function Home() {
     setAttendanceId(null); // Reset attendance ID when closing
   };
 
+  const handleArchive= ()=>{
+    console.log('archive clicked')
+    // Implement archive functionality here
+  }
+
+  const handleDownload = async (session) => {
+    try {
+      // Assuming you have an API endpoint to fetch attendance records
+      const response = await fetch(`/api/attendance/download/${session._id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Cookies.get('authToken')}`, // Add token if authentication is required
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch attendance records');
+      }
+  
+      // Parse the response
+      const blob = await response.blob();
+  
+      // Create a downloadable link for the file
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${session.session_name}_attendance_records.csv`; // Set the desired file name
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url); // Clean up the object URL
+    } catch (error) {
+      console.error('Error downloading attendance records:', error);
+      setError('Failed to download attendance records. Please try again.');
+    }
+  };
+  
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -141,49 +180,14 @@ export default function Home() {
       </ul>
 
       {/* Previous Sessions */}
-      <Accordion defaultActiveKey="0">
-        {Object.keys(groupedSessions).map((sessionName, idx) => (
-          <Accordion.Item eventKey={idx.toString()} key={idx} className="mb-3 shadow-sm">
-            <Accordion.Header className="fw-bold">{sessionName}</Accordion.Header>
-            <Accordion.Body>
-              <div className="row g-3">
-                {groupedSessions[sessionName].map((session, index) => (
-                  <div key={index} className="col-md-6 col-lg-4">
-                    <div className="card border-primary shadow-sm">
-                      <div className="card-body">
-                        <h5 className="card-title text-primary">
-                          {new Date(session.date).toLocaleDateString()}
-                        </h5>
-                        <p className="card-text text-muted">{session.session_name}</p>
-                        <div className="d-flex justify-content-between">
-                          <button
-                            className="btn btn-outline-primary btn-sm"
-                            onClick={() => handleView(session)} // Open modal with session data
-                          >
-                            <i className="bi bi-eye me-2"></i>View
-                          </button>
-                          <button
-                            className="btn btn-outline-secondary btn-sm"
-                            onClick={() => handleArchive(session)}
-                          >
-                            <i className="bi bi-archive me-2"></i>Archive
-                          </button>
-                          <button
-                            className="btn btn-outline-success btn-sm"
-                            onClick={() => handleDownload(session)}
-                          >
-                            <i className="bi bi-download me-2"></i>Download
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Accordion.Body>
-          </Accordion.Item>
-        ))}
-      </Accordion>
+     
+
+      <SessionList
+  groupedSessions={groupedSessions}
+  onView={handleView}
+  onArchive={handleArchive}
+ 
+/>
 
       {/* Content Rendering */}
       {activeTab === 'attendance' && (

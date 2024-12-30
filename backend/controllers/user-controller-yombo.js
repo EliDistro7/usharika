@@ -410,6 +410,101 @@ const pushMatangazoNotification = async (req, res) => {
   }
 };
 
+
+
+
+const markNotificationAsRead = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    console.log('params', req.params)
+
+    const result = await User.updateOne(
+      { _id: userId, "matangazoNotifications._id": notificationId },
+      {
+        $set: {
+          "matangazoNotifications.$.status": "read",
+        },
+      }
+    );
+
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ error: "Notification not found or already updated" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Notification marked as read successfully" });
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const removeNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    console.log('params', req.params);
+
+    // Use $pull to remove the notification from the array
+    const result = await User.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          matangazoNotifications: { _id: notificationId },
+        },
+      }
+    );
+
+    // Check if any document was modified
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ error: "Notification not found or already removed" });
+    }
+
+    res.status(200).json({ message: "Notification removed successfully" });
+  } catch (error) {
+    console.error("Error removing notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+const pinNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    console.log('params', req.params);
+
+    // Set the `pinned` field to true for the specified notification
+    const result = await User.updateOne(
+      { _id: userId, "matangazoNotifications._id": notificationId },
+      {
+        $set: {
+          "matangazoNotifications.$.pinned": true,
+        },
+      }
+    );
+
+    // Check if any document was modified
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ error: "Notification not found or already pinned" });
+    }
+
+    res.status(200).json({ message: "Notification pinned successfully" });
+  } catch (error) {
+    console.error("Error pinning notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 // Function to create a new donation
 const createDonation = async (req, res) => {
   try {
@@ -510,96 +605,57 @@ const getUserDonations = async (req, res) => {
 };
 
 
-const markNotificationAsRead = async (req, res) => {
+const addDonationAmount = async (req, res) => {
   try {
-    const { userId, notificationId } = req.params;
+    const { userId, donationId } = req.params; // Get user ID and donation ID from the request parameters
+    const { amount } = req.body; // Get the amount to add from the request body
 
-    console.log('params', req.params)
+    console.log("Received Request - User ID:", userId, "Donation ID:", donationId, "Amount:", amount);
 
-    const result = await User.updateOne(
-      { _id: userId, "matangazoNotifications._id": notificationId },
-      {
-        $set: {
-          "matangazoNotifications.$.status": "read",
-        },
-      }
-    );
-
-    if (result.nModified === 0) {
-      return res
-        .status(404)
-        .json({ error: "Notification not found or already updated" });
+    if (!amount || amount <= 0) {
+      console.log("Invalid or missing amount value.");
+      return res.status(400).json({ error: "Invalid or missing amount value." });
     }
 
-    res
-      .status(200)
-      .json({ message: "Notification marked as read successfully" });
+    // Fetch the user document with the specific donation
+    const user = await User.findOne(
+      { _id: userId, "donations._id": donationId },
+      { "donations.$": 1 } // Only return the matched donation
+    );
+
+    if (!user || user.donations.length === 0) {
+      console.log("No matching user or donation found.");
+      return res.status(404).json({ error: "User or donation not found." });
+    }
+
+    // Get the current amountPaid and add the new amount
+    const donation = user.donations[0]; // Since we used `donations.$`, there should be only one
+    const updatedAmountPaid = donation.amountPaid + amount;
+
+    // Update the donation's amountPaid with the new value
+    const result = await User.updateOne(
+      { _id: userId, "donations._id": donationId }, // Match the user and donation
+      { $set: { "donations.$.amountPaid": updatedAmountPaid } } // Set the new amountPaid value
+    );
+
+    console.log("Update Result:", result);
+
+    if (result.nModified === 0) {
+      console.log("No updates were made.");
+      return res.status(404).json({ error: "No updates were made." });
+    }
+
+    console.log("Amount added successfully to donation.");
+    res.status(200).json({
+      success: true,
+      message: `Amount added successfully to donation.`,
+    });
   } catch (error) {
-    console.error("Error marking notification as read:", error);
+    console.error("Error updating donation amount:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-const removeNotification = async (req, res) => {
-  try {
-    const { userId, notificationId } = req.params;
-
-    console.log('params', req.params);
-
-    // Use $pull to remove the notification from the array
-    const result = await User.updateOne(
-      { _id: userId },
-      {
-        $pull: {
-          matangazoNotifications: { _id: notificationId },
-        },
-      }
-    );
-
-    // Check if any document was modified
-    if (result.nModified === 0) {
-      return res
-        .status(404)
-        .json({ error: "Notification not found or already removed" });
-    }
-
-    res.status(200).json({ message: "Notification removed successfully" });
-  } catch (error) {
-    console.error("Error removing notification:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-
-const pinNotification = async (req, res) => {
-  try {
-    const { userId, notificationId } = req.params;
-
-    console.log('params', req.params);
-
-    // Set the `pinned` field to true for the specified notification
-    const result = await User.updateOne(
-      { _id: userId, "matangazoNotifications._id": notificationId },
-      {
-        $set: {
-          "matangazoNotifications.$.pinned": true,
-        },
-      }
-    );
-
-    // Check if any document was modified
-    if (result.nModified === 0) {
-      return res
-        .status(404)
-        .json({ error: "Notification not found or already pinned" });
-    }
-
-    res.status(200).json({ message: "Notification pinned successfully" });
-  } catch (error) {
-    console.error("Error pinning notification:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
 
 
 
@@ -675,4 +731,5 @@ module.exports = {
     createDonation,
     getUserDonations,
     getUsersByGroupAndFieldType,
+    addDonationAmount,
   };

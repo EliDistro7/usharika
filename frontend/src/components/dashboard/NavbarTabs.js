@@ -3,8 +3,11 @@ import { FaBell, FaUsers, FaBook } from "react-icons/fa";
 import { MdVolumeUp } from "react-icons/md";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Profile from "./Profile";
 import Notification from "./Notification";
+import { removeCookie } from "@/hooks/useUser";
 
 // Helper function to format role names
 const formatRoleName = (role) =>
@@ -22,11 +25,8 @@ const RoleDropdown = ({
   showNotifications,
 }) => {
   const notificationCount = Array.isArray(notifications)
-  ? notifications.filter(
-      (n) => n.group === role
-    ).length
-  : 0;
-
+    ? notifications.filter((n) => n.group === role).length
+    : 0;
 
   // Function to check if the role starts with "kiongozi"
   function startsWithKiongozi(value) {
@@ -35,87 +35,82 @@ const RoleDropdown = ({
 
   return (
     <li className="nav-item dropdown">
-      <button
-        className="nav-link d-flex align-items-center"
-      
-      >
-        <span className="fw-bold" 
-        
-        >{formatRoleName(role)}</span>
+      <button className="nav-link d-flex align-items-center">
+        <span className="fw-bold">{formatRoleName(role)}</span>
         {notificationCount > 0 && (
-          <span className="badge bg-danger ms-2"
-          onClick={() => toggleNotifications(role)}
-          >{notificationCount}</span>
+          <span
+            className="badge bg-danger ms-2"
+            onClick={() => toggleNotifications(role)}
+          >
+            {notificationCount}
+          </span>
         )}
       </button>
 
-      {showNotifications && <Notification notifications={notifications} group={role} />}
+      {showNotifications && (
+        <Notification notifications={notifications} group={role} />
+      )}
 
       <div className="dropdown shadow">
-  {startsWithKiongozi(role) && (
-    <>
-      <button
-        className="btn btn-primary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Options
-      </button>
-      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li>
-          <button
-            className="dropdown-item d-flex align-items-center"
-            onClick={() => handleNavigation(role, "users")}
-          >
-            <FaUsers className="me-2 text-primary" /> Wanakikundi
-          </button>
-        </li>
-        <li>
-          <button
-            className="dropdown-item d-flex align-items-center"
-            onClick={() => handleNavigation(role, "matangazo")}
-          >
-            <MdVolumeUp className="me-2 text-success" /> Unda Tangazo
-          </button>
-        </li>
-        <li>
-          <button
-            className="dropdown-item d-flex align-items-center"
-            onClick={() => handleNavigation(role, "donations")}
-          >
-            <FaBook className="me-2 text-warning" /> Ingiza Michango
-          </button>
-        </li>
-        <li>
-          <button
-            className="dropdown-item d-flex align-items-center"
-            onClick={() => handleNavigation(role, "attendance")}
-          >
-            <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
-          </button>
-        </li>
-      </ul>
-    </>
-  )}
-</div>
-
-
+        {startsWithKiongozi(role) && (
+          <>
+            <button
+              className="btn btn-primary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Options
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <button
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "users")}
+                >
+                  <FaUsers className="me-2 text-primary" /> Wanakikundi
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "matangazo")}
+                >
+                  <MdVolumeUp className="me-2 text-success" /> Unda Tangazo
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "donations")}
+                >
+                  <FaBook className="me-2 text-warning" /> Ingiza Michango
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "attendance")}
+                >
+                  <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
+                </button>
+              </li>
+            </ul>
+          </>
+        )}
+      </div>
     </li>
   );
 };
-
 
 const NavbarTabs = ({ roles, notifications = [], user }) => {
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(null);
 
   const notificationCount = Array.isArray(notifications)
-  ? notifications.filter(
-      (n) => n.status === "unread"
-    ).length
-  : 0;
+    ? notifications.filter((n) => n.status === "unread").length
+    : 0;
 
   // Handle navigation based on the role and action
   const handleNavigation = (role, path) => {
@@ -135,39 +130,73 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
     setShowNotifications((prev) => (prev === role ? null : role));
   };
 
+ // Handle logout confirmation
+ const handleLogout = () => {
+  toast.info(
+    <div>
+      <p>Unataka ku-log-out?</p>
+      <div>
+        <button
+          className="btn btn-danger btn-sm me-2"
+          onClick={() => confirmLogout(true)}
+        >
+          Ndio
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={() => confirmLogout(false)}
+        >
+          Hapana
+        </button>
+      </div>
+    </div>,
+    { autoClose: false }
+  );
+};
+
+const confirmLogout = (isConfirmed) => {
+  if (isConfirmed) {
+    removeCookie(); // Logout logic
+    router.push("/"); // Redirect to home
+  } else {
+    toast.dismiss(); // Dismiss the toast
+  }
+};
+
+
   return (
     <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded">
       <div className="container-fluid">
-        <div className='w-100 d-flex justify-content-between'>
-        <Profile user={user} />
-
-{/* Mobile Toggle Button */}
-
-<div className="position-relative">
-  <button
-    className="navbar-toggler ms-auto text-black"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#navbarTabs"
-    aria-controls="navbarTabs"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span className="navbar-toggler-icon"></span>
-  </button>
-  {notificationCount > 0 && (
-    <span
-      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-      style={{ fontSize: "0.75rem" }}
-    >
-      {notificationCount}
-    </span>
-  )}
-</div>
-
-        </div>
-       
+        <div className=" d-flex justify-content-between w-100">
+          <Profile user={user} />
       
+         
+          {/* Mobile Toggle Button */}
+          <div className="position-relative">
+            <button
+              className="navbar-toggler ms-auto text-black"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarTabs"
+              aria-controls="navbarTabs"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            {notificationCount > 0 && (
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style={{ fontSize: "0.75rem" }}
+              >
+                {notificationCount}
+              </span>
+            )}
+          </div>
+          <button className="btn btn-danger ms-auto" onClick={handleLogout}>
+    Log Out
+  </button>
+        </div>
 
         {/* Navbar Content */}
         <div className="collapse navbar-collapse" id="navbarTabs">
@@ -183,8 +212,12 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
               />
             ))}
           </ul>
+        
         </div>
+         
+
       </div>
+      <ToastContainer />
     </nav>
   );
 };
