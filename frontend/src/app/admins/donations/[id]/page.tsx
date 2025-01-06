@@ -19,7 +19,7 @@ export default function AdminDonationsPage() {
   return (
     <div className="container mt-4">
       {/* Header */}
-      <Navbar bg="primary" variant="dark" expand="lg" className="mb-4">
+      <Navbar style={{backgroundColor:"#6f42c1"}} variant="dark" expand="lg" className="mb-4">
         <Container>
           <Navbar.Brand href="#">Michango</Navbar.Brand>
           {/* Toggle Button for Small Screens */}
@@ -61,7 +61,7 @@ export default function AdminDonationsPage() {
             </Nav>
             <Nav>
               <Navbar.Text>
-                Kikundi: <strong>{group.replace(/"_"/gi, " ")}</strong>
+                Kikundi: <strong className="text-white">{group.replace(/"_"/gi, " ")}</strong>
               </Navbar.Text>
             </Nav>
           </Navbar.Collapse>

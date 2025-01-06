@@ -45,14 +45,14 @@ const Donations = () => {
   return (
     <div className="my-4">
       <div className="card shadow-sm">
-        <div className="card-header bg-primary text-white">
+        <div className="card-header text-white" style={{backgroundColor:"#6f42c1"}}>
           <h5 className="mb-0 text-white">Michango Kwenye Vikundi</h5>
         </div>
         <div className="card-body">
           {donations.length > 0 ? (
             <div className="table-responsive">
               <table className="table table-striped table-hover">
-                <thead className="table-primary">
+                <thead className="">
                   <tr>
                     <th className="fw-bold">Aina</th>
                     <th className="fw-bold">Kikundi</th> {/* Added Group */}
@@ -92,7 +92,7 @@ const Donations = () => {
               </table>
             </div>
           ) : (
-            <p className="text-muted">No active donations available.</p>
+            <p className="text-muted">Hauna mchango wowtwe kwenye vikundi</p>
           )}
         </div>
       </div>

@@ -6,10 +6,13 @@
 
 
 
-/* Customized Bootstrap Stylesheet */
+/* Customized Bootstrap Stylesheet ; */
+
 @import '/css/bootstrap.min.css';
 
-/*** Spinner Start ***/
+
+
+/*** Spinner Start @import '/css/CustomCss.css';***/
 #spinner {
   opacity: 0;
   visibility: hidden;
@@ -451,21 +454,9 @@ a.badge-dark:focus, a.badge-dark.focus {
   transition: .5s;
 }
 
-.navbar .navbar-nav .nav-link:hover,
-.navbar .navbar-nav .nav-link.active,
-.fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
-.fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
-  color: var(--bs-primary);
-}
 
-.navbar .dropdown-toggle::after {
-  border: none;
-  content: "\f107";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 700;
-  vertical-align: middle;
-  margin-left: 8px;
-}
+
+
 
 @media (min-width: 1200px) {
   .navbar .nav-item .dropdown-menu {
@@ -1146,6 +1137,7 @@ code {
   margin: 5rem auto;
   border: 1px solid #ffffff22;
   background-color: #282c34;
+
   background: linear-gradient(0deg, rgba(40,44,52,1) 0%, rgba(17,0,32,.5) 100%);
   box-shadow: 0 7px 20px 5px #00000088;
   border-radius: .7rem;
@@ -1272,3 +1264,4 @@ code {
   border: none !important; /* Removes borders from the navigation links */
   box-shadow: none !important; /* Removes any potential shadows */
 }
+

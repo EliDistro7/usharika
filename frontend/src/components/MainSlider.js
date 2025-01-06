@@ -6,7 +6,7 @@ import { Zoom } from "react-awesome-reveal"; // Importing the Zoom animation fro
 
 const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
   return (
-    <div className="container-fluid">
+    <div className="container-fluid bg-gradient-custom ">
       <div className="row">
         {/* Main Carousel */}
         <div className=" px-0">
@@ -26,22 +26,28 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
                 />
 
                 {/* Text Content */}
-                <div className="overlay text-white">
+                <div className="overlay text-white"
+                 style={{backgroundColor:"rgba(0,0,0,.23" }}>
                   <Zoom duration={1000} delay={200}>
                     {/* Category */}
                     <div className="badge-container">
                       <a
-                        className="badge bg-primary text-uppercase text-white font-weight-bold px-3 py-2"
+                        className="badge text-uppercase text-white font-weight-bold px-3 py-2"
                         href={slide.categoryLink}
+                        style={{
+                          backgroundColor: '#6f42c1'
+                        }}
                       >
                         {slide.category}
                       </a>
                     </div>
 
                     {/* Title */}
-                    <div className="title-container mt-auto">
+                    <div className="title-container mt-auto" 
+                    >
                       <a
-                        className="h1 text-white text-uppercase font-weight-bold text-primary fw-bold"
+                        className="h1 text-white text-uppercase font-weight-bold fw-bold "
+                       
                         href={slide.link}
                       >
                         {slide.title}
@@ -78,6 +84,14 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
               </div>
             ))}
           </FadeCarousel>
+          <style jsx>{`
+        .bg-gradient-custom {
+          background: rgba(0, 0, 0, 0.6);
+        },
+        button:hover {
+          opacity: 0.9;
+        }
+      `}</style>
         </div>
 
     {/* Secondary News */}

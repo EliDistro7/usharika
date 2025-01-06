@@ -74,7 +74,7 @@ const calculateRating = (sessionTime, arrivalTime) => {
       .map(({ present, ...rest }) => rest); // Exclude 'present' field from final data
 
     if (attendees.length === 0) {
-      toast.error("Tafadhali, chagua walau mwanakikundi mmoja liyehudhuri.");
+      toast.error("Tafadhali, chagua walau mwanakikundi mmoja liyehudhuria.");
       return;
     }
 
@@ -93,8 +93,8 @@ const calculateRating = (sessionTime, arrivalTime) => {
     <div className="container py-4">
       <ToastContainer />
       <div className="card shadow-sm border-0">
-        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0 text-white">Fomu ya Mahudhurio</h4>
+        <div className="card-header text-white d-flex justify-content-between align-items-center" style={{backgroundColor:"#6f42c1"}}>
+          <h4 className="mb-0 text-white" >Fomu ya Mahudhurio</h4>
           <i className="bi bi-clipboard-check fs-4"></i>
         </div>
         <div className="card-body">

@@ -73,11 +73,10 @@ const attendanceSchema = new Schema(
             return this.parent().ratingEnabled;
           }, // Required if ratings are enabled
         },
-        rating: {
+        cumulativeRating: {
           type: Number,
           default: 0, // Keeps track of the cumulative rating for this attendee across sessions
-          min: 0,
-          max: 5,
+         
         },
       },
     ],

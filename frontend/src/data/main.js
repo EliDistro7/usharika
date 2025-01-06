@@ -95,16 +95,16 @@ export const slides = [
 
   export const updates = [
     {
-      content: "Jiunge nasi kwa semina maalum ya vijana, tukiwa na ujumbe wa matumaini na mwongozo wa kiroho.",
-      group: "Youth",
+      content: "Tunawalika vijana ywote kujiunga na Kwaya ya Umoja wa Vijana kwa ajili kushiriki mashindano ya Uimbaji Februari 15 mwaka huu",
+      group: "Vijana",
     },
     {
-      content: "Kila mmoja anakaribishwa kuhudhuria mkutano wetu wa maombi kwa ajili ya familia na jamii.",
-      group: "Prayer Meeting",
+      content: "Kila mmoja anakaribishwa kuhudhuria ibada ya Morning Glory inayoendelea kila siku za wiki kuanzia 12 asubuhi.",
+      group: "Morning Glory",
     },
     {
       content: "Shiriki nasi katika kujifunza neno la Mungu kwa kina.",
-      group: "Bible Study",
+      group: "Fellowship",
     },
   ];
 
@@ -243,82 +243,61 @@ export const slides = [
   
 
   
-export const churchContent = {
-  name:'Matukio kati picha Ubarikio 2024',
+
+
+export const beach = {
+  name:'Mtoko wa Vijana 2024',
   content: [
     {
-      groupName: "Watumishi waliohudumu",
+      groupName: "Mbamba Beach, Kigamboni ",
       content: [
         {
           title: "",
-          description: "Ibada iliongozwa na mkuu wa jimbo",
-          imageUrl: "/img/mkuuwajimbo2.jpg", // Optional Material 
+          description: "Neno kutoka kwa Mchungaji",
+          imageUrl: "/img/beach_neno.jpg", // Optional image
+          //videoUrl: "https://example.com/worship-video.mp4", // Optional video URL
         },
-        {
-          title: "Kwaya",
-          description: "Parish worker...",
-          videoUrl: "/videos/worthy.mp4", // Optional video URL;
-        },
-        {
-          title: "Wabarikia",
-          description: "Reflect on the sermon from our Sunday service.",
-          imageUrl: "/img/wabarikiwa.jpg",
-        },
-        {
-          title: "Community Prayer",
-          description: "Come together to pray for our community and church.",
-          imageUrl: "/img/pray-church.jpg",
-          
-        },
-      ],
-    },
-    {
-      groupName: "Youth Fellowship",
-      content: [
-        {
-          title: "Youth Empowerment Talk",
-          description: "Guest speaker shares insights on leadership and personal growth.",
-          imageUrl: "/img/youth.jpg",
         
+        {
+          title: "Wabarikiwa",
+          description: "",
+          imageUrl: "/img/beach_neno2.jpg",
         },
         {
-          title: "Praise and Worship",
-          description: "A lively and energetic time of praise with the youth group.",
-          imageUrl: "/img/youth-praise.jpg",
-        },
-        {
-          title: "Group Activities",
-          description: "Fun and engaging activities for youth to bond and grow in faith.",
-          imageUrl: "/img/youth-activities.jpg",
-        },
-      ],
-    },
-    {
-      groupName: "Bible Study",
-      content: [
-        {
-          title: "Bible Study Session 1",
-          description: "Deep dive into the teachings of the Bible and how they apply to our lives.",
-          imageUrl: "/img/bible.jpg",
+          title: "",
+          description: "maswali na majibu",
+          imageUrl: "/img/beach_maswali.jpg",
           
         },
         {
-          title: "Group Discussion",
-          description: "Small group discussions to better understand the scripture.",
-          imageUrl: "/img/group-discussion.jpg",
+          title: "",
+          description: "mahubiri",
+          imageUrl: "/img/tumpale.jpg",
+          
         },
         {
-          title: "Closing Prayer",
-          description: "End the Bible study with a powerful prayer session.",
-          imageUrl: "/img/closing-prayer.jpg",
+          title: "",
+          description: "kujenga marafiki",
+          imageUrl: "/img/marafiki.jpg",
+          
+        },
+        {
+          title: "",
+          description: "maswali na majibu",
+          imageUrl: "/img/beach_mchungaji.jpg",
+          
         },
       ],
     },
+   
+ 
   ],
 }
 
+
+
 export const kipaimara = {
-  name:'Matukio kati picha Kipaimara 2024',
+  name:'Ubarikio 2024',
   content: [
     {
       groupName: "Watumishi waliohudumu",
@@ -329,74 +308,30 @@ export const kipaimara = {
           imageUrl: "/img/mkuuwajimbo2.jpg", // Optional image
           //videoUrl: "https://example.com/worship-video.mp4", // Optional video URL
         },
-        {
-          title: "Kwaya",
-          description: "Parish worker...",
-          videoUrl: "/videos/worthy.mp4", // Optional video URL
-        },
+        
         {
           title: "Wabarikiwa",
-          description: "wakati wa picha kwa wabarikiwa",
+          description: "wabarikiwa",
           imageUrl: "/img/wabarikiwa.jpg",
         },
         {
           title: "Wabarikiwa",
-          description: "wakati wa picha picha kwa wabarikiwa.",
+          description: "",
           imageUrl: "/img/washarika.jpg",
           
         },
       ],
     },
-    {
-      groupName: "Youth Fellowship",
-      content: [
-        {
-          title: "Youth Empowerment Talk",
-          description: "Guest speaker shares insights on leadership and personal growth.",
-          imageUrl: "/img/youth.jpg",
-        
-        },
-        {
-          title: "Praise and Worship",
-          description: "A lively and energetic time of praise with the youth group.",
-          imageUrl: "/img/youth-praise.jpg",
-        },
-        {
-          title: "Group Activities",
-          description: "Fun and engaging activities for youth to bond and grow in faith.",
-          imageUrl: "/img/youth-activities.jpg",
-        },
-      ],
-    },
-    {
-      groupName: "Bible Study",
-      content: [
-        {
-          title: "Bible Study Session 1",
-          description: "Deep dive into the teachings of the Bible and how they apply to our lives.",
-          imageUrl: "/img/bible.jpg",
-          
-        },
-        {
-          title: "Group Discussion",
-          description: "Small group discussions to better understand the scripture.",
-          imageUrl: "/img/group-discussion.jpg",
-        },
-        {
-          title: "Closing Prayer",
-          description: "End the Bible study with a powerful prayer session.",
-          imageUrl: "/img/closing-prayer.jpg",
-        },
-      ],
-    },
+   
+ 
   ],
 }
 
 export const efm = {
-  name:'Kwaya ya Vijana walipotembelea EFM',
+  name:'Kwaya ya Vijana EFM Media Tour',
   content: [
     {
-      groupName: "Kwaya studio",
+      groupName: "July 2024",
       content: [
         {
           title: "Picha za pamoja",
@@ -409,56 +344,11 @@ export const efm = {
           description: "Kwaya ikiimba live on air",
           videoUrl: "/videos/efm.mp4", // Optional video URL
         },
-        {
-          title: "Kuondoka",
-          description: "Come together to pray for our community and church.",
-          imageUrl: "/img/pray-church.jpg",
-          
-        },
+      
       ],
     },
-    {
-      groupName: "Youth Fellowship",
-      content: [
-        {
-          title: "Youth Empowerment Talk",
-          description: "Guest speaker shares insights on leadership and personal growth.",
-          imageUrl: "/img/youth.jpg",
-        
-        },
-        {
-          title: "Praise and Worship",
-          description: "A lively and energetic time of praise with the youth group.",
-          imageUrl: "/img/youth-praise.jpg",
-        },
-        {
-          title: "Group Activities",
-          description: "Fun and engaging activities for youth to bond and grow in faith.",
-          imageUrl: "/img/youth-activities.jpg",
-        },
-      ],
-    },
-    {
-      groupName: "Bible Study",
-      content: [
-        {
-          title: "Bible Study Session 1",
-          description: "Deep dive into the teachings of the Bible and how they apply to our lives.",
-          imageUrl: "/img/bible.jpg",
-          
-        },
-        {
-          title: "Group Discussion",
-          description: "Small group discussions to better understand the scripture.",
-          imageUrl: "/img/group-discussion.jpg",
-        },
-        {
-          title: "Closing Prayer",
-          description: "End the Bible study with a powerful prayer session.",
-          imageUrl: "/img/closing-prayer.jpg",
-        },
-      ],
-    },
+   
+   
   ],
 }
  

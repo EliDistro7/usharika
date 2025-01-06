@@ -55,6 +55,15 @@ export const CountdownDisplay = ({ eventName, targetDate, backgroundImage }) => 
   return (
     <div className="countdown-body">
       {/* Background */}
+      <div  style={{
+    position: "absolute",
+    inset: 0,
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    zIndex: -1,
+  }}>
+
       <div className="snow-container">
         {Array.from({ length: 200 }).map((_, index) => (
           <div key={index} className="snowflake" />
@@ -79,6 +88,8 @@ export const CountdownDisplay = ({ eventName, targetDate, backgroundImage }) => 
           <span>{padTo2(seconds)}</span>
         </div>
       </div>
+      </div>
+     
     </div>
   );
   

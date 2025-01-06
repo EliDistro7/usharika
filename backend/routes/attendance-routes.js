@@ -7,7 +7,8 @@ const router = express.Router();
 const {
     createAttendance,getAttendanceByGroup,getSessionsByGroup,getAttendanceById,
     archiveSession,
-    unarchiveSession
+    unarchiveSession,
+    getTopRankingUsersByGroup,
 } = require('../controllers/attendance-controller.js');
 
 router.post('/createAttendance', createAttendance);
@@ -18,5 +19,8 @@ router.get('/getSessionsByGroup/:group', getSessionsByGroup)
 // New archive/unarchive routes
 router.patch('/attendance/:id/archive', archiveSession);
 router.patch('/attendance/:id/unarchive', unarchiveSession);
+
+// New route for top-ranking users
+router.post('/attendance/top-ranking-users', getTopRankingUsersByGroup);
 
 module.exports = router;

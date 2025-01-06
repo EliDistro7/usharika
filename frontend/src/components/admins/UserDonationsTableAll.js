@@ -51,7 +51,7 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
     doc.setFontSize(20);
     doc.text("KKKT USHARIKA WA YOMBO", 105, 15, { align: "center" }); // Centered Title
     doc.setFontSize(16);
-    doc.text(`Donation: ${activeTab}`, 105, 25, { align: "center" }); // Donation name as a subheader
+    doc.text(`Mchango: ${activeTab}`, 105, 25, { align: "center" }); // Donation name as a subheader
 
     doc.setFontSize(14);
     doc.text(`Huduma: ${formattedGroup}`, 14, 40); // Group Name

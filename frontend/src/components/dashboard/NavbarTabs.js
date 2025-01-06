@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBell, FaUsers, FaBook } from "react-icons/fa";
+import {  FaUsers, FaBook, FaBars } from "react-icons/fa";
 import { MdVolumeUp } from "react-icons/md";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -96,6 +96,14 @@ const RoleDropdown = ({
                   <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
                 </button>
               </li>
+              <li>
+                <button
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "top-members")}
+                >
+                  <FaBook className="me-2 text-warning" /> Wanakikundi Bora
+                </button>
+              </li>
             </ul>
           </>
         )}
@@ -130,51 +138,22 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
     setShowNotifications((prev) => (prev === role ? null : role));
   };
 
- // Handle logout confirmation
- const handleLogout = () => {
-  toast.info(
-    <div>
-      <p>Unataka ku-log-out?</p>
-      <div>
-        <button
-          className="btn btn-danger btn-sm me-2"
-          onClick={() => confirmLogout(true)}
-        >
-          Ndio
-        </button>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => confirmLogout(false)}
-        >
-          Hapana
-        </button>
-      </div>
-    </div>,
-    { autoClose: false }
-  );
-};
 
-const confirmLogout = (isConfirmed) => {
-  if (isConfirmed) {
-    removeCookie(); // Logout logic
-    router.push("/"); // Redirect to home
-  } else {
-    toast.dismiss(); // Dismiss the toast
-  }
-};
+
+
 
 
   return (
-    <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded">
-      <div className="container-fluid">
-        <div className=" d-flex justify-content-between w-100">
+    <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded w-100">
+      <div className="w-100">
+        <div className=" d-flex justify-content-start w-100">
           <Profile user={user} />
       
          
           {/* Mobile Toggle Button */}
-          <div className="position-relative">
+          <div className="position-relative ">
             <button
-              className="navbar-toggler ms-auto text-black"
+              className="navbar-toggler text-black  border "
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#navbarTabs"
@@ -182,20 +161,19 @@ const confirmLogout = (isConfirmed) => {
               aria-expanded="false"
               aria-label="Toggle navigation"
             >
-              <span className="navbar-toggler-icon"></span>
+              <FaBars />
             </button>
             {notificationCount > 0 && (
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                style={{ fontSize: "0.75rem" }}
-              >
-                {notificationCount}
-              </span>
-            )}
+  <span
+    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-lg-none"
+    style={{ fontSize: "0.75rem" }}
+  >
+    {notificationCount}
+  </span>
+)}
+
           </div>
-          <button className="btn btn-danger ms-auto" onClick={handleLogout}>
-    Log Out
-  </button>
+     
         </div>
 
         {/* Navbar Content */}

@@ -1,7 +1,7 @@
 
 
 import React from "react";
-import './SnowyTree.scss';
+//import './SnowyTree.scss';
 
 const SnowyTree = () => {
   return (

@@ -1,17 +1,22 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { FaUsers, FaCalendarCheck, FaChevronDown } from "react-icons/fa";
+//import { FaUsers, FaCalendarCheck, FaChevronDown } from "react-icons/fa";
 import Summary from "./Summary";
-import ContributionProgress from "./ContributionProgress";
+//import ContributionProgress from "./ContributionProgress";
 import NavbarTabs from "./NavbarTabs";
 import { getUserNotifications, getUserDonations } from "@/actions/users";
-import { getLoggedInUserId } from "@/hooks/useUser";
+import { getLoggedInUserId, removeCookie } from "@/hooks/useUser";
 import Donations from './Donations';
+import { useRouter } from "next/navigation";
+
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 // Check if the user has any "kiongozi" roles
 const hasKiongoziRole = (roles) => roles.some((role) => role.startsWith("kiongozi"));
+
 
 // Pinned Announcements Component
 const PinnedAnnouncements = ({ notifications }) => {
@@ -51,6 +56,7 @@ const PinnedAnnouncements = ({ notifications }) => {
 
 
 const Dashboard = ({ user, summary }) => {
+  const router = useRouter();
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const isKiongozi = hasKiongoziRole(user?.selectedRoles || []);
@@ -84,10 +90,47 @@ const Dashboard = ({ user, summary }) => {
     loadNotifications();
   }, []);
 
+  
+const confirmLogout = (isConfirmed) => {
+  if (isConfirmed) {
+    removeCookie(); // Logout logic
+    router.push("/"); // Redirect to home
+  } else {
+    toast.dismiss(); // Dismiss the toast
+  }
+};
+
+   // Handle logout confirmation
+ const handleLogout = () => {
+  toast.info(
+    <div>
+      <p>Unataka ku-log-out?</p>
+      <div>
+        <button
+          className="btn btn-danger btn-sm me-2"
+          onClick={() => confirmLogout(true)}
+        >
+          Ndio
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={() => confirmLogout(false)}
+        >
+          Hapana
+        </button>
+      </div>
+    </div>,
+    { autoClose: false }
+  );
+};
+
   return (
     <div className="container">
       {/* Pinned Announcements */}
-      <div className="d-flex justify-content-end mb-4">
+      <div className="d-flex justify-content-center gap-4 pt-4 mb-4">
+      <button className="btn btn-primary ms-auto" onClick={handleLogout}>
+    Log Out
+  </button>
        
         <PinnedAnnouncements notifications={notifications} />
       </div>
@@ -102,23 +145,24 @@ const Dashboard = ({ user, summary }) => {
 
      
 
-      {/* Summary Section */}
+      {/* Summary Section
       <div className="row mb-4">
         <div className="col-md-12">
           <Summary summary={summary} />
         </div>
       </div>
+       */}
 
       {/* Contributions Table */}
       <div className="my-4">
         <div className="card shadow-sm">
-          <div className="card-header bg-primary text-white">
-            <h5 className="mb-0 text-white">Sadaka Nyingine za Ahadi</h5>
+          <div className="card-header text-white" style={{backgroundColor:"#6f42c1"}}>
+            <h5 className="mb-0 text-white">Sadaka za Kanisa</h5>
           </div>
           <div className="card-body">
             <div className="table-responsive">
               <table className="table table-striped table-hover">
-                <thead className="table-primary">
+                <thead className="">
                   <tr>
                     <th className="fw-bold">Aina</th>
                     <th className="fw-bold text-end">Kilicholipwa</th>

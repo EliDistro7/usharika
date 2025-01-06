@@ -75,6 +75,7 @@ export default function Home() {
     try {
       setError('');
       setSuccessMessage('');
+      console.log('attendance data:', attendanceData)
 
       if (!attendanceData.sessionName || !attendanceData.date || attendanceData.attendees.length === 0) {
         setError('Please provide a session name, date, and select attendees.');
@@ -86,6 +87,8 @@ export default function Home() {
         session_name: attendanceData.sessionName,
         date: attendanceData.date,
         attendees: attendanceData.attendees,
+        sessionStartTime: attendanceData.sessionStartTime,
+        ratingEnabled: attendanceData.ratingEnabled,
       };
 
       await createAttendance(payload);

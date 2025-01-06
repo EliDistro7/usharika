@@ -1,6 +1,6 @@
 const Profile = ({ user }) => {
     return (
-      <div className="text-center mb-4">
+      <div className="text-left mb-4 w-100">
         <img
           src={user?.profilePicture || "https://via.placeholder.com/100"}
           alt="Profile"

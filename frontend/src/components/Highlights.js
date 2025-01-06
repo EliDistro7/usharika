@@ -61,12 +61,12 @@ const Highlights = ({ data }) => {
       onMouseMove={resetInactivityTimer}
       onTouchStart={resetInactivityTimer}
     >
-      <h1 className="fs-4 mb-3 text-dark">{data.name}</h1>
+      <h1 className="fs-4 mb-3 text-dark fw-bold">{data.name}</h1>
 
       {/* Dropdown for Chapters */}
       <div className="mb-4">
         <button
-          className="btn btn-dark w-100 text-start d-flex justify-content-between align-items-center"
+          className="btn btn-dark w-100 text-start  d-flex justify-content-between align-items-center"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           {data.content[activeTab].groupName}
@@ -113,7 +113,7 @@ const Highlights = ({ data }) => {
             )}
 
             {/* Overlay and Controls */}
-            <div className="position-absolute bottom-0 start-0 w-100 p-4 text-white bg-gradient-custom">
+            <div className="position-absolute bottom-0 start-0 w-100 p-4 text-white ">
               <p className={`text-white mb-2 ${expanded === index ? "" : "text-truncate"}`}>
                 {item.description}
               </p>
@@ -163,7 +163,7 @@ const Highlights = ({ data }) => {
 
       <style jsx>{`
         .bg-gradient-custom {
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
         }
         button:hover {
           opacity: 0.9;

@@ -1,0 +1,71 @@
+
+:root {
+    --bs-primary: #6f42c1; /* Purple - Main Theme Color */
+    --bs-secondary: #8e5bdb; /* Lighter Purple */
+    --bs-success: #28a745; /* Optional Green for Success Messages */
+    --bs-info: #5a9ecf; /* Optional Blue for Info */
+    --bs-warning: #ffc107; /* Optional Yellow for Warnings */
+    --bs-danger: #dc3545; /* Optional Red for Alerts */
+    --bs-light: #f8f9fa; /* Light Background */
+    --bs-dark: #343a40; /* Dark Text */
+    
+    /* Adjusted Background and Border Subtle Colors */
+    --bs-primary-bg-subtle: #f3e8fc; /* Light Purple Background */
+    --bs-secondary-bg-subtle: #eae2f9; /* Even Lighter Purple */
+    --bs-primary-border-subtle: #d0bdf4; /* Purple Border */
+    --bs-secondary-border-subtle: #cbc5e3;
+  
+    /* Typography */
+    --bs-body-color: #4a3b6e; /* Purple-tinted Text */
+    --bs-heading-color: #5e4694; /* Headings in a darker purple */
+  
+    /* Buttons */
+    --bs-btn-primary-bg: #6f42c1; /* Button Background */
+    --bs-btn-primary-border: #643db3; /* Button Border */
+    --bs-btn-primary-hover-bg: #5e369d; /* Hover Background */
+
+    --bs-border-color-translucent: rgba(111, 66, 193, 0.175); /* Purple-translucent border */
+--bs-border-radius: 0.375rem;
+--bs-border-radius-sm: 0.25rem;
+--bs-border-radius-lg: 0.5rem;
+--bs-border-radius-xl: 1rem;
+--bs-border-radius-xxl: 2rem;
+--bs-border-radius-2xl: var(--bs-border-radius-xxl);
+--bs-border-radius-pill: 50rem;
+--bs-box-shadow: 0 0.5rem 1rem rgba(111, 66, 193, 0.15); /* Soft purple shadow */
+--bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(111, 66, 193, 0.075); /* Smaller purple shadow */
+--bs-box-shadow-lg: 0 1rem 3rem rgba(111, 66, 193, 0.175); /* Larger purple shadow */
+--bs-box-shadow-inset: inset 0 1px 2px rgba(111, 66, 193, 0.075); /* Inset purple shadow */
+--bs-focus-ring-width: 0.25rem;
+--bs-focus-ring-opacity: 0.25;
+--bs-focus-ring-color: rgba(111, 66, 193, 0.25); /* Purple focus ring */
+--bs-form-valid-color: #198754;
+--bs-form-valid-border-color: #198754;
+--bs-form-invalid-color: #dc3545;
+--bs-form-invalid-border-color: #dc3545;
+
+[data-bs-theme=dark] {
+  color-scheme: dark;
+  --bs-body-color: #dee2e6;
+  --bs-body-color-rgb: 222, 226, 230;
+  --bs-body-bg: #212529;
+  --bs-body-bg-rgb: 33, 37, 41;
+  --bs-emphasis-color: #fff;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-secondary-color: rgba(222, 226, 230, 0.75);
+  --bs-secondary-color-rgb: 222, 226, 230;
+  --bs-secondary-bg: #343a40;
+  --bs-secondary-bg-rgb: 52, 58, 64;
+  --bs-tertiary-color: rgba(222, 226, 230, 0.5);
+  --bs-tertiary-color-rgb: 222, 226, 230;
+  --bs-tertiary-bg: #2b3035;
+  --bs-tertiary-bg-rgb: 43, 48, 53;
+  --bs-primary-text-emphasis: #b085f5; /* Light purple text */
+  --bs-secondary-text-emphasis: #d1a7f2; /* Soft purple-gray text */
+  --bs-success-text-emphasis: #75b798;
+  --bs-info-text-emphasis: #6edff6;
+  --bs-warning-text-emphasis: #ffda6a;
+}
+
+  }
+  

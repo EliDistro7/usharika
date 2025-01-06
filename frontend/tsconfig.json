@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/BootstrapProvider.js", "src/components/HeroCarousel.tsx", "src/components/about/About.js", "src/components/FadeCarousel.js", "src/components/Pledge.jsx", "src/components/Team.jsx", "src/components/usajili/Msharika.js", "src/app/akaunti/[id]/page.jsx", "src/app/admin/page.jsx", "src/app/admins/attendance/[id]/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/BootstrapProvider.js", "src/components/HeroCarousel.tsx", "src/components/about/About.js", "src/components/FadeCarousel.js", "src/components/Pledge.jsx", "src/components/Team.jsx", "src/components/usajili/Msharika.js", "src/app/akaunti/[id]/page.jsx", "src/app/admin/page.jsx", "src/app/admins/attendance/[id]/page.jsx", "src/app/highlight/[id]/page.jsx"],
   "exclude": ["node_modules"]
 }

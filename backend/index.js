@@ -15,9 +15,10 @@ const notificationRoutes = require("./routes/notification-routes.js");
 const uploadRoutes = require("./routes/upload-routes.js");
 const adminRoutes = require("./routes/admin-routes.js");
 const attendanceRoutes = require("./routes/attendance-routes.js");
-const answerRoutes = require("./routes/answer-routes.js");
+
 const { initializeGlobalState } = require('./controllers/global-controller.js');
 const { getAllPosts, deletePost } = require("./controllers/post-controller.js");
+const highlightRoutes = require("./routes/highlight-routes.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -40,7 +41,7 @@ mongoose.connect(process.env.MONGO_URL, {
 })
 .then(() => {
     console.log("Connected to MongoDB")
-    initializeGlobalState() // Initialize global state when connected to MongoDB
+   // initializeGlobalState() // Initialize global state when connected to MongoDB
 })
 .catch((err) => {
     console.log("NOT CONNECTED TO NETWORK", err);
@@ -53,18 +54,13 @@ mongoose.connect(process.env.MONGO_URL, {
 //app.post('/delete-post', deletePost);
 
 // Routes
-//app.use('/', userRoutes);
+
 app.use('/', userRoutesYombo);
-//app.use('/', globalRoutes);
+
 app.use('/', adminRoutes);
 app.use('/', attendanceRoutes);
-//app.use('/', postRoutes);
-//app.use('/', notificationRoutes);
-//app.use('/', uploadRoutes);
-//app.use('/', messageRoutes);
-//app.use('/', chatlistRoutes);
-//app.use('/', questionRoutes);
-//app.use('/', answerRoutes);
+app.use('/', highlightRoutes);
+
 
 // Start the server
 server.listen(PORT, () => {

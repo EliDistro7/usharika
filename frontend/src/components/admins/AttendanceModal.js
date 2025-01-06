@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, ListGroup, Alert } from 'react-bootstrap';
 import { getAttendanceById } from '@/actions/attendance';
+import generateCertificate from "@/utils/generateCertificate";
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable'; // Required for table creation
 
@@ -51,9 +52,13 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
     doc.text(`Kikundi: ${formattedGroup}`, 14, 30); // Group Name
     doc.text(`Tarehe ya ${attendance.session_name}: ${new Date(attendance.date).toLocaleDateString()}`, 14, 40);
 
-    // Add Attendees Table
-    const headers = ['#', 'Jina la Mshiriki'];
-    const body = attendance.attendees.map((attendee, index) => [index + 1, attendee.name]);
+    // Add Attendees Table with Ratings
+    const headers = ['#', 'Jina la Mshiriki', 'Rating'];
+    const body = attendance.attendees.map((attendee, index) => [
+      index + 1,
+      attendee.name,
+      attendee.cumulativeRating || 'N/A', // Show cumulative rating or 'N/A' if not available
+    ]);
 
     doc.autoTable({
       head: [headers],
@@ -109,7 +114,9 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
                 <strong>Waliohudhuria:</strong>
                 <ListGroup>
                   {attendance.attendees.map((attendee) => (
-                    <ListGroup.Item key={attendee._id}>{attendee.name}</ListGroup.Item>
+                    <ListGroup.Item key={attendee.userId}>
+                      <strong>{attendee.name}</strong> - Rating: {attendee.cumulativeRating || 'N/A'}
+                    </ListGroup.Item>
                   ))}
                 </ListGroup>
               </ListGroup.Item>
@@ -121,7 +128,20 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
         <Button variant="primary" onClick={handleDownloadPDF}>
           Download PDF
         </Button>
-       
+        <Button variant="primary" onClick={()=>{
+         generateCertificate({
+          recipientName: "John Doe",
+          points: 250,
+          groupName: "Kwaya ya Vijana",
+          reason: "your dedication in community service",
+          issuer: "KKKT Usharika Wa Yombo",
+          date: "31 December 2024",
+          imageUrl: "/img/mchungaji.jpg", // URL of recipient's image
+        });
+        
+        }}>
+          Certificate
+        </Button>
       </Modal.Footer>
     </Modal>
   );

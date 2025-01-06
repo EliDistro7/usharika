@@ -12,7 +12,7 @@ const {
     getMessagesByUserId } = require('../controllers/message-controller.js'); // Import message controller functions
 
 // Route to send a message
-router.post('/MessageSend', sendMessage);
+router.post('/MessageSend', sendMessage)
 
 router.put('/user/messages/markAllAsRead', markAllMessagesAsRead);
 

@@ -27,9 +27,9 @@ const Calendar = () => {
       <section className="owl py-5 ">
        
         <CountdownDisplay
-        targetDate="2024-12-25T00:00:00Z"
-        eventName="Christmas"
-        backgroundImage="https://images.pexels.com/photos/1303098/pexels-photo-1303098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        targetDate="2025-01-30T00:00:00Z"
+        eventName="Ibada ya Mkesha"
+        backgroundImage="/img/worship1.jpg"
       />
      
         

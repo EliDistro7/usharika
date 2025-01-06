@@ -141,7 +141,7 @@ const Form = () => {
 
         <p className="mt-3 text-center">
           Hauna akaunti?{' '}
-          <Link href="/register" className="text-decoration-none text-primary">
+          <Link href="/usajili" className="text-decoration-none text-primary">
             Unda akaunti
           </Link>
         </p>

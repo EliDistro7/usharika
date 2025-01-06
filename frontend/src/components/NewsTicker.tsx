@@ -52,7 +52,7 @@ export const NewsTicker = ({
 
   const setSpeed = () => {
     const duration =
-      speed === "fast" ? "15s" : speed === "normal" ? "30s" : "50s";
+      speed === "fast" ? "30s" : speed === "normal" ? "60s" : "80s";
     containerRef.current?.style.setProperty("--animation-duration", duration);
   };
 

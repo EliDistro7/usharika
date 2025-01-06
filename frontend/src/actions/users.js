@@ -173,3 +173,21 @@ export const addDonationAmount = async ({ userId, donationId, amount }) => {
     );
   }
 };
+
+
+// Fetch top-ranking users by group and time interval
+export const getTopRankingUsers = async ({ group, interval }) => {
+  try {
+    const response = await axios.post(`${api}/attendance/top-ranking-users`, {
+      group,
+      interval,
+    });
+    return response.data.topRankingUsers; // Array of top-ranking users with details
+  } catch (error) {
+    console.error('Error fetching top-ranking users:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message ||
+        'Failed to fetch top-ranking users. Please try again later.'
+    );
+  }
+};

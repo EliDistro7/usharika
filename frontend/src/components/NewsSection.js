@@ -1,10 +1,10 @@
 
 import MainSlider from './MainSlider';
 
-import BreakingNews from './BreakingNews';
+
 import {updates} from '@/data/main'
 import { NewsTicker } from './NewsTicker';
-import SnowyTree from './xmass/SnowyTree';
+
 
 
 
@@ -13,52 +13,29 @@ import SnowyTree from './xmass/SnowyTree';
 const churchNews = [
   {
     id: 1,
-    title: "Ibada Kuu Ya Mwaka Kuadhimishwa Wiki Ijayo",
-    image: "img/worship1.jpg",
-    category: "Ibada",
-    date: "Novemba 24, 2024",
-    subtitle: "A special celebration of the year's worship services.",
+    title: "MASHINDANO YA UIMBAJI KWA VIJANA FEBRUARI 2025",
+    image: "img/vijana2024.jpeg",
+    category: "Vijana",
+    date: "Feb 15, 2025",
+    subtitle: "Tunawakaribisha vijana wote kujiunga na kwaya yetu ya Umoja wa Viajana kwa ajili ya mashindano.",
     buttons: [
-      { label: "Read More", link: "#", className: "btn-primary" },
-      { label: "Join Event", link: "#", className: "btn-outline-primary" },
+      { label: "Fahamu zaidi", link: "#", className: "btn-primary" },
+      { label: "Jiunge", link: "#", className: "btn-primary" },
     ],
   },
   {
     id: 2,
-    title: "Ibada ya Mwaka Mpya 2025",
+    title: "JISAJILI KWA NAMBA YA USHARIKA 2025",
     image: "img/usharika.jpg",
-    category: "Watoto",
-    date: "Novemba 25, 2024",
-    subtitle: "A special mass for children will take place this Sunday.",
+    category: "USAJILI",
+    date: "Kuanzia Jan, 2025",
+    subtitle: "Unaweza kujisajili kwa kupata fomu kutoka kwenye jumuiya au hapa kwa njia ya mtandao",
     buttons: [
-      { label: "Details", link: "#", className: "btn-primary" },
-      { label: "Join Now", link: "#", className: "btn-outline-primary" },
+      { label: "Maelezo", link: "#", className: "btn-primary" },
+      { label: "Jiunge", link: "#", className: "btn-primary" },
     ],
   },
-  {
-    id: 3,
-    title: "Semina Ya Vijana: Kukua Katika Imani",
-    image: "img/praying-together.jpg",
-    category: "Vijana",
-    date: "Novemba 26, 2024",
-    subtitle: "Youth seminar focused on growing in faith and spirituality.",
-    buttons: [
-      { label: "Learn More", link: "#", className: "btn-primary" },
-      { label: "Register", link: "#", className: "btn-outline-primary" },
-    ],
-  },
-  {
-    id: 4,
-    title: "Kwaya Itazindua Albamu Mpya Jumamosi",
-    image: "img/mabenchi1.jpg",
-    category: "Muziki",
-    date: "Novemba 27, 2024",
-    subtitle: "The choir will launch a new album this Saturday.",
-    buttons: [
-      { label: "View Album", link: "#", className: "btn-primary " },
-      { label: "Listen Now", link: "#", className: "btn-outline-primary " },
-    ],
-  },
+ 
 ];
 
   
