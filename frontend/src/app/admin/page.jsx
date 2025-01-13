@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import PaymentModal from '@/components/admin/PaymentModal';
-import {formatRoleName} from "@/actions/utils"
+import PaymentModal from '../../components/admin/PaymentModal';
+import {formatRoleName} from "../../actions/utils"
 import { Dropdown } from 'react-bootstrap';
 
-import UserTableRows from '@/components/admin/UserTableRows';
-import Notification from '@/components/admin/Notification';  // Import Notification component
+import UserTableRows from '../../components/admin/UserTableRows';
+import Notification from '../../components/admin/Notification';  // Import Notification component
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
