@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { initializeCalendar } from '@/hooks/initializeCalendar';
 import EventModal from '@/components/EventModal'; // Optional: if you plan to add event modals
-import SnowyTree from '../xmass/SnowyTree';
-import {CountdownDisplay} from '../xmass/Countdown';
+//import SnowyTree from '../xmass/SnowyTree';
+import {CountdownDisplay} from '@/components/xmass/Countdown';
 
 
 
