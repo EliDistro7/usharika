@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { BsArrowUp } from 'react-icons/bs';
-import MapEmbed from '@/components/Map';
+import MapEmbed from '../../components/Map';
 import { AttentionSeeker } from 'react-awesome-reveal';
 
 const ContactPage: React.FC = () => {

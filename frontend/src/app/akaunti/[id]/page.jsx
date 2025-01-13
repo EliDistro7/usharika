@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation";
-import Dashboard from "@/components/dashboard/Dashboard";
-import { getDesanitezedCookie } from "@/hooks/useUser";
+import Dashboard from "../../../components/dashboard/Dashboard";
+import { getDesanitezedCookie } from "../../../hooks/useUser";
 
 const server = process.env.NEXT_PUBLIC_SERVER;
 
