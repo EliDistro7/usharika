@@ -76,7 +76,7 @@ export default function RootLayout({
 
         {/* JavaScript Libraries */}
         <Script
-          id="jquery-script"
+          id="jquery-scrip"
           src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"
           strategy="lazyOnload"
         />
