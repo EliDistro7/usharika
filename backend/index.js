@@ -7,17 +7,17 @@ const { initSocket } = require("./socket/base"); // Import the Socket.IO initial
 
 dotenv.config();
 
-const userRoutes = require("./routes/user-routes.js");
+//const userRoutes = require("./routes/user-routes.js");
 const userRoutesYombo = require("./routes/user-routes-yombo.js");
-const postRoutes = require("./routes/post-routes.js");
-const globalRoutes = require("./routes/global-routes.js");
-const notificationRoutes = require("./routes/notification-routes.js");
-const uploadRoutes = require("./routes/upload-routes.js");
+//const postRoutes = require("./routes/post-routes.js");
+//const globalRoutes = require("./routes/global-routes.js");
+const updateRoutes = require("./routes/update-routes.js");
+const futureEventRoutes = require("./routes/futureEvents-routes.js");
 const adminRoutes = require("./routes/admin-routes.js");
 const attendanceRoutes = require("./routes/attendance-routes.js");
 
-const { initializeGlobalState } = require('./controllers/global-controller.js');
-const { getAllPosts, deletePost } = require("./controllers/post-controller.js");
+//const { initializeGlobalState } = require('./controllers/global-controller.js');
+//const { getAllPosts, deletePost } = require("./controllers/post-controller.js");
 const highlightRoutes = require("./routes/highlight-routes.js");
 
 const PORT = process.env.PORT || 5000;
@@ -50,8 +50,7 @@ mongoose.connect(process.env.MONGO_URL, {
 // Initialize Socket.IO with the HTTP server
 //const io = initSocket(server); // Initialize socket instance
 
-//app.post('/get-posts', getAllPosts);
-//app.post('/delete-post', deletePost);
+
 
 // Routes
 
@@ -60,6 +59,8 @@ app.use('/', userRoutesYombo);
 app.use('/', adminRoutes);
 app.use('/', attendanceRoutes);
 app.use('/', highlightRoutes);
+app.use('/', futureEventRoutes);
+app.use('/', updateRoutes);
 
 
 // Start the server

@@ -13,6 +13,11 @@ const ContentItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  author: {
+    type: String, // Author of the specific content item
+    required: true, // Ensure every content item has an author
+    default: '',
+  },
 });
 
 const TabSchema = new mongoose.Schema({
@@ -40,6 +45,11 @@ const HighlightSchema = new mongoose.Schema({
     type: [TabSchema],
     required: true,
     default: [],
+  },
+  author: {
+    type: String, // Author who initialized the highlight
+    required: true, // Ensure every highlight has an author
+    default: '',
   },
   createdAt: {
     type: Date,

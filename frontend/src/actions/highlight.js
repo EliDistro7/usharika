@@ -4,13 +4,15 @@ import axios from "axios";
 const api = process.env.NEXT_PUBLIC_SERVER;
 
 // Create a new Highlight
-export const createHighlight = async ({ name, content }) => {
+export const createHighlight = async ({ name, content, author }) => {
   try {
+    console.log("Creating a highlight", { name, content, author });
     const response = await axios.post(`${api}/highlights/createHighlight`, {
       name,
       content,
+      author, // Include the author in the payload
     });
-    return response.data; // Contains success message or created highlight data;
+    return response.data; // Contains success message or created highlight data
   } catch (error) {
     console.error("Error creating highlight:", error.response?.data || error.message);
     throw new Error(
@@ -18,6 +20,7 @@ export const createHighlight = async ({ name, content }) => {
     );
   }
 };
+
 
 // Fetch recent Highlights
 export const getRecentHighlights = async () => {

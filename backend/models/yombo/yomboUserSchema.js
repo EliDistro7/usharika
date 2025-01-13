@@ -30,13 +30,13 @@ const YomboUserSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => String(v).length >= 9 && String(v).length <= 15,
-        message: "Phone number must be between 9 and 15 digits.",
+        message: "Namba ya Simu inatakiwa iwe na idadi ya tarakimu kati ya 9 na 15.",
       },
     },
     email: {
       type: String,
       required: false,
-      match: [/.+@.+\..+/, "Please enter a valid email address."],
+      match: [/.+@.+\..+/, "Tafadhali ingiza Email sahihi."],
     },
     gender: {
       type: String,
@@ -75,25 +75,46 @@ const YomboUserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: [
-        "admin",
+      enum:   [
         "msharika",
         "kiongozi_jumuiya",
-        "mzee_kanisa",
-        "umoja_vijana",
-        "kiongozi_vijana",
-        "kwaya_vijana",
+        
+        "umoja_wa_vijana",
+        "kiongozi_umoja_wa_vijana",
+      
+        "kwaya_ya_umoja_wa_vijana",
+        "kiongozi_kwaya_ya_umoja_wa_vijana",
+      
+        "kwaya_kuu",
+        "kiongozi_kwaya_kuu",
+      
+        "kwaya_ya_wamama",
+        "kiongozi_kwaya_ya_wamama",
+      
+        "kwaya_ya_vijana",
+        "kiongozi_kwaya_ya_vijana",
+      
         "praise_team",
         "kiongozi_praise_team",
-        "kiongozi_kwaya_vijana",
-        "kwaya_uinjilisti",
-        "kiongozi_kwaya_uinjilsti",
-        "umoja_wanaume",
-        "kiongozi_umoja_wanaume",
-        "umoja_wanawake",
-        "kiongozi_umoja_wanawake",
+      
+        "kwaya_ya_uinjilisti",
+        "kiongozi_kwaya_ya_uinjilsti",
+      
+        "wababa_kati",
+        "kiongozi_wababa_kati",
+        
+        "umoja_wa_wanaume",
+        "kiongozi_umoja_wa_wanaume",
+      
+        "baraza_la_wazee",
+        "kiongozi_baraza_la_wazee",
+       
+        "umoja_wa_wanawake",
+        "kiongozi_umoja_wa_wanawake",
+      
         "wamama",
         "kiongozi_wamama",
+      
         "wababa",
         "kiongozi_wababa",
       ],

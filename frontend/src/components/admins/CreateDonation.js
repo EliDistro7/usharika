@@ -55,14 +55,14 @@ const CreateDonation = () => {
     <Container className="mt-5">
       <ToastContainer position="top-right" autoClose={3000} /> {/* Toast Container */}
       <Card className="shadow-sm">
-        <Card.Header className="bg-success text-white">
-          <Card.Title as="h4" className="mb-0 text-white">Unda Mchango</Card.Title>
+        <Card.Header className="text-black">
+          <Card.Title as="h4" className="mb-0">Unda Mchango</Card.Title>
         </Card.Header>
         <Card.Body>
           <Form onSubmit={handleSubmit}>
             {/* Name Input */}
             <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Donation Name</Form.Label>
+              <Form.Label>Jina la Mchango</Form.Label>
               <Form.Control
                 type="text"
                 name="name"

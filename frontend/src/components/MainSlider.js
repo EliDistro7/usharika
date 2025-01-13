@@ -1,15 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FadeCarousel from "./FadeCarousel"; // Using the FadeCarousel component for the main slider
 import { Zoom } from "react-awesome-reveal"; // Importing the Zoom animation from react-awesome-reveal
+import { getAllFutureEvents } from "@/actions/future-event"; // Importing the API action
 
-const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
+const MainSlider = () => {
+  const [mainSlides, setMainSlides] = useState([]);
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [error, setError] = useState(null); // Track errors
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllFutureEvents(); // Fetch future events
+        setMainSlides(data.data || []); // Set the fetched slides
+      } catch (err) {
+        setError("Failed to fetch slides. Please try again.");
+        console.error(err);
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <div className="container-fluid bg-gradient-custom ">
+    <div className="container-fluid bg-gradient-custom">
       <div className="row">
         {/* Main Carousel */}
-        <div className=" px-0">
+        <div className="px-0">
           <FadeCarousel>
             {mainSlides.map((slide, index) => (
               <div
@@ -26,8 +55,10 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
                 />
 
                 {/* Text Content */}
-                <div className="overlay text-white"
-                 style={{backgroundColor:"rgba(0,0,0,.23" }}>
+                <div
+                  className="overlay text-white"
+                  style={{ backgroundColor: "rgba(0,0,0,.23" }}
+                >
                   <Zoom duration={1000} delay={200}>
                     {/* Category */}
                     <div className="badge-container">
@@ -35,7 +66,7 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
                         className="badge text-uppercase text-white font-weight-bold px-3 py-2"
                         href={slide.categoryLink}
                         style={{
-                          backgroundColor: '#6f42c1'
+                          backgroundColor: "#6f42c1",
                         }}
                       >
                         {slide.category}
@@ -43,11 +74,9 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
                     </div>
 
                     {/* Title */}
-                    <div className="title-container mt-auto" 
-                    >
+                    <div className="title-container mt-auto">
                       <a
-                        className="h1 text-white text-uppercase font-weight-bold fw-bold "
-                       
+                        className="h1 text-white text-uppercase font-weight-bold fw-bold"
                         href={slide.link}
                       >
                         {slide.title}
@@ -85,18 +114,14 @@ const MainSlider = ({ mainSlides = [], secondarySlides = [] }) => {
             ))}
           </FadeCarousel>
           <style jsx>{`
-        .bg-gradient-custom {
-          background: rgba(0, 0, 0, 0.6);
-        },
-        button:hover {
-          opacity: 0.9;
-        }
-      `}</style>
+            .bg-gradient-custom {
+              background: rgba(0, 0, 0, 0.6);
+            }
+            button:hover {
+              opacity: 0.9;
+            }
+          `}</style>
         </div>
-
-    {/* Secondary News */}
-    
-
       </div>
     </div>
   );

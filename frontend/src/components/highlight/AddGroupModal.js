@@ -6,15 +6,15 @@ import { Modal, Button, Form } from "react-bootstrap";
 const AddGroupModal = ({ show, onClose, onAddGroup, newGroupName, setNewGroupName }) => (
   <Modal show={show} onHide={onClose}>
     <Modal.Header closeButton>
-      <Modal.Title>Add Group</Modal.Title>
+      <Modal.Title>Ongeza chapter kwenye Albamu</Modal.Title>
     </Modal.Header>
     <Modal.Body>
       <Form>
         <Form.Group>
-          <Form.Label>Group Name</Form.Label>
+          <Form.Label>Jina la Chapter</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter group name"
+            placeholder="Ingiza jina na Chapter"
             value={newGroupName}
             onChange={(e) => setNewGroupName(e.target.value)}
           />
@@ -23,10 +23,10 @@ const AddGroupModal = ({ show, onClose, onAddGroup, newGroupName, setNewGroupNam
     </Modal.Body>
     <Modal.Footer>
       <Button variant="secondary" onClick={onClose}>
-        Close
+        Funga
       </Button>
       <Button variant="primary" onClick={onAddGroup}>
-        Add Group
+        Wasilisha
       </Button>
     </Modal.Footer>
   </Modal>

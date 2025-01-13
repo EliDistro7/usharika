@@ -128,85 +128,89 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
     .filter(donation => donation.name === activeTab)
     .reduce((acc, donation) => acc + donation.total, 0);
 
-  return (
-    <div className="container mt-4">
-      {loading && <div className="alert alert-info">Loading...</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
-      {!loading && !error && donationsData.length > 0 && (
-        <div>
-          {/* Dropdown for Donation Names */}
-          <Dropdown className="mb-3">
-            <Dropdown.Toggle variant="primary" id="dropdown-basic">
-              {activeTab || 'Select Donation'}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {donationNames.map((donationName, idx) => (
-                <Dropdown.Item
-                  key={idx}
-                  onClick={() => setActiveTab(donationName)}
-                  active={activeTab === donationName}
-                >
-                  {donationName}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-
-          {/* Active Donation Content */}
-          {activeTab && (
-            <div>
-              {donationsData
-                .flatMap(user => user.donations)
-                .filter(donation => donation.name === activeTab).length === 0 ? (
-                  <div>Hakuna Michango kwenye hichi kikundi</div>
-                ) : (
-                  <div>
-                    <table className="table table-bordered table-striped mt-3">
-                      <thead>
-                        <tr>
-                          <th scope="col" className="fw-bold">Jina</th>
-                          <th scope="col" className="fw-bold">Kilicholipwa</th>
-                          <th scope="col" className="fw-bold">Kinachotakiwa</th>
-                          <th scope="col" className="fw-bold">Balance</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {donationsData
-                          .flatMap(user => user.donations.map(donation => ({ username: user.username, ...donation }))) // Combine username with donation
-                          .filter(donation => donation.name === activeTab) // Filter by activeTab (name)
-                          .map((donation, idx) => (
-                            <tr key={donation._id || idx}>
-                              <td className="fw-bold">{donation.username}</td> {/* Display username from user object */}
-                              <td>{donation.amountPaid}</td>
-                              <td>{donation.total}</td>
-                              <td>{donation.total - donation.amountPaid}</td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="mt-3 d-flex flex-direction-column">
-                      <strong>Total Kilicholipwa: {totalDonation}</strong>
-                    </div>
+    return (
+      <div className="container mt-4">
+        {loading && <div className="alert alert-info">Loading...</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
+        {!loading && !error && donationsData.length === 0 && (
+          <div className="alert alert-warning">Hakuna Michango yoyote kwa sasa</div>
+        )}
+        {!loading && !error && donationsData.length > 0 && (
+          <div>
+            {/* Dropdown for Donation Names */}
+            <Dropdown className="mb-3">
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                {activeTab || 'Select Donation'}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {donationNames.map((donationName, idx) => (
+                  <Dropdown.Item
+                    key={idx}
+                    onClick={() => setActiveTab(donationName)}
+                    active={activeTab === donationName}
+                  >
+                    {donationName}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+    
+            {/* Active Donation Content */}
+            {activeTab && (
+              <div>
+                {donationsData
+                  .flatMap(user => user.donations)
+                  .filter(donation => donation.name === activeTab).length === 0 ? (
+                    <div>Hakuna Michango kwenye hichi kikundi</div>
+                  ) : (
                     <div>
-                      <strong>Total Inayotarajiwa: {totalKuu}</strong>
+                      <table className="table table-bordered table-striped mt-3">
+                        <thead>
+                          <tr>
+                            <th scope="col" className="fw-bold">Jina</th>
+                            <th scope="col" className="fw-bold">Kilicholipwa</th>
+                            <th scope="col" className="fw-bold">Kinachotakiwa</th>
+                            <th scope="col" className="fw-bold">Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {donationsData
+                            .flatMap(user => user.donations.map(donation => ({ username: user.username, ...donation }))) // Combine username with donation
+                            .filter(donation => donation.name === activeTab) // Filter by activeTab (name)
+                            .map((donation, idx) => (
+                              <tr key={donation._id || idx}>
+                                <td className="fw-bold">{donation.username}</td> {/* Display username from user object */}
+                                <td>{donation.amountPaid}</td>
+                                <td>{donation.total}</td>
+                                <td>{donation.total - donation.amountPaid}</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                      <div className="mt-3 d-flex flex-direction-column">
+                        <strong>Total Kilicholipwa: {totalDonation}</strong>
+                      </div>
+                      <div>
+                        <strong>Total Inayotarajiwa: {totalKuu}</strong>
+                      </div>
+                      <div>
+                        <strong>Total Balance ambayo Haijalipwa: {totalKuu - totalDonation}</strong>
+                      </div>
                     </div>
-                    <div>
-                      <strong>Total Balance ambayo Haijalipwa: {totalKuu - totalDonation}</strong>
-                    </div>
-                  </div>
-                )}
-              <Button variant="success" onClick={handleDownloadPDF} className="mt-3">
-                Download PDF
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Toast Container for Toastify Notifications */}
-      <ToastContainer />
-    </div>
-  );
+                  )}
+                <Button variant="success" onClick={handleDownloadPDF} className="mt-3">
+                  Download PDF
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+    
+        {/* Toast Container for Toastify Notifications */}
+        <ToastContainer />
+      </div>
+    );
+    
 };
 
 export default UserDonationsTableAll;

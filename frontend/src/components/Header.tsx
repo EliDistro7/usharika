@@ -65,7 +65,7 @@ export default function Header() {
             <a href="/" className="navbar-brand d-flex align-items-center">
               <h1 className="m-0 fw-bold">
                 <span className='' style={{color:"#6f42c1"}}>KKKT</span>{" "}
-                <span className='text-secondary'>YomboKuu</span>
+                <span className='text-secondary'>Yombo</span>
               </h1>
             </a>
             <button
@@ -105,21 +105,21 @@ export default function Header() {
                   </a>
                   <div
                     className="dropdown-menu m-0"
-                    style={{ backgroundColor: "#8e5bdb" }}
+                    
                   >
-                    <a href="/usajili" className="dropdown-item text-white">
+                    <a href="/usajili" className="dropdown-item ">
                       Kujisajili
                     </a>
                     <a
                       onClick={handleAkauntiNavigation}
-                      className="dropdown-item text-white"
+                      className="dropdown-item "
                       style={{ cursor: "pointer" }}
                     >
                       Akaunti
                     </a>
                     <a
                       onClick={handleAkauntiNavigation}
-                      className="dropdown-item text-white"
+                      className="dropdown-item "
                       style={{ cursor: "pointer" }}
                     >
                       Login

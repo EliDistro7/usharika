@@ -6,8 +6,10 @@ import UserDonationsTableAll from "@/components/admins/UserDonationsTableAll";
 import { getLoggedInUserId } from "@/hooks/useUser"; // Replace with your actual import path
 import Cookie from "js-cookie";
 
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Breadcrumb } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
+import { formatRoleName } from "@/actions/utils";
+import CustomNavbar from "@/components/admins/CustomNavbar";
 
 export default function AdminDonationsPage() {
   const [activeTab, setActiveTab] = useState("create"); // 'create', 'view', or 'all'
@@ -17,56 +19,31 @@ export default function AdminDonationsPage() {
   const group = Cookie.get("role") || "Unknown Group"; // Assumes the role is stored in a cookie
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-0 px-0">
       {/* Header */}
-      <Navbar style={{backgroundColor:"#6f42c1"}} variant="dark" expand="lg" className="mb-4">
-        <Container>
-          <Navbar.Brand href="#">Michango</Navbar.Brand>
-          {/* Toggle Button for Small Screens */}
-          <Navbar.Toggle aria-controls="basic-navbar-nav">
-            <FaBars style={{ color: "white", fontSize: "1.5rem" }} />
-          </Navbar.Toggle>
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link
-                href="#create"
-                onClick={() => setActiveTab("create")}
-                style={{
-                  color: activeTab === "create" ? "#fff" : "#d1d1d1",
-                  fontWeight: activeTab === "create" ? "bold" : "normal",
-                }}
-              >
-                Anzisha Mchango
-              </Nav.Link>
-              <Nav.Link
-                href="#view"
-                onClick={() => setActiveTab("view")}
-                style={{
-                  color: activeTab === "view" ? "#fff" : "#d1d1d1",
-                  fontWeight: activeTab === "view" ? "bold" : "normal",
-                }}
-              >
-                Angalia Michango
-              </Nav.Link>
-              <Nav.Link
-                href="#all"
-                onClick={() => setActiveTab("all")}
-                style={{
-                  color: activeTab === "all" ? "#fff" : "#d1d1d1",
-                  fontWeight: activeTab === "all" ? "bold" : "normal",
-                }}
-              >
-                Balances
-              </Nav.Link>
-            </Nav>
-            <Nav>
-              <Navbar.Text>
-                Kikundi: <strong className="text-white">{group.replace(/"_"/gi, " ")}</strong>
-              </Navbar.Text>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <CustomNavbar />
+
+      {/* Breadcrumb */}
+      <Breadcrumb className="mb-4">
+        <Breadcrumb.Item
+          active={activeTab === "create"}
+          onClick={() => setActiveTab("create")}
+        >
+          Anzisha Mchango
+        </Breadcrumb.Item>
+        <Breadcrumb.Item
+          active={activeTab === "view"}
+          onClick={() => setActiveTab("view")}
+        >
+          Angalia Michango
+        </Breadcrumb.Item>
+        <Breadcrumb.Item
+          active={activeTab === "all"}
+          onClick={() => setActiveTab("all")}
+        >
+          Balances
+        </Breadcrumb.Item>
+      </Breadcrumb>
 
       {/* Tab Content */}
       <div className="tab-content mt-4">

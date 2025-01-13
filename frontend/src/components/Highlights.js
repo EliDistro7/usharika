@@ -1,72 +1,42 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
+import CarouselItem from "./CarouselItem";
 import FadeCarousel from "@/components/FadeCarousel2";
 import {
   FaPlay,
   FaPause,
-  FaExpandAlt,
-  FaCompressAlt,
   FaVolumeMute,
   FaVolumeUp,
   FaChevronDown,
   FaChevronUp,
+  FaExpand,
 } from "react-icons/fa";
+import { Modal, Button } from "react-bootstrap";
 
 const Highlights = ({ data }) => {
   const [activeTab, setActiveTab] = useState(Object.keys(data.content)[0]);
   const [isPaused, setIsPaused] = useState(false);
-  const [expanded, setExpanded] = useState(null);
   const [isMuted, setIsMuted] = useState(true);
-  const [showProgress, setShowProgress] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const videoRef = useRef(null);
-  const inactivityTimerRef = useRef(null);
+  const videoRefs = useRef([]);
 
   const togglePause = () => setIsPaused(!isPaused);
-  const toggleExpand = (index) => setExpanded(expanded === index ? null : index);
   const toggleMute = () => setIsMuted(!isMuted);
 
-  const resetInactivityTimer = () => {
-    setShowProgress(true);
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current);
-    }
-    inactivityTimerRef.current = setTimeout(() => {
-      setShowProgress(false);
-    }, 3000);
-  };
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      const updateProgress = () => {
-        const progress = (video.currentTime / video.duration) * 100;
-        setProgress(progress);
-      };
-
-      video.addEventListener("timeupdate", updateProgress);
-
-      return () => {
-        video.removeEventListener("timeupdate", updateProgress);
-      };
-    }
-  }, []);
+  const handleModalClose = () => setShowModal(false);
+  const handleModalShow = () => setShowModal(true);
 
   return (
-    <div
-      className="position-relative mt-4 p-4 px-0 rounded shadow "
-      onMouseMove={resetInactivityTimer}
-      onTouchStart={resetInactivityTimer}
-    >
+    <div className="position-relative mt-4 p-4 px-0 rounded shadow">
       <h1 className="fs-4 mb-3 text-dark fw-bold">{data.name}</h1>
 
       {/* Dropdown for Chapters */}
       <div className="mb-4">
         <button
-          className="btn btn-dark w-100 text-start  d-flex justify-content-between align-items-center"
+          className="btn btn-dark w-100 text-start d-flex justify-content-between align-items-center"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           {data.content[activeTab].groupName}
@@ -94,49 +64,23 @@ const Highlights = ({ data }) => {
       </div>
 
       {/* Carousel Content */}
-      <FadeCarousel isPaused={isPaused}>
+      <FadeCarousel
+        isPaused={isPaused}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      >
         {data.content[activeTab].content.map((item, index) => (
-          <div key={index} className="position-relative overflow-hidden rounded">
-            {item.imageUrl ? (
-              <img className="w-100 h-100 object-cover" src={item.imageUrl} alt="Content" />
-            ) : item.videoUrl ? (
-              <video
-                ref={videoRef}
-                src={item.videoUrl}
-                autoPlay
-                loop
-                muted={isMuted}
-                className="w-100 h-100 object-cover"
-              />
-            ) : (
-              <div className="w-100 h-100 bg-dark" />
-            )}
-
-            {/* Overlay and Controls */}
-            <div className="position-absolute bottom-0 start-0 w-100 p-4 text-white ">
-              <p className={`text-white mb-2 ${expanded === index ? "" : "text-truncate"}`}>
-                {item.description}
-              </p>
-
-              <button
-                onClick={() => toggleExpand(index)}
-                className="btn btn-light btn-sm position-absolute top-0 end-0"
-              >
-                {expanded === index ? <FaCompressAlt /> : <FaExpandAlt />}
-              </button>
-            </div>
-
-            {/* Progress Bar */}
-            {showProgress && item.videoUrl && (
-              <div className="position-absolute bottom-0 start-0 w-100 bg-dark">
-                <div className="bg-primary" style={{ height: "5px", width: `${progress}%` }}></div>
-              </div>
-            )}
-          </div>
+          <CarouselItem
+            key={index}
+            item={item}
+            isMuted={isMuted}
+            videoRef={(el) => (videoRefs.current[index] = el)}
+            onPauseCarousel={() => setIsPaused(true)} // Pauses the carousel
+          />
         ))}
       </FadeCarousel>
 
-      {/* Play/Pause, Mute/Unmute, and Share Buttons */}
+      {/* Play/Pause, Mute/Unmute Buttons */}
       <div className="d-flex justify-content-between align-items-center mt-3">
         <div className="d-flex gap-3">
           <button
@@ -153,6 +97,13 @@ const Highlights = ({ data }) => {
           </button>
         </div>
         <button
+          onClick={handleModalShow}
+          className="btn btn-outline-dark rounded-circle shadow-sm"
+          title="Fullscreen"
+        >
+          <FaExpand />
+        </button>
+        <button
           onClick={() => alert("Share functionality coming soon!")}
           className="btn btn-outline-secondary rounded shadow-sm"
           style={{ fontSize: "0.85rem", fontWeight: "400" }}
@@ -161,14 +112,47 @@ const Highlights = ({ data }) => {
         </button>
       </div>
 
-      <style jsx>{`
-        .bg-gradient-custom {
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
-        }
-        button:hover {
-          opacity: 0.9;
-        }
-      `}</style>
+     {/* Fullscreen Modal */}
+<Modal
+  show={showModal}
+  onHide={handleModalClose}
+  size="lg"
+  centered
+  backdrop={false} // Disable the default backdrop
+  className="custom-modal text-white" // Add a custom class for further customization
+>
+  <Modal.Header closeButton style={{ color: "white", backgroundColor: "#6f42c1" }}>
+    <Modal.Title style={{ color: "white", marginBottom:0 }}>{data.name}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {/* Modal Content */}
+    <div className="p-3 text-white">
+      <FadeCarousel
+        isPaused={isPaused}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      >
+        {data.content[activeTab].content.map((item, index) => (
+          <CarouselItem
+            key={index}
+            item={item}
+            isMuted={isMuted}
+            videoRef={(el) => (videoRefs.current[index] = el)}
+            onPauseCarousel={() => setIsPaused(true)}
+          />
+        ))}
+      </FadeCarousel>
+    </div>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleModalClose}>
+      Funga
+    </Button>
+  </Modal.Footer>
+</Modal>
+
+
+
     </div>
   );
 };

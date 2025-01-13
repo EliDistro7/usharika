@@ -38,7 +38,7 @@ const SessionList = ({ groupedSessions, onView }) => {
     if (!Object.keys(sessions ?? {}).length) {
       return (
         <p className="text-muted text-center">
-          {isArchived ? 'Hakuna vipindi vilivyohifadhiwa.' : 'Hakuna vipindi visivyohifadhiwa.'}
+          {isArchived ? 'Hakuna vipindi vilivyohifadhiwa.' : 'Daftari ni tupu.'}
         </p>
       );
     }

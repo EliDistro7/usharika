@@ -1,31 +1,55 @@
 'use client';
 import React, { useState } from "react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+import { ProgressBar, Form, InputGroup, Button } from "react-bootstrap";
 import {addRegisterNotification} from '@/actions/admin'
 import {uploadToCloudinary} from "@/actions/uploadToCloudinary";
 import axios from "axios";
+import { formatRoleName } from "@/actions/utils";
 
 
-const userRoles = [
+const userRoles =  [
   "kiongozi_jumuiya",
-  "mzee_kanisa",
-  'praise_team',
-  'kiongozi_praise_team',
-  "umoja_vijana",
-  'kiongozi_umoja_vijana',
-  "kwaya_vijana",
-  "kiongozi_kwaya_vijana",
-  "kwaya_uinjilisti",
-  "kiongozi_kwaya_uinjilsti",
-  "umoja_wanaume",
-  "kiongozi_umoja_wanaume",
-  "umoja_wanawake",
-  "kiongozi_umoja_wanawake",
+  
+  "umoja_wa_vijana",
+  "kiongozi_umoja_wa_vijana",
+
+  "kwaya_ya_umoja_wa_vijana",
+  "kiongozi_kwaya_ya_umoja_wa_vijana",
+
+  "kwaya_kuu",
+  "kiongozi_kwaya_kuu",
+
+  "kwaya_ya_wamama",
+  "kiongozi_kwaya_ya_wamama",
+
+  "kwaya_ya_vijana",
+  "kiongozi_kwaya_ya_vijana",
+
+  "praise_team",
+  "kiongozi_praise_team",
+
+  "kwaya_ya_uinjilisti",
+  "kiongozi_kwaya_ya_uinjilsti",
+
+  "wababa_kati",
+  "kiongozi_wababa_kati",
+  
+  "umoja_wa_wanaume",
+  "kiongozi_umoja_wa_wanaume",
+
+  "baraza_la_wazee",
+  "kiongozi_baraza_la_wazee",
+ 
+  "umoja_wa_wanawake",
+  "kiongozi_umoja_wa_wanawake",
+
   "wamama",
   "kiongozi_wamama",
+
   "wababa",
   "kiongozi_wababa",
-];
+]
 
 
 const jumuiyas = ["Malawi", "Kanisani", "Golani"];
@@ -65,6 +89,8 @@ const Msharika= () => {
     ubatizo:false,
   });
   const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
      // Determine marital status options based on gender
   const maritalStatusOptions =
   formData.gender === "me"
@@ -186,15 +212,15 @@ const Msharika= () => {
   
   
     try {
-      console.log('formData', formData);
+      //console.log('formData', formData);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER}/registerYombo`,
         formData);
   
       console.log("Response:", response.data);
       const res=await addRegisterNotification(response.data.user.name, response.data.user._id);
-      console.log('addRegisterNotification', res);
-      setSuccessMessage("Maombi yametumwa, utapokea uthibitisho hivi punde!");
+      //console.log('addRegisterNotification', res);
+      setSuccessMessage("Maombi yametumwa, utapokea uthibitisho kwenye simu yako hivi punde!");
       setErrorMessage("");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -282,11 +308,13 @@ const Msharika= () => {
               </div>
             )}
                {uploadProgress > 0 && (
-    <p>
-      Ina-upload picha ya wasifu... {uploadProgress}% 
-      {uploadProgress === 100 && <span className="text-success ms-2">Umefanikiwa!</span>}
-    </p>
-  )}
+              <ProgressBar
+                animated
+                now={uploadProgress}
+                label={`${uploadProgress}%`}
+                className="mt-2"
+              />
+            )}
           </div>
 
           <div className="form-group">
@@ -490,37 +518,58 @@ const Msharika= () => {
 
         {/* Password Section */}
         <div className="mb-4">
-          <h3 className="text-secondary fw-bold">Nenosiri</h3>
-          <div className="form-group">
-            <label htmlFor="password" className="fw-bold">Password *</label>
-            <input
-              type="password"
-              id="password"
-              className="form-control"
-              placeholder="Ingiza password"
-              required
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-            <span className='text-danger text-xs'>Tunza password yako</span>
-          </div>
-          <div className="form-group">
-            <label htmlFor="confirmPassword" className="fw-bold">Thibitisha Password yako*</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="form-control"
-              required
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
+      <h3 className="text-secondary fw-bold">Nenosiri</h3>
+      <Form.Group className="mb-3">
+        <Form.Label htmlFor="password" className="fw-bold">
+          Password *
+        </Form.Label>
+        <InputGroup>
+          <Form.Control
+            type={showPassword ? "text" : "password"}
+            id="password"
+            placeholder="Ingiza password"
+            required
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </Button>
+        </InputGroup>
+        <Form.Text className="text-danger text-xs">
+          Tunza password yako
+        </Form.Text>
+      </Form.Group>
+
+      <Form.Group>
+        <Form.Label htmlFor="confirmPassword" className="fw-bold">
+          Thibitisha Password yako *
+        </Form.Label>
+        <InputGroup>
+          <Form.Control
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirmPassword"
+            required
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+          />
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? "Hide" : "Show"}
+          </Button>
+        </InputGroup>
+      </Form.Group>
+    </div>
 
         {/* User Roles */}
         <div className="mb-4">
           <h3 className="text-secondary fw-bold">Vikundi unavyoshiriki au una nafasi unazohudumu kanisani</h3>
-          <span className='text-danger text-xs'>hakikisha unaingiza vikundi vyote unavyoshiriki au una nafasi ya kiuongozi</span>
+          <span className='text-danger text-xs'>hakikisha unaingiza vikundi vyote unavyoshiriki au nafasi za kiuongozi</span>
           {userRoles.map((role) => (
             <div className="form-check" key={role}>
               <input
@@ -530,7 +579,7 @@ const Msharika= () => {
                 checked={formData.selectedRoles.includes(role)}
                 onChange={() => handleRoleChange(role)}
               />
-              <label className="form-check-label">{role}</label>
+              <label className="form-check-label">{formatRoleName(role)}</label>
             </div>
           ))}
         </div>

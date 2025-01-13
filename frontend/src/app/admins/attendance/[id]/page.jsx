@@ -8,7 +8,12 @@ import AttendanceModal from '@/components/admins/AttendanceModal'; // Import Att
 import { getUsersByRole } from '@/hooks/useUser';
 import { createAttendance, fetchSessionsByGroup } from '@/actions/attendance';
 import SessionList from '@/components/admins/SessionList';
-import { Accordion, Card, Button } from 'react-bootstrap';
+//import { Accordion, Card, Button } from 'react-bootstrap';
+import { getLoggedInUserId } from '@/hooks/useUser';
+import { Navbar, Nav, Container, Breadcrumb } from "react-bootstrap";
+import { formatRoleName } from '@/actions/utils';
+import { FaBars } from 'react-icons/fa';
+import CustomNavbar from '@/components/admins/CustomNavbar';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -23,6 +28,7 @@ export default function Home() {
   // State for Attendance Modal
   const [showModal, setShowModal] = useState(false);
   const [attendanceId, setAttendanceId] = useState(null);
+  const [activeTab2, setActiveTab2] = useState("home");
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -156,11 +162,10 @@ export default function Home() {
   }
 
   return (
-    <div className="container py-4">
-      {/* Header */}
-      <header className="rounded p-4 mb-4 shadow">
-        <h1 className="display-4 fw-bold">{Cookies.get('role')?.replace('_', ' ')}</h1>
-      </header>
+    <div className="container mt-0 px-0">
+      
+       {/* Navbar */}
+       <CustomNavbar />
 
       {/* Tabs Navigation */}
       <ul className="nav nav-tabs mb-4">

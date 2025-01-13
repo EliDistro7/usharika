@@ -14,7 +14,7 @@ export default function Home() {
       <MainNews />
 
       {/* Highlights Section */}
-      <HighlightsWrapper dataSets={dataSets} />
+      <HighlightsWrapper  />
 
       {/* Pledge Section */}
       <Pledge />

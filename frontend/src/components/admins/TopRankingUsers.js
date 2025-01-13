@@ -158,7 +158,8 @@ const handleDownloadPDF = () => {
   }
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-2">
+      <h3 className="text-muted mt-3 " align="center">Wanakikundi Bora</h3>
       <Row className="justify-content-center">
         <Col md={8}>
           <Card>

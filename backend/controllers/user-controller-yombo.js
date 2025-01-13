@@ -177,6 +177,9 @@ const getAllUsers = async (req, res) => {
 
 
 
+
+
+
  // Decode the name from the request parameter before fetching the user from the database
  // This prevents potential security vulnerabilities such as SQL injection
 const getUserDetail = async (req, res) => {
@@ -362,8 +365,6 @@ const getUsersByRole = async (req, res) => {
   }
 };
 
-
-
 // Function to push a notification
 const pushMatangazoNotification = async (req, res) => {
   try {
@@ -409,8 +410,6 @@ const pushMatangazoNotification = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
 
 
 const markNotificationAsRead = async (req, res) => {

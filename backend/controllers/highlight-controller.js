@@ -3,15 +3,38 @@
 
 const Highlight = require("../models/yombo/highlightSchema"); // Import the Highlight model
 
+
+// Delete All Highlights
+const deleteAllHighlights = async () => {
+  try {
+  //  await Highlight.deleteMany({}); // Deletes all documents in the Highlight collection
+
+   console.log("All highlights deleted successfully.");
+    
+  } catch (error) {
+    console.log("Error deleting highlights:", error);
+   
+  }
+};
+
+
+// Create a New Highlight
 // Create a New Highlight
 const createHighlight = async (req, res) => {
   try {
-    const { name, content } = req.body;
+    // Log incoming request body
+    console.log("Request body received:", req.body);
+
+    const { name, content, author } = req.body;
+
+    // Log extracted fields
+    console.log("Extracted fields - Name:", name, "Content:", content, "Author:", author);
 
     // Validate required fields
-    if (!name || !content || typeof content !== "object") {
+    if (!name || !content || !author || typeof content !== "object") {
+      console.error("Validation failed - Missing required fields or invalid content format.");
       return res.status(400).json({
-        message: "Name and content are required, and content must be an object.",
+        message: "Name, content, and author are required. Content must be an object.",
       });
     }
 
@@ -19,19 +42,135 @@ const createHighlight = async (req, res) => {
     const highlight = new Highlight({
       name,
       content,
+      author, // Include the author field
     });
+
+    // Log the highlight object before saving
+    console.log("Highlight object to be saved:", highlight);
 
     // Save the highlight to the database
     const savedHighlight = await highlight.save();
+
+    // Log the saved highlight
+    console.log("Highlight saved successfully:", savedHighlight);
 
     return res.status(201).json({
       message: "Highlight created successfully",
       data: savedHighlight,
     });
   } catch (error) {
+    // Log the error
     console.error("Error creating highlight:", error);
     return res.status(500).json({
       message: "Server error while creating highlight",
+      error: error.message,
+    });
+  }
+};
+
+// Add Media to Tab
+const addMediaToTab = async (req, res) => {
+  try {
+    const { highlightId, tabKey, newMedia } = req.body;
+
+    // Log incoming request body
+    console.log("Request body received:", req.body);
+
+    // Validate required fields
+    if (!highlightId || tabKey === undefined || !newMedia) {
+      console.error("Validation failed - Missing required fields.");
+      return res.status(400).json({
+        message: "Highlight ID, tab key, and new media are required.",
+      });
+    }
+
+    // Find the highlight and ensure the tab exists
+    const highlight = await Highlight.findById(highlightId);
+    if (!highlight) {
+      console.error("Highlight not found with ID:", highlightId);
+      return res.status(404).json({ message: "Highlight not found." });
+    }
+
+    // Log the found highlight
+    console.log("Highlight found:", highlight);
+
+    // Find the specified tab by index
+    const targetTab = highlight.content[tabKey];
+    if (!targetTab) {
+      console.error("Tab not found at index:", tabKey);
+      return res.status(404).json({ message: "Tab not found." });
+    }
+
+    // Push the new media to the tab's content array
+    targetTab.content.push(newMedia);
+
+    // Log the updated tab
+    console.log("Updated tab content:", targetTab.content);
+
+    // Save the updated highlight
+    await highlight.save();
+
+    return res.status(200).json({
+      message: "Media added to tab successfully",
+      data: highlight,
+    });
+  } catch (error) {
+    console.error("Error adding media to tab:", error);
+    return res.status(500).json({
+      message: "Server error while adding media to tab",
+      error: error.message,
+    });
+  }
+};
+
+// Add New Tab
+const addNewTab = async (req, res) => {
+  try {
+    const { highlightId, tabData } = req.body;
+
+    // Log incoming request body
+    console.log("Request body received:", req.body);
+
+    // Validate required fields
+    if (!highlightId || !tabData || !tabData.groupName) {
+      console.error("Validation failed - Missing highlight ID or group name.");
+      return res.status(400).json({
+        message: "Highlight ID and tab data with group name are required.",
+      });
+    }
+
+    // Log the tab data to be added
+    console.log("Tab data to be added:", tabData)
+
+    // Add a new tab to the content array
+    const updatedHighlight = await Highlight.findByIdAndUpdate(
+      highlightId,
+      {
+        $push: {
+          content: tabData, // Directly push the new tab data
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedHighlight) {
+      console.error("Highlight not found with ID:", highlightId);
+      return res.status(404).json({
+        message: "Highlight not found.",
+      });
+    }
+
+    // Log the updated highlight
+    console.log("Updated highlight with new tab:", updatedHighlight);
+
+    return res.status(200).json({
+      message: "New tab added successfully",
+      data: updatedHighlight,
+    });
+  } catch (error) {
+    console.error("Error adding new tab:", error);
+    return res.status(500).json({
+      message: "Server error while adding new tab",
       error: error.message,
     });
   }
@@ -57,88 +196,6 @@ const getRecentHighlights = async (req, res) => {
     console.error("Error fetching recent highlights:", error);
     return res.status(500).json({
       message: "Server error while fetching highlights",
-      error: error.message,
-    });
-  }
-};
-
-const addMediaToTab = async (req, res) => {
-  try {
-    const { highlightId, tabKey, newMedia } = req.body;
-
-    if (!highlightId || tabKey === undefined || !newMedia) {
-      return res.status(400).json({
-        message: "Highlight ID, tab key, and new media are required.",
-      });
-    }
-
-    // Find the highlight and ensure the tab exists
-    const highlight = await Highlight.findById(highlightId);
-    if (!highlight) {
-      return res.status(404).json({ message: "Highlight not found." });
-    }
-
-    // Find the specified tab by index
-    const targetTab = highlight.content[tabKey];
-    if (!targetTab) {
-      return res.status(404).json({ message: "Tab not found." });
-    }
-
-    // Push the new media to the tab's content array
-    targetTab.content.push(newMedia);
-
-    // Save the updated highlight
-    await highlight.save();
-
-    return res.status(200).json({
-      message: "Media added to tab successfully",
-      data: highlight,
-    });
-  } catch (error) {
-    console.error("Error adding media to tab:", error);
-    return res.status(500).json({
-      message: "Server error while adding media to tab",
-      error: error.message,
-    });
-  }
-};
-
-
-const addNewTab = async (req, res) => {
-  try {
-    const { highlightId, tabData } = req.body;
-
-    if (!highlightId || !tabData || !tabData.groupName) {
-      return res.status(400).json({
-        message: "Highlight ID and tab data with group name are required.",
-      });
-    }
-
-    // Add a new tab to the content array
-    const updatedHighlight = await Highlight.findByIdAndUpdate(
-      highlightId,
-      {
-        $push: {
-          content: tabData, // Directly push the new tab data
-        },
-      },
-      { new: true }
-    );
-
-    if (!updatedHighlight) {
-      return res.status(404).json({
-        message: "Highlight not found.",
-      });
-    }
-
-    return res.status(200).json({
-      message: "New tab added successfully",
-      data: updatedHighlight,
-    });
-  } catch (error) {
-    console.error("Error adding new tab:", error);
-    return res.status(500).json({
-      message: "Server error while adding new tab",
       error: error.message,
     });
   }

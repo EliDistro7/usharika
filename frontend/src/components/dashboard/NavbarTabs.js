@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {  FaUsers, FaBook, FaBars } from "react-icons/fa";
+import {  FaUsers, FaBook, FaBars,FaCrown } from "react-icons/fa";
 import { MdVolumeUp } from "react-icons/md";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -7,8 +7,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Profile from "./Profile";
 import Notification from "./Notification";
-import { removeCookie } from "@/hooks/useUser";
-
+import { getLoggedInUserId, removeCookie } from "@/hooks/useUser";
+import Link from "next/link";
 // Helper function to format role names
 const formatRoleName = (role) =>
   role
@@ -101,8 +101,17 @@ const RoleDropdown = ({
                   className="dropdown-item d-flex align-items-center"
                   onClick={() => handleNavigation(role, "top-members")}
                 >
-                  <FaBook className="me-2 text-warning" /> Wanakikundi Bora
+                  <FaCrown className="me-2 text-warning" /> Wanakikundi Bora
                 </button>
+              </li>
+              <li>
+                <Link
+                  href={`/create-highlight/${getLoggedInUserId()}`}
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => handleNavigation(role, "top-members")}
+                >
+                  <FaCrown className="me-2 text-warning" /> Update status
+                </Link>
               </li>
             </ul>
           </>
@@ -144,8 +153,8 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
 
 
   return (
-    <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded w-100">
-      <div className="w-100">
+    <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded w-100 overflow-x-hidden">
+      <div className="w-100 overflow-scroll">
         <div className=" d-flex justify-content-start w-100">
           <Profile user={user} />
       

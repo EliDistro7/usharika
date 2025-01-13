@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-//import { FaUsers, FaCalendarCheck, FaChevronDown } from "react-icons/fa";
-import Summary from "./Summary";
-//import ContributionProgress from "./ContributionProgress";
+
 import NavbarTabs from "./NavbarTabs";
 import { getUserNotifications, getUserDonations } from "@/actions/users";
 import { getLoggedInUserId, removeCookie } from "@/hooks/useUser";
@@ -126,7 +124,13 @@ const confirmLogout = (isConfirmed) => {
 
   return (
     <div className="container">
-      {/* Pinned Announcements */}
+     
+       {/* Dynamic Navbar */}
+       <div className="mb-4">
+        <div className="navbar bg-white container-fluid ">
+          <NavbarTabs roles={userRoles} notifications={notifications || []} user={user} />
+        </div>
+         {/* Pinned Announcements */}
       <div className="d-flex justify-content-center gap-4 pt-4 mb-4">
       <button className="btn btn-primary ms-auto" onClick={handleLogout}>
     Log Out
@@ -134,24 +138,12 @@ const confirmLogout = (isConfirmed) => {
        
         <PinnedAnnouncements notifications={notifications} />
       </div>
-       {/* Dynamic Navbar */}
-       <div className="mb-4">
-        <div className="navbar bg-white container-fluid">
-          <NavbarTabs roles={userRoles} notifications={notifications || []} user={user} />
-        </div>
       </div>
       
       <Donations />
 
      
 
-      {/* Summary Section
-      <div className="row mb-4">
-        <div className="col-md-12">
-          <Summary summary={summary} />
-        </div>
-      </div>
-       */}
 
       {/* Contributions Table */}
       <div className="my-4">

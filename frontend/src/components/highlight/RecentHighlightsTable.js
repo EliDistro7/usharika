@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HighlightsTable from "./HighlightsTable";
 import AddContentModal from "./AddContentModal2";
+import Cookies from "js-cookie";
 import { getRecentHighlights, addMediaToTab, addNewTab } from "@/actions/highlight";
 
 const RecentHighlightsTable = () => {
@@ -66,6 +67,7 @@ const RecentHighlightsTable = () => {
         description: newContent.description,
         imageUrl: newContent.mediaType === "image" ? newContent.imageUrl : null,
         videoUrl: newContent.mediaType === "video" ? newContent.videoUrl : null,
+        author: Cookies.get('role'),
       };
 
       await addMediaToTab({

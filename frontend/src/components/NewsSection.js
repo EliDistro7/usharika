@@ -52,7 +52,7 @@ const MainNews = () => {
         {/*  <MainSlider news={featuredNews}    <BreakingNews /> /> */}
         <MainSlider mainSlides={churchNews} secondarySlides={churchNews}/>
         <NewsTicker updates={updates}  direction="left"
-  speed="fast"
+  speed="slow"
   pauseOnHover={true}/> 
       
         </div>

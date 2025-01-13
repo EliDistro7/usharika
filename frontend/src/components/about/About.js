@@ -84,7 +84,7 @@ const AboutSection = () => {
                 </div>
               </div>
               <a
-                href="#join-us"
+                href="/auth"
                 className="btn btn-primary px-5 py-3 btn-border-radius"
               >
                 Jiunge Nasi

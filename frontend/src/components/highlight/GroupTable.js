@@ -11,7 +11,7 @@ const GroupTable = ({ content, onAddContent, onRemoveGroup }) => (
         <thead>
           <tr>
             <th>#</th>
-            <th>Group Name</th>
+            <th>Chapter</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -23,11 +23,11 @@ const GroupTable = ({ content, onAddContent, onRemoveGroup }) => (
               <td>
                 <Button size="sm" variant="info" onClick={() => onAddContent(groupIndex)}>
                   <FaPlus className="me-1" />
-                  Add Content
+                  Ongeza Maudhui
                 </Button>{" "}
                 <Button size="sm" variant="danger" onClick={() => onRemoveGroup(groupIndex)}>
                   <FaTrash className="me-1" />
-                  Remove
+                  Ondoa
                 </Button>
               </td>
             </tr>
