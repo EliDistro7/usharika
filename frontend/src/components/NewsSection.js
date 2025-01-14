@@ -2,8 +2,7 @@
 import MainSlider from './MainSlider';
 
 
-import {updates} from '@/data/main'
-import { NewsTicker } from './NewsTicker';
+
 
 
 
@@ -50,10 +49,9 @@ const MainNews = () => {
        
         <div className="row">
         {/*  <MainSlider news={featuredNews}    <BreakingNews /> /> */}
+      
         <MainSlider mainSlides={churchNews} secondarySlides={churchNews}/>
-        <NewsTicker updates={updates}  direction="left"
-  speed="slow"
-  pauseOnHover={true}/> 
+        
       
         </div>
      

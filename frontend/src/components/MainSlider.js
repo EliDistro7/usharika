@@ -38,7 +38,7 @@ const MainSlider = () => {
     <div className="container-fluid bg-gradient-custom">
       <div className="row">
         {/* Main Carousel */}
-        <div className="px-0">
+        <div className="">
           <FadeCarousel>
             {mainSlides.map((slide, index) => (
               <div

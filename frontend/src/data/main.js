@@ -94,10 +94,17 @@ export const slides = [
   
 
   export const updates = [
+
     {
+      content: "                                           ",
+      group: "     ",
+    },
+    {
+      
       content: "Tunawalika vijana ywote kujiunga na Kwaya ya Umoja wa Vijana kwa ajili kushiriki mashindano ya Uimbaji Februari 15 mwaka huu",
       group: "Vijana",
     },
+  
     {
       content: "Kila mmoja anakaribishwa kuhudhuria ibada ya Morning Glory inayoendelea kila siku za wiki kuanzia 12 asubuhi.",
       group: "Morning Glory",

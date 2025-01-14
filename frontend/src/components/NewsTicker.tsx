@@ -100,7 +100,7 @@ export const NewsTicker = ({
                 flex: "0 0 auto",
                 minWidth: "200px",
                 backgroundColor: "#f8f9fa",
-                border: "1px solid #ddd",
+              
                 borderRadius: "10px",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
               }}

@@ -153,7 +153,7 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
 
 
   return (
-    <nav className="navbar navbar-expand-lg shadow-sm p-3 rounded w-100 ">
+    <nav className="navbar navbar-expand-lg p-1 w-100 ">
       <div className="w-100 ">
         <div className=" d-flex justify-content-start w-100">
           <Profile user={user} />

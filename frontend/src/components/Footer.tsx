@@ -13,7 +13,7 @@ const Footer = () => {
             <div className="footer-item">
               <h2 className="fw-bold mb-3">
                 <span className="text-primary">KKKT</span>
-                <span className="text-secondary">YOMBO KUU</span>
+                <span className="text-secondary">YOMBO</span>
               </h2>
               <p className="mb-4">
   Karibu katika familia ya kiroho ya KKKT Yombo Kuu, mahali pa kuabudu, kujifunza, 
