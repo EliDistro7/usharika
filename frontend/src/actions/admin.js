@@ -17,7 +17,7 @@ export const addRegisterNotification = async (name, userId) => {
       userId,
     });
 
-    console.log('Notification added successfully:', response.data);
+    //console.log('Notification added successfully:', response.data);
     return response.data; // Returning server response for further usage
   } catch (error) {
     console.error('Error adding notification:', error.response?.data || error.message);
