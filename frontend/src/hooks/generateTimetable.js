@@ -5,6 +5,15 @@ export function generateTimetable(events, viewType, dateRange) {
     const doc = new jsPDF();
     const normalPurple = [128, 0, 128]; // Normal purple color
 
+    // Parse the date range
+    const [startRange, endRange] = dateRange.split(' - ').map(dateStr => new Date(dateStr));
+    
+    // Filter events based on the viewType and dateRange
+    const filteredEvents = events.filter(event => {
+        const eventDate = new Date(event.start.split('T')[0]); // Parse event start date
+        return eventDate >= startRange && eventDate <= endRange;
+    });
+
     // Title
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
@@ -19,7 +28,7 @@ export function generateTimetable(events, viewType, dateRange) {
     doc.text(`Muda wa Ratiba: ${dateRange}`, doc.internal.pageSize.getWidth() / 2, 32, { align: 'center' });
 
     // Table Data
-    const tableData = events.map((event) => [
+    const tableData = filteredEvents.map((event) => [
         event.start.split('T')[0], // Date (YYYY-MM-DD)
         event.start.split('T')[1].slice(0, 5), // Start Time (HH:MM)
         event.end.split('T')[1].slice(0, 5), // End Time (HH:MM)
@@ -58,5 +67,5 @@ export function generateTimetable(events, viewType, dateRange) {
     }
 
     // Save the PDF
-    doc.save('KKKT_Usharika_wa_Ukonga_Timetable.pdf');
+    doc.save('KKKT_Usharika_wa_Yombo_Timetable.pdf');
 }
