@@ -19,15 +19,54 @@ const Footer = () => {
             </div>
           </div>
 
+          {/* Quick Links Section */}
+          <div className="col-md-6 col-lg-4 col-xl-3">
+            <div className="footer-item">
+              <h4 className="text-muted mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
+                Quick Links
+              </h4>
+              <ul className="list-unstyled">
+                <li>
+                  <a href="/" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Nyumbani
+                  </a>
+                </li>
+                <li>
+                  <a href="/about" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Fahamu Zaidi
+                  </a>
+                </li>
+                <li>
+                  <a href="/kalenda" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Kalenda ya Matukio
+                  </a>
+                </li>
+                <li>
+                  <a href="/uongozi" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Uongozi
+                  </a>
+                </li>
+                <li>
+                  <a href="/usajili" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Kujisajili
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="text-body mb-2 d-block">
+                    <i className="fa fa-chevron-right me-2 text-primary"></i>Mawasiliano
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           {/* Operating Hours */}
-         
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
               <div
-                className="d-flex flex-column p-4 ps-5 text-dark "
-                
+                className="d-flex flex-column p-4 ps-5 text-dark"
               >
-                 <h5 className="fw-bold">OFISI YA MCHUNGAJI</h5>
+                <h5 className="fw-bold">OFISI YA MCHUNGAJI</h5>
                 <p>Jumatatu: 8am - 5pm</p>
                 <p>Jumanne: 8am - 5pm</p>
                 <p>Jumatano: 8am - 5pm</p>
@@ -40,7 +79,7 @@ const Footer = () => {
           {/* Location Section */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-              <h4 className="text-mute mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
+              <h4 className="text-muted mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
                 MAHALI
               </h4>
               <div className="d-flex flex-column align-items-start">
@@ -56,12 +95,10 @@ const Footer = () => {
                   <i className="fas fa-envelope text-primary me-2"></i>
                   yombolutheran@gmail.com
                 </a>
-                
                 <div className="footer-icon d-flex">
                   <a className="btn btn-primary btn-sm-square me-3 rounded-circle text-white" href="#">
                     <i className="fab fa-facebook-f"></i>
                   </a>
-                  
                   <a className="btn btn-primary btn-sm-square me-3 rounded-circle text-white" href="#">
                     <i className="fab fa-instagram"></i>
                   </a>
@@ -75,7 +112,6 @@ const Footer = () => {
 
           {/* Footer Closing Information */}
           <div className="col-12 text-center mt-5">
-            
             <p className="mt-3">
               KKKT Usharika wa Yombo Online System 2024 <br />
               Haki zote zimehifadhiwa

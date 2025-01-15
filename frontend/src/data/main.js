@@ -145,53 +145,27 @@ export const slides = [
 
   export const pastoralTeam = [
     {
-      image: "img/team-1.jpg",
-      name: "Linda Carlson",
-      role: "English Teacher",
+      image: "img/mchungaji.jpg",
+      name: "Deogratius Katabazi",
+      role: "Mchungaji Kiongozi",
       delay: "0.1s",
-      socialLinks: [
-        { url: "#", icon: "fas fa-share-alt" },
-        { url: "#", icon: "fab fa-facebook-f" },
-        { url: "#", icon: "fab fa-twitter" },
-        { url: "#", icon: "fab fa-instagram" },
-      ],
+   
     },
     {
-      image: "img/team-2.jpg",
-      name: "John Doe",
-      role: "Math Teacher",
-      delay: "0.3s",
-      socialLinks: [
-        { url: "#", icon: "fas fa-share-alt" },
-        { url: "#", icon: "fab fa-facebook-f" },
-        { url: "#", icon: "fab fa-twitter" },
-        { url: "#", icon: "fab fa-instagram" },
-      ],
+      image: "img/mchungaji.jpg",
+      name: "Deogratius Shoo",
+      role: "Mwinjilisti",
+      delay: "0.1s",
+   
     },
     {
-      image: "img/team-3.jpg",
-      name: "Jane Smith",
-      role: "Science Teacher",
-      delay: "0.5s",
-      socialLinks: [
-        { url: "#", icon: "fas fa-share-alt" },
-        { url: "#", icon: "fab fa-facebook-f" },
-        { url: "#", icon: "fab fa-twitter" },
-        { url: "#", icon: "fab fa-instagram" },
-      ],
+      image: "img/mchungaji.jpg",
+      name: "Deogratius Ringo",
+      role: "Parish Worker",
+      delay: "0.1s",
+   
     },
-    {
-      image: "img/team-4.jpg",
-      name: "Emily Davis",
-      role: "History Teacher",
-      delay: "0.7s",
-      socialLinks: [
-        { url: "#", icon: "fas fa-share-alt" },
-        { url: "#", icon: "fab fa-facebook-f" },
-        { url: "#", icon: "fab fa-twitter" },
-        { url: "#", icon: "fab fa-instagram" },
-      ],
-    },
+    
   ];
   
   

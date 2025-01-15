@@ -22,7 +22,7 @@ const Team = ({ title, subtitle, members }) => {
               className="col-md-6 col-lg-4 col-xl-3 wow fadeIn "
               data-wow-delay={member.delay || "0.1s"}
             >
-              <div className="team-item border border-primary img-border-radius overflow-hidden">
+              <div className="team-item border border-primary rounded overflow-hidden">
                 <img
                   src={member.image}
                   className="img-fluid w-100"
