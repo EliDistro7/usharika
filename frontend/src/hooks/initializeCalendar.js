@@ -1,6 +1,4 @@
-
-
-export function initializeCalendar(setSelectedEvent, setModalOpen) {
+export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, setViewType) {
     if (!window.FullCalendar) {
         console.error('FullCalendar is not available globally. Check the root layout script.');
         return;
@@ -15,34 +13,47 @@ export function initializeCalendar(setSelectedEvent, setModalOpen) {
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    // Events with start and end times
+    // Choir rehearsal events from January 15th to the end of the month
     const events = [
-        { title: 'Sherehe ya Mwaka Mpya', monthDay: '11-05', startTime: '10:00', endTime: '12:00' },
-        { title: 'Kumbukumbu ya Watakatifu Wote', monthDay: '11-10', startTime: '09:00', endTime: '10:30' },
-        { title: 'Sherehe ya Kutahiriwa kwa Bwana Wetu', monthDay: '11-12', startTime: '11:00', endTime: '13:00' },
-        { title: 'Sikukuu ya Mavuno', monthDay: '11-14', startTime: '08:00', endTime: '09:00' },
-        { title: 'Sikukuu ya Mtakatifu Yohana Mwinjilisti', monthDay: '11-20', startTime: '17:00', endTime: '18:30' },
-        { title: 'Misa ya Shukrani kwa Familia', monthDay: '11-18', startTime: '07:30', endTime: '09:00' },
-        { title: 'Ijumaa ya Maombi ya Amani', monthDay: '11-24', startTime: '15:00', endTime: '16:30' },
-        { title: 'Sikukuu ya Bikira Maria', monthDay: '12-08', startTime: '10:00', endTime: '11:30' },
-        { title: 'Ibada ya Krismasi ya Watoto', monthDay: '12-16', startTime: '14:00', endTime: '15:30' },
-        { title: 'Ibada ya Kukuza Imani', monthDay: '12-18', startTime: '09:30', endTime: '11:00' },
-        { title: 'Sherehe ya Kuzaliwa kwa Yesu', monthDay: '12-25', startTime: '10:00', endTime: '12:00' },
-        { title: 'Sikukuu ya Watakatifu Wote', monthDay: '12-31', startTime: '18:00', endTime: '20:00' },
+        // Weekdays (12 PM - 9 PM)
+        ...Array.from({ length: 12 }, (_, i) => {
+            const date = new Date(today.getTime());
+            date.setDate(today.getDate() + i); // Add days from today
+
+            // Only add weekdays (Mon-Fri)
+            if (date.getDay() !== 0 && date.getDay() !== 6) {
+                return {
+                    title: 'Choir Rehearsal',
+                    start: new Date(date.setHours(12, 0, 0, 0)).toISOString(),
+                    end: new Date(date.setHours(21, 0, 0, 0)).toISOString(),
+                };
+            }
+        }).filter(Boolean),
+
+        // Sundays (4 AM - 1 PM)
+        ...Array.from({ length: 9 }, (_, i) => {
+            const date = new Date(today.getTime());
+            date.setDate(today.getDate() + i * 7); // Every Sunday for 3 weeks from today
+
+            // Only add Sundays
+            if (date.getDay() === 0) {
+                return {
+                    title: 'Choir Rehearsal',
+                    start: new Date(date.setHours(4, 0, 0, 0)).toISOString(),
+                    end: new Date(date.setHours(13, 0, 0, 0)).toISOString(),
+                };
+            }
+        }).filter(Boolean),
     ];
 
-    // Generate full dates for events
-    const fullEvents = events.map((event) => {
-        const [month, day] = event.monthDay.split('-');
-        const start = new Date(`${currentYear}-${month}-${day}T${event.startTime}`);
-        const end = new Date(`${currentYear}-${month}-${day}T${event.endTime}`);
+    const fullEvents = events.map((event) => ({
+        title: event.title,
+        start: event.start,
+        end: event.end,
+    }));
 
-        return {
-            title: event.title,
-            start: start.toISOString(), // Convert to ISO format for FullCalendar
-            end: end.toISOString(),
-        };
-    });
+    // Pass the events back to the parent component
+    setEvents(fullEvents);
 
     const calendar = new window.FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -53,14 +64,16 @@ export function initializeCalendar(setSelectedEvent, setModalOpen) {
         },
         events: fullEvents,
         eventClick: (info) => {
-            console.log('log event', info.event._instance.range.end);
             setSelectedEvent({
                 title: info.event.title,
-               start: info.event._instance.range.start.toISOString(), // Convert to ISO string if needed
-               end: info.event._instance.range.end.toISOString(), // Convert to ISO string if needed
-               extendedProps: info.event.extendedProps, // Access additional props
+                start: info.event.start.toISOString(),
+                end: info.event.end.toISOString(),
             });
-            setModalOpen(true); // Open modal
+            setModalOpen(true);
+        },
+        datesSet: (info) => {
+            // Capture the current view type and pass it back to the parent component
+            setViewType(info.view.type);
         },
     });
 

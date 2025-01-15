@@ -59,9 +59,7 @@ const EventModal = ({ event, isOpen, onClose }) => {
             >
               Ondoa
             </button>
-            <button type="button" className="btn btn-primary">
-              Jiandikishe Kushirirki
-            </button>
+            
           </div>
         </div>
       </div>
