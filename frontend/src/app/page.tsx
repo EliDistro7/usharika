@@ -6,6 +6,7 @@ import HighlightsWrapper from "@/components/HighlightsWrapper";
 import { kipaimara, efm, beach } from '@/data/main';
 import {updates} from '@/data/main'
 import { NewsTicker } from '@/components/NewsTicker';
+import FutureEventsCarousel from "@/components/xmass/FutureEventsCarousel";
 
 export default function Home() {
   const dataSets = [beach,kipaimara, efm];
@@ -21,8 +22,8 @@ export default function Home() {
 
       {/* Pledge Section */}
       <Pledge />
-       {/* Main News Section */}
-       <MainNews />
+       {/* Main News<MainNews /> Section */}
+       <FutureEventsCarousel />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { initializeCalendar } from '@/hooks/initializeCalendar';
 import { generateTimetable } from '@/hooks/generateTimetable';
 import EventModal from '@/components/EventModal';
 import SlideCarousel from '@/components/SlideCarousel';
-import { CountdownDisplay } from '@/components/xmass/CountDown';
+import { CountdownDisplay } from '@/components/xmass/Countdown';
 
 const Calendar = () => {
     const [selectedEvent, setSelectedEvent] = useState(null); // For event details
