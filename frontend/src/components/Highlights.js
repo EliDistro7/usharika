@@ -13,6 +13,7 @@ import {
   FaExpand,
 } from "react-icons/fa";
 import { Modal, Button } from "react-bootstrap";
+import ShareButton from "./ShareButton"; // Import ShareButton
 
 const Highlights = ({ data }) => {
   const [activeTab, setActiveTab] = useState(Object.keys(data.content)[0]);
@@ -103,13 +104,8 @@ const Highlights = ({ data }) => {
         >
           <FaExpand />
         </button>
-        <button
-          onClick={() => alert("Share functionality coming soon!")}
-          className="btn btn-outline-secondary rounded shadow-sm"
-          style={{ fontSize: "0.85rem", fontWeight: "400" }}
-        >
-          <i className="fas fa-share-alt"></i> Share
-        </button>
+        {/* Use ShareButton component */}
+        <ShareButton url={window.location.href} title={data.name} />
       </div>
 
      {/* Fullscreen Modal */}
@@ -156,5 +152,7 @@ const Highlights = ({ data }) => {
     </div>
   );
 };
+
+
 
 export default Highlights;

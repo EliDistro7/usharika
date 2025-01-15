@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcrypt');
 const Admin = require('../models/adminSchema.js');
 const User = require('../models/userSchema.js');
@@ -48,7 +49,7 @@ const createGlobalUser = async () => {
 };
 
 // Call the function to create the user
-createGlobalUser();
+//createGlobalUser();
 
 
 // Handler to verify a user (set verified to true)

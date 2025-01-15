@@ -30,13 +30,12 @@ const Footer = () => {
                 className="d-flex flex-column p-4 ps-5 text-dark border border-primary"
                 style={{ borderRadius: "50% 20% / 10% 40%" }}
               >
-                <p>Jumatatu: 8am to 5pm</p>
-                <p>Jumanne: 8am to 5pm</p>
-                <p>Jumatano: 8am to 5pm</p>
-                <p>Alhamis: 8am to 5pm</p>
-                <p>Ijumaa: 8am to 5pm</p>
-                <p>Jumamosi: 8am to 5pm</p>
-                <p className="mb-0">Sunday: 8am to 5pm</p>
+                <p>Jumatatu: 8am - 5pm</p>
+                <p>Jumanne: 8am - 5pm</p>
+                <p>Jumatano: 8am - 5pm</p>
+                <p>Alhamis: 8am - 5pm</p>
+                <p>Ijumaa: 8am - 5pm</p>
+                
               </div>
             </div>
           </div>
@@ -44,7 +43,7 @@ const Footer = () => {
           {/* Location Section */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-              <h4 className="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
+              <h4 className="text-mute mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
                 MAHALI
               </h4>
               <div className="d-flex flex-column align-items-start">
