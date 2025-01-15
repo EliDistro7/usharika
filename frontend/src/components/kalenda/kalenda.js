@@ -92,15 +92,18 @@ const Calendar = () => {
                     <div id="calendar" className="rounded shadow-sm p-4 px-0 mx-0">
                         {/* Calendar will render here */}
                     </div>
+                    {showDownload && (
+    <button
+        onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
+        className="btn btn-primary ms-auto px-4 py-2 rounded-3 mt-8 shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+    >
+        Download Ratiba
+    </button>
+)}
                 </div>
 
-                {showDownload && (
-                    <button
-                        onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
-                    >
-                        Download Timetable ({viewType})
-                    </button>
-                )}
+         
+
             </section>
 
             {selectedEvent && (

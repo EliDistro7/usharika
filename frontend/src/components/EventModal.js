@@ -48,6 +48,11 @@ const EventModal = ({ event, isOpen, onClose }) => {
             <p>
               <strong>Kumaliza:</strong> {formatDate(event.end)}
             </p>
+            {event.group && (
+              <p>
+                <strong>Kikundi:</strong> {event.group}
+              </p>
+            )}
           </div>
 
           {/* Modal Footer */}
@@ -59,7 +64,6 @@ const EventModal = ({ event, isOpen, onClose }) => {
             >
               Ondoa
             </button>
-            
           </div>
         </div>
       </div>

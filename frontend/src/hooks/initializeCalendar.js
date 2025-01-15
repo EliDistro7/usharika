@@ -11,7 +11,6 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
     }
 
     const today = new Date();
-    const currentYear = today.getFullYear();
 
     // Choir rehearsal events from January 15th to the end of the month
     const events = [
@@ -23,9 +22,10 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
             // Only add weekdays (Mon-Fri)
             if (date.getDay() !== 0 && date.getDay() !== 6) {
                 return {
-                    title: 'Choir Rehearsal',
+                    title: 'Mazoezi ya Uimbaji',
                     start: new Date(date.setHours(12, 0, 0, 0)).toISOString(),
                     end: new Date(date.setHours(21, 0, 0, 0)).toISOString(),
+                    group: 'Kwaya ya Umoja wa Vijana',
                 };
             }
         }).filter(Boolean),
@@ -38,9 +38,10 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
             // Only add Sundays
             if (date.getDay() === 0) {
                 return {
-                    title: 'Choir Rehearsal',
+                    title: 'Mazoezi ya Uimbaji',
                     start: new Date(date.setHours(4, 0, 0, 0)).toISOString(),
                     end: new Date(date.setHours(13, 0, 0, 0)).toISOString(),
+                    group: 'Kwaya ya Umoja wa Vijana',
                 };
             }
         }).filter(Boolean),
@@ -50,6 +51,7 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
         title: event.title,
         start: event.start,
         end: event.end,
+        group: event.group, // Include group information
     }));
 
     // Pass the events back to the parent component
@@ -68,6 +70,7 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
                 title: info.event.title,
                 start: info.event.start.toISOString(),
                 end: info.event.end.toISOString(),
+                group: info.event.extendedProps.group, // Include group in modal data
             });
             setModalOpen(true);
         },
