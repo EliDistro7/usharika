@@ -55,7 +55,7 @@ export const CountdownDisplay = ({
   targetDate,
   backgroundImage,
   backgroundVideo,
-  showCountdown = true, // Default is to show the countdown
+  showCountdown = true,
 }) => {
   const { months, days, hours, minutes, seconds } = useCountdown(targetDate);
 
@@ -65,9 +65,9 @@ export const CountdownDisplay = ({
       style={{
         position: "relative",
         backgroundImage: backgroundVideo ? "none" : `url(${backgroundImage})`,
+        background: "linear-gradient(135deg, #D8BFD8, #800080)",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundColor: "#000",
         padding: "50px 20px",
       }}
     >
@@ -93,12 +93,22 @@ export const CountdownDisplay = ({
       )}
 
       {/* Overlay */}
-      <div className="overlay" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.5)" }} />
+      <div
+        className="overlay"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.4)",
+        }}
+      />
 
       {showCountdown && (
         <Container className="py-5" style={{ position: "relative", zIndex: 1 }}>
-          <h1 className="display-4 fw-bold mb-4">
-            Countdown to <span className="text-warning">{eventName}</span>
+          <h1 className="display-4 fw-bold mb-4" style={{ color: "#D8BFD8" }}>
+            Countdown to <span className="text-light">{eventName}</span>
           </h1>
           <Row className="g-3 justify-content-center">
             {[
@@ -109,11 +119,20 @@ export const CountdownDisplay = ({
               { value: padTo2(seconds), label: "Sekunde" },
             ].map((unit, index) => (
               <Col key={index} xs={6} sm={4} md={2}>
-                <div className="countdown-box p-3 rounded shadow text-dark">
+                <div
+                  className="countdown-box p-3 rounded shadow"
+                  style={{
+                    background: "#D8BFD8",
+                    color: "#800080",
+                  }}
+                >
                   <div className="countdown-number display-5 fw-bold">
                     {unit.value}
                   </div>
-                  <small className="text-muted text-uppercase">
+                  <small
+                    className="text-uppercase fw-semibold"
+                    style={{ color: "#4B0082" }}
+                  >
                     {unit.label}
                   </small>
                 </div>
