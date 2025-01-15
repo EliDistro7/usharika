@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
-import './CountDown.css';
+import { useEffect, useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import "./CountDown.css";
 
 export const useCountdown = (targetDate) => {
   const validDate = new Date(targetDate);
   if (isNaN(validDate)) {
-    console.error('Invalid targetDate provided. Please ensure it is a valid Date or a parsable string.');
+    console.error(
+      "Invalid targetDate provided. Please ensure it is a valid Date or a parsable string."
+    );
     return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
   }
 
@@ -44,53 +47,81 @@ function calculateTimeLeft(targetDate) {
 }
 
 function padTo2(num) {
-  return num.toString().padStart(2, '0');
+  return num.toString().padStart(2, "0");
 }
 
-export const CountdownDisplay = ({ eventName, targetDate, backgroundImage }) => {
+export const CountdownDisplay = ({
+  eventName,
+  targetDate,
+  backgroundImage,
+  backgroundVideo,
+  showCountdown = true, // Default is to show the countdown
+}) => {
   const { months, days, hours, minutes, seconds } = useCountdown(targetDate);
 
- 
-
   return (
-    <div className="countdown-body">
-      {/* Background */}
-      <div  style={{
-    position: "absolute",
-    inset: 0,
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    zIndex: -1,
-  }}>
+    <div
+      className="countdown-body text-center text-white mt-0"
+      style={{
+        position: "relative",
+        backgroundImage: backgroundVideo ? "none" : `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundColor: "#000",
+        padding: "50px 20px",
+      }}
+    >
+      {/* Video Background */}
+      {backgroundVideo && (
+        <video
+          autoPlay
+          muted
+          loop
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: -1,
+          }}
+        >
+          <source src={backgroundVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      )}
 
-      <div className="snow-container">
-        {Array.from({ length: 200 }).map((_, index) => (
-          <div key={index} className="snowflake" />
-        ))}
-      </div>
-  
-      <h1>Countdown to {eventName}</h1>
-      <div className="countdown">
-        <div id="months" data-desc="Miezi" className="animate-in" style={{ '--d': '1800ms' }}>
-          <span>{padTo2(months)}</span>
-        </div>
-        <div id="days" data-desc="Siku" className="animate-in" style={{ '--d': '1500ms' }}>
-          <span>{padTo2(days)}</span>
-        </div>
-        <div id="hours" data-desc="Masaa" className="animate-in" style={{ '--d': '1200ms' }}>
-          <span>{padTo2(hours)}</span>
-        </div>
-        <div id="minutes" data-desc="Dakika" className="animate-in" style={{ '--d': '800ms' }}>
-          <span>{padTo2(minutes)}</span>
-        </div>
-        <div id="seconds" data-desc="Sekunde" className="animate-in" style={{ '--d': '500ms' }}>
-          <span>{padTo2(seconds)}</span>
-        </div>
-      </div>
-      </div>
-     
+      {/* Overlay */}
+      <div className="overlay" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.5)" }} />
+
+      {showCountdown && (
+        <Container className="py-5" style={{ position: "relative", zIndex: 1 }}>
+          <h1 className="display-4 fw-bold mb-4">
+            Countdown to <span className="text-warning">{eventName}</span>
+          </h1>
+          <Row className="g-3 justify-content-center">
+            {[
+              { value: padTo2(months), label: "Miezi" },
+              { value: padTo2(days), label: "Siku" },
+              { value: padTo2(hours), label: "Masaa" },
+              { value: padTo2(minutes), label: "Dakika" },
+              { value: padTo2(seconds), label: "Sekunde" },
+            ].map((unit, index) => (
+              <Col key={index} xs={6} sm={4} md={2}>
+                <div className="countdown-box p-3 rounded shadow text-dark">
+                  <div className="countdown-number display-5 fw-bold">
+                    {unit.value}
+                  </div>
+                  <small className="text-muted text-uppercase">
+                    {unit.label}
+                  </small>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      )}
     </div>
   );
-  
 };

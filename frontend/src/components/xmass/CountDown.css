@@ -178,3 +178,40 @@ h1 {
 .snowflake:nth-child(40) { left: 2%; animation-duration: 5.7s; }
 
 
+.countdown-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  color: #fff;
+  font-family: "Arial", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+.countdown-box {
+  background: #ffc107;
+  text-align: center;
+  border-radius: 10px;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.countdown-number {
+  font-size: 3rem;
+  color: #212529;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

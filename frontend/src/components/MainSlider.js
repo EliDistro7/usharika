@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FadeCarousel from "./FadeCarousel"; // Using the FadeCarousel component for the main slider
+import FadeCarousel from "./SlideCarousel"; // Using the FadeCarousel component for the main slider
 import { Zoom } from "react-awesome-reveal"; // Importing the Zoom animation from react-awesome-reveal
 import { getAllFutureEvents } from "@/actions/future-event"; // Importing the API action
 
