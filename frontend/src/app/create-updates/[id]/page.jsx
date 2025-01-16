@@ -38,7 +38,8 @@ const UpdatesPage = () => {
     try {
       setLoading(true);
       const updatesData = await getAllUpdates();
-      setUpdates(updatesData.data); // Assuming `data` contains the list
+      console.log('update data', updatesData);
+      setUpdates(updatesData); // Assuming `data` contains the list
     } catch (error) {
       console.log(error)
       console.error("Error fetching updates:", error.message);

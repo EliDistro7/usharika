@@ -6,7 +6,7 @@ const router = express.Router();
 const {createUpdate,getAllUpdates,updateUpdate, getUpdateById, deleteUpdate } = require("../controllers/update-controller.js"); // Adjust path 
 
 router.post("/create-updates", createUpdate); // Create
-router.get("/get-updates", getAllUpdates); // Read all
+router.post("/get-updates", getAllUpdates); // Read all
 router.get("/get-update-by-id/:id", getUpdateById); // Read one
 router.put("/updates/:id", updateUpdate); // Update
 router.delete("/updates/:id", deleteUpdate); // Delete

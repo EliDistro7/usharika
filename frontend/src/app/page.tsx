@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div>
      
-     <NewsTicker updates={updates}  direction="left"
+     <NewsTicker  direction="left"
  
   pauseOnHover={true}/> 
       {/* Highlights Section */}

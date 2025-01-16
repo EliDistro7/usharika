@@ -1,17 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getAllUpdates } from "../actions/updates"; // Adjust the import path based on your project structure
+import { formatRoleName } from "@/actions/utils";
 
 export const NewsTicker = ({
-  updates,
   direction = "left",
   pauseOnHover = true,
   className,
 }: {
-  updates: {
-    content: string;
-    group: string;
-  }[];
   direction?: "left" | "right";
   pauseOnHover?: boolean;
   className?: string;
@@ -19,10 +16,32 @@ export const NewsTicker = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
 
+  const [updates, setUpdates] = useState<{ content: string; group: string }[]>(
+    []
+  );
   const [animationDuration, setAnimationDuration] = useState("60s");
   const [scrollWidth, setScrollWidth] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
 
+  // Fetch updates only once
+  useEffect(() => {
+    const fetchUpdates = async () => {
+      try {
+        setLoading(true);
+        const updatesData = await getAllUpdates(); // API function to fetch updates
+        setUpdates(updatesData);
+      } catch (error) {
+        console.error("Error fetching updates:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpdates();
+  }, []);
+
+  // Recalculate scroll properties when updates change
   useEffect(() => {
     calculateScrollProperties();
     window.addEventListener("resize", calculateScrollProperties);
@@ -77,41 +96,47 @@ export const NewsTicker = ({
           position: "relative",
         }}
       >
-        <ul
-          ref={scrollerRef}
-          className={`news-ticker-list w-100 d-flex list-unstyled mb-0 p-0 ${
-            start ? "animate-scroll" : ""
-          } ${pauseOnHover ? "hover-animation-pause" : ""}`}
-          style={{
-            display: "flex",
-            margin: 0,
-            padding: 0,
-            animation: `scroll ${animationDuration} linear infinite`,
-            listStyle: "none",
-            willChange: "transform",
-          }}
-        >
-          {updates.map((update, idx) => (
-            <li
-              key={idx}
-              className="news-item px-3 py-2 mx-2"
-              style={{
-                display: "inline-block",
-                flex: "0 0 auto",
-                minWidth: "200px",
-                backgroundColor: "#f8f9fa",
-              
-                borderRadius: "10px",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <span className="text-primary fw-bold me-1" style={{ color: "#007bff" }}>
-                {update.group}:
-              </span>
-              <span>{update.content}</span>
-            </li>
-          ))}
-        </ul>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <ul
+            ref={scrollerRef}
+            className={`news-ticker-list w-100 d-flex list-unstyled mb-0 p-0 ${
+              start ? "animate-scroll" : ""
+            } ${pauseOnHover ? "hover-animation-pause" : ""}`}
+            style={{
+              display: "flex",
+              margin: 0,
+              padding: 0,
+              animation: `scroll ${animationDuration} linear infinite`,
+              listStyle: "none",
+              willChange: "transform",
+            }}
+          >
+            {updates.map((update, idx) => (
+              <li
+                key={idx}
+                className="news-item px-3 py-2 mx-2"
+                style={{
+                  display: "inline-block",
+                  flex: "0 0 auto",
+                  minWidth: "200px",
+                  backgroundColor: "#f8f9fa",
+                  borderRadius: "10px",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <span
+                  className="text-primary fw-bold me-1"
+                  style={{ color: "#007bff" }}
+                >
+                  {formatRoleName(update.group)}:
+                </span>
+                <span>{update.content}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <style jsx>{`
         .hover-animation-pause:hover {
@@ -124,7 +149,6 @@ export const NewsTicker = ({
           100% {
             transform: translateX(-${scrollWidth}px);
           }
-            
         }
       `}</style>
     </div>

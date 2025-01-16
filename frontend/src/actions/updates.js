@@ -20,7 +20,7 @@ export const createUpdate = async ({ content, group }) => {
 // Fetch all Updates
 export const getAllUpdates = async () => {
   try {
-    const response = await axios.get(`${api}/get-updates`);
+    const response = await axios.post(`${api}/get-updates`);
     return response.data; // Contains the list of all updates
   } catch (error) {
     console.log(error)
