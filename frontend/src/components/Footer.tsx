@@ -8,12 +8,10 @@ const Footer = () => {
           {/* About Section */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-            <a href="/" className="navbar-brand d-flex align-items-center">
-              <h1 className="m-0 fw-bold">
-                <span className='' style={{color:"#6f42c1"}}>KKKT</span>{" "}
-                <span className='text-secondary'>Yombo</span>
-              </h1>
-            </a>
+              <h2 className="fw-bold mb-3">
+                <span style={{color:"#6f42c1"}}>KKKT</span>{" "}
+                <span className="text-mute">YOMBO</span>
+              </h2>
               <p className="mb-4">
                 Karibu katika familia ya kiroho ya KKKT Yombo Kuu, mahali pa kuabudu, kujifunza,
                 na kushiriki upendo wa Kristo. Pamoja tunakua kiimani na kumtumikia Mungu kwa furaha.
