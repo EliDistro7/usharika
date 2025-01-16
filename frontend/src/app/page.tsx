@@ -12,7 +12,7 @@ export default function Home() {
   const dataSets = [beach,kipaimara, efm];
 
   return (
-    <div>
+    <div className="px-0">
      
      <NewsTicker  direction="left"
  
