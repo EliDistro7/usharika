@@ -24,20 +24,20 @@ export default function Header() {
   return (
     <>
       {/* Navbar Start */}
-      <div className="container-fluid border-bottom bg-white position-relative px-0 mx-0">
+      <div className="container-fluid w-100 border-bottom bg-white position-relative px-0 mx-0 ">
         <div
-          className="container py-2  d-lg-block px-4 "
+          className="container py-2 px-4 w-100 "
           style={{ backgroundColor: "#6f42c1", borderRadius:"0 46px" }} // Purple background
         >
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between w-100">
             <div className="ps-0 px-0">
               <small className="me-0">
                 <i className="fas fa-map-marker-alt me-2 text-white"></i>
                 <a href="#" className="text-white">
                   123 Yombo, Dar es Salaam
                 </a>
-              </small>
-              <small className="me-3 d-none d-lg-block">
+              </small>{" "} 
+              <small className="me-3 d-none d-lg-inline">
                 <i className="fas fa-envelope me-2 text-white"></i>
                 <a href="#" className="text-white">
                   info@yombolutheran.com
