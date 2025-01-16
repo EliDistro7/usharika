@@ -6,6 +6,7 @@ import {addRegisterNotification} from '@/actions/admin'
 import {uploadToCloudinary} from "@/actions/uploadToCloudinary";
 import axios from "axios";
 import { formatRoleName } from "@/actions/utils";
+import Link from "next/link";
 
 
 const userRoles =  [
@@ -62,6 +63,7 @@ const Msharika= () => {
   const [selectedJumuiya, setSelectedJumuiya] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [success, setSucces] = useState(false);
   const [dob, setDob] = useState("");
   const [name, setName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -217,10 +219,12 @@ const Msharika= () => {
         `${process.env.NEXT_PUBLIC_SERVER}/registerYombo`,
         formData);
   
-      console.log("Response:", response.data);
+      //console.log("Response:", response.data);
       const res=await addRegisterNotification(response.data.user.name, response.data.user._id);
-      //console.log('addRegisterNotification', res);
+      
       setSuccessMessage("Maombi yametumwa, utapokea uthibitisho kwenye simu yako hivi punde!");
+      //console.log('addRegisterNotification', res);
+      setSucces(true)
       setErrorMessage("");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -241,6 +245,8 @@ const Msharika= () => {
         {/* Modal Header */}
         <div className="modal-header">
           <h5 className="modal-title">{errorMessage ? 'Haikufanikiwa, jaribu tena' : 'Hongera, umefanikiwa kujisajili!'}</h5>
+         
+          
           <button
             type="button"
             className="btn-close"
@@ -260,10 +266,20 @@ const Msharika= () => {
             </div>
           )}
           {successMessage && (
-            <div className="alert alert-success" role="alert">
-              {successMessage}
-            </div>
-          )}
+            <div>
+  <div className="alert alert-success" role="alert">
+    {successMessage}
+  </div>
+  <div className="mt-3">
+  <Link href="/auth" className="btn btn-primary">
+    Login
+  </Link>
+</div>
+</div>
+)}
+
+
+
         </div>
 
         {/* Modal Footer */}
