@@ -24,10 +24,10 @@ export default function Header() {
   return (
     <>
       {/* Navbar Start */}
-      <div className="container-fluid border-bottom bg-white position-relative">
+      <div className="container-fluid border-bottom bg-white position-relative px-0">
         <div
-          className="container py-2 d-none d-lg-block"
-          style={{ backgroundColor: "#6f42c1", borderRadius: "0 40px" }} // Purple background
+          className="container py-2  d-lg-block px-3"
+          style={{ backgroundColor: "#6f42c1" }} // Purple background
         >
           <div className="d-flex justify-content-between">
             <div className="ps-2">
@@ -37,7 +37,7 @@ export default function Header() {
                   123 Yombo, Dar es Salaam
                 </a>
               </small>
-              <small className="me-3">
+              <small className="me-3 d-none d-lg-block">
                 <i className="fas fa-envelope me-2 text-white"></i>
                 <a href="#" className="text-white">
                   info@yombolutheran.com
@@ -60,7 +60,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-        <div className="container px-0">
+        <div className="container px-3">
           <nav className="navbar navbar-light navbar-expand-xl py-3">
             <a href="/" className="navbar-brand d-flex align-items-center">
               <h1 className="m-0 fw-bold">
