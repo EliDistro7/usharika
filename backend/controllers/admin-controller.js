@@ -36,11 +36,11 @@ const createStaticAdmin = async () => {
       console.log('Admin already exists');
     }
   } catch (error) {
-    //console.error('Error creating admin:', error.message);
+    console.error('Error creating admin:', error.message);
   }
 };
 
- //createStaticAdmin();
+ createStaticAdmin();
 
 const registerAdmin = async (req, res) => {
   const { username, email, password } = req.body;

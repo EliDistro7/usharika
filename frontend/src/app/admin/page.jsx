@@ -26,7 +26,7 @@ const AdminDashboard = () => {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_SERVER}/allMembers`,
           {
-            adminId: '66e9cb3ca169bb36368dbf66',
+            adminId: process.env.NEXT_PUBLIC_KIONGOZI,
           },
           {
             params: { page: 1, limit: 50 }, // Adjust pagination as needed
