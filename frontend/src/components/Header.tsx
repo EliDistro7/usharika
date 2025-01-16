@@ -63,7 +63,7 @@ export default function Header() {
         <div className="container px-3">
           <nav className="navbar navbar-light navbar-expand-xl py-3">
             <a href="/" className="navbar-brand d-flex align-items-center">
-              <h1 className="m-0 fw-bold">
+              <h1 className="m-0">
                 <span className='' style={{color:"#6f42c1"}}>KKKT</span>{" "}
                 <span className='text-secondary'>Yombo</span>
               </h1>
