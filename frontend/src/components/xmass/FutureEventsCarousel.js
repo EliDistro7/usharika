@@ -2,7 +2,7 @@
 
 import React from "react";
 import SlideCarousel from "../SlideCarousel"; // Adjust the path as necessary
-import {CountdownDisplay} from "./Countdown"; // Adjust the path as necessary
+import {CountdownDisplay} from "./CountDown"; // Adjust the path as necessary
 
 const FutureEventsCarousel = () => {
   const events = [
