@@ -51,20 +51,28 @@ const AdminDashboard = () => {
       ? users
       : users.filter((user) => user.selectedRoles.includes(activeTab));
 
-  // Sort users based on the selected pledge type
-  const sortedUsers = () => {
-    if (sortBy === 'ahadi') {
-      return [...filteredUsers].sort(
-        (a, b) => b.pledges.ahadi - a.pledges.ahadi
-      );
-    } else if (sortBy === 'jengo') {
-      return [...filteredUsers].sort(
-        (a, b) => b.pledges.jengo - a.pledges.jengo
-      );
-    } else {
-      return filteredUsers;
-    }
-  };
+// Sort users based on the selected pledge type
+const sortedUsers = () => {
+  if (sortBy === 'ahadi') {
+    return [...filteredUsers].sort(
+      (a, b) => (b.pledges.ahadi || 0) - (a.pledges.ahadi || 0)
+    );
+  } else if (sortBy === 'jengo') {
+    return [...filteredUsers].sort(
+      (a, b) => (b.pledges.jengo || 0) - (a.pledges.jengo || 0)
+    );
+  } else if (sortBy && filteredUsers[0]?.pledges?.other?.[sortBy]) {
+    // Handle dynamic 'other' fields
+    return [...filteredUsers].sort(
+      (a, b) =>
+        (b.pledges.other[sortBy]?.total || 0) -
+        (a.pledges.other[sortBy]?.total || 0)
+    );
+  } else {
+    return filteredUsers;
+  }
+};
+
 
 // Calculate totals for the selected pledge type
 const calculatePledgeTotals = (user, pledgeType) => {
@@ -206,8 +214,8 @@ const calculatePledgeTotals = (user, pledgeType) => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => setActiveTab('all')}
-              active={activeTab === 'all'}
+              onClick={() => setActiveTab('zote')}
+              active={activeTab === 'zote'}
             >
               Washarika ({users.length})
             </Dropdown.Item>
@@ -231,7 +239,9 @@ const calculatePledgeTotals = (user, pledgeType) => {
   <select
     className="form-select"
     value={sortBy}
-    onChange={(e) => setSortBy(e.target.value)}
+    onChange={(e) =>{
+      console.log('value of sortBy changed', e.target.value)
+      setSortBy(e.target.value)}}
   >
     {/* Default options */}
     <option value="none">Washarika</option>
