@@ -15,6 +15,27 @@ const PaymentModal = ({ selectedUser, onClose, onSubmit }) => {
     onSubmit({ pledgeType, amount });
   };
 
+  const renderOtherPledgeTypes = () => {
+    const otherPledges = selectedUser.pledges.other || {};
+    return Object.entries(otherPledges).map(([key, { total, paid }]) => (
+      <div className="form-check" key={key}>
+        <input
+          type="radio"
+          id={`pledge-${key}`}
+          name="pledgeType"
+          value={key}
+          className="form-check-input"
+          checked={pledgeType === key}
+          onChange={() => setPledgeType(key)}
+          required
+        />
+        <label htmlFor={`pledge-${key}`} className="form-check-label">
+          {key.charAt(0).toUpperCase() + key.slice(1)}: {total} / Iliyolipwa: {paid}
+        </label>
+      </div>
+    ));
+  };
+
   return (
     <div className="modal show d-block" tabIndex="-1" role="dialog">
       <div className="modal-dialog" role="document">
@@ -27,6 +48,8 @@ const PaymentModal = ({ selectedUser, onClose, onSubmit }) => {
             <form id="payment-form" onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Chagua aina ya ahadi</label>
+
+                {/* Default pledge types */}
                 <div className="form-check">
                   <input
                     type="radio"
@@ -39,8 +62,7 @@ const PaymentModal = ({ selectedUser, onClose, onSubmit }) => {
                     required
                   />
                   <label htmlFor="pledge-ahadi" className="form-check-label">
-                    Ahadi: {selectedUser.pledges.ahadi} / Iliyolipwa:{" "}
-                    {selectedUser.pledges.paidAhadi}
+                    Ahadi: {selectedUser.pledges.ahadi} / Iliyolipwa: {selectedUser.pledges.paidAhadi}
                   </label>
                 </div>
                 <div className="form-check">
@@ -55,10 +77,12 @@ const PaymentModal = ({ selectedUser, onClose, onSubmit }) => {
                     required
                   />
                   <label htmlFor="pledge-jengo" className="form-check-label">
-                    Jengo: {selectedUser.pledges.jengo} / Iliyolipwa:{" "}
-                    {selectedUser.pledges.paidJengo}
+                    Jengo: {selectedUser.pledges.jengo} / Iliyolipwa: {selectedUser.pledges.paidJengo}
                   </label>
                 </div>
+
+                {/* Dynamic pledge types */}
+                {renderOtherPledgeTypes()}
               </div>
               <div className="mb-3">
                 <label htmlFor="amount" className="form-label">

@@ -263,6 +263,26 @@ YomboUserSchema.pre("save", function (next) {
   next();
 });
 
+YomboUserSchema.path("pledges.paidAhadi").validate(function (value) {
+  return value <= this.pledges.ahadi;
+}, "Paid amount cannot exceed the total pledged amount for Ahadi.");
+
+YomboUserSchema.path("pledges.paidJengo").validate(function (value) {
+  return value <= this.pledges.jengo;
+}, "Paid amount cannot exceed the total pledged amount for Jengo.");
+
+YomboUserSchema.pre("save", function (next) {
+  const otherPledges = this.pledges.other || new Map();
+  for (const [key, { total, paid }] of otherPledges) {
+    if (paid > total) {
+      return next(new Error(`Paid amount for ${key} cannot exceed the total pledged.`));
+    }
+  }
+  next();
+});
+
+
+
 const YomboUser = mongoose.model("YomboUser", YomboUserSchema);
 
 module.exports = YomboUser;

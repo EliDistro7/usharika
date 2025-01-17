@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '../../components/admin/PaymentModal';
 import {formatRoleName} from "../../actions/utils"
 import { Dropdown } from 'react-bootstrap';
+import {handleDownloadPDF} from "@/actions/pdf"
 
 import UserTableRows from '../../components/admin/UserTableRows';
 import Notification from '../../components/admin/Notification';  // Import Notification component
@@ -65,42 +66,67 @@ const AdminDashboard = () => {
     }
   };
 
-  // Calculate totals for the selected pledge type
-  const calculatePledgeTotals = (user, pledgeType) => {
-    const pledgeAmount = user.pledges[pledgeType] || 0;
-    const paidAmount =
+// Calculate totals for the selected pledge type
+const calculatePledgeTotals = (user, pledgeType) => {
+  let pledgeAmount = 0;
+  let paidAmount = 0;
+
+  // Check if the pledgeType is from the default fields
+  if (pledgeType === 'ahadi' || pledgeType === 'jengo') {
+    pledgeAmount = user.pledges[pledgeType] || 0;
+    paidAmount =
       user.pledges[
         `paid${pledgeType.charAt(0).toUpperCase() + pledgeType.slice(1)}`
       ] || 0;
-    const remainingAmount = pledgeAmount - paidAmount;
+  } 
+  // Check if the pledgeType is in the `other` field
+  else if (user.pledges.other?.[pledgeType]) {
+    pledgeAmount = user.pledges.other[pledgeType]?.total || 0;
+    paidAmount = user.pledges.other[pledgeType]?.paid || 0;
+  }
 
-    return {
-      totalPledged: pledgeAmount,
-      totalPaid: paidAmount,
-      totalRemaining: remainingAmount,
-    };
+  const remainingAmount = pledgeAmount - paidAmount;
+
+  return {
+    totalPledged: pledgeAmount,
+    totalPaid: paidAmount,
+    totalRemaining: remainingAmount,
   };
+};
+
 
   const calculateOverallTotals = (users, pledgeType) => {
     if (!pledgeType || pledgeType === 'none') return null;
   
     return users.reduce(
       (totals, user) => {
-        const pledgeAmount = user.pledges[pledgeType] || 0;
-        const paidAmount =
-          user.pledges[
-            `paid${pledgeType.charAt(0).toUpperCase() + pledgeType.slice(1)}`
-          ] || 0;
+        // Check if pledgeType exists in default fields or 'other'
+        if (pledgeType === 'ahadi' || pledgeType === 'jengo') {
+          const pledgeAmount = user.pledges[pledgeType] || 0;
+          const paidAmount =
+            user.pledges[
+              `paid${pledgeType.charAt(0).toUpperCase() + pledgeType.slice(1)}`
+            ] || 0;
   
-        totals.totalPledged += pledgeAmount;
-        totals.totalPaid += paidAmount;
-        totals.totalRemaining += pledgeAmount - paidAmount;
+          totals.totalPledged += pledgeAmount;
+          totals.totalPaid += paidAmount;
+          totals.totalRemaining += pledgeAmount - paidAmount;
+        } else if (user.pledges.other?.[pledgeType]) {
+          // Handle dynamic pledges in 'other'
+          const pledgeAmount = user.pledges.other[pledgeType]?.total || 0;
+          const paidAmount = user.pledges.other[pledgeType]?.paid || 0;
+  
+          totals.totalPledged += pledgeAmount;
+          totals.totalPaid += paidAmount;
+          totals.totalRemaining += pledgeAmount - paidAmount;
+        }
   
         return totals;
       },
       { totalPledged: 0, totalPaid: 0, totalRemaining: 0 }
     );
   };
+  
 
   // Calculate totals for the current sorting
   const currentTotals =
@@ -183,7 +209,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('all')}
               active={activeTab === 'all'}
             >
-              All Users ({users.length})
+              Washarika ({users.length})
             </Dropdown.Item>
             {categories.map((category) => (
               <Dropdown.Item
@@ -199,20 +225,35 @@ const AdminDashboard = () => {
       )}
 
 
+    {/* Sorting Dropdown */}
+{/* Sorting Dropdown */}
+<div className="mb-3">
+  <select
+    className="form-select"
+    value={sortBy}
+    onChange={(e) => setSortBy(e.target.value)}
+  >
+    {/* Default options */}
+    <option value="none">Washarika</option>
+    <option value="ahadi">Ahadi</option>
+    <option value="jengo">Jengo</option>
 
-  
-      {/* Sorting Dropdown */}
-      <div className="mb-3">
-        <select
-          className="form-select"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="none">Members</option>
-          <option value="ahadi">Ahadi</option>
-          <option value="jengo">Jengo</option>
-        </select>
-      </div>
+    {/* Dynamic options from `other` field */}
+    {users[0]?.pledges?.other &&
+      Object.entries(users[0].pledges.other).map(([key]) => (
+        <option key={key} value={key}>
+          {key}
+        </option>
+      ))}
+  </select>
+</div>
+
+
+
+
+      <button className="btn btn-success mb-3" onClick={handleDownloadPDF}>
+        Download PDF
+      </button>
   
       {/* Users Table */}
       {!isLoading && (

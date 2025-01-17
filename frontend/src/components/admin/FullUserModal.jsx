@@ -133,22 +133,33 @@ const FullUserModal = ({ user, onClose }) => {
             )}
           </div>
 
-          {/* Pledges */}
-          <div className="mb-4">
-            <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
-              Ahadi za Msharika
-            </h6>
-            <ul className="list-group">
-              <li className="list-group-item">
-                <strong>Ahadi:</strong> {user.pledges.ahadi} TZS / Iliyolipwa:{" "}
-                {user.pledges.paidAhadi} TZS
-              </li>
-              <li className="list-group-item">
-                <strong>Jengo:</strong> {user.pledges.jengo} TZS / Iliyolipwa:{" "}
-                {user.pledges.paidJengo} TZS
-              </li>
-            </ul>
-          </div>
+         {/* Pledges */}
+<div className="mb-4">
+  <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
+    Ahadi za Msharika
+  </h6>
+  <ul className="list-group">
+    {/* Default pledge types */}
+    <li className="list-group-item">
+      <strong>Ahadi:</strong> {user.pledges.ahadi} TZS / Iliyolipwa:{" "}
+      {user.pledges.paidAhadi} TZS
+    </li>
+    <li className="list-group-item">
+      <strong>Jengo:</strong> {user.pledges.jengo} TZS / Iliyolipwa:{" "}
+      {user.pledges.paidJengo} TZS
+    </li>
+
+    {/* Dynamic pledge types from 'other' */}
+    {user.pledges.other &&
+      Object.entries(user.pledges.other).map(([key, { total, paid }]) => (
+        <li className="list-group-item" key={key}>
+          <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>{" "}
+          {total} TZS / Iliyolipwa: {paid} TZS
+        </li>
+      ))}
+  </ul>
+</div>
+
 
           {/* Dependents */}
           <div className="mb-4">
