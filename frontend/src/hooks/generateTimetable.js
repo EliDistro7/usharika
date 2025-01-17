@@ -1,9 +1,6 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-
-
-
 export function generateTimetable(events, viewType, dateRange) {
     const doc = new jsPDF();
     const normalPurple = [128, 0, 128]; // Normal purple color
@@ -11,20 +8,30 @@ export function generateTimetable(events, viewType, dateRange) {
     // Parse the date range
     const [startRange, endRange] = dateRange.split(' - ').map(dateStr => new Date(dateStr));
 
+    // Determine the interval type (day, week, month)
+    const dateDifference = (endRange - startRange) / (1000 * 60 * 60 * 24); // Difference in days
+    let headerTitle = 'Ratiba ya Vipindi Mbali Mbali Kanisani'; // Default subtitle
+    if (dateDifference === 0) {
+        headerTitle = 'Ratiba ya Siku';
+    } else if (dateDifference <= 7) {
+        headerTitle = 'Ratiba ya Wiki';
+    } else {
+        headerTitle = 'Ratiba ya Mwezi';
+    }
+
     // Helper function to format the date without the day of the week
-const formatDateWithoutWeekday = (date) => {
-    const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+    const formatDateWithoutWeekday = (date) => {
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        return new Date(date).toLocaleDateString('sw-TZ', options); // This removes the weekday
     };
-    return new Date(date).toLocaleDateString('sw-TZ', options); // This removes the weekday
-};
 
-// Use this function to format both the start and end date range
-const formattedDateRange = `${formatDateWithoutWeekday(startRange)} - ${formatDateWithoutWeekday(endRange)}`;
+    // Use this function to format both the start and end date range
+    const formattedDateRange = `${formatDateWithoutWeekday(startRange)} - ${formatDateWithoutWeekday(endRange)}`;
 
-    
     // Filter events based on the viewType and dateRange
     const filteredEvents = events.filter(event => {
         const eventDate = new Date(event.start.split('T')[0]); // Parse event start date
@@ -42,14 +49,12 @@ const formattedDateRange = `${formatDateWithoutWeekday(startRange)} - ${formatDa
     // Title
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    
     doc.setTextColor(...normalPurple); // Purple text color
     doc.text('KKKT Usharika wa Yombo', pageWidth / 2, 10, { align: 'center' });
 
     // Subtitle and Date Range
     doc.setFontSize(12);
-   
-    doc.text('Ratiba ya Vipindi Mbali Mbali Kanisani', pageWidth / 2, 18, { align: 'center' });
+    doc.text(headerTitle, pageWidth / 2, 18, { align: 'center' });
     doc.setFontSize(10);
     doc.text(`Muda wa Ratiba: ${formattedDateRange}`, pageWidth / 2, 26, { align: 'center' });
 
