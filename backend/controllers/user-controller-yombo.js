@@ -368,7 +368,7 @@ const getUsersByRole = async (req, res) => {
 // Function to push a notification
 const pushMatangazoNotification = async (req, res) => {
   try {
-    const { group, message } = req.body;
+    const { userId, group, message } = req.body;
 
     // Validate request input
     if (!group || !message) {
@@ -386,7 +386,7 @@ const pushMatangazoNotification = async (req, res) => {
         .json({ message: `No users found with the role "${group}".` });
     }
 
-    // Loop through users and push the notification
+    // Notification object
     const notification = {
       group,
       message,
@@ -395,21 +395,155 @@ const pushMatangazoNotification = async (req, res) => {
       time: new Date(),
     };
 
-    for (const user of users) {
-      user.matangazoNotifications.push(notification);
-      await user.save();
+    // Save notification for the sender regardless of the group
+    const sender = await User.findById(userId);
+    if (sender) {
+      sender.matangazoNotifications.push(notification);
+      await sender.save();
     }
 
+    // Loop through users and push the notification, excluding the sender
+    let totalNotified = 0;
+
+    for (const user of users) {
+      if (user._id.toString() !== userId) {
+        user.matangazoNotifications.push(notification);
+        await user.save();
+        totalNotified++; // Increment counter for non-sender notifications
+      }
+    }
+
+    // Respond with success message
     res.status(200).json({
       success: true,
-      message: `Notification sent to users with role "${group}".`,
-      totalNotified: users.length,
+      message: `Notification sent to users with role "${group}", and also saved for the sender.`,
+      totalNotified: totalNotified + (sender ? 1 : 0), // Include sender in the total count
     });
   } catch (error) {
     console.error("Error pushing notification:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+// Function to retrieve notifications for a specific user
+const getMatangazoNotifications = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate request input
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required." });
+    }
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Retrieve matangazo notifications
+    const notifications = user.matangazoNotifications || [];
+
+    res.status(200).json({
+      success: true,
+      message: "Notifications retrieved successfully.",
+      notifications,
+    });
+  } catch (error) {
+    console.error("Error retrieving notifications:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Function to delete a specific notification
+const deleteMatangazoNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    // Validate request input
+    if (!userId || !notificationId) {
+      return res.status(400).json({ error: "User ID and Notification ID are required." });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Find the notification index in the user's array
+    const notificationIndex = user.matangazoNotifications.findIndex(
+      (notif) => notif._id.toString() === notificationId
+    );
+
+    if (notificationIndex === -1) {
+      return res.status(404).json({ error: "Notification not found." });
+    }
+
+    // Remove the notification
+    user.matangazoNotifications.splice(notificationIndex, 1);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Notification deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Function to edit a specific notification
+const editMatangazoNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+    const { group, message, status } = req.body; // Fields to update
+
+    // Validate request input
+    if (!userId || !notificationId) {
+      return res.status(400).json({ error: "User ID and Notification ID are required." });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Find the notification
+    const notification = user.matangazoNotifications.find(
+      (notif) => notif._id.toString() === notificationId
+    );
+
+    if (!notification) {
+      return res.status(404).json({ error: "Notification not found." });
+    }
+
+    // Update the notification fields
+    if (group) notification.group = group;
+    if (message) notification.message = message;
+    if (status) notification.status = status;
+
+    // Save changes
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Notification updated successfully.",
+      notification,
+    });
+  } catch (error) {
+    console.error("Error editing notification:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 
 
 const markNotificationAsRead = async (req, res) => {
@@ -731,4 +865,7 @@ module.exports = {
     getUserDonations,
     getUsersByGroupAndFieldType,
     addDonationAmount,
+    getMatangazoNotifications,
+    deleteMatangazoNotification,
+    editMatangazoNotification,
   };

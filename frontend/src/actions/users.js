@@ -25,13 +25,14 @@ export const getUsersByRole = async ({ adminId, role, page = 1, limit = 10 }) =>
 
 
 // Push a new matangazo notification
-export const pushMatangazoNotification = async ({ group, message }) => {
+export const pushMatangazoNotification = async ({ group, message, userId }) => {
  // console.log('group', group);
-//  console.log('message', message);
+
   try {
     const response = await axios.post(`${api}/users/pushMatangazoNotifications`, {
       group,
       message,
+      userId,
     });
     return response.data; // Contains success message or updated notifications
   } catch (error) {
@@ -63,6 +64,7 @@ export const createDonation = async ({ name, details, startingDate, deadline, gr
     );
   }
 };
+
 
 
 // Fetch notifications for a user
@@ -118,6 +120,45 @@ export const removeNotification = async ({ userId, notificationId }) => {
     console.error('Error marking notification as read:', error.response?.data || error.message);
     throw new Error(
       error.response?.data?.message || 'Failed to mark notification as read. Please try again later.'
+    );
+  }
+};
+
+// Fetch all matangazo notifications for a specific user
+export const getMatangazoNotifications = async (userId) => {
+  try {
+    const response = await axios.get(`${api}/notifications/${userId}`);
+    return response.data.notifications; // Return fetched notifications
+  } catch (error) {
+    console.error('Error fetching notifications:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch notifications. Please try again later.'
+    );
+  }
+};
+
+// Delete a specific matangazo notification for a user
+export const deleteMatangazoNotification = async ({ userId, notificationId }) => {
+  try {
+    const response = await axios.delete(`${api}/notifications/${userId}/${notificationId}`);
+    return response.data.message; // Success message
+  } catch (error) {
+    console.error('Error deleting notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to delete notification. Please try again later.'
+    );
+  }
+};
+
+// Edit a specific matangazo notification for a user
+export const editMatangazoNotification = async ({ userId, notificationId, updatedData }) => {
+  try {
+    const response = await axios.put(`${api}/notifications/${userId}/${notificationId}`, updatedData);
+    return response.data.message; // Success message
+  } catch (error) {
+    console.error('Error editing notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to edit notification. Please try again later.'
     );
   }
 };

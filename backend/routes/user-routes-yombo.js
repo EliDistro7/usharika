@@ -22,6 +22,9 @@ const {
     removeNotification,
     pinNotification,
     createDonation,
+    getMatangazoNotifications,
+    editMatangazoNotification,
+    deleteMatangazoNotification,
 } = require('../controllers/user-controller-yombo.js');
 
 // User Routes
@@ -61,6 +64,11 @@ router.put(
     removeNotification
   );
 
+
+  router.delete('/notifications/:userId/:notificationId', deleteMatangazoNotification);
+router.put('/notifications/:userId/:notificationId', editMatangazoNotification);
+// Add this route for retrieving matangazo notifications
+router.get('/notifications/:userId', getMatangazoNotifications);
 
 
 module.exports = router;
