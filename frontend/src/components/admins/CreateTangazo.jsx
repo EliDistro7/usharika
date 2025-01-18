@@ -6,7 +6,7 @@ import { pushMatangazoNotification } from "@/actions/users";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CustomNavbar from "@/components/admins/CustomNavbar";
+import Sidebar from "@/components/admins/Sidebar"; // Import the new Sidebar
 import { getLoggedInUserId } from "@/hooks/useUser";
 import NotificationList from "./NotificationList";
 
@@ -40,64 +40,63 @@ const CreateTangazo = () => {
   };
 
   return (
-    <div className="container mt-0 px-0">
-      <ToastContainer position="top-right" autoClose={3000} />
+    <Sidebar>
+      <div className="container mt-0 px-0">
+        <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* Navbar */}
-      <CustomNavbar />
+        {/* Tabs */}
+        <Tabs defaultActiveKey="create" id="tangazo-tabs" className="mb-3">
+          {/* Create Tangazo Tab */}
+          <Tab eventKey="create" title="Unda Tangazo">
+            <div className="card shadow-sm">
+              <div className="card-header text-white">
+                <h4 className="mb-0">Unda Tangazo</h4>
+              </div>
+              <div className="card-body">
+                <form onSubmit={handleSubmit}>
+                  {/* Message Input */}
+                  <div className="mb-3">
+                    <label htmlFor="message" className="form-label">
+                      Ujumbe
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      className="form-control"
+                      placeholder="Andika tangazo"
+                      rows="4"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
+                  </div>
 
-      {/* Tabs */}
-      <Tabs defaultActiveKey="create" id="tangazo-tabs" className="mb-3">
-        {/* Create Tangazo Tab */}
-        <Tab eventKey="create" title="Create Tangazo">
-          <div className="card shadow-sm">
-            <div className="card-header text-white">
-              <h4 className="mb-0">Unda Tangazo</h4>
+                  {/* Submit Button */}
+                  <div className="d-flex justify-content-end">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      style={{
+                        backgroundColor: "#6f42c1",
+                        borderColor: "#6f42c1",
+                      }}
+                      disabled={loading}
+                    >
+                      {loading ? "Inatuma..." : "Tuma"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                {/* Message Input */}
-                <div className="mb-3">
-                  <label htmlFor="message" className="form-label">
-                    Ujumbe
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    className="form-control"
-                    placeholder="Andika tangazo"
-                    rows="4"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
+          </Tab>
 
-                {/* Submit Button */}
-                <div className="d-flex justify-content-end">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    style={{
-                      backgroundColor: "#6f42c1",
-                      borderColor: "#6f42c1",
-                    }}
-                    disabled={loading}
-                  >
-                    {loading ? "Inatuma..." : "Tuma"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </Tab>
-
-        {/* Notifications List Tab */}
-        <Tab eventKey="list" title="Notifications List">
-          <NotificationList />
-        </Tab>
-      </Tabs>
-    </div>
+          {/* Notifications List Tab */}
+          <Tab eventKey="list" title="List ya Matangazo">
+            <NotificationList />
+          </Tab>
+        </Tabs>
+      </div>
+    </Sidebar>
   );
 };
 

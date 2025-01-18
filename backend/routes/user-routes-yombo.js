@@ -65,7 +65,10 @@ router.put(
   );
 
 
-  router.delete('/notifications/:userId/:notificationId', deleteMatangazoNotification);
+ // Route to delete a specific notification for a user and optionally for a group
+router.post('/notifications/:userId/:notificationId', deleteMatangazoNotification);
+
+// Route to edit a specific notification for a user and optionally for a group
 router.put('/notifications/:userId/:notificationId', editMatangazoNotification);
 // Add this route for retrieving matangazo notifications
 router.get('/notifications/:userId', getMatangazoNotifications);

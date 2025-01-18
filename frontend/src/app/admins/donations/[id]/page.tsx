@@ -10,6 +10,7 @@ import { Navbar, Nav, Container, Breadcrumb } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
 import { formatRoleName } from "@/actions/utils";
 import CustomNavbar from "@/components/admins/CustomNavbar";
+import Sidebar from "@/components/admins/Sidebar";
 
 export default function AdminDonationsPage() {
   const [activeTab, setActiveTab] = useState("create"); // 'create', 'view', or 'all'
@@ -19,9 +20,11 @@ export default function AdminDonationsPage() {
   const group = Cookie.get("role") || "Unknown Group"; // Assumes the role is stored in a cookie
 
   return (
+    <>
+    <Sidebar>
     <div className="container mt-0 px-0">
       {/* Header */}
-      <CustomNavbar />
+      
 
       {/* Breadcrumb */}
       <Breadcrumb className="mb-4">
@@ -72,5 +75,7 @@ export default function AdminDonationsPage() {
         )}
       </div>
     </div>
+    </Sidebar>
+    </>
   );
 }

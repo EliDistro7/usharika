@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import UserTable from "@/components/admins/UserTable";
 import { getUsersByRole } from "@/hooks/useUser";
+import Sidebar from "@/components/admins/Sidebar";
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -39,9 +40,16 @@ export default function Home() {
   }
 
   return (
+    <>
+    <Sidebar>
+
     <div className="px-0 mx-0 py-0 mt-0">
       
       <UserTable data={users} tableName={Cookies.get("role")?.replace('_', ' ')}/>
     </div>
+    </Sidebar>
+   
+    </>
+   
   );
 }

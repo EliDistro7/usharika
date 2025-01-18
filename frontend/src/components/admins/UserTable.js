@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import CustomNavbar from "./CustomNavbar";
+
 import Cookies from "js-cookie";
 import { formatRoleName } from "@/actions/utils";
 import UserModal from "./UserModal";
@@ -81,7 +81,7 @@ const UserTable = ({ data, tableName = "" }) => {
 
   return (
     <div>
-      <CustomNavbar />
+    
 
       <div className="container py-4">
         <div className="card shadow-sm border-0">
@@ -120,15 +120,16 @@ const UserTable = ({ data, tableName = "" }) => {
             </div>
 
             {/* Table */}
+            {/* Table */}
             <div className="table-responsive">
               <table className="table table-striped table-hover align-middle">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Name (Jina)</th>
-                    <th className="text-center">Marriage (Ndoa)</th>
-                    <th className="text-center">Occupation (Kazi)</th>
-                    <th className="text-center">Phone (Simu)</th>
+                    <th className="text-center d-none d-md-table-cell">Marriage (Ndoa)</th>
+                    <th className="text-center d-none d-md-table-cell">Occupation (Kazi)</th>
+                    <th className="text-center d-none d-sm-table-cell">Phone (Simu)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -153,16 +154,17 @@ const UserTable = ({ data, tableName = "" }) => {
                           </div>
                         </div>
                       </td>
-                      <td className="text-center">
+                      <td className="text-center d-none d-md-table-cell">
                         <span className="badge bg-info text-white">{user.maritalStatus}</span>
                       </td>
-                      <td className="text-center">{user.occupation}</td>
-                      <td className="text-center">{user.phone}</td>
+                      <td className="text-center d-none d-md-table-cell">{user.occupation}</td>
+                      <td className="text-center d-none d-sm-table-cell">{user.phone}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
 
             {/* Pagination */}
             <nav className="mt-4">

@@ -137,10 +137,15 @@ export const getMatangazoNotifications = async (userId) => {
   }
 };
 
-// Delete a specific matangazo notification for a user
-export const deleteMatangazoNotification = async ({ userId, notificationId }) => {
+
+
+// Delete a specific matangazo notification for a user and optionally for a group
+export const deleteMatangazoNotification = async ({ userId, notificationId, group }) => {
   try {
-    const response = await axios.delete(`${api}/notifications/${userId}/${notificationId}`);
+    console.log('group is defined', group)
+    // Include group in the request body if provided
+    const config = group ? { data: { group } } : {};
+    const response = await axios.post(`${api}/notifications/${userId}/${notificationId}`, {group});
     return response.data.message; // Success message
   } catch (error) {
     console.error('Error deleting notification:', error.response?.data || error.message);
@@ -150,10 +155,16 @@ export const deleteMatangazoNotification = async ({ userId, notificationId }) =>
   }
 };
 
-// Edit a specific matangazo notification for a user
-export const editMatangazoNotification = async ({ userId, notificationId, updatedData }) => {
+// Edit a specific matangazo notification for a user and optionally for a group
+export const editMatangazoNotification = async ({ userId, notificationId, group, updatedData }) => {
   try {
-    const response = await axios.put(`${api}/notifications/${userId}/${notificationId}`, updatedData);
+    // Include group explicitly in the updated data if provided
+    const payload = { ...updatedData };
+    if (group) {
+      payload.group = group;
+    }
+
+    const response = await axios.put(`${api}/notifications/${userId}/${notificationId}`, payload);
     return response.data.message; // Success message
   } catch (error) {
     console.error('Error editing notification:', error.response?.data || error.message);
@@ -162,6 +173,7 @@ export const editMatangazoNotification = async ({ userId, notificationId, update
     );
   }
 };
+
 
 
 // Pin a specific notification

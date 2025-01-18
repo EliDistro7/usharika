@@ -1,8 +1,10 @@
 
 'use client';
 
-import CustomNavbar from "@/components/admins/CustomNavbar";
+
 import TopRankingUsers from "@/components/admins/TopRankingUsers";
+
+import Sidebar from "@/components/admins/Sidebar";
 import Cookie from "js-cookie";
 
 export default function Ranks() {
@@ -13,9 +15,12 @@ export default function Ranks() {
    
   return (
     <div>
-      <CustomNavbar />
       
-    <TopRankingUsers group={Cookie.get("role")} />
+      <Sidebar>
+      <TopRankingUsers group={Cookie.get("role")} />
+      </Sidebar>
+      
+    
     </div>
   );
 }

@@ -10,7 +10,7 @@ import {
 } from "@/actions/users";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CustomNavbar from "@/components/admins/CustomNavbar";
+import Cookies from 'js-cookie';
 import { getLoggedInUserId } from "@/hooks/useUser";
 
 const NotificationsList = () => {
@@ -37,7 +37,7 @@ const NotificationsList = () => {
 
   const handleDelete = async (notificationId) => {
     try {
-      await deleteMatangazoNotification({ userId, notificationId });
+      await deleteMatangazoNotification({ userId, notificationId, group: Cookies.get('role') });
       setNotifications((prev) =>
         prev.filter((notification) => notification._id !== notificationId)
       );
@@ -53,6 +53,7 @@ const NotificationsList = () => {
         userId,
         notificationId,
         updatedData: { message: editedMessage },
+        group:Cookies.get('role')
       });
       setNotifications((prev) =>
         prev.map((notification) =>

@@ -13,7 +13,8 @@ import { getLoggedInUserId } from '@/hooks/useUser';
 import { Navbar, Nav, Container, Breadcrumb } from "react-bootstrap";
 import { formatRoleName } from '@/actions/utils';
 import { FaBars } from 'react-icons/fa';
-import CustomNavbar from '@/components/admins/CustomNavbar';
+
+import Sidebar from '@/components/admins/Sidebar';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -162,10 +163,11 @@ export default function Home() {
   }
 
   return (
+    <>
+    <Sidebar>
     <div className="container mt-0 px-0">
       
-       {/* Navbar */}
-       <CustomNavbar />
+     
 
       {/* Tabs Navigation */}
       <ul className="nav nav-tabs mb-4">
@@ -221,5 +223,7 @@ export default function Home() {
      
      } 
     </div>
+    </Sidebar>
+    </>
   );
 }

@@ -461,7 +461,10 @@ const getMatangazoNotifications = async (req, res) => {
 const deleteMatangazoNotification = async (req, res) => {
   try {
     const { userId, notificationId } = req.params;
+    const { group } = req.body;
 
+
+    console.log('goup is', group);
     // Validate request input
     if (!userId || !notificationId) {
       return res.status(400).json({ error: "User ID and Notification ID are required." });
@@ -483,13 +486,28 @@ const deleteMatangazoNotification = async (req, res) => {
       return res.status(404).json({ error: "Notification not found." });
     }
 
-    // Remove the notification
+    // Remove the notification from the user's list
     user.matangazoNotifications.splice(notificationIndex, 1);
     await user.save();
 
+    // Delete notifications for all users in the group
+    if (group) {
+      const usersInGroup = await User.find({ selectedRoles: group });
+
+      for (const groupUser of usersInGroup) {
+        const groupNotificationIndex = groupUser.matangazoNotifications.findIndex(
+          (notif) => notif._id.toString() === notificationId
+        );
+        if (groupNotificationIndex !== -1) {
+          groupUser.matangazoNotifications.splice(groupNotificationIndex, 1);
+          await groupUser.save();
+        }
+      }
+    }
+
     res.status(200).json({
       success: true,
-      message: "Notification deleted successfully.",
+      message: "Notification deleted successfully for the user and the group.",
     });
   } catch (error) {
     console.error("Error deleting notification:", error);
@@ -532,9 +550,26 @@ const editMatangazoNotification = async (req, res) => {
     // Save changes
     await user.save();
 
+    // Update notifications for all users in the group
+    if (group) {
+      const usersInGroup = await User.find({ selectedRoles: group });
+
+      for (const groupUser of usersInGroup) {
+        const groupNotification = groupUser.matangazoNotifications.find(
+          (notif) => notif._id.toString() === notificationId
+        );
+        if (groupNotification) {
+          if (message) groupNotification.message = message;
+          if (status) groupNotification.status = status;
+          if (group) groupNotification.group = group;
+          await groupUser.save();
+        }
+      }
+    }
+
     res.status(200).json({
       success: true,
-      message: "Notification updated successfully.",
+      message: "Notification updated successfully for the user and the group.",
       notification,
     });
   } catch (error) {
@@ -542,6 +577,7 @@ const editMatangazoNotification = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 
 

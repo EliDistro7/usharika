@@ -146,54 +146,56 @@ const confirmLogout = (isConfirmed) => {
 
 
       {/* Contributions Table */}
-      <div className="my-4">
-        <div className="card shadow-sm">
-          <div className="card-header text-white" style={{backgroundColor:"#6f42c1"}}>
-            <h5 className="mb-0 text-white">Sadaka za Kanisa</h5>
-          </div>
-          <div className="card-body">
-            <div className="table-responsive">
-              <table className="table table-striped table-hover">
-                <thead className="">
-                  <tr>
-                    <th className="fw-bold">Aina</th>
-                    <th className="fw-bold text-end">Kilicholipwa</th>
-                    <th className="fw-bold text-end">Iliyoahidiwa</th>
-                    <th className="fw-bold text-center">Maendeleo</th>
-                    <th className="fw-bold text-end">Iliyobaki</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pledges.map((pledge, index) => (
-                    <tr key={index}>
-                      <td>{pledge.title}</td>
-                      <td className="text-end">TZS {pledge.paid.toLocaleString()}</td>
-                      <td className="text-end">TZS {pledge.total.toLocaleString()}</td>
-                      <td className="text-center">
-                        <div className="progress" style={{ height: "20px" }}>
-                          <div
-                            className="progress-bar bg-success"
-                            role="progressbar"
-                            style={{ width: `${(pledge.paid / pledge.total) * 100}%` }}
-                            aria-valuenow={(pledge.paid / pledge.total) * 100}
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          >
-                            {Math.round((pledge.paid / pledge.total) * 100)}%
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-end">
-                        TZS {(pledge.total - pledge.paid).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        
+  <div className="my-4">
+    <div className="card shadow-sm">
+      <div className="card-header text-white" style={{backgroundColor:"#6f42c1"}}>
+        <h5 className="mb-0 text-white">Sadaka za Kanisa</h5>
+      </div>
+      <div className="card-body">
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="">
+              <tr>
+                <th className="fw-bold">Aina</th>
+                <th className="fw-bold text-end d-none d-lg-table-cell">Kilicholipwa</th>
+                <th className="fw-bold text-end d-none d-lg-table-cell">Iliyoahidiwa</th>
+                <th className="fw-bold text-center d-none d-md-table-cell">Maendeleo</th>
+                <th className="fw-bold text-end">Iliyobaki</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pledges.map((pledge, index) => (
+                <tr key={index}>
+                  <td>{pledge.title}</td>
+                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.paid.toLocaleString()}</td>
+                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.total.toLocaleString()}</td>
+                  <td className="text-center d-none d-md-table-cell">
+                    <div className="progress" style={{ height: "20px" }}>
+                      <div
+                        className="progress-bar bg-success"
+                        role="progressbar"
+                        style={{ width: `${(pledge.paid / pledge.total) * 100}%` }}
+                        aria-valuenow={(pledge.paid / pledge.total) * 100}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {Math.round((pledge.paid / pledge.total) * 100)}%
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-end">
+                    TZS {(pledge.total - pledge.paid).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
+  </div>
+
     </div>
   );
 };

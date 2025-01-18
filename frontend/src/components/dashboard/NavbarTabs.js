@@ -28,18 +28,16 @@ const RoleDropdown = ({
     ? notifications.filter((n) => n.group === role).length
     : 0;
 
-  // Function to check if the role starts with "kiongozi"
-  function startsWithKiongozi(value) {
-    return value.startsWith("kiongozi");
-  }
+  const startsWithKiongozi = (value) => value.startsWith("kiongozi");
 
   return (
     <li className="nav-item dropdown">
       <button className="nav-link d-flex align-items-center">
-        <span className="fw-bold">{formatRoleName(role)}</span>
+        <span className=" me-2 ">{formatRoleName(role)}</span>
         {notificationCount > 0 && (
           <span
-            className="badge bg-danger ms-2"
+            className="badge bg-danger rounded-pill"
+            style={{ cursor: "pointer" }}
             onClick={() => toggleNotifications(role)}
           >
             {notificationCount}
@@ -51,75 +49,83 @@ const RoleDropdown = ({
         <Notification notifications={notifications} group={role} />
       )}
 
-      <div className="dropdown shadow">
-        {startsWithKiongozi(role) && (
-          <>
-            <button
-              className="btn btn-primary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Options
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li>
-                <button
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "users")}
-                >
-                  <FaUsers className="me-2 text-primary" /> Wanakikundi
-                </button>
+      {startsWithKiongozi(role) && (
+        <div className="dropdown-menu-wrapper position-relative">
+          <button
+            className="btn btn-primary dropdown-toggle w-100 mt-2"
+            type="button"
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Dashibodi
+          </button>
+          <ul
+            className="dropdown-menu shadow rounded-3 p-2"
+            aria-labelledby="dropdownMenuButton"
+            style={{ minWidth: "250px" }}
+          >
+            {[
+              {
+                label: "Wanakikundi",
+                icon: <FaUsers className="me-3 text-primary" />,
+                action: "users",
+              },
+              {
+                label: "Unda Tangazo",
+                icon: <MdVolumeUp className="me-3 text-success" />,
+                action: "matangazo",
+              },
+              {
+                label: "Ingiza Michango",
+                icon: <FaBook className="me-3 text-warning" />,
+                action: "donations",
+              },
+              {
+                label: "Ingiza Mahudhurio",
+                icon: <FaBook className="me-3 text-warning" />,
+                action: "attendance",
+              },
+              {
+                label: "Wanakikundi Bora",
+                icon: <FaCrown className="me-3 text-warning" />,
+                action: "top-members",
+              },
+              {
+                label: "Update status",
+                icon: <FaCrown className="me-3 text-warning" />,
+                link: `/create-highlight/${getLoggedInUserId()}`,
+              },
+            ].map((item, index) => (
+              <li key={index} className="mb-2">
+                {item.link ? (
+                  <Link
+                    href={item.link}
+                    className="dropdown-item d-flex align-items-center py-2 rounded text-dark"
+                    style={{ transition: "background-color 0.2s ease-in-out" }}
+                  >
+                    {item.icon} {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    className="dropdown-item d-flex align-items-center py-2 rounded text-dark"
+                    style={{ transition: "background-color 0.2s ease-in-out" }}
+                    onClick={() => handleNavigation(role, item.action)}
+                  >
+                    {item.icon} {item.label}
+                  </button>
+                )}
               </li>
-              <li>
-                <button
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "matangazo")}
-                >
-                  <MdVolumeUp className="me-2 text-success" /> Unda Tangazo
-                </button>
-              </li>
-              <li>
-                <button
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "donations")}
-                >
-                  <FaBook className="me-2 text-warning" /> Ingiza Michango
-                </button>
-              </li>
-              <li>
-                <button
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "attendance")}
-                >
-                  <FaBook className="me-2 text-warning" /> Ingiza Mahudhurio
-                </button>
-              </li>
-              <li>
-                <button
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "top-members")}
-                >
-                  <FaCrown className="me-2 text-warning" /> Wanakikundi Bora
-                </button>
-              </li>
-              <li>
-                <Link
-                  href={`/create-highlight/${getLoggedInUserId()}`}
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => handleNavigation(role, "top-members")}
-                >
-                  <FaCrown className="me-2 text-warning" /> Update status
-                </Link>
-              </li>
-            </ul>
-          </>
-        )}
-      </div>
+            ))}
+          </ul>
+        </div>
+      )}
     </li>
   );
 };
+
+
+
 
 const NavbarTabs = ({ roles, notifications = [], user }) => {
   const router = useRouter();

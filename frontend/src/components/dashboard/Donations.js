@@ -87,10 +87,10 @@ const Donations = () => {
                   <thead>
                     <tr>
                       <th className="fw-bold">Aina</th>
-                      <th className="fw-bold">Kikundi</th>
+                      <th className="fw-bold d-none d-md-table-cell">Kikundi</th>
                       <th className="fw-bold text-end">Kilicholipwa</th>
-                      <th className="fw-bold text-end">Iliyoahidiwa</th>
-                      <th className="fw-bold text-center">Maendeleo</th>
+                      <th className="fw-bold text-end d-none d-lg-table-cell">Iliyoahidiwa</th>
+                      <th className="fw-bold text-center d-none d-lg-table-cell">Maendeleo</th>
                       <th className="fw-bold text-end">Iliyobaki</th>
                     </tr>
                   </thead>
@@ -98,10 +98,10 @@ const Donations = () => {
                     {donations.map((donation, index) => (
                       <tr key={index}>
                         <td>{donation.name}</td>
-                        <td>{donation.group}</td>
+                        <td className="d-none d-md-table-cell">{donation.group}</td>
                         <td className="text-end">TZS {donation.amountPaid}</td>
-                        <td className="text-end">TZS {donation.total}</td>
-                        <td className="text-center">
+                        <td className="text-end d-none d-lg-table-cell">TZS {donation.total}</td>
+                        <td className="text-center d-none d-lg-table-cell">
                           <div className="progress" style={{ height: "20px" }}>
                             <div
                               className="progress-bar bg-success"
