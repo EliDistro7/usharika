@@ -48,7 +48,7 @@ const PinnedAnnouncements = ({ notifications }) => {
             </li>
           ))
         ) : (
-          <li className="dropdown-item text-muted">No pinned announcements.</li>
+          <li className="dropdown-item text-muted">Hauna matangazo uliyo-pin.</li>
         )}
       </ul>
     </div>
