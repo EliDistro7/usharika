@@ -128,20 +128,7 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
         <Button variant="primary" onClick={handleDownloadPDF}>
           Download PDF
         </Button>
-        <Button variant="primary" onClick={()=>{
-         generateCertificate({
-          recipientName: "John Doe",
-          points: 250,
-          groupName: "Kwaya ya Vijana",
-          reason: "your dedication in community service",
-          issuer: "KKKT Usharika Wa Yombo",
-          date: "31 December 2024",
-          imageUrl: "/img/mchungaji.jpg", // URL of recipient's image
-        });
-        
-        }}>
-          Certificate
-        </Button>
+       
       </Modal.Footer>
     </Modal>
   );
