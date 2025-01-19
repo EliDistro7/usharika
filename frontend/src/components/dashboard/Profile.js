@@ -1,4 +1,5 @@
 const Profile = ({ user }) => {
+  console.log('user', user);
     return (
       <div className="text-left mb-4 w-100">
         <img

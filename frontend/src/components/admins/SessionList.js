@@ -47,14 +47,14 @@ const SessionList = ({ groupedSessions, onView }) => {
       <Accordion defaultActiveKey="0">
         {Object.keys(sessions).map((sessionName, idx) => (
           <Accordion.Item eventKey={idx.toString()} key={idx} className="mb-3 shadow-sm">
-            <Accordion.Header>{sessionName}</Accordion.Header>
+            <Accordion.Header className="text-secondary">{sessionName}</Accordion.Header>
             <Accordion.Body>
               <div className="row g-3">
                 {sessions[sessionName].map((session) => (
                   <div key={session._id} className="col-md-6 col-lg-4">
-                    <div className="card border-primary shadow-sm">
+                    <div className="card shadow-sm">
                       <div className="card-body">
-                        <h5 className="card-title text-primary">
+                        <h5 className="card-title text-muted">
                           {new Date(session.date).toLocaleDateString()}
                         </h5>
                         <p className="card-text text-muted">{session.session_name}</p>

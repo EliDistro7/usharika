@@ -53,7 +53,7 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
     doc.text(`Tarehe ya ${attendance.session_name}: ${new Date(attendance.date).toLocaleDateString()}`, 14, 40);
 
     // Add Attendees Table with Ratings
-    const headers = ['#', 'Jina la Mshiriki', 'Rating'];
+    const headers = ['#', 'Jina la Mshiriki', 'Alama'];
     const body = attendance.attendees.map((attendee, index) => [
       index + 1,
       attendee.name,
@@ -88,7 +88,7 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
 
     // Save the PDF with a filename
     const sanitizedGroupName = formattedGroup.replace(/[^\w-]/g, '_');
-    doc.save(`${sanitizedGroupName}_attendance.pdf`);
+    doc.save(`${sanitizedGroupName}_mahudhurio.pdf`);
   };
 
   if (!attendance && !error) {
@@ -115,7 +115,7 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
                 <ListGroup>
                   {attendance.attendees.map((attendee) => (
                     <ListGroup.Item key={attendee.userId}>
-                      <strong>{attendee.name}</strong> - Rating: {attendee.cumulativeRating || 'N/A'}
+                      <strong>{attendee.name}</strong> - Alama: {attendee.cumulativeRating || 'N/A'}
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
@@ -126,7 +126,7 @@ const AttendanceModal = ({ attendanceId, showModal, handleClose }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={handleDownloadPDF}>
-          Download PDF
+          Pakua PDF
         </Button>
        
       </Modal.Footer>
