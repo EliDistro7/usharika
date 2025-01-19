@@ -122,7 +122,7 @@ const Notification = ({ notifications, group, userId }) => {
   key={notification._id}
   className={`list-group-item d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 shadow-sm ${
     notification.status === 'unread'
-      ? 'bg-light border-start border-4 border-warning'
+      ? ' border-start '
       : 'bg-white'
   }`}
 >
