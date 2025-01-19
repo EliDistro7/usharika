@@ -101,7 +101,7 @@ const calculateRating = (sessionTime, arrivalTime) => {
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="sessionName" className="form-label">
-                Event Name (Tukio)
+               Tukio
               </label>
               <input
                 type="text"
@@ -116,7 +116,7 @@ const calculateRating = (sessionTime, arrivalTime) => {
 
             <div className="mb-3">
               <label htmlFor="date" className="form-label">
-                Date (Tarehe)
+                Tarehe
               </label>
               <input
                 type="date"
@@ -138,7 +138,7 @@ const calculateRating = (sessionTime, arrivalTime) => {
                   onChange={(e) => setRatingEnabled(e.target.checked)}
                 />
                 <label htmlFor="ratingEnabled" className="form-check-label">
-                  Enable Ratings (Washa Ukadiriaji)
+                  Washa Ukadiriaji
                 </label>
               </div>
             </div>
@@ -146,7 +146,7 @@ const calculateRating = (sessionTime, arrivalTime) => {
             {ratingEnabled && (
               <div className="mb-3">
                 <label htmlFor="sessionStartTime" className="form-label">
-                  Session Start Time (Muda wa Kuanzia)
+                  Muda wa Kuanzia
                 </label>
                 <input
                   type="time"
@@ -163,13 +163,13 @@ const calculateRating = (sessionTime, arrivalTime) => {
               <table className="table table-striped table-responsive-sm">
                 <thead className="table-dark">
                   <tr>
-                    <th className="text-center">Photo (Picha)</th>
-                    <th>Name (Jina)</th>
-                    <th className="text-center">Present (Waliohudhuria)</th>
+                    <th className="text-center">Picha</th>
+                    <th>Jina</th>
+                    <th className="text-center">Waliohudhuria</th>
                     {ratingEnabled && (
                       <>
-                        <th className="text-center">Arrival Time (Muda wa Kufika)</th>
-                        <th className="text-center">Rating (Ukadiriaji)</th>
+                        <th className="text-center">Muda wa Kufika</th>
+                        <th className="text-center">Ukadiriaji</th>
                       </>
                     )}
                   </tr>

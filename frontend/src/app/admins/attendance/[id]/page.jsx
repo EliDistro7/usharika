@@ -169,25 +169,35 @@ export default function Home() {
       
      
 
-      {/* Tabs Navigation */}
-      <ul className="nav nav-tabs mb-4">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'attendance' ? 'active' : ''}`}
-            onClick={() => setActiveTab('attendance')}
-          >
-            Mahudhurio
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'records' ? 'active' : ''}`}
-            onClick={() => setActiveTab('records')}
-          >
-            Rekodi za Mahudhurio
-          </button>
-        </li>
-      </ul>
+    {/* Tabs Navigation */}
+<ul
+  className="nav nav-tabs mb-4 d-flex justify-content-center flex-wrap"
+  role="tablist"
+>
+  <li className="nav-item">
+    <button
+      className={`nav-link ${activeTab === 'attendance' ? 'active' : ''}`}
+      onClick={() => setActiveTab('attendance')}
+      role="tab"
+      aria-selected={activeTab === 'attendance'}
+      style={{ minWidth: "120px" }}
+    >
+      Mahudhurio
+    </button>
+  </li>
+  <li className="nav-item">
+    <button
+      className={`nav-link ${activeTab === 'records' ? 'active' : ''}`}
+      onClick={() => setActiveTab('records')}
+      role="tab"
+      aria-selected={activeTab === 'records'}
+      style={{ minWidth: "120px" }}
+    >
+      Rekodi za Mahudhurio
+    </button>
+  </li>
+</ul>
+
 
       {/* Previous Sessions */}
      
