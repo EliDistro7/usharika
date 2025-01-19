@@ -125,7 +125,7 @@ const Donations = () => {
               </div>
             </>
           ) : (
-            <p className="text-muted">Hauna mchango wowtwe kwenye vikundi</p>
+            <p className="text-muted">Hauna mchango wowote kwenye vikundi</p>
           )}
         </div>
       </div>

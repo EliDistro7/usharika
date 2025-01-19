@@ -11,6 +11,9 @@ import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 
 // Check if the user has any "kiongozi" roles
 const hasKiongoziRole = (roles) => roles.some((role) => role.startsWith("kiongozi"));
@@ -122,6 +125,39 @@ const confirmLogout = (isConfirmed) => {
   );
 };
 
+
+
+const handleDownload = () => {
+  const doc = new jsPDF();
+
+  // Add a title
+  doc.setFontSize(18);
+  doc.text("Ripoti ya Sadaka za Kanisa", 14, 20);
+
+  // Format table data
+  const tableColumn = ["Aina", "Kilicholipwa (TZS)", "Iliyoahidiwa (TZS)", "Maendeleo (%)", "Iliyobaki (TZS)"];
+  const tableRows = pledges.map((pledge) => [
+    pledge.title,
+    pledge.paid.toLocaleString(),
+    pledge.total.toLocaleString(),
+    `${Math.round((pledge.paid / pledge.total) * 100)}%`,
+    (pledge.total - pledge.paid).toLocaleString(),
+  ]);
+
+  // Add the table
+  doc.autoTable({
+    startY: 30,
+    head: [tableColumn],
+    body: tableRows,
+    styles: { fontSize: 10 },
+    theme: "grid",
+  });
+
+  // Save the PDF
+  doc.save("Ripoti_Sadaka_za_Kanisa.pdf");
+};
+
+
   return (
     <div className="container">
      
@@ -147,54 +183,65 @@ const confirmLogout = (isConfirmed) => {
 
       {/* Contributions Table */}
         
-  <div className="my-4">
-    <div className="card shadow-sm">
-      <div className="card-header text-white" style={{backgroundColor:"#6f42c1"}}>
-        <h5 className="mb-0 text-white">Sadaka za Kanisa</h5>
-      </div>
-      <div className="card-body">
-        <div className="table-responsive">
-          <table className="table table-striped table-hover">
-            <thead className="">
-              <tr>
-                <th className="fw-bold">Aina</th>
-                <th className="fw-bold text-end d-none d-lg-table-cell">Kilicholipwa</th>
-                <th className="fw-bold text-end d-none d-lg-table-cell">Iliyoahidiwa</th>
-                <th className="fw-bold text-center d-none d-md-table-cell">Maendeleo</th>
-                <th className="fw-bold text-end">Iliyobaki</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pledges.map((pledge, index) => (
-                <tr key={index}>
-                  <td>{pledge.title}</td>
-                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.paid.toLocaleString()}</td>
-                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.total.toLocaleString()}</td>
-                  <td className="text-center d-none d-md-table-cell">
-                    <div className="progress" style={{ height: "20px" }}>
-                      <div
-                        className="progress-bar bg-success"
-                        role="progressbar"
-                        style={{ width: `${(pledge.paid / pledge.total) * 100}%` }}
-                        aria-valuenow={(pledge.paid / pledge.total) * 100}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      >
-                        {Math.round((pledge.paid / pledge.total) * 100)}%
-                      </div>
+ {/* Contributions Table */}
+<div className="my-4">
+  <div className="card shadow-sm">
+    <div
+      className="card-header text-white d-flex justify-content-between align-items-center"
+      style={{ backgroundColor: "#6f42c1" }}
+    >
+      <h5 className="mb-0 text-white">Sadaka za Kanisa</h5>
+      <button
+        className="btn btn-outline-light btn-sm"
+        onClick={handleDownload}
+      >
+        <i className="bi bi-download"></i> Pakua Ripoti
+      </button>
+    </div>
+    <div className="card-body">
+      <div className="table-responsive">
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th className="fw-bold">Aina</th>
+              <th className="fw-bold text-end d-none d-lg-table-cell">Kilicholipwa</th>
+              <th className="fw-bold text-end d-none d-lg-table-cell">Iliyoahidiwa</th>
+              <th className="fw-bold text-center d-none d-md-table-cell">Maendeleo</th>
+              <th className="fw-bold text-end">Iliyobaki</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pledges.map((pledge, index) => (
+              <tr key={index}>
+                <td>{pledge.title}</td>
+                <td className="text-end d-none d-lg-table-cell">TZS {pledge.paid.toLocaleString()}</td>
+                <td className="text-end d-none d-lg-table-cell">TZS {pledge.total.toLocaleString()}</td>
+                <td className="text-center d-none d-md-table-cell">
+                  <div className="progress" style={{ height: "20px" }}>
+                    <div
+                      className="progress-bar bg-success"
+                      role="progressbar"
+                      style={{ width: `${(pledge.paid / pledge.total) * 100}%` }}
+                      aria-valuenow={(pledge.paid / pledge.total) * 100}
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      {Math.round((pledge.paid / pledge.total) * 100)}%
                     </div>
-                  </td>
-                  <td className="text-end">
-                    TZS {(pledge.total - pledge.paid).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </td>
+                <td className="text-end">
+                  TZS {(pledge.total - pledge.paid).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
+</div>
+
 
     </div>
   );
