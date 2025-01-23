@@ -181,7 +181,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
     <div className="container mt-5">
       {/* Page Header */}
       <header className="text-center mb-4">
-        <h2 className="fw-bold">Yombo Dashboard</h2>
+        <h2 className="fw-bold">Usharika</h2>
       </header>
   
       {/* Loading State */}
@@ -192,20 +192,9 @@ const calculatePledgeTotals = (user, pledgeType) => {
       )}
   
       {/* Notification, Search, Sort & Download */}
-      <section className="d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <Notification />
-        <div className="input-group w-auto">
-          <span className="input-group-text bg-primary text-white">
-            <i className="fas fa-search"></i>
-          </span>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <section className="d-flex justify-content-between align-items-center mb-4">
+       
+     
         <div className="d-flex gap-3">
           <Dropdown>
             <Dropdown.Toggle variant="primary" size="sm">
@@ -244,13 +233,30 @@ const calculatePledgeTotals = (user, pledgeType) => {
           <button className="btn btn-success btn-sm" onClick={handleDownloadPDF}>
             <i className="fas fa-download"></i>
           </button>
+        
+        
+          <div className="input-group w-auto">
+          <span className="input-group-text bg-primary text-white">
+            <i className="fas fa-search"></i>
+          </span>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Ingiza jina..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
+        </div>
+
+
+         <Notification />
       </section>
   
       {/* Totals Summary */}
       {!isLoading && currentTotals && (
         <section className="alert alert-primary text-center shadow-sm mb-4">
-          <h4 className="fw-bold text-uppercase">Muhtasari: {sortBy}</h4>
+          <h4 className="fw-bold text-uppercase"> {sortBy}</h4>
           <div className="d-flex justify-content-around">
             <p>
               <strong>Kiasi kilichoahidiwa:</strong>{' '}
