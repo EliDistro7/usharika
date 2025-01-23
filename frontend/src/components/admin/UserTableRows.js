@@ -6,6 +6,10 @@ const UserTableRows = ({
   calculatePledgeTotals,
   handleUserClick,
 }) => {
+
+console.log('users', users);
+console.log('sort by', sortBy);
+
   if (users.length === 0) {
     return (
       <tr>

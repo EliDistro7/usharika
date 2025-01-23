@@ -15,7 +15,7 @@ import Notification from '../../components/admin/Notification';  // Import Notif
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('washarika');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('none'); // Sorting criteria
@@ -104,7 +104,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
 
 
   const calculateOverallTotals = (users, pledgeType) => {
-    if (!pledgeType || pledgeType === 'none') return null;
+    if (!pledgeType || pledgeType === 'washarika') return null;
   
     return users.reduce(
       (totals, user) => {
@@ -214,8 +214,8 @@ const calculatePledgeTotals = (user, pledgeType) => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => setActiveTab('zote')}
-              active={activeTab === 'zote'}
+              onClick={() => setActiveTab('all')}
+              active={activeTab === 'all'}
             >
               Washarika ({users.length})
             </Dropdown.Item>
@@ -244,7 +244,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
       setSortBy(e.target.value)}}
   >
     {/* Default options */}
-    <option value="none">Washarika</option>
+ 
     <option value="ahadi">Ahadi</option>
     <option value="jengo">Jengo</option>
 
@@ -282,7 +282,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
                   </>
                 ) : (
                   <>
-                    <th>{sortBy === 'ahadi' ? 'Ahadi' : 'Jengo'}</th>
+                    <th>{sortBy}</th>
                     <th>Alicholipa</th>
                     <th>Kilichobaki</th>
                   </>
