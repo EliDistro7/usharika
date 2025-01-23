@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   }, []);
 
   const filteredUsers =
-    activeTab === 'wote'
+    activeTab === 'washarika'
       ? users
       : users.filter((user) => user.selectedRoles.includes(activeTab));
 
