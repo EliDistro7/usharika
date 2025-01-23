@@ -24,181 +24,154 @@ export default function Header() {
   return (
     <>
       {/* Navbar Start */}
-      <div className="container-fluid w-100 border-bottom bg-white position-relative px-0 mx-0 ">
+      <header className="border-bottom bg-white">
+        {/* Top bar */}
         <div
-          className="container py-2 px-4 w-100 "
-          style={{ backgroundColor: "#6f42c1", borderRadius:"0 46px" }} // Purple background
+          className="container-fluid text-white py-2"
+          style={{
+            backgroundColor: "#6f42c1", // Deep purple background
+            borderRadius: "0 0 46px 46px",
+          }}
         >
-          <div className="d-flex justify-content-between w-100">
-            <div className="ps-0 px-0">
-              <small className="me-0">
-                <i className="fas fa-map-marker-alt me-2 text-white"></i>
-                <a href="#" className="text-white">
-                  123 Yombo, Dar es Salaam
-                </a>
-              </small>{" "} 
-              <small className="me-3 d-none d-lg-inline">
-                <i className="fas fa-envelope me-2 text-white"></i>
-                <a href="#" className="text-white">
-                  info@yombolutheran.com
+          <div className="container d-flex justify-content-between align-items-center">
+            {/* Contact Info */}
+            <div className="d-flex align-items-center">
+             
+           
+              <small>
+                <i className="fas fa-phone-alt me-2"></i>
+                <a href="tel:+255617833806" className="text-white text-decoration-none">
+                  +255 617 833 806
                 </a>
               </small>
             </div>
-            <div className="pe-2 d-flex justify-content-between">
-              <a href="#" className="btn btn-light btn-sm-square rounded-circle">
-                <i className="fab fa-facebook-f" style={{ color: "#6f42c1" }}></i>
-              </a>
-              <a href="#" className="btn btn-light btn-sm-square rounded-circle">
-                <i className="fab fa-instagram" style={{ color: "#6f42c1" }}></i>
+
+            {/* Social Icons */}
+            <div className="d-flex">
+              <a
+                href="#"
+                className="btn btn-sm btn-light btn-square rounded-circle me-2"
+              >
+                <i className="fab fa-facebook-f" style={{ color: "#6a1b9a" }}></i>
               </a>
               <a
                 href="#"
-                className="btn btn-light btn-sm-square rounded-circle me-0"
+                className="btn btn-sm btn-light btn-square rounded-circle me-2"
               >
-                <i className="fab fa-youtube" style={{ color: "#6f42c1" }}></i>
+                <i className="fab fa-instagram" style={{ color: "#6a1b9a" }}></i>
+              </a>
+              <a
+                href="#"
+                className="btn btn-sm btn-light btn-square rounded-circle"
+              >
+                <i className="fab fa-youtube" style={{ color: "#6a1b9a" }}></i>
               </a>
             </div>
           </div>
         </div>
-        <div className="container px-3">
-          <nav className="navbar navbar-light navbar-expand-xl py-3">
-            <a href="/" className="navbar-brand d-flex align-items-center">
-              <h1 className="m-0">
-                <span className='' style={{color:"#6f42c1"}}>KKKT</span>{" "}
-                <span className='text-secondary'>Yombo</span>
-              </h1>
-            </a>
-            <button
-              className="navbar-toggler py-2 px-3"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarCollapse"
-              aria-controls="navbarCollapse"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="fa fa-bars" style={{ color: "#6f42c1" }}></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarCollapse">
-              <div className="navbar-nav mx-auto">
-                <a href="/" className="nav-item nav-link active" style={{ color: "#6f42c1" }}>
+
+        {/* Main Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-light py-3 container">
+          <a href="/" className="navbar-brand">
+            <h1 className="m-0">
+              <span style={{ color: "#6a1b9a" }}>KKKT</span>{" "}
+              <span className="text-secondary">Yombo</span>
+            </h1>
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarCollapse">
+            <ul className="navbar-nav mx-auto">
+              <li className="nav-item">
+                <a href="/" className="nav-link" style={{ color: "#6a1b9a" }}>
                   Nyumbani
                 </a>
-                <a href="/about" className="nav-item nav-link" style={{ color: "#6f42c1" }}>
+              </li>
+              <li className="nav-item">
+                <a href="/about" className="nav-link" style={{ color: "#6a1b9a" }}>
                   Fahamu Zaidi
                 </a>
-                <a href="/kalenda" className="nav-item nav-link" style={{ color: "#6f42c1" }}>
+              </li>
+              <li className="nav-item">
+                <a href="/kalenda" className="nav-link" style={{ color: "#6a1b9a" }}>
                   Kalenda ya Matukio
                 </a>
-                <a href="/uongozi" className="nav-item nav-link" style={{ color: "#6f42c1" }}>
+              </li>
+              <li className="nav-item">
+                <a href="/uongozi" className="nav-link" style={{ color: "#6a1b9a" }}>
                   Uongozi
                 </a>
-                <div className="nav-item dropdown">
-                  <a
-                    href="#"
-                    className="nav-link dropdown-toggle"
-                    style={{ color: "#6f42c1" }}
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    System
-                  </a>
-                  <div
-                    className="dropdown-menu m-0"
-                    
-                  >
-                    <a href="/usajili" className="dropdown-item ">
+              </li>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="systemDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{ color: "#6a1b9a" }}
+                >
+                  System
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a href="/usajili" className="dropdown-item">
                       Kujisajili
                     </a>
+                  </li>
+                  <li>
                     <a
-                      onClick={handleAkauntiNavigation}
-                      className="dropdown-item "
+                      className="dropdown-item"
                       style={{ cursor: "pointer" }}
+                      onClick={handleAkauntiNavigation}
                     >
                       Akaunti
                     </a>
+                  </li>
+                  <li>
                     <a
-                      onClick={handleAkauntiNavigation}
-                      className="dropdown-item "
+                      className="dropdown-item"
                       style={{ cursor: "pointer" }}
+                      onClick={handleAkauntiNavigation}
                     >
                       Login
                     </a>
-                  </div>
-                </div>
-                <a href="/contact" className="nav-item nav-link" style={{ color: "#6f42c1" }}>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item">
+                <a href="/contact" className="nav-link" style={{ color: "#6a1b9a" }}>
                   Mawasiliano
                 </a>
+              </li>
+            </ul>
+            <div className="d-flex align-items-center">
+              <div className="me-2">
+                <i className="fas fa-phone-alt fa-lg" style={{ color: "#6a1b9a" }}></i>
               </div>
-              <div className="d-flex me-4">
-                <div className="d-flex align-items-center justify-content-center">
-                  <a href="#" className="position-relative">
-                    <i
-                      className="fa fa-phone-alt fa-2x"
-                      style={{ color: "#6f42c1" }}
-                    ></i>
+              <div>
+                <small className="text-secondary">Wasiliana nasi</small>
+                <p className="mb-0">
+                  <a href="tel:+01234567890" className="text-decoration-none" style={{ color: "#9c27b0" }}>
+                    +0123 456 7890
                   </a>
-                </div>
-                <div className="d-flex flex-column pe-3">
-                  <span style={{ color: "#6f42c1" }}>Wasiliana nasi</span>
-                  <a href="#">
-                    <span style={{ color: "#8e5bdb" }}>Piga: +0123 456 7890</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </div>
-      </div>
-      {/* Navbar End */}
-
-      {/* Modal Search Start */}
-      <div
-        className="modal fade"
-        id="searchModal"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-fullscreen">
-          <div className="modal-content rounded-0">
-            <div
-              className="modal-header"
-              style={{ backgroundColor: "#8e5bdb" }}
-            >
-              <h5 className="modal-title text-white" id="exampleModalLabel">
-                Ingiza neno utafute
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body d-flex align-items-center">
-              <div className="input-group w-75 mx-auto">
-                <input
-                  type="search"
-                  className="form-control p-3"
-                  placeholder="Keywords"
-                  style={{ borderColor: "#6f42c1" }}
-                />
-                <span
-                  className="input-group-text p-3"
-                  style={{
-                    backgroundColor: "#6f42c1",
-                    color: "white",
-                  }}
-                >
-                  <i className="fa fa-search"></i>
-                </span>
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* Modal Search End */}
+        </nav>
+      </header>
+      {/* Navbar End */}
     </>
   );
 }

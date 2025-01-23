@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('none'); // Sorting criteria
+  const [searchQuery, setSearchQuery] = useState(''); // New state for search input
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -46,32 +47,41 @@ const AdminDashboard = () => {
     fetchMembers();
   }, []);
 
-  const filteredUsers =
+
+// Sort users based on the selected pledge type
+const filteredUsers =
     activeTab === 'washarika'
       ? users
       : users.filter((user) => user.selectedRoles.includes(activeTab));
 
-// Sort users based on the selected pledge type
-const sortedUsers = () => {
-  if (sortBy === 'ahadi') {
-    return [...filteredUsers].sort(
-      (a, b) => (b.pledges.ahadi || 0) - (a.pledges.ahadi || 0)
-    );
-  } else if (sortBy === 'jengo') {
-    return [...filteredUsers].sort(
-      (a, b) => (b.pledges.jengo || 0) - (a.pledges.jengo || 0)
-    );
-  } else if (sortBy && filteredUsers[0]?.pledges?.other?.[sortBy]) {
-    // Handle dynamic 'other' fields
-    return [...filteredUsers].sort(
-      (a, b) =>
-        (b.pledges.other[sortBy]?.total || 0) -
-        (a.pledges.other[sortBy]?.total || 0)
-    );
-  } else {
-    return filteredUsers;
-  }
-};
+  const sortedUsers = () => {
+    let userList = filteredUsers;
+
+    if (sortBy === 'ahadi') {
+      userList = [...filteredUsers].sort(
+        (a, b) => (b.pledges.ahadi || 0) - (a.pledges.ahadi || 0)
+      );
+    } else if (sortBy === 'jengo') {
+      userList = [...filteredUsers].sort(
+        (a, b) => (b.pledges.jengo || 0) - (a.pledges.jengo || 0)
+      );
+    } else if (sortBy && filteredUsers[0]?.pledges?.other?.[sortBy]) {
+      userList = [...filteredUsers].sort(
+        (a, b) =>
+          (b.pledges.other[sortBy]?.total || 0) -
+          (a.pledges.other[sortBy]?.total || 0)
+      );
+    }
+
+    // Apply search query filter
+    if (searchQuery) {
+      userList = userList.filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return userList;
+  };
 
 
 // Calculate totals for the selected pledge type
@@ -165,113 +175,108 @@ const calculatePledgeTotals = (user, pledgeType) => {
     setSelectedUser(null); // Close modal by clearing selected user
   };
 
+  
+
   return (
     <div className="container mt-5">
-      <h2 className="mb-4 text-center">Yombo Dashboard</h2>
+      {/* Page Header */}
+      <header className="text-center mb-4">
+        <h2 className="fw-bold">Yombo Dashboard</h2>
+      </header>
   
-      {/* Loading Indicator */}
-      {isLoading && <p className="text-center">Loading members...</p>}
-       {/* Notification Section - Integrated Notification Component */}
-       <Notification />
-  
-      {/* Display Overall Totals */}
-      {!isLoading && currentTotals && (
-        <div className="alert alert-primary text-center p-4 rounded-3 shadow-sm">
-          <h3 className="fw-bold mb-3 text-uppercase">
-            Muhtasari: {sortBy}
-          </h3>
-          <div className="d-flex flex-column gap-2">
-            <p className="mb-1">
-              <span className="fw-bold">Jumla ya Kiasi kilichoahidiwa:</span>{' '}
-              <span className="fs-5 text-success fw-bolder">
-                {currentTotals.totalPledged}
-              </span>
-            </p>
-            <p className="mb-1">
-              <span className="fw-bold">Kiasi kilicholipwa:</span>{' '}
-              <span className="fs-5 text-primary fw-bolder">
-                {currentTotals.totalPaid}
-              </span>
-            </p>
-            <p>
-              <span className="fw-bold">Kiasi kilichobaki:</span>{' '}
-              <span className="fs-5 text-danger fw-bolder">
-                {currentTotals.totalRemaining}
-              </span>
-            </p>
-          </div>
+      {/* Loading State */}
+      {isLoading && (
+        <div className="text-center py-3">
+          <p className="text-muted">Inapakia washarika...</p>
         </div>
       )}
-
-     
-    
-{/* Tabs Navigation */}
-{/* Dropdown for Tab Names */}
-{!isLoading && (
-        <Dropdown className="mb-3">
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
-            {activeTab || 'Select Category'}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={() => setActiveTab('all')}
-              active={activeTab === 'all'}
-            >
-              Washarika ({users.length})
-            </Dropdown.Item>
-            {categories.map((category) => (
-              <Dropdown.Item
-                key={category._id}
-                onClick={() => setActiveTab(category._id)}
-                active={activeTab === category._id}
-              >
-                {formatRoleName(category._id.toUpperCase())} ({category.count})
+  
+      {/* Notification, Search, Sort & Download */}
+      <section className="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <Notification />
+        <div className="input-group w-auto">
+          <span className="input-group-text bg-primary text-white">
+            <i className="fas fa-search"></i>
+          </span>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="d-flex gap-3">
+          <Dropdown>
+            <Dropdown.Toggle variant="primary" size="sm">
+              <i className="fas fa-filter"></i>
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => setActiveTab('all')} active={activeTab === 'all'}>
+                Washarika ({users.length})
               </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
+              {categories.map((category) => (
+                <Dropdown.Item
+                  key={category._id}
+                  onClick={() => setActiveTab(category._id)}
+                  active={activeTab === category._id}
+                >
+                  {formatRoleName(category._id.toUpperCase())} ({category.count})
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          <select
+            id="sortBy"
+            className="form-select form-select-sm shadow-sm"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="ahadi">Ahadi</option>
+            <option value="jengo">Jengo</option>
+            {users[0]?.pledges?.other &&
+              Object.entries(users[0].pledges.other).map(([key]) => (
+                <option key={key} value={key}>
+                  {key}
+                </option>
+              ))}
+          </select>
+          <button className="btn btn-success btn-sm" onClick={handleDownloadPDF}>
+            <i className="fas fa-download"></i>
+          </button>
+        </div>
+      </section>
+  
+      {/* Totals Summary */}
+      {!isLoading && currentTotals && (
+        <section className="alert alert-primary text-center shadow-sm mb-4">
+          <h4 className="fw-bold text-uppercase">Muhtasari: {sortBy}</h4>
+          <div className="d-flex justify-content-around">
+            <p>
+              <strong>Kiasi kilichoahidiwa:</strong>{' '}
+              <span className="fs-5 text-success fw-bolder">{currentTotals.totalPledged}</span>
+            </p>
+            <p>
+              <strong>Kiasi kilicholipwa:</strong>{' '}
+              <span className="fs-5 text-primary fw-bolder">{currentTotals.totalPaid}</span>
+            </p>
+            <p>
+              <strong>Kiasi kilichobaki:</strong>{' '}
+              <span className="fs-5 text-danger fw-bolder">{currentTotals.totalRemaining}</span>
+            </p>
+          </div>
+        </section>
       )}
-
-
-    {/* Sorting Dropdown */}
-{/* Sorting Dropdown */}
-<div className="mb-3">
-  <select
-    className="form-select"
-    value={sortBy}
-    onChange={(e) =>{
-      console.log('value of sortBy changed', e.target.value)
-      setSortBy(e.target.value)}}
-  >
-    {/* Default options */}
- 
-    <option value="ahadi">Ahadi</option>
-    <option value="jengo">Jengo</option>
-
-    {/* Dynamic options from `other` field */}
-    {users[0]?.pledges?.other &&
-      Object.entries(users[0].pledges.other).map(([key]) => (
-        <option key={key} value={key}>
-          {key}
-        </option>
-      ))}
-  </select>
-</div>
-
-
-
-
-      <button className="btn btn-success mb-3" onClick={handleDownloadPDF}>
-        Download PDF
-      </button>
   
       {/* Users Table */}
       {!isLoading && (
-        <div className="table-responsive">
+        <section className="table-responsive shadow-sm">
           <table className="table table-striped table-bordered">
             <thead className="table-dark">
               <tr>
-                <th>Profile</th>
+                <th>
+                  <i className="fas fa-user me-2"></i>Profile
+                </th>
                 <th>Jina</th>
                 {sortBy === 'none' ? (
                   <>
@@ -298,7 +303,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
               />
             </tbody>
           </table>
-        </div>
+        </section>
       )}
   
       {/* Payment Modal */}
@@ -310,12 +315,13 @@ const calculatePledgeTotals = (user, pledgeType) => {
         />
       )}
   
-      {/* Toast notifications */}
+      {/* Toast Notifications */}
       <ToastContainer />
-      
-     
     </div>
   );
+  
+  
+  
 };
 
 export default AdminDashboard;
