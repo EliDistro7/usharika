@@ -1,7 +1,31 @@
+import { verifyUser } from "@/actions/admin";
+import { formatRoleName } from "@/actions/utils";
 import React from "react";
+import { Toast } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
 
-const FullUserModal = ({ user, onClose }) => {
+const FullUserModal = ({ user, onClose,notification }) => {
   if (!user) return null;
+
+
+  const handleVerification=async ()=>{
+    try{
+      if(notification.type === "registeringNotification"){
+        await verifyUser({userId: notification.userId});
+ 
+       toast.success(`Ndugu ${notification.name} amethibitishwa kuwa Msharika wa Usharika wa Yombo`)
+       return;
+     }
+     if(notification.type === "kujiungaKikundi"){
+       
+       toast.success(`Ndugu ${notification.name} amethibitishwa kujiunga na ${notification.selectedRole}`)
+       return;
+     }
+    }catch(err){
+      console.log(err);
+    }
+ 
+  }
 
   return (
     <div
@@ -16,6 +40,7 @@ const FullUserModal = ({ user, onClose }) => {
         zIndex: 1050,
       }}
     >
+      <ToastContainer autoClose={4000}/>
       <div
         className="modal-content p-4 d-flex flex-column"
         style={{
@@ -32,8 +57,9 @@ const FullUserModal = ({ user, onClose }) => {
           className="d-flex justify-content-between align-items-center border-bottom pb-3"
           style={{ marginBottom: "20px", flexShrink: 0 }}
         >
-          <h5 className="modal-title mb-0" style={{ fontWeight: "600" }}>
-            Maelezo ya Msharika: {user.name}
+          <h5 className="modal-title mb-0" style={{ fontWeight: "600" }} align="center">
+
+            {notification.type === 'registeringNotification' ? "Maombi ya Usajili" : `Kujiunga na Kikundi:${formatRoleName(notification.selectedRole)}`}
           </h5>
           <button
             type="button"
@@ -182,7 +208,7 @@ const FullUserModal = ({ user, onClose }) => {
 
         {/* Footer */}
         <div
-          className="text-end border-top pt-3"
+          className="text-end border-top pt-3 d-flex-grow justify-content-between w-100 "
           style={{ flexShrink: 0 }}
         >
           <button
@@ -192,6 +218,16 @@ const FullUserModal = ({ user, onClose }) => {
             onClick={onClose}
           >
             Funga
+          </button>
+
+          {' '}
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ padding: "10px 20px" }}
+            onClick={handleVerification}
+          >
+            Thibitisha
           </button>
         </div>
       </div>

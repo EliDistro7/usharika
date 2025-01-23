@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+
+
+
+
 const DependentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -73,53 +77,7 @@ const YomboUserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: String,
-      enum:   [
-        "msharika",
-        "kiongozi_jumuiya",
-        
-        "umoja_wa_vijana",
-        "kiongozi_umoja_wa_vijana",
-      
-        "kwaya_ya_umoja_wa_vijana",
-        "kiongozi_kwaya_ya_umoja_wa_vijana",
-      
-        "kwaya_kuu",
-        "kiongozi_kwaya_kuu",
-      
-        "kwaya_ya_wamama",
-        "kiongozi_kwaya_ya_wamama",
-      
-        "kwaya_ya_vijana",
-        "kiongozi_kwaya_ya_vijana",
-      
-        "praise_team",
-        "kiongozi_praise_team",
-      
-        "kwaya_ya_uinjilisti",
-        "kiongozi_kwaya_ya_uinjilsti",
-      
-        "wababa_kati",
-        "kiongozi_wababa_kati",
-        
-        "umoja_wa_wanaume",
-        "kiongozi_umoja_wa_wanaume",
-      
-        "baraza_la_wazee",
-        "kiongozi_baraza_la_wazee",
-       
-        "umoja_wa_wanawake",
-        "kiongozi_umoja_wa_wanawake",
-      
-        "wamama",
-        "kiongozi_wamama",
-      
-        "wababa",
-        "kiongozi_wababa",
-      ],
-      default: "msharika",
-    },
+   
     selectedRoles: {
       type: [String], // Array of strings
       default: ["msharika"],
@@ -250,6 +208,10 @@ const YomboUserSchema = new mongoose.Schema(
   { timestamps: true } // Adds createdAt and updatedAt timestamps
 );
 
+
+
+
+
 // Ensure gender determines maritalStatus consistency
 YomboUserSchema.pre("save", function (next) {
   if (this.gender === "me" && !["umeoa", "hujaoa"].includes(this.maritalStatus)) {
@@ -262,6 +224,10 @@ YomboUserSchema.pre("save", function (next) {
 
   next();
 });
+
+// Dynamically set the role enum before model initialization
+
+
 
 YomboUserSchema.path("pledges.paidAhadi").validate(function (value) {
   return value <= this.pledges.ahadi;

@@ -40,7 +40,7 @@ const createStaticAdmin = async () => {
   }
 };
 
- createStaticAdmin();
+ //createStaticAdmin();
 
 const registerAdmin = async (req, res) => {
   const { username, email, password } = req.body;
@@ -100,7 +100,7 @@ const loginAdmin = async (req, res) => {
 
 // Function to add a registering notification
 const addRegisteringNotification = async (req, res) => {
-  const { userId, name } = req.body;
+  const { userId, name, selectedRole,type } = req.body;
    console.log('req body', req.body)
   try {
     // Find the admin by ID
@@ -110,7 +110,7 @@ const addRegisteringNotification = async (req, res) => {
     }
 
     // Add the notification
-    admin.registeringNotifications.push({ userId, status: 'unread', name });
+    admin.registeringNotifications.push({ userId, status: 'unread', name, selectedRole, type });
 
     // Save the updated admin document
     await admin.save();

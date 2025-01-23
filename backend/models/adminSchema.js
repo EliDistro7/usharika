@@ -30,6 +30,9 @@ const adminSchema = new mongoose.Schema({
         ref: "YomboUser", // Reference to the YomboUser collection
         required: true,
       },
+      selectedRole: {
+        type: String,
+      },
       type: {
         type: String,
         default: "registeringNotification",
@@ -46,6 +49,8 @@ const adminSchema = new mongoose.Schema({
       },
       createdAt: {
         type: Date,
+
+
         default: Date.now, // Automatically sets the current timestamp
       },
     },

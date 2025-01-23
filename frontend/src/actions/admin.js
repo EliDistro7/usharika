@@ -10,11 +10,13 @@ const api = process.env.NEXT_PUBLIC_SERVER
  * @param {string} userId - The ID of the user attempting to register.
  * @returns {Promise<Object>} - The server response data.
  */
-export const addRegisterNotification = async (name, userId) => {
+export const addRegisterNotification = async ({name, userId, selectedRole,type}) => {
   try {
     const response = await axios.post(`${api}/admin/addRegisterNotifications`, {
       name,
       userId,
+      selectedRole, 
+      type
     });
 
     //console.log('Notification added successfully:', response.data);
@@ -94,3 +96,32 @@ export const deleteNotification = async ({ userId }) => {
 
 
 
+export const verifyUser = async ({ userId }) => {
+  const adminId = process.env.NEXT_PUBLIC_MKUU; // Admin ID from environment variables
+  try {
+    console.log(`Verifying ${userId}`)
+    // Send a POST request to the backend endpoint
+    const response = await axios.post(`${api}/verifyUser`, {
+      adminId,
+      userId,
+    });
+
+  }catch(err){
+    console.log(err);
+  }
+}
+
+export const addSelectedRole = async ({ userId, selected }) => {
+  const adminId = process.env.NEXT_PUBLIC_MKUU; // Admin ID from environment variables
+  try {
+    console.log(`Verifying ${userId}`)
+    // Send a POST request to the backend endpoint
+    const response = await axios.post(`${api}/verifyUser`, {
+      adminId,
+      userId,
+    });
+
+  }catch(err){
+    console.log(err);
+  }
+}

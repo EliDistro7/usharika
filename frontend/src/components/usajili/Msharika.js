@@ -1,5 +1,6 @@
+
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ProgressBar, Form, InputGroup, Button } from "react-bootstrap";
 import {addRegisterNotification} from '@/actions/admin'
@@ -7,50 +8,9 @@ import {uploadToCloudinary} from "@/actions/uploadToCloudinary";
 import axios from "axios";
 import { formatRoleName } from "@/actions/utils";
 import Link from "next/link";
+import { getDefaultRoles } from "@/actions/users";
 
 
-const userRoles =  [
-  "kiongozi_jumuiya",
-  
-  "umoja_wa_vijana",
-  "kiongozi_umoja_wa_vijana",
-
-  "kwaya_ya_umoja_wa_vijana",
-  "kiongozi_kwaya_ya_umoja_wa_vijana",
-
-  "kwaya_kuu",
-  "kiongozi_kwaya_kuu",
-
-  "kwaya_ya_wamama",
-  "kiongozi_kwaya_ya_wamama",
-
-  "kwaya_ya_vijana",
-  "kiongozi_kwaya_ya_vijana",
-
-  "praise_team",
-  "kiongozi_praise_team",
-
-  "kwaya_ya_uinjilisti",
-  "kiongozi_kwaya_ya_uinjilsti",
-
-  "wababa_kati",
-  "kiongozi_wababa_kati",
-  
-  "umoja_wa_wanaume",
-  "kiongozi_umoja_wa_wanaume",
-
-  "baraza_la_wazee",
-  "kiongozi_baraza_la_wazee",
- 
-  "umoja_wa_wanawake",
-  "kiongozi_umoja_wa_wanawake",
-
-  "wamama",
-  "kiongozi_wamama",
-
-  "wababa",
-  "kiongozi_wababa",
-]
 
 
 const jumuiyas = ["Malawi", "Kanisani", "Golani"];
@@ -59,6 +19,7 @@ const Msharika= () => {
   const [dependents, setDependents] = useState([{ name: "", dob: "", relation: "" }]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [password, setPassword] = useState("");
+  const [userRoles, setUserRoles] = useState([]);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedJumuiya, setSelectedJumuiya] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -106,6 +67,20 @@ const Msharika= () => {
         { value: "hujaolewa", label: "Hujaolewa" },
       ]
     : [];
+
+    useEffect( ()=>{
+      const getDefaultUserRoles = async ()=>{
+        try {
+          const defaultRoles = await getDefaultRoles();
+          //console.log('default roles:', defaultRoles)
+          setUserRoles(defaultRoles);
+          } catch(error){
+            console.log(error)
+          }
+      }
+      getDefaultUserRoles();
+     
+    }, [])
 
     // Handle Input Change
     const handleInputChange = (e) => {
@@ -220,7 +195,7 @@ const Msharika= () => {
         formData);
   
       //console.log("Response:", response.data);
-      const res=await addRegisterNotification(response.data.user.name, response.data.user._id);
+      const res=await addRegisterNotification({name:response.data.user.name,type:"registeringNotification", userId:response.data.user._id});
       
       setSuccessMessage("Maombi yametumwa, utapokea uthibitisho kwenye simu yako hivi punde!");
       //console.log('addRegisterNotification', res);

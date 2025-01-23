@@ -244,3 +244,19 @@ export const getTopRankingUsers = async ({ group, interval }) => {
     );
   }
 };
+
+
+// Fetch default roles
+export const getDefaultRoles= async () => {
+ 
+  try {
+    const response = await axios.post(`${api}/getRoles`);
+    
+    return response.data.roles; // Array of donations along with username details
+  } catch (error) {
+    console.error('Error fetching defaul roles:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch default errors.'
+    );
+  }
+};

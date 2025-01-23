@@ -25,16 +25,20 @@ const {
     getMatangazoNotifications,
     editMatangazoNotification,
     deleteMatangazoNotification,
+    verifyUser,addSelectedRole
 } = require('../controllers/user-controller-yombo.js');
 
 // User Routes
 router.post('/registerYombo', userRegister);                    // Register a new user
 router.post('/loginYombo', userLogIn);  
+router.post('/verifyUser', verifyUser);  
 router.get('/:name', getUserDetail);  
 router.get('/users/:userId', getUserDetailById);  
 router.post('/allMembers', getAllUsers);
 router.post('/addPayment', addPaymentMain);
+
 router.post('/addPledge', addPledge);
+router.post('/addSelectedRole', addSelectedRole);
 router.post('/getUsersByRole', getUsersByRole);
 router.post('/users/pushMatangazoNotifications', pushMatangazoNotification);
 router.post('/users/createDonation', createDonation);

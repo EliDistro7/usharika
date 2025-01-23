@@ -5,6 +5,8 @@ const User = require('../models/yombo/yomboUserSchema.js');
 //const Notification = require('../models/notificationSchema.js');
 const mongoose = require('mongoose');
 
+const { fetchDefaultRoles } = require("../controllers/roles-controller");
+
 const origin = process.env.ORIGIN;
 
 
@@ -20,8 +22,21 @@ const userRegister = async (req, res) => {
            dob,maritalStatus,kipaimara,ubatizo,marriageType,profilePicture } = req.body;
         // const selectedRoles = roles; 
   
-       
-       
+       const defaultRoles = await fetchDefaultRoles().roles;
+
+       console,log("default roles",defaultRoles);
+
+       if(!defaultRoles){
+        return res.status(500).send({message: 'No default roles'})
+       }
+
+       for(let role of selectedRoles){
+           if(!defaultRoles.includes(role)){
+            return res.status(500).send({message: `enum error, ${role} is not registered`})
+       }
+      }
+
+    
         // Validate input
         if (!name || !password) {
           return res.status(400).send({ message: 'Jina na password vinahitajika' });
@@ -219,6 +234,54 @@ const getUserDetailById = async (req, res) => {
     res.status(500).json({ error: "Internal server error", details: err });
   }
 };
+
+const verifyUser = async (req, res) =>{
+  try{
+    const {adminId, userId} = req.body;
+  // Find the user by userId (assuming userId is a unique field like _id or custom id)
+  const user = await User.findById(userId); // Use findById if you are using MongoDB's ObjectId
+  const isAdmin = await Admin.findById(adminId); 
+
+  if(!isAdmin){
+    console.error('admin not found');
+    return res.status(404).send({message:"admin hayupo"});
+  }
+
+  if (user) {
+    // Remove sensitive data
+    user.verified = true;
+    await user.save();
+    return res.send(user);
+  } 
+  } catch(err){
+    console.log(err);
+    return res.status(404).json({message: err.message});
+  }
+}
+
+const addSelectedRole = async (req, res) =>{
+  try{
+    const {adminId, userId, selectedRole} = req.body;
+  // Find the user by userId (assuming userId is a unique field like _id or custom id)
+  const user = await User.findById(userId); // Use findById if you are using MongoDB's ObjectId
+  const isAdmin = await Admin.findById(adminId); 
+
+  if(!isAdmin){
+    console.error('admin not found');
+    return res.status(404).send({message:"admin hayupo"});
+  }
+
+  if (user) {
+    // Remove sensitive data
+    user.selectedRoles.push(selectedRole) ;
+    user.save() ;
+    return res.send(user);
+  } 
+  } catch(err){
+    console.log(err);
+    return res.status(404).json({message: err.message});
+  }
+}
 
 
 // Example function to add payment using username
@@ -464,7 +527,7 @@ const deleteMatangazoNotification = async (req, res) => {
     const { group } = req.body;
 
 
-    console.log('goup is', group);
+    //console.log('goup is', group);
     // Validate request input
     if (!userId || !notificationId) {
       return res.status(400).json({ error: "User ID and Notification ID are required." });
@@ -647,7 +710,7 @@ const pinNotification = async (req, res) => {
   try {
     const { userId, notificationId } = req.params;
 
-    console.log('params', req.params);
+   // console.log('params', req.params);
 
     // Set the `pinned` field to true for the specified notification
     const result = await User.updateOne(
@@ -885,7 +948,9 @@ const getUsersByGroupAndFieldType = async (req, res) => {
 
 module.exports = {
     getUsersByRole,
+    addSelectedRole,
     pushMatangazoNotification,
+    verifyUser,
     userRegister,
     userLogIn,
     getUserDetail,

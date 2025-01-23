@@ -23,7 +23,7 @@ const deleteAllHighlights = async () => {
 const createHighlight = async (req, res) => {
   try {
     // Log incoming request body
-    console.log("Request body received:", req.body);
+    //console.log("Request body received:", req.body);
 
     const { name, content, author } = req.body;
 
@@ -181,7 +181,7 @@ const getRecentHighlights = async (req, res) => {
   try {
     // Calculate the date for 3 days ago
     const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 7);
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 20);
 
     // Query highlights created within the last 3 days
     const recentHighlights = await Highlight.find({

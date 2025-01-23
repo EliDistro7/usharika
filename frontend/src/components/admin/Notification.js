@@ -13,6 +13,7 @@ const Notification = () => {
   const [error, setError] = useState("");
   const [showDropdown, setShowDropdown] = useState(false); // Dropdown visibility
   const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [notific, setCurrentNotification] = useState(null); //
   const adminId = process.env.NEXT_PUBLIC_MKUU; // Replace with dynamic admin ID if necessary
 
   // Fetch admin notifications
@@ -20,6 +21,7 @@ const Notification = () => {
     const loadNotifications = async () => {
       try {
         const adminData = await fetchAdminById(adminId);
+        console.log(adminData?.admin.registeringNotifications)
         setNotifications(adminData?.admin.registeringNotifications || []);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -76,10 +78,11 @@ const Notification = () => {
     }
   };
 
-  const fetchUserById = async (userId) => {
+  const fetchUserById = async (userId, notif) => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/users/${userId}`); // Adjust URL as needed
       setUser(response.data);
+     // setCurrentNotification(notif);
       setShowModal(true); // Show modal after user data is fetched
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -91,7 +94,8 @@ const Notification = () => {
     setShowDropdown((prev) => !prev);
   };
 
-  const handleNotificationClick = (userId) => {
+  const handleNotificationClick = (userId,notification) => {
+    setCurrentNotification(notification)
     fetchUserById(userId); // Fetch the user details when the notification is clicked
   };
 
@@ -133,24 +137,27 @@ const Notification = () => {
                 <li
                   key={notification._id}
                   className={`list-group-item d-flex justify-content-between align-items-center ${
-                    notification.status === 'unread' ? 'bg-light border-start border-primary border-4' : ''
+                    notification.status === 'unread' ? 'bg-light ' : ''
                   }`}
                 >
                   <div className="d-flex align-items-center">
                     {notification.status === 'unread' ? (
-                      <BsCircle className="text-primary me-3" />
+                      <BsCircle className=" me-3" />
                     ) : (
                       <BsCheckCircle className="text-success me-3" />
                     )}
                     <div>
-                      <h6 className="mb-1" onClick={() => handleNotificationClick(notification.userId)}>
+                      <h6 className="mb-1" onClick={() => handleNotificationClick(notification.userId, notification)}>
                         {notification.name}
-                        {notification.type === 'registering' && (
-                          <span className="badge bg-warning ms-2">maombi ya usajili</span>
+                        {notification.type === 'registeringNotification' && (
+                          <span className="badge ms-2">maombi ya usajili</span>
+                        )}
+                         {notification.type === 'kujiungaKikundi' && (
+                          <span className="badge ms-2">Kujiunga kikundi</span>
                         )}
                       </h6>
                       <small className={`text-muted`}>
-                        {notification.status === 'unread' ? 'New' : 'Read'}
+                        {notification.status === 'unread' ? 'Mpya' : 'Imesomwa'}
                       </small>
                     </div>
                   </div>
@@ -167,20 +174,20 @@ const Notification = () => {
                       className="btn btn-sm btn-outline-danger"
                       onClick={() => handleDeleteNotification(notification.userId)}
                     >
-                      Delete
+                     Futa
                     </button>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-muted text-center">No notifications available</p>
+            <p className="text-muted text-center">Hamna notification</p>
           )}
         </div>
       )}
 
       {/* Full User Modal */}
-      {showModal && <FullUserModal user={user} onClose={() => setShowModal(false)} />}
+      {showModal && <FullUserModal user={user} onClose={() => setShowModal(false)} notification={notific} />}
     </div>
   );
 };
