@@ -1,6 +1,13 @@
-import React from "react";
+
+'use client';
+import React, { useState } from "react";
+import "./Footer.css"; // Import custom CSS for styling
 
 const Footer = () => {
+  const [showQuickLinks, setShowQuickLinks] = useState(false);
+  const [showOperatingHours, setShowOperatingHours] = useState(false);
+  const [showLocation, setShowLocation] = useState(false);
+
   return (
     <footer className="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.1s">
       <div className="container py-5">
@@ -12,66 +19,78 @@ const Footer = () => {
                 <span style={{ color: "#6f42c1" }}>KKKT</span>{" "}
                 <span className="text-mute">YOMBO</span>
               </h2>
-              <p className="mb-4">
-                Karibu katika familia ya kiroho ya KKKT Yombo Kuu, mahali pa
-                kuabudu, kujifunza, na kushiriki upendo wa Kristo. Pamoja tunakua
-                kiimani na kumtumikia Mungu kwa furaha.
-              </p>
+            
             </div>
           </div>
 
           {/* Quick Links Section */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-              <h4 className="text-muted mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
-                Quick Links
-              </h4>
-              <ul className="list-unstyled">
-                <li>
-                  <a href="/" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Nyumbani
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Fahamu Zaidi
-                  </a>
-                </li>
-                <li>
-                  <a href="/kalenda" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Kalenda ya Matukio
-                  </a>
-                </li>
-                <li>
-                  <a href="/uongozi" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Uongozi
-                  </a>
-                </li>
-                <li>
-                  <a href="/usajili" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Kujisajili
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="text-body mb-2 d-block">
-                    <i className="fa fa-chevron-right me-2 text-primary"></i>
-                    Mawasiliano
-                  </a>
-                </li>
-              </ul>
+              <button
+                className="btn btn-link text-decoration-none fw-bold"
+                style={{ color: "#6f42c1" }}
+                onClick={() => setShowQuickLinks(!showQuickLinks)}
+              >
+                Viunganishi {showQuickLinks ? "▲" : "▼"}
+              </button>
+              <div
+                className={`collapsed-content ${showQuickLinks ? "expanded" : ""}`}
+              >
+                <ul className="list-unstyled mt-3">
+                  <li>
+                    <a href="/" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Nyumbani
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/about" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Fahamu Zaidi
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/kalenda" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Kalenda ya Matukio
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/uongozi" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Uongozi
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/usajili" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Kujisajili
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/contact" className="text-body mb-2 d-block">
+                      <i className="fa fa-chevron-right me-2 text-primary"></i>
+                      Mawasiliano
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
           {/* Operating Hours */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-              <div className="d-flex flex-column p-4 ps-5 text-dark">
-                <h5 className="fw-bold">OFISI YA MCHUNGAJI</h5>
+              <button
+                className="btn btn-link text-decoration-none fw-bold"
+                style={{ color: "#6f42c1" }}
+                onClick={() => setShowOperatingHours(!showOperatingHours)}
+              >
+                Ofisi ya Mchungaji {showOperatingHours ? "▲" : "▼"}
+              </button>
+              <div
+                className={`collapsed-content ${showOperatingHours ? "expanded" : ""}`}
+              >
                 <p>Jumatatu: 8am - 5pm</p>
                 <p>Jumanne: 8am - 5pm</p>
                 <p>Jumatano: 8am - 5pm</p>
@@ -84,22 +103,28 @@ const Footer = () => {
           {/* Location Section */}
           <div className="col-md-6 col-lg-4 col-xl-3">
             <div className="footer-item">
-              <h4 className="text-muted mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
-                MAHALI
-              </h4>
-              <div className="d-flex flex-column align-items-start">
-                <a href="#" className="text-body mb-4">
+              <button
+                className="btn btn-link text-decoration-none fw-bold"
+                style={{ color: "#6f42c1" }}
+                onClick={() => setShowLocation(!showLocation)}
+              >
+                Mahali {showLocation ? "▲" : "▼"}
+              </button>
+              <div
+                className={`collapsed-content ${showLocation ? "expanded" : ""}`}
+              >
+                <p>
                   <i className="fa fa-map-marker-alt text-primary me-2"></i>
                   104 Yombo Kiwalani, Dar Es Salaam, URT
-                </a>
-                <a href="#" className="text-body mb-4">
+                </p>
+                <p>
                   <i className="fa fa-phone-alt text-primary me-2"></i>
                   (+012) 3456 7890 123
-                </a>
-                <a href="#" className="text-body mb-4">
+                </p>
+                <p>
                   <i className="fas fa-envelope text-primary me-2"></i>
                   yombolutheran@gmail.com
-                </a>
+                </p>
                 <div className="footer-icon d-flex">
                   <a
                     className="btn btn-primary btn-sm-square me-3 rounded-circle text-white"

@@ -1,0 +1,13 @@
+.collapsed-content {
+    max-height: 1.5em; /* Show one line only */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: max-height 0.3s ease;
+  }
+  
+  .collapsed-content.expanded {
+    max-height: 500px; /* Allow full content to show when expanded */
+    white-space: normal;
+  }
+  

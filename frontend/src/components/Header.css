@@ -1,0 +1,41 @@
+
+
+/* Header Styles */
+.header {
+    border-bottom: 1px solid #f1f1f1;
+    z-index: 1050;
+  }
+  
+  .nav-link {
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: #6f42c1;
+  }
+  
+  .navbar-toggler {
+    background: none;
+    color: #6f42c1;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 1.5rem;
+    color: #6f42c1;
+  }
+  
+  .text-purple {
+    color: #6f42c1;
+  }
+  
+  .btn-outline-primary {
+    color: #6f42c1;
+    border-color: #6f42c1;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #6f42c1;
+    color: #fff;
+  }
+  
