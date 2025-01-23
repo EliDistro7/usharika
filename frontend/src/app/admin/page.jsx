@@ -178,7 +178,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
       {!isLoading && currentTotals && (
         <div className="alert alert-primary text-center p-4 rounded-3 shadow-sm">
           <h3 className="fw-bold mb-3 text-uppercase">
-            Muhtasari: {sortBy === 'ahadi' ? 'Ahadi' : 'Jengo'}
+            Muhtasari: {sortBy}
           </h3>
           <div className="d-flex flex-column gap-2">
             <p className="mb-1">
