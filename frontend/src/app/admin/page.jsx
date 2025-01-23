@@ -274,43 +274,44 @@ const calculatePledgeTotals = (user, pledgeType) => {
         </section>
       )}
   
-      {/* Users Table */}
-      {!isLoading && (
-        <section className="table-responsive shadow-sm">
-          <table className="table table-striped table-bordered">
-            <thead className="table-dark">
-              <tr>
-                <th>
-                  <i className="fas fa-user me-2"></i>Profile
-                </th>
-                <th>Jina</th>
-                {sortBy === 'none' ? (
-                  <>
-                    <th>Simu</th>
-                    <th>Jinsia</th>
-                    <th>Jumuiya</th>
-                    <th>Kazi</th>
-                  </>
-                ) : (
-                  <>
-                    <th>{sortBy}</th>
-                    <th>Alicholipa</th>
-                    <th>Kilichobaki</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              <UserTableRows
-                users={sortedUsers()}
-                sortBy={sortBy}
-                calculatePledgeTotals={calculatePledgeTotals}
-                handleUserClick={handleUserClick}
-              />
-            </tbody>
-          </table>
-        </section>
-      )}
+   {/* Users Table */}
+{!isLoading && (
+  <section className="table-responsive shadow-sm">
+    <table className="table table-striped table-bordered">
+      <thead className="table-dark">
+        <tr>
+          <th>
+            <i className="fas fa-user me-2"></i>Profile
+          </th>
+          <th>Jina</th>
+          {sortBy === "none" ? (
+            <>
+              <th className="d-none d-md-table-cell">Simu</th>
+              <th className="d-none d-sm-table-cell">Jinsia</th>
+              <th className="d-none d-lg-table-cell">Jumuiya</th>
+              <th>Kazi</th>
+            </>
+          ) : (
+            <>
+              <th>{sortBy}</th>
+              <th>Alicholipa</th>
+              <th>Kilichobaki</th>
+            </>
+          )}
+        </tr>
+      </thead>
+      <tbody>
+        <UserTableRows
+          users={sortedUsers()}
+          sortBy={sortBy}
+          calculatePledgeTotals={calculatePledgeTotals}
+          handleUserClick={handleUserClick}
+        />
+      </tbody>
+    </table>
+  </section>
+)}
+
   
       {/* Payment Modal */}
       {selectedUser && (

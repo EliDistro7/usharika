@@ -25,12 +25,11 @@ console.log('sort by', sortBy);
       {users.map((user) => {
         const { totalPledged, totalPaid, totalRemaining } =
           sortBy !== "none" ? calculatePledgeTotals(user, sortBy) : {};
-
-        // Determine if the user has a "kiongozi" role
+  
         const hasKiongoziRole = user.selectedRoles.some((role) =>
           role.startsWith("kiongozi")
         );
-
+  
         return (
           <tr
             key={user._id}
@@ -40,8 +39,12 @@ console.log('sort by', sortBy);
               cursor: "pointer",
               transition: "background-color 0.2s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "white")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#f9f9f9")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "white")
+            }
           >
             {/* Profile Picture */}
             <td className="text-center">
@@ -53,7 +56,7 @@ console.log('sort by', sortBy);
                 height="40"
               />
             </td>
-
+  
             {/* User Name with Kiongozi Badge */}
             <td>
               <span className="fw-bold">{user.name}</span>
@@ -61,7 +64,7 @@ console.log('sort by', sortBy);
                 <span
                   className="badge ms-2 text-white"
                   style={{
-                    backgroundColor: "#17a2b8", // Info color for "kiongozi"
+                    backgroundColor: "#17a2b8",
                     fontSize: "0.75rem",
                   }}
                 >
@@ -69,27 +72,33 @@ console.log('sort by', sortBy);
                 </span>
               )}
             </td>
-
+  
             {/* User Details */}
             {sortBy === "none" ? (
               <>
-                <td className="text-muted">{user.phone}</td>
-                <td className="text-capitalize">
+                {/* Phone column - hidden on small screens */}
+                <td className="text-muted d-none d-md-table-cell">{user.phone}</td>
+                
+                {/* Gender column - hidden on extra small screens */}
+                <td className="text-capitalize d-none d-sm-table-cell">
                   {user.gender === "me" ? "Mume" : "Mke"}
                 </td>
-                {/* Vikundi column with width limit */}
+  
+                {/* Jumuiya column - hidden on small screens */}
                 <td
+                  className="d-none d-lg-table-cell"
                   style={{
-                    maxWidth: "200px", // Limit column width
+                    maxWidth: "200px",
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                   }}
-                  title={user.jumuiya} // Show full text on hover
+                  title={user.jumuiya}
                 >
                   {user.jumuiya}
                 </td>
-               
+  
+                {/* Occupation column - always visible */}
                 <td>{user.occupation}</td>
               </>
             ) : (
@@ -104,6 +113,7 @@ console.log('sort by', sortBy);
       })}
     </>
   );
+  
 };
 
 export default UserTableRows;
