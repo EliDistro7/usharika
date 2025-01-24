@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Highlights from "./Highlights"; // Assuming Highlights is a sibling component
 import { getRecentHighlights } from "@/actions/highlight";
+import { formatRoleName } from "@/actions/utils";
 
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
@@ -67,7 +68,7 @@ const HighlightsWrapper = () => {
           <option value="All">Vikundi Vyote</option>
           {[...new Set(dataSets.map((item) => item.author))].map((author) => (
             <option key={author} value={author}>
-              {author}
+              {formatRoleName(author)}
             </option>
           ))}
         </select>

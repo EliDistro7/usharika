@@ -8,6 +8,8 @@ import {getLoggedInUserId} from "@/hooks/useUser";
 import {formatRoleName} from "@/actions/utils"
 const CustomNavbar = () => {
   const [activeTab2, setActiveTab2] = useState("home");
+  const role= Cookies.get('role');
+  console.log('role is', role)
 
   return (
     <Navbar style={{ backgroundColor: "#6f42c1" }} variant="dark" expand="lg" className="mb-4">

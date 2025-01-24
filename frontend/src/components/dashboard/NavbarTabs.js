@@ -28,6 +28,13 @@ const RoleDropdown = ({
     ? notifications.filter((n) => n.group === role).length
     : 0;
 
+    const storeGroup = (group) =>{
+      const formattedRole =group.replace('kiongozi_','');
+      
+      Cookies.set("role", formattedRole, { secure: true, sameSite: "Strict" });
+     
+    }
+
   const startsWithKiongozi = (value) => value.startsWith("kiongozi");
 
   return (
@@ -100,6 +107,9 @@ const RoleDropdown = ({
               <li key={index} className="mb-2">
                 {item.link ? (
                   <Link
+                    onClick={()=>{
+                       storeGroup(role)
+                    }}
                     href={item.link}
                     className="dropdown-item d-flex align-items-center py-2 rounded text-dark"
                     style={{ transition: "background-color 0.2s ease-in-out" }}
