@@ -11,14 +11,14 @@ export default function Ranks() {
 
     
   const group = Cookie.get("role") || "Unknown Group"; // Assumes the role is stored in a cookie
-  console.log('goup', group)
+  //nsole.log('goup', group)
    
   return (
     <div>
       
-
-      <TopRankingUsers group={Cookie.get("role")} />
       <CustomNavbar />
+      <TopRankingUsers group={Cookie.get("role")} />
+   
       
     
     </div>
