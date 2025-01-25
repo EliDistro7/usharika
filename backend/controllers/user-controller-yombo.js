@@ -523,9 +523,10 @@ const getMatangazoNotifications = async (req, res) => {
 // Function to delete a specific notification
 const deleteMatangazoNotification = async (req, res) => {
   try {
+     console.log('it reaches here');
     const { userId, notificationId } = req.params;
-    const { group } = req.body;
-
+    const { group,message } = req.body;
+   console.log(`userId: ${userId}, notificationId: ${notificationId} and group: ${group}`);
 
     //console.log('goup is', group);
     // Validate request input
@@ -541,6 +542,7 @@ const deleteMatangazoNotification = async (req, res) => {
     }
 
     // Find the notification index in the user's array
+    console.log('user notifications', user.matangazoNotifications);
     const notificationIndex = user.matangazoNotifications.findIndex(
       (notif) => notif._id.toString() === notificationId
     );
@@ -559,7 +561,7 @@ const deleteMatangazoNotification = async (req, res) => {
 
       for (const groupUser of usersInGroup) {
         const groupNotificationIndex = groupUser.matangazoNotifications.findIndex(
-          (notif) => notif._id.toString() === notificationId
+          (notif) => notif.message  === message
         );
         if (groupNotificationIndex !== -1) {
           groupUser.matangazoNotifications.splice(groupNotificationIndex, 1);

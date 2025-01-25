@@ -6,7 +6,7 @@ import { pushMatangazoNotification } from "@/actions/users";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "@/components/admins/Sidebar"; // Import the new Sidebar
+
 import { getLoggedInUserId } from "@/hooks/useUser";
 import NotificationList from "./NotificationList";
 import CustomNavbar from "./CustomNavbar";
@@ -31,7 +31,7 @@ const CreateTangazo = () => {
 
     try {
       await pushMatangazoNotification(formData);
-      toast.success("Notification sent successfully!");
+      toast.success("Tangazo limetumwa  ")
       setFormData({ group: Cookies.get("role"), message: "" });
     } catch (err) {
       toast.error(err.message || "Failed to send notification.");

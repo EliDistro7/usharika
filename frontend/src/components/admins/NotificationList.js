@@ -35,9 +35,9 @@ const NotificationsList = () => {
     fetchNotifications();
   }, [userId]);
 
-  const handleDelete = async (notificationId) => {
+  const handleDelete = async (notificationId, message)=>{ 
     try {
-      await deleteMatangazoNotification({ userId, notificationId, group: Cookies.get('role') });
+      await deleteMatangazoNotification({ userId, notificationId, group: Cookies.get('role')  ,message });
       setNotifications((prev) =>
         prev.filter((notification) => notification._id !== notificationId)
       );
@@ -124,7 +124,7 @@ const NotificationsList = () => {
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
-                          onClick={() => handleDelete(notification._id)}
+                          onClick={() => handleDelete(notification._id, notification.message )}
                         >
                           Delete
                         </button>
