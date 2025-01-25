@@ -2,7 +2,7 @@ const Roles = require('../models/yombo/roleSchema.js'); // Adjust path as necess
 
 const createRoles = async () =>{
   // Initialize the roles object
-  //const roles = new Roles()
+  const roles = new Roles()
    // Log the highlight object before saving
    console.log("Roles object to be saved:", roles);
 
@@ -12,6 +12,10 @@ const createRoles = async () =>{
      // Log the saved roles
      console.log("Roles saved successfully:", savedRoles);
 }
+
+createRoles();
+
+
 
 
 
