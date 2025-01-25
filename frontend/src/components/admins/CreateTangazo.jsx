@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "@/components/admins/Sidebar"; // Import the new Sidebar
 import { getLoggedInUserId } from "@/hooks/useUser";
 import NotificationList from "./NotificationList";
+import CustomNavbar from "./CustomNavbar";
 
 const CreateTangazo = () => {
   const [formData, setFormData] = useState({
@@ -40,7 +41,8 @@ const CreateTangazo = () => {
   };
 
   return (
-    <Sidebar>
+    <>
+      <CustomNavbar />
       <div className="container mt-0 px-0">
         <ToastContainer position="top-right" autoClose={3000} />
 
@@ -96,7 +98,9 @@ const CreateTangazo = () => {
           </Tab>
         </Tabs>
       </div>
-    </Sidebar>
+    </>
+  
+    
   );
 };
 

@@ -127,9 +127,9 @@ const UserTable = ({ data, tableName = "" }) => {
                   <tr>
                     <th>#</th>
                     <th>Name (Jina)</th>
-                    <th className="text-center d-none d-md-table-cell">Marriage (Ndoa)</th>
-                    <th className="text-center d-none d-md-table-cell">Occupation (Kazi)</th>
-                    <th className="text-center d-none d-sm-table-cell">Phone (Simu)</th>
+                    <th className="text-center d-none d-md-table-cell"> (Ndoa)</th>
+                    <th className="text-center d-none d-md-table-cell"> (Kazi)</th>
+                    <th className="text-center d-none d-sm-table-cell"> (Simu)</th>
                   </tr>
                 </thead>
                 <tbody>

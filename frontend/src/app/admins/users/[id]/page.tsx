@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import UserTable from "@/components/admins/UserTable";
 import { getUsersByRole } from "@/hooks/useUser";
 import Sidebar from "@/components/admins/Sidebar";
+import CustomNavbar from "@/components/admins/CustomNavbar";
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -41,13 +42,13 @@ export default function Home() {
 
   return (
     <>
-    <Sidebar>
+ 
 
     <div className="px-0 mx-0 py-0 mt-0">
-      
+      <CustomNavbar />
       <UserTable data={users} tableName={Cookies.get("role")?.replace('_', ' ')}/>
     </div>
-    </Sidebar>
+   
    
     </>
    

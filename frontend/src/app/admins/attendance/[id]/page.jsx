@@ -14,7 +14,8 @@ import { Navbar, Nav, Container, Breadcrumb } from "react-bootstrap";
 import { formatRoleName } from '@/actions/utils';
 import { FaBars } from 'react-icons/fa';
 
-import Sidebar from '@/components/admins/Sidebar';
+
+import CustomNavbar from '@/components/admins/CustomNavbar';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -164,7 +165,7 @@ export default function Home() {
 
   return (
     <>
-    <Sidebar>
+    <CustomNavbar />
     <div className="container mt-0 px-0">
       
      
@@ -233,7 +234,7 @@ export default function Home() {
      
      } 
     </div>
-    </Sidebar>
+   
     </>
   );
 }

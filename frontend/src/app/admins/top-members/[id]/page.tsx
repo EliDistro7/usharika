@@ -4,8 +4,8 @@
 
 import TopRankingUsers from "@/components/admins/TopRankingUsers";
 
-import Sidebar from "@/components/admins/Sidebar";
 import Cookie from "js-cookie";
+import CustomNavbar from "@/components/admins/CustomNavbar";
 
 export default function Ranks() {
 
@@ -16,9 +16,9 @@ export default function Ranks() {
   return (
     <div>
       
-      <Sidebar>
+
       <TopRankingUsers group={Cookie.get("role")} />
-      </Sidebar>
+      <CustomNavbar />
       
     
     </div>
