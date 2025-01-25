@@ -13,7 +13,7 @@ const createRoles = async () =>{
      console.log("Roles saved successfully:", savedRoles);
 }
 
-createRoles();
+//createRoles();
 
 
 
@@ -23,7 +23,7 @@ createRoles();
 // Delete All Roles
 const deleteRoles = async () => {
   try {
- // await Roles.deleteMany({}); // Deletes all documents in the Highlight collection
+  await Roles.deleteMany({}); // Deletes all documents in the Highlight collection
 
    console.log("All Roles deleted successfully.");
     
@@ -32,6 +32,8 @@ const deleteRoles = async () => {
    
   }
 };
+
+ //deleteRoles();
 
 
 
