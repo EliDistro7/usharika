@@ -8,6 +8,7 @@ import "animate.css";
 import { Card, Button, Form, Row, Col } from "react-bootstrap";
 import { getUser } from "@/hooks/useUser";
 import { addPledge } from "@/actions/pledge";
+import Link from 'next/link';
 
 const paymentOptions = [
   { id: "mpesa", name: "MPESA", number: "255-123-456-789" },
@@ -52,9 +53,11 @@ const Pledge = () => {
       try {
         const user = await getUser(); // Fetch user data
         if (user) {
-          setUsername(user.name || "");
+          setUsername(user.name || null)
           setPhoneNumber(user.phone || "");
         }
+        
+
       } catch (err) {
         console.error("Failed to fetch user data:", err);
       }
@@ -112,6 +115,19 @@ const Pledge = () => {
       <h2 className="text-center fw-bold text-primary mb-4 animate__animated animate__fadeIn">
         Ungana nasi kwa njia ya Sadaka
       </h2>
+
+       {/* Login prompt */}
+       {!username && (
+    <div className="text-center mb-4">
+      <p className="text-muted">
+        Tafadhali{" "}
+        <Link href="/login" className="text-primary fw-bold">
+          log in kwenye akaunti yako
+        </Link>{" "}
+        ili uweze kuweka ahadi.
+      </p>
+    </div>
+       )}
 
       <Row className="g-4">
         {donationOptions.map((option) => (
