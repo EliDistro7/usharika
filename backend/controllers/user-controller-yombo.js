@@ -24,7 +24,7 @@ const userRegister = async (req, res) => {
   
        const defaultRoles = await fetchDefaultRoles().roles;
 
-       console,log("default roles",defaultRoles);
+      // console,log("default roles",defaultRoles);
 
        if(!defaultRoles){
         return res.status(500).send({message: 'No default roles'})
