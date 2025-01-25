@@ -9,6 +9,19 @@ import { Card, Button, Form, Row, Col } from "react-bootstrap";
 import { getUser } from "@/hooks/useUser";
 import { addPledge } from "@/actions/pledge";
 import Link from 'next/link';
+import { Merriweather } from "next/font/google";
+import { Dancing_Script } from "next/font/google";
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["400", "700"], // Include regular and bold weights
+});
+
+const merriweather = Merriweather({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
+
 
 const paymentOptions = [
   { id: "mpesa", name: "MPESA", number: "255-123-456-789" },
@@ -56,7 +69,6 @@ const Pledge = () => {
           setUsername(user.name || null)
           setPhoneNumber(user.phone || "");
         }
-        
 
       } catch (err) {
         console.error("Failed to fetch user data:", err);
@@ -111,24 +123,24 @@ const Pledge = () => {
   };
 
   return (
-    <div className="container py-5">
+    <div className={`container py-5 ${merriweather.className}`}>
       <h2 className="text-center fw-bold text-primary mb-4 animate__animated animate__fadeIn">
         Ungana nasi kwa njia ya Sadaka
       </h2>
-
-       {/* Login prompt */}
-       {!username && (
-    <div className="text-center mb-4">
-      <p className="text-muted">
-        Tafadhali{" "}
-        <Link href="/login" className="text-primary fw-bold">
-          log in kwenye akaunti yako
-        </Link>{" "}
-        ili uweze kuweka ahadi.
-      </p>
-    </div>
-       )}
-
+  
+      {/* Login prompt */}
+      {!username && (
+        <div className="text-center mb-4">
+          <p className="text-muted">
+            Tafadhali{" "}
+            <Link href="/auth"   className="text-primary fw-bold">
+              log in kwenye akaunti yako
+            </Link>{" "}
+            ili uweze kuweka ahadi.
+          </p>
+        </div>
+      )}
+  
       <Row className="g-4">
         {donationOptions.map((option) => (
           <Col key={option.id} xs={12} md={6} lg={4}>
@@ -152,11 +164,11 @@ const Pledge = () => {
                 </div>
               </Card.Body>
             </Card>
-
+  
             {selectedOption?.id === option.id && (
               <Card className="mt-3 p-4 bg-light border-primary shadow">
                 <h4 className="fw-bold mb-4 text-success">{selectedOption.title}</h4>
-
+  
                 <div className="d-flex gap-3 mb-4">
                   <Button
                     variant={isPledge ? "primary" : "outline-primary"}
@@ -173,7 +185,7 @@ const Pledge = () => {
                     Lipa sasa
                   </Button>
                 </div>
-
+  
                 <Form>
                   {isPledge && (
                     <>
@@ -195,7 +207,7 @@ const Pledge = () => {
                       />
                     </>
                   )}
-
+  
                   <InputField
                     label="Kiasi (TZS)"
                     type="number"
@@ -204,7 +216,7 @@ const Pledge = () => {
                     onChange={(e) => setAmount(e.target.value)}
                     required
                   />
-
+  
                   {!isPledge && (
                     <Form.Group className="mb-3">
                       <Form.Label className="fw-bold">Njia ya Malipo</Form.Label>
@@ -225,9 +237,9 @@ const Pledge = () => {
                     </Form.Group>
                   )}
                 </Form>
-
+  
                 {error && <div className="text-danger mt-3">{error}</div>}
-
+  
                 <Button
                   onClick={handleSubmit}
                   variant="success"
@@ -240,7 +252,6 @@ const Pledge = () => {
           </Col>
         ))}
       </Row>
-      <ToastContainer />
     </div>
   );
 };

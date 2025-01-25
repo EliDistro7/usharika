@@ -3,7 +3,7 @@ import Link from "next/link";
 
 
 const Profile = ({ user }) => {
-  console.log('user', user);
+ //onsole.log('user', user);
     return (
       <div className="text-left mb-4 w-100">
         <Link href={`/profile/${getLoggedInUserId()}`}>

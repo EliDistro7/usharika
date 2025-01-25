@@ -42,42 +42,17 @@
   z-index: 99;
 }
 
-h1,
-h2,
-h3,
-.h1,
-.h2,
-.h3 {
-  font-weight: 200;
-  font-family: 'Montserrat', sans-serif;
+body {
+  font-family: 'Roboto', 'Noto Sans', sans-serif;
 }
 
-h4,
-h5,
-h6,
-.h4,
-.h5,
-.h6 {
-  font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
+.roboto {
+  font-family: 'Roboto', sans-serif;
 }
 
-.display-1,
-.display-2,
-.display-3,
-.display-4,
-.display-5,
-.display-6 {
-  font-weight: 700;
-  font-family: 'Fredoka', sans-serif;
+.noto-sans {
+  font-family: 'Noto Sans', sans-serif;
 }
-
-.display-4,
-.display-5,
-.display-6 {
-  font-weight: 600;
-}
-
 
 .overlay {
   position: absolute;
