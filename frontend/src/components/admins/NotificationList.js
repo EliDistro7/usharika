@@ -84,7 +84,7 @@ const NotificationsList = () => {
           {loading ? (
             <p>Loading notifications...</p>
           ) : notifications.length === 0 ? (
-            <p>No notifications available.</p>
+            <p>Hakuna matangazo.</p>
           ) : (
             <ul className="list-group">
               {notifications.map((notification) => (
