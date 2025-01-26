@@ -299,7 +299,7 @@ const Msharika= () => {
 
   return (
     <div className="container mt-5">
-      <form className="p-4 rounded shadow bg-light" onSubmit={handleSubmit}>
+      <form className="p-4 rounded shadow " onSubmit={handleSubmit}>
         <h2 className="text-center mb-4 text-primary fw-bold">Usajili wa Msharika</h2>
 
         {(errorMessage || successMessage) && (
