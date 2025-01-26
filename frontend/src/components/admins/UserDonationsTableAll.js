@@ -6,6 +6,11 @@ import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Import the autoTable plugin
 
+import html2canvas from 'html2canvas-pro';
+
+
+
+
 const UserDonationsTableAll = ({ userId, group, field_type }) => {
   const [donationsData, setDonationsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,11 +55,12 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
     doc.setTextColor(128, 0, 128); // Purple color
     doc.setFontSize(20);
     doc.text("KKKT USHARIKA WA YOMBO", 105, 15, { align: "center" }); // Centered Title
-    doc.setFontSize(16);
-    doc.text(`Mchango: ${activeTab}`, 105, 25, { align: "center" }); // Donation name as a subheader
+    
+    doc.text(`${formattedGroup}`, 105, 25); // Group Name 105, 25
 
     doc.setFontSize(14);
-    doc.text(`Huduma: ${formattedGroup}`, 14, 40); // Group Name
+   
+    doc.text(`Mchango: ${activeTab}`, 14, 40, { align: "center" }); // Donation name as a subheader 14, 40
     doc.text(`Tarehe: ${formattedDate} | Muda: ${formattedTime}`, 14, 50); // Date and Time
 
     // Add Purple Table Headers and Donation Data
@@ -115,6 +121,40 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
     doc.save(`${activeTab}_donations.pdf`);
   };
 
+  const handleDownloadImage = async () => {
+    if (!activeTab) {
+      toast.error("Please select a donation to download data.");
+      return;
+    }
+  
+    // Get the container element to capture
+    const elementToCapture = document.getElementById('capture-area');
+    if (!elementToCapture) {
+      toast.error("Capture area not found.");
+      return;
+    }
+  
+    try {
+      // Render the element to a canvas
+      const canvas = await html2canvas(elementToCapture, {
+        backgroundColor: "#ffffff", // Set background color for the image
+        useCORS: true, // Handle cross-origin images
+      });
+  
+      // Convert the canvas to an image
+      const imgData = canvas.toDataURL("image/png");
+  
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `${activeTab}_donations.png`;
+      link.click();
+    } catch (error) {
+      console.error("Error capturing the element:", error);
+      toast.error("Failed to generate image. Please try again.");
+    }
+  };
+
   // Group donations by name
   const donationNames = Array.from(new Set(donationsData.flatMap(user => user.donations.map(donation => donation.name))));
 
@@ -163,7 +203,7 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
                   .filter(donation => donation.name === activeTab).length === 0 ? (
                     <div>Hakuna Michango kwenye hichi kikundi</div>
                   ) : (
-                    <div>
+                    <div id="capture-area">
                       <table className="table table-bordered table-striped mt-3">
                         <thead>
                           <tr>
@@ -198,9 +238,14 @@ const UserDonationsTableAll = ({ userId, group, field_type }) => {
                       </div>
                     </div>
                   )}
+                  <div>
                 <Button variant="success" onClick={handleDownloadPDF} className="mt-3">
                   Download PDF
                 </Button>
+                <Button variant="success" onClick={handleDownloadImage} className="mt-3">
+                  Download Picha
+                </Button>
+                </div>
               </div>
             )}
           </div>
