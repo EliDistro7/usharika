@@ -9,6 +9,7 @@ import axios from "axios";
 import { formatRoleName } from "@/actions/utils";
 import Link from "next/link";
 import { getDefaultRoles } from "@/actions/users";
+import { Tabs, Tab } from "react-bootstrap";
 
 
 
@@ -101,6 +102,72 @@ const Msharika= () => {
         },
       }));
     };
+
+   
+
+    function RoleSelector({ userRoles, formData, handleRoleChange }) {
+      // Categorize roles
+      const kiongoziRoles = userRoles.filter((role) => role.startsWith("kiongozi_"));
+      const choirRoles = userRoles.filter((role) =>
+        !role.toLowerCase().includes("kiongozi_kwaya") && role.toLowerCase().includes("kwaya")
+      );
+      const otherRoles = userRoles.filter(
+        (role) =>
+          !role.startsWith("kiongozi_") &&
+          !role.toLowerCase().includes("choir") &&
+          !role.toLowerCase().includes("kwaya")
+      );
+    
+      // Helper function to render checkboxes
+      const renderRoleCheckboxes = (roles) => {
+        return roles.map((role) => (
+          <div className="form-check" key={role}>
+            <input
+              type="checkbox"
+              id={role}
+              className="form-check-input"
+              checked={formData.selectedRoles.includes(role)}
+              onChange={() => handleRoleChange(role)}
+            />
+            <label className="form-check-label">{formatRoleName(role)}</label>
+          </div>
+        ));
+      };
+    
+      return (
+        <Tabs defaultActiveKey="kiongozi" id="role-tabs" className="mb-3">
+          {/* Tab for Kiongozi Roles */}
+          <Tab eventKey="kiongozi" title="Kiongozi">
+            {kiongoziRoles.length > 0 ? (
+              renderRoleCheckboxes(kiongoziRoles)
+            ) : (
+              <p className="text-muted">No Kiongozi roles available.</p>
+            )}
+          </Tab>
+    
+          {/* Tab for Choir Roles */}
+          <Tab eventKey="choir" title="Kwaya">
+            {choirRoles.length > 0 ? (
+              renderRoleCheckboxes(choirRoles)
+            ) : (
+              <p className="text-muted">No Choir roles available.</p>
+            )}
+          </Tab>
+    
+          {/* Tab for Other Roles */}
+          <Tab eventKey="others" title="Mwanakikundi">
+            {otherRoles.length > 0 ? (
+              renderRoleCheckboxes(otherRoles)
+            ) : (
+              <p className="text-muted">No other roles available.</p>
+            )}
+          </Tab>
+        </Tabs>
+      );
+    }
+    
+   
+    
     
   
     // Handle Date Change
@@ -206,7 +273,27 @@ const Msharika= () => {
       setErrorMessage(error.response.data.message);
     }
   };
-  
+
+    // Categorize roles
+    const kiongoziRoles = userRoles.filter((role) => role.startsWith("kiongozi_"));
+    const otherRoles = userRoles.filter((role) => !role.startsWith("kiongozi_"));
+
+  const renderRoleCheckboxes = (roles) => {
+    return roles.map((role) => (
+      <div className="form-check" key={role}>
+        <input
+          type="checkbox"
+          id={role}
+          className="form-check-input"
+          checked={formData.selectedRoles.includes(role)}
+          onChange={() => handleRoleChange(role)}
+        />
+        <label className="form-check-label">{formatRoleName(role)}</label>
+      </div>
+    ));
+  };
+
+
 
   return (
     <div className="container mt-5">
@@ -561,18 +648,7 @@ const Msharika= () => {
         <div className="mb-4">
           <h3 className="text-secondary fw-bold">Vikundi unavyoshiriki au una nafasi unazohudumu kanisani</h3>
           <span className='text-danger text-xs'>hakikisha unaingiza vikundi vyote unavyoshiriki au nafasi za kiuongozi</span>
-          {userRoles.map((role) => (
-            <div className="form-check" key={role}>
-              <input
-                type="checkbox"
-                id={role}
-                className="form-check-input"
-                checked={formData.selectedRoles.includes(role)}
-                onChange={() => handleRoleChange(role)}
-              />
-              <label className="form-check-label">{formatRoleName(role)}</label>
-            </div>
-          ))}
+          {RoleSelector({ userRoles, formData, handleRoleChange })}
         </div>
 
         {/* Dependents Section */}

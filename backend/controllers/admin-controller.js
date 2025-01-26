@@ -40,7 +40,7 @@ const createStaticAdmin = async () => {
   }
 };
 
- createStaticAdmin();
+ //createStaticAdmin();
 
 const registerAdmin = async (req, res) => {
   const { username, email, password } = req.body;
@@ -101,11 +101,12 @@ const loginAdmin = async (req, res) => {
 // Function to add a registering notification
 const addRegisteringNotification = async (req, res) => {
   const { userId, name, selectedRole,type } = req.body;
-   console.log('req body', req.body)
+  // console.log('req body', req.body)
   try {
     // Find the admin by ID
     const admin = await Admin.findById(process.env.ADMIN_ID);
     if (!admin) {
+      console.log('admin not found', process.env.ADMIN_ID);
       return res.status(404).json({ message: 'Admin not found' });
     }
 
@@ -117,6 +118,7 @@ const addRegisteringNotification = async (req, res) => {
 
     res.status(200).json({ message: 'Notification added successfully', admin });
   } catch (error) {
+    console.log('error adding rgistering notification',error);
     res.status(500).json({ message: 'Error adding notification', error: error.message });
   }
 };

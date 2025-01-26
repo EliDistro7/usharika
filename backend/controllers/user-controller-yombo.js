@@ -15,7 +15,7 @@ const userRegister = async (req, res) => {
     try {
       // Handle the file upload
     
-      console.log('Form Data:', req.body); // For debugging purposes
+     // console.log('Form Data:', req.body); // For debugging purposes
   
         // Parse the form data (including roles, dob, etc.)
         const { name, password, selectedRoles, jumuiya,occupation,phone,pledges,gender,
