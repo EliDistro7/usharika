@@ -137,13 +137,7 @@ const Msharika= () => {
       return (
         <Tabs defaultActiveKey="kiongozi" id="role-tabs" className="mb-3">
           {/* Tab for Kiongozi Roles */}
-          <Tab eventKey="kiongozi" title="Kiongozi">
-            {kiongoziRoles.length > 0 ? (
-              renderRoleCheckboxes(kiongoziRoles)
-            ) : (
-              <p className="text-muted">No Kiongozi roles available.</p>
-            )}
-          </Tab>
+       
     
           {/* Tab for Choir Roles */}
           <Tab eventKey="choir" title="Kwaya">
@@ -155,11 +149,19 @@ const Msharika= () => {
           </Tab>
     
           {/* Tab for Other Roles */}
-          <Tab eventKey="others" title="Mwanakikundi">
+          <Tab eventKey="others" title="vingine">
             {otherRoles.length > 0 ? (
               renderRoleCheckboxes(otherRoles)
             ) : (
               <p className="text-muted">No other roles available.</p>
+            )}
+          </Tab>
+
+          <Tab eventKey="kiongozi" title="viongozi">
+            {kiongoziRoles.length > 0 ? (
+              renderRoleCheckboxes(kiongoziRoles)
+            ) : (
+              <p className="text-muted">No Kiongozi roles available.</p>
             )}
           </Tab>
         </Tabs>
