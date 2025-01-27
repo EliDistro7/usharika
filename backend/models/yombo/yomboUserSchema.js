@@ -103,6 +103,10 @@ const YomboUserSchema = new mongoose.Schema(
       enum: ["Malawi", "Kanisani", "Golani"],
       required: true,
     },
+    kiongozi_jumuiya: {
+      type: Boolean,
+      default: false,
+    },
     matangazoNotifications: [
       {
         group: {

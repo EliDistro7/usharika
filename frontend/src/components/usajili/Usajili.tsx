@@ -41,6 +41,7 @@ const Usajili: React.FC = () => {
                 Usajili wa Msharika
               </button>
             </li>
+       {/*
             <li className="nav-item">
               <button
                 className={`nav-link ${activeForm === 'ubatizo' ? 'active' : ''}`}
@@ -65,6 +66,9 @@ const Usajili: React.FC = () => {
                 Kujiunga na Kwaya
               </button>
             </li>
+       
+       */}     
+      
           </ul>
           <div className="mt-4">{renderForm()}</div>
         </div>

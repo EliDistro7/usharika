@@ -77,6 +77,7 @@ const Msharika= () => {
           setUserRoles(defaultRoles);
           } catch(error){
             console.log(error)
+
           }
       }
       getDefaultUserRoles();
@@ -111,9 +112,13 @@ const Msharika= () => {
       const choirRoles = userRoles.filter((role) =>
         !role.toLowerCase().includes("kiongozi_kwaya") && role.toLowerCase().includes("kwaya")
       );
+      const jumuiyaRoles = userRoles.filter((role) =>
+         role.toLowerCase().includes("jumuiya")
+      );
       const otherRoles = userRoles.filter(
         (role) =>
           !role.startsWith("kiongozi_") &&
+        
           !role.toLowerCase().includes("choir") &&
           !role.toLowerCase().includes("kwaya")
       );
@@ -138,6 +143,7 @@ const Msharika= () => {
         <Tabs defaultActiveKey="kiongozi" id="role-tabs" className="mb-3">
           {/* Tab for Kiongozi Roles */}
        
+      
     
           {/* Tab for Choir Roles */}
           <Tab eventKey="choir" title="Kwaya">
@@ -149,7 +155,7 @@ const Msharika= () => {
           </Tab>
     
           {/* Tab for Other Roles */}
-          <Tab eventKey="others" title="vingine">
+          <Tab eventKey="others" title="vikundi vingine">
             {otherRoles.length > 0 ? (
               renderRoleCheckboxes(otherRoles)
             ) : (
@@ -162,6 +168,15 @@ const Msharika= () => {
               renderRoleCheckboxes(kiongoziRoles)
             ) : (
               <p className="text-muted">No Kiongozi roles available.</p>
+            )}
+          </Tab>
+
+            {/* Tab for jumuiya Roles */}
+        <Tab eventKey="jumuiya" title="Jumuiya">
+            {jumuiyaRoles.length > 0 ? (
+              renderRoleCheckboxes(jumuiyaRoles)
+            ) : (
+              <p className="text-muted">No jumuiya roles available.</p>
             )}
           </Tab>
         </Tabs>
@@ -368,34 +383,53 @@ const Msharika= () => {
         {/* Basic Information */}
         <div className="mb-4">
           <h3 className="text-secondary fw-bold">Taarifa ya Msharika</h3>
-          <div className="form-group">
-            <label htmlFor="photo" className="fw-bold">Picha</label>
-            <input
-              type="file"
-              accept="image/*"
-              id="photo"
-              className="form-control-file"
-              onChange={handleImageChange}
-            />
-            {formData.previewUrl && (
-              <div className="mt-3">
-                <img
-                  src={formData.previewUrl}
-                  alt="Preview"
-                  className="img-thumbnail"
-                  style={{ maxWidth: "200px" }}
-                />
-              </div>
-            )}
-               {uploadProgress > 0 && (
-              <ProgressBar
-                animated
-                now={uploadProgress}
-                label={`${uploadProgress}%`}
-                className="mt-2"
-              />
-            )}
-          </div>
+          <div className="mb-4">
+  <label
+    htmlFor="photo"
+    className="form-label fw-bold text-secondary"
+  >
+    Chagua Picha
+  </label>
+  <div className="input-group">
+    <input
+      type="file"
+      accept="image/*"
+      id="photo"
+      className="form-control"
+      onChange={handleImageChange}
+    />
+  </div>
+
+  {/* Image Preview */}
+  {formData.previewUrl && (
+    <div className="mt-3 text-center">
+      <img
+        src={formData.previewUrl}
+        alt="Onyesho la Picha"
+        className="rounded shadow-sm border"
+        style={{ maxWidth: "200px", maxHeight: "200px", objectFit: "cover" }}
+      />
+    </div>
+  )}
+
+  {/* Upload Progress */}
+  {uploadProgress > 0 && (
+    <div className="mt-3">
+      <div className="progress">
+        <div
+          className="progress-bar progress-bar-striped progress-bar-animated"
+          role="progressbar"
+          style={{ width: `${uploadProgress}%` }}
+          aria-valuenow={uploadProgress}
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {`${uploadProgress}%`}
+        </div>
+      </div>
+    </div>
+  )}
+</div>
 
           <div className="form-group">
             <label htmlFor="name" className="fw-bold">Jina *</label>
@@ -551,23 +585,7 @@ const Msharika= () => {
           <span className='text-danger text-sm'>Kama ni mwanafunzi ingiza "mwanafunzi"</span>
         </div>
 
-        {/* Community Select */}
-        <div className="form-group">
-          <label htmlFor="community" className="fw-bold">Jumuiya unayosali au unayotarajia kusali*</label>
-          <select
-            id="jumuiya"
-            className="form-control"
-            value={formData.jumuiya}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="" disabled>Chagua Jumuiya</option>
-            {jumuiyas.map((jumuiya) => (
-              <option key={jumuiya} value={jumuiya}>{jumuiya}</option>
-            ))}
-          </select>
-        </div>
-
+      
         {/* Financial Commitments */}
         <div className="mb-4">
           <h3 className="text-secondary fw-bold">Sadaka za ahadi</h3>
@@ -616,7 +634,7 @@ const Msharika= () => {
             variant="outline-secondary"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? "Hide" : "Show"}
+            {showPassword ? "Ficha" : "Onyesha"}
           </Button>
         </InputGroup>
         <Form.Text className="text-danger text-xs">
@@ -640,7 +658,7 @@ const Msharika= () => {
             variant="outline-secondary"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
-            {showConfirmPassword ? "Hide" : "Show"}
+            {showConfirmPassword ? "Ficha" : "Onyesha"}
           </Button>
         </InputGroup>
       </Form.Group>

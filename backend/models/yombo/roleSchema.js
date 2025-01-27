@@ -8,7 +8,7 @@ const roleSchema = new mongoose.Schema({
     type: [String],
     default: [
      
-      "kiongozi_jumuiya",
+     
       "umoja_wa_vijana",
       "kiongozi_umoja_wa_vijana",
       "kwaya_ya_umoja_wa_vijana",
@@ -39,8 +39,15 @@ const roleSchema = new mongoose.Schema({
       "kiongozi_wamama",
       "wababa",
       "kiongozi_wababa",
+      "jumuiya_kanisani",
+      "jumuiya_malawi",
+      "jumuiya_golani",
+      "kiongozi_jumuiya_kanisani",
+      "kiongozi_jumuiya_malawi",
+      "kiongozi_jumuiya_golani",
     ],
   },
+
 });
 
 const Roles = mongoose.model('Roles', roleSchema);

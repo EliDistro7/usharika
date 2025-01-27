@@ -10,7 +10,7 @@ const createRoles = async () =>{
     const savedRoles = await roles.save();
 
      // Log the saved roles
-     console.log("Roles saved successfully:", savedRoles);
+   //  console.log("Roles saved successfully:", savedRoles);
 }
 
 //createRoles();
@@ -46,7 +46,7 @@ const getDefaultRoles = async (req, res) => {
   try {
     console.log('it racghes here to find default roles')
     const roles = await fetchDefaultRoles();
-
+    //const jumuiya = await fetchJumuiyaRoles();
     if (roles.length === 0) {
       return res.status(404).send({ message: 'Default roles not found' });
     }
@@ -54,6 +54,7 @@ const getDefaultRoles = async (req, res) => {
     res.status(200).send({
       message: 'Default roles retrieved successfully',
       roles,
+    
     });
   } catch (err) {
     console.error('Error retrieving default roles:', err);
@@ -87,7 +88,7 @@ const fetchDefaultRoles = async () => {
   }
 };
 
-//fetchDefaultRoles();
+//fetchRoles();
 /**
  * Handles HTTP requests to add a new role to the default roles.
  */
