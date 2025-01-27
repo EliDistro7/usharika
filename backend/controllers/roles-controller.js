@@ -13,7 +13,7 @@ const createRoles = async () =>{
    //  console.log("Roles saved successfully:", savedRoles);
 }
 
-//createRoles();
+
 
 
 
@@ -33,9 +33,9 @@ const deleteRoles = async () => {
   }
 };
 
- //deleteRoles();
+deleteRoles();
 
-
+createRoles();
 
 
 
