@@ -48,17 +48,7 @@ const AddContentModal = ({
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group>
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingiza title"
-              value={newContent.title}
-              onChange={(e) =>
-                setNewContent((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
-          </Form.Group>
+         
           <Form.Group>
             <Form.Label>Maelezo</Form.Label>
             <Form.Control

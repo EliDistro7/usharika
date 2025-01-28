@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { getDesanitezedCookie } from "@/hooks/useUser";
-
+import Notifications from "./Notifications";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -48,24 +48,7 @@ export default function Header() {
 
             {/* Social Icons */}
             <div className="d-flex">
-              <a
-                href="#"
-                className="btn btn-sm btn-light btn-square rounded-circle me-2"
-              >
-                <i className="fab fa-facebook-f" style={{ color: "#6a1b9a" }}></i>
-              </a>
-              <a
-                href="#"
-                className="btn btn-sm btn-light btn-square rounded-circle me-2"
-              >
-                <i className="fab fa-instagram" style={{ color: "#6a1b9a" }}></i>
-              </a>
-              <a
-                href="#"
-                className="btn btn-sm btn-light btn-square rounded-circle"
-              >
-                <i className="fab fa-youtube" style={{ color: "#6a1b9a" }}></i>
-              </a>
+              <Notifications />
             </div>
           </div>
         </div>
