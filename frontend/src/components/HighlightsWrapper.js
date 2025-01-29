@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Highlights from "./Highlights";
-import { getRecentHighlights } from "@/actions/highlight";
+import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
 
 const HighlightsWrapper = () => {
@@ -12,6 +12,10 @@ const HighlightsWrapper = () => {
   const [error, setError] = useState(null);
   const [selectedAuthor, setSelectedAuthor] = useState("All");
   const [sortBy, setSortBy] = useState("recent");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchActive, setSearchActive] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // Fetch highlights only on the client
   useEffect(() => {
@@ -94,6 +98,23 @@ const HighlightsWrapper = () => {
     return `${daysElapsed}d ago`;
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      setSearchLoading(true);
+      const results = await searchHighlights({ query: searchQuery });
+     
+      setDataSets(results.data);
+      //console.log('results in the state:', searchResults);
+      //console.log('search result fetched', results.data)
+
+    } catch (err) {
+      console.error("Error searching highlights:", err);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
   if (loading) {
     return <div>Albamu zinapakia...</div>; // Add a spinner or loader here if needed
   }
@@ -103,8 +124,9 @@ const HighlightsWrapper = () => {
   }
 
   return (
-    <div className="container-fluid">
-      <div className="d-flex justify-content-between align-items-center mb-0 mt-3">
+    <div className="container-fluid mt-3">
+      {/* Search and Filters Section */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <select
           value={selectedAuthor}
           onChange={(e) => setSelectedAuthor(e.target.value)}
@@ -121,7 +143,8 @@ const HighlightsWrapper = () => {
             </option>
           ))}
         </select>
-
+    
+    {/*
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
@@ -129,21 +152,75 @@ const HighlightsWrapper = () => {
         >
           <option value="recent">Hivi Karibuni</option>
         </select>
+        */}
+
+        <div className="position-relative ">
+  {/* Search Icon */}
+  <i
+    className="fa fa-search text-primary cursor-pointer "
+    onClick={() => setSearchActive(!searchActive)}
+    style={{ fontSize: "1.5rem", cursor: "pointer", marginRight:"13px" }}
+  ></i>
+
+  {/* Search Overlay */}
+  {searchActive && (
+    <div
+      className="position-absolute bg-white shadow-lg p-3"
+      style={{
+        top: "2.5rem",
+        right: "0",
+        zIndex: 1050, // High zIndex to ensure it overlays
+        borderRadius: "0.5rem",
+        width: "300px",
+      }}
+    >
+      {/* Input Field */}
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Tafuta..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{
+          zIndex: 1060, // Higher zIndex for interaction priority
+        }}
+      />
+
+      {/* Search Button */}
+      <button
+        className="btn btn-primary mt-2  w-100"
+        onClick={handleSearch}
+        style={{
+          zIndex: 1060,
+        }}
+      >
+        Tafuta
+      </button>
+    </div>
+  )}
+</div>
+
       </div>
 
+      {/* Highlights or Search Results */}
       <div className="row">
-        {filteredData.length > 0 ? (
-          filteredData.map((data, index) => (
+        {(searchActive && searchResults.length > 0 ? searchResults : filteredData).map(
+          (data, index) => {    
+           // console.log('filtered data', filteredData);
+            console.log('search results', searchResults);
+            return (
             <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
               <Highlights
-                data={{
-                  ...data,
-                  lastUpdated: formatElapsedTime(data.lastUpdated),
-                }}
+                data={data}
+                datatype={searchResults.length > 0 ? "searchResults" : "default"}
               />
             </div>
-          ))
-        ) : (
+          )}
+        )}
+        {searchActive && searchResults.length === 0 && (
+          <div className="text-center">Hamna matokeo ya utafutaji</div>
+        )}
+        {!searchActive && filteredData.length === 0 && (
           <div className="text-center">Hamna albamu</div>
         )}
       </div>

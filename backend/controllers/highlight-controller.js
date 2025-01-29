@@ -68,6 +68,84 @@ const createHighlight = async (req, res) => {
   }
 };
 
+
+// Search Highlights Controller
+const searchHighlights = async (req, res) => {
+  try {
+    // Extract query parameters
+    const { name, author, groupName, description, contentAuthor, createdAt, lastUpdated } = req.query;
+
+    // Build the query object
+    const query = {};
+
+    if (name) {
+      query.name = { $regex: name, $options: 'i' }; // Case-insensitive match
+    }
+
+    if (author) {
+      query.author = { $regex: author, $options: 'i' }; // Case-insensitive match
+    }
+
+    if (createdAt) {
+      const date = new Date(createdAt);
+      if (!isNaN(date.getTime())) {
+        query.createdAt = { $gte: date }; // Highlights created on or after this date
+      }
+    }
+
+    if (lastUpdated) {
+      const date = new Date(lastUpdated);
+      if (!isNaN(date.getTime())) {
+        query.lastUpdated = { $gte: date }; // Highlights updated on or after this date
+      }
+    }
+
+    // For nested fields like groupName or content description/author
+    if (groupName || description || contentAuthor) {
+      query.content = {
+        $elemMatch: {},
+      };
+
+      if (groupName) {
+        query.content.$elemMatch.groupName = { $regex: groupName, $options: 'i' };
+      }
+
+      if (description || contentAuthor) {
+        query.content.$elemMatch.content = {
+          $elemMatch: {},
+        };
+
+        if (description) {
+          query.content.$elemMatch.content.$elemMatch.description = { $regex: description, $options: 'i' };
+        }
+
+        if (contentAuthor) {
+          query.content.$elemMatch.content.$elemMatch.author = { $regex: contentAuthor, $options: 'i' };
+        }
+      }
+    }
+
+    // Execute the query
+    const highlights = await Highlight.find(query);
+
+
+
+    console.log('searched highlights', highlights);
+    // Return the results
+    if (highlights.length > 0) {
+      res.status(200).json({ success: true, data: highlights });
+    } else {
+      res.status(404).json({ success: false, message: 'No highlights found matching the criteria.' });
+    }
+  } catch (error) {
+    console.error('Error searching highlights:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while searching for highlights.' });
+  }
+};
+
+
+
+
 // Add Media to Tab
 const addMediaToTab = async (req, res) => {
   try {
@@ -187,7 +265,8 @@ const getRecentHighlights = async (req, res) => {
     const recentHighlights = await Highlight.find({
       createdAt: { $gte: threeDaysAgo },
     }).sort({ createdAt: -1 }); // Sort by most recent
-
+     
+    console.log('recent highlights', recentHighlights)
     return res.status(200).json({
       message: "Recent highlights fetched successfully",
       data: recentHighlights,
@@ -282,4 +361,5 @@ module.exports = {
   deleteMediaFromTab,
   getHighlightById,
   getRecentHighlights,
+  searchHighlights,
 };

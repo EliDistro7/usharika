@@ -9,6 +9,7 @@ const {
   deleteMediaFromTab,
   getHighlightById,
   getRecentHighlights,
+  searchHighlights,
 } = require("../controllers/highlight-controller.js");
 
 // Route to create a new highlight
@@ -27,5 +28,7 @@ router.delete("/highlights/deleteMediaFromTab", deleteMediaFromTab);
 router.get("/getHighlightById/:highlightId", getHighlightById);
 
 router.get("/highlights/recent", getRecentHighlights); // Route to fetch recent highlights
+
+router.get('/highlights/search', searchHighlights);
 
 module.exports = router;

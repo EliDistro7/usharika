@@ -15,8 +15,24 @@ import {
 import { Modal, Button } from "react-bootstrap";
 import ShareButton from "./ShareButton"; // Import ShareButton
 
-const Highlights = ({ data }) => {
-  const [activeTab, setActiveTab] = useState(Object.keys(data.content)[0]);
+const Highlights = ({ data, datatype='default' }) => {
+ // console.log('datatype', datatype)
+  console.log('data',data);
+//console.log('content interface:data.content',data.content );
+
+
+const getActiveTab = ()=>{
+ const curAct = datatype === "default" ? Object.keys(data.content)[0] : Object.keys(data.content)[0];
+ return curAct;
+}
+
+
+if(datatype === 'searchResults')console.log('interface at Object.keys(data.content[0]) ', Object.keys(data.content[0]))
+
+  const [activeTab, setActiveTab] = useState(getActiveTab());
+ 
+  //console.log('group active is', data.content )
+
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
