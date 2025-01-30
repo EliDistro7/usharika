@@ -111,7 +111,7 @@ const HighlightDataPage = () => {
 
     try {
       const highlightToSubmit = { ...highlight, author:role }; // Ensure author is included
-      console.log("Submitting highlight with author", highlightToSubmit.author);
+      //console.log("Submitting highlight with author", highlightToSubmit.author);
 
       const response = await createHighlight(highlightToSubmit);
       setSuccess(response.message || "Umefanikiwa kuunda album mpya!");
@@ -129,7 +129,7 @@ const HighlightDataPage = () => {
       <CustomNavbar />
       <div className="px-4">
 
-      <h2>Status Book</h2>
+      <h2>Kitabu cha Albamu</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
 

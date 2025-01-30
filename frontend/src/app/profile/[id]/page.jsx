@@ -16,13 +16,13 @@ const UserPage = ( ) => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-           console.log('userId ', userId);
+          // console.log('userId ', userId);
         const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/users/${userId}`);
         setUser(response.data);
         setLoading(false);
       } catch (err) {
         console.log(err)
-        setError(err.message || 'Something went wrong');
+        setError(err.message || 'Kuna kitu hakikwenda sawa, tunalifanyia kazi kuhakikisha kila kitu kipo sawa');
         setLoading(false);
       }
     };
@@ -49,7 +49,7 @@ const UserPage = ( ) => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Profile</h1>
-      {user ? <UserCard user={user} /> : <p className="text-center">No user found</p>}
+      {user ? <UserCard user={user} /> : <p className="text-center">hakuna mtumiaji</p>}
     </div>
   );
 };

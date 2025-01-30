@@ -47,7 +47,7 @@ const AddContentModal = ({
             value={newContent.highlightId || ""}
             onChange={(e) => onContentChange("highlightId", e.target.value)}
           >
-            <option value="">Select a Highlight</option>
+            <option value="">Chagua alabamu</option>
             {highlights.map((highlight) => (
               <option key={highlight._id} value={highlight._id}>
                 {highlight.name || `Highlight ${highlight._id}`}
@@ -58,14 +58,14 @@ const AddContentModal = ({
 
         {/* Dropdown for selecting a tab within the selected highlight */}
         <Form.Group className="mt-3">
-          <Form.Label>Group Name (Tab)</Form.Label>
+          <Form.Label>Jina la Chapter (Tab)</Form.Label>
           <Form.Control
             as="select"
             value={newContent.groupName}
             onChange={(e) => onContentChange("groupName", e.target.value)}
             disabled={!newContent.highlightId}
           >
-            <option value="">Select Group</option>
+            <option value="">Au Chagua kutoka chapater zilizopo</option>
             {highlights
               .filter((h) => h._id === newContent.highlightId)
               .flatMap((highlight) =>
@@ -90,15 +90,6 @@ const AddContentModal = ({
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            type="text"
-            value={newContent.title}
-            onChange={(e) => onContentChange("title", e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mt-3">
           <Form.Label>Maelezo</Form.Label>
           <Form.Control
             as="textarea"
@@ -109,7 +100,7 @@ const AddContentModal = ({
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Form.Label>Media Type</Form.Label>
+          <Form.Label>Aina ya Media</Form.Label>
           <div>
             <Form.Check
               type="radio"
@@ -145,7 +136,7 @@ const AddContentModal = ({
         {/* Display the uploaded media URL */}
         {newContent.mediaType === "image" && (
           <Form.Group className="mt-3">
-            <Form.Label>Image URL</Form.Label>
+            <Form.Label>URL ya picha</Form.Label>
             <Form.Control
               type="text"
               value={newContent.imageUrl}
@@ -155,7 +146,7 @@ const AddContentModal = ({
         )}
         {newContent.mediaType === "video" && (
           <Form.Group className="mt-3">
-            <Form.Label>Video URL</Form.Label>
+            <Form.Label>URL ya video</Form.Label>
             <Form.Control
               type="text"
               value={newContent.videoUrl}
@@ -166,13 +157,13 @@ const AddContentModal = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
-          Cancel
+         Ondoa
         </Button>
         <Button variant="primary" onClick={onAdd}>
-          Add to Tab
+          Ongeza kwenye Chapter
         </Button>
         <Button variant="primary" onClick={onAddNewTab} className="ms-2">
-          Add New Tab
+          Ongeza chapter mpya
         </Button>
       </Modal.Footer>
     </Modal>

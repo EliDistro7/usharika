@@ -14,9 +14,9 @@ const HighlightsTable = ({ highlights, onEdit, onDelete, onAddContent }) => {
         <thead className="bg-primary text-white">
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Content Count</th>
-            <th>Created At</th>
+            <th>Jina</th>
+            <th>Idadi ya maudhui</th>
+            <th>Muda ilipoundwa</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -47,14 +47,14 @@ const HighlightsTable = ({ highlights, onEdit, onDelete, onAddContent }) => {
                     variant="danger"
                     onClick={() => onDelete(highlight._id)}
                   >
-                    <FaTrash /> Delete
+                    <FaTrash /> futa
                   </Button>
                   <Button
                     variant="primary"
                     className="ms-2"
                     onClick={() => onAddContent(highlight)}
                   >
-                    <FaPlus /> Add Content
+                    <FaPlus /> Ongeza maudhui
                   </Button>
                 </td>
               </tr>

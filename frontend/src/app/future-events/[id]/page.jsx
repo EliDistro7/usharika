@@ -38,7 +38,7 @@ const FutureEventsPage = () => {
     setLoading(true);
     try {
       const response = await getAllFutureEvents();
-      console.log('events data', response.data)
+      //console.log('events data', response.data)
       setFutureEvents(response.data || []);
     } catch (error) {
       console.error(error.message);
@@ -59,7 +59,7 @@ const FutureEventsPage = () => {
         await updateFutureEventById(currentEvent._id, formData);
       } else {
         // Create a new event
-        console.log("sent form data to server", formData);
+       // console.log("sent form data to server", formData);
         await createFutureEvent(formData);
       }
       fetchEvents();
@@ -70,7 +70,7 @@ const FutureEventsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this event?")) {
+    if (window.confirm("Una uhakika unataka kufuta event hii?")) {
       try {
         await deleteFutureEventById(id);
         fetchEvents();
@@ -81,7 +81,7 @@ const FutureEventsPage = () => {
   };
 
   const handleDeleteAll = async () => {
-    if (window.confirm("Are you sure you want to delete all events?")) {
+    if (window.confirm("Una uhakika unataka kufuta events zote?")) {
       try {
         await deleteAllFutureEvents();
         fetchEvents();
@@ -117,13 +117,13 @@ const FutureEventsPage = () => {
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Future Events</h2>
+        <h2>Matukio yajayo</h2>
         <div>
           <Button className="me-2" variant="danger" onClick={handleDeleteAll}>
-            Delete All
+            Futa matukio yote
           </Button>
           <Button variant="success" onClick={handleShowModal}>
-            <FaPlus className="me-2" /> Add Event
+            <FaPlus className="me-2" /> Ongeza tukio
           </Button>
         </div>
       </div>
@@ -137,10 +137,10 @@ const FutureEventsPage = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Title</th>
+              <th>Kichwa</th>
               <th>Category</th>
-              <th>Date</th>
-              <th>Group Author</th>
+              <th>Tarehe</th>
+              <th>Kikundi </th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -178,7 +178,7 @@ const FutureEventsPage = () => {
       {/* Modal for Adding/Editing Events */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentEvent ? "Edit Event" : "Add Event"}</Modal.Title>
+          <Modal.Title>{currentEvent ? "Edit Tukio" : "Ongeza Tukio"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -186,7 +186,7 @@ const FutureEventsPage = () => {
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter title"
+                placeholder="Ingiza title..."
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
@@ -196,7 +196,7 @@ const FutureEventsPage = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter image URL"
+                placeholder="ingiza url ya picha"
                 name="image"
                 value={formData.image}
                 onChange={handleInputChange}
@@ -206,14 +206,14 @@ const FutureEventsPage = () => {
               <Form.Label>Category</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter category"
+                placeholder="Ingiza category"
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Date</Form.Label>
+              <Form.Label>Tarehe</Form.Label>
               <Form.Control
                 type="date"
                 name="date"
@@ -225,7 +225,7 @@ const FutureEventsPage = () => {
               <Form.Label>Subtitle</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter subtitle"
+                placeholder="Ingiza subtitle"
                 name="subtitle"
                 value={formData.subtitle}
                 onChange={handleInputChange}
@@ -236,10 +236,10 @@ const FutureEventsPage = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+           Funga
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            {currentEvent ? "Update" : "Create"}
+            {currentEvent ? "Update" : "Unda"}
           </Button>
         </Modal.Footer>
       </Modal>

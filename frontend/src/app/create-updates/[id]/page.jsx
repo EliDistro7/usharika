@@ -38,7 +38,7 @@ const UpdatesPage = () => {
     try {
       setLoading(true);
       const updatesData = await getAllUpdates();
-      console.log('update data', updatesData);
+      //console.log('update data', updatesData);
       setUpdates(updatesData); // Assuming `data` contains the list
     } catch (error) {
       console.log(error)
@@ -91,7 +91,7 @@ const UpdatesPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this update?")) {
+    if (window.confirm("Je, unataka kufuta update hii?")) {
       try {
         await deleteUpdate(id);
         fetchUpdates();
@@ -111,7 +111,7 @@ const UpdatesPage = () => {
             variant="primary"
             onClick={() => handleShowModal()}
           >
-            <FaPlus /> Add Update
+            <FaPlus /> Ongeza Update
           </Button>
           {loading ? (
             <Spinner animation="border" variant="primary" />
@@ -120,8 +120,8 @@ const UpdatesPage = () => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Content</th>
-                  <th>Group</th>
+                  <th>Maudhui</th>
+                  <th>Kutoka kwa</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -143,7 +143,7 @@ const UpdatesPage = () => {
                         variant="danger"
                         onClick={() => handleDelete(update._id)}
                       >
-                        <FaTrash /> Delete
+                        <FaTrash /> Futa
                       </Button>
                     </td>
                   </tr>
@@ -157,7 +157,7 @@ const UpdatesPage = () => {
       {/* Modal for Adding/Editing Updates */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{editMode ? "Edit Update" : "Add Update"}</Modal.Title>
+          <Modal.Title>{editMode ? "Edit Update" : "Ongeza Update"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -168,23 +168,23 @@ const UpdatesPage = () => {
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
-                placeholder="Enter update content"
+                placeholder="Ingiza update..."
                 required
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Group</Form.Label>
+              <Form.Label>Kikundi</Form.Label>
               <Form.Control
                 type="text"
                 name="group"
                 value={formData.group}
                 onChange={handleInputChange}
-                placeholder="Enter group name"
+                placeholder="Jina la kikundi..."
                 required
               />
             </Form.Group>
             <Button variant="primary" type="submit">
-              {editMode ? "Update" : "Create"}
+              {editMode ? "Update" : "Unda"}
             </Button>
           </Form>
         </Modal.Body>

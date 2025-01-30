@@ -110,7 +110,7 @@ const AddContentModal = ({
           </Form.Group>
           {contentType === "image" && (
             <Form.Group>
-              <Form.Label>Image URL</Form.Label>
+              <Form.Label>URL ya picha</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter image URL"
@@ -126,7 +126,7 @@ const AddContentModal = ({
           )}
           {contentType === "video" && (
             <Form.Group>
-              <Form.Label>Video URL</Form.Label>
+              <Form.Label>URL ya video</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter video URL"

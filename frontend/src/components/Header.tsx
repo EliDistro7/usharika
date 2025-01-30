@@ -145,8 +145,8 @@ export default function Header() {
               <div>
                 <small className="text-secondary">Wasiliana nasi</small>
                 <p className="mb-0">
-                  <a href="tel:+01234567890" className="text-decoration-none" style={{ color: "#9c27b0" }}>
-                    +0123 456 7890
+                  <a href="tel: +255765647567" className="text-decoration-none" style={{ color: "#9c27b0" }}>
+                    +255 765 647 567
                   </a>
                 </p>
               </div>

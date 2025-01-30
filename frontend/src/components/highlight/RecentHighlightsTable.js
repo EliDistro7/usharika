@@ -111,12 +111,12 @@ const RecentHighlightsTable = () => {
         tabData,
       });
 
-      toast.success(`New tab "${newContent.newGroupName}" added successfully!`);
+      toast.success(`Umefanikiwa kuongeza "${newContent.newGroupName}" kwenye chapters!`);
       await fetchHighlights();
       setShowAddContentModal(false);
       setNewContent((prev) => ({ ...prev, newGroupName: "" })); // Reset newGroupName
     } catch (err) {
-      toast.error(err.message || "Failed to add a new tab.");
+      toast.error(err.message || "Imeshindwa kuongezwa.");
     } finally {
       setLoading(false);
     }

@@ -35,7 +35,7 @@ const GroupTable = ({ content, onAddContent, onRemoveGroup }) => (
         </tbody>
       </Table>
     ) : (
-      <p>No groups added yet.</p>
+      <p>Hakuna alabamu yoyote kwa sasa.</p>
     )}
   </>
 );
