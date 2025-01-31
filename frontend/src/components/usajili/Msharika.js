@@ -113,14 +113,22 @@ const Msharika= () => {
         !role.toLowerCase().includes("kiongozi_kwaya") && role.toLowerCase().includes("kwaya")
       );
       const jumuiyaRoles = userRoles.filter((role) =>
-         role.toLowerCase().includes("jumuiya")
+         role.toLowerCase().includes("jumuiya") &&
+      !role.toLowerCase().includes("kiongozi_jumuiya")
       );
+
+      const viongoziJumuiyaRoles = userRoles.filter((role) =>
+     role.toLowerCase().includes("kiongozi_jumuiya")
+     );
+     
+
       const otherRoles = userRoles.filter(
         (role) =>
           !role.startsWith("kiongozi_") &&
         
           !role.toLowerCase().includes("choir") &&
-          !role.toLowerCase().includes("kwaya")
+          !role.toLowerCase().includes("kwaya") &&
+          !role.toLowerCase().includes("jumuiya")
       );
     
       // Helper function to render checkboxes
@@ -140,10 +148,18 @@ const Msharika= () => {
       };
     
       return (
-        <Tabs defaultActiveKey="kiongozi" id="role-tabs" className="mb-3">
+        <Tabs defaultActiveKey="jumuiya" id="role-tabs" className="mb-3">
           {/* Tab for Kiongozi Roles */}
        
-      
+    
+            {/* Tab for jumuiya Roles */}
+            <Tab eventKey="jumuiya" title="Jumuiya">
+            {jumuiyaRoles.length > 0 ? (
+              renderRoleCheckboxes(jumuiyaRoles)
+            ) : (
+              <p className="text-muted">No jumuiya roles available.</p>
+            )}
+          </Tab>  
     
           {/* Tab for Choir Roles */}
           <Tab eventKey="choir" title="Kwaya">
@@ -171,14 +187,6 @@ const Msharika= () => {
             )}
           </Tab>
 
-            {/* Tab for jumuiya Roles */}
-        <Tab eventKey="jumuiya" title="Jumuiya">
-            {jumuiyaRoles.length > 0 ? (
-              renderRoleCheckboxes(jumuiyaRoles)
-            ) : (
-              <p className="text-muted">No jumuiya roles available.</p>
-            )}
-          </Tab>
         </Tabs>
       );
     }
