@@ -45,6 +45,21 @@ if(datatype === 'searchResults')console.log('interface at Object.keys(data.conte
 
   const handleModalClose = () => setShowModal(false);
   const handleModalShow = () => setShowModal(true);
+  
+  const sanitizeContent = (contentArray) => {
+    const seen = new Set();
+    
+    return contentArray.filter(item => {
+      const uniqueKey = item.imageUrl || item.videoUrl;
+      
+      if (uniqueKey && !seen.has(uniqueKey)) {
+        seen.add(uniqueKey);
+        return true;
+      }
+      
+      return false;
+    });
+  };
 
   return (
     <div className="position-relative mt-4 p-4 px-0 rounded shadow">
@@ -144,15 +159,16 @@ if(datatype === 'searchResults')console.log('interface at Object.keys(data.conte
         isMuted={isMuted}
         onToggleMute={toggleMute}
       >
-        {data.content[activeTab].content.map((item, index) => (
-          <CarouselItem
-            key={index}
-            item={item}
-            isMuted={isMuted}
-            videoRef={(el) => (videoRefs.current[index] = el)}
-            onPauseCarousel={() => setIsPaused(true)}
-          />
-        ))}
+        // In your component rendering
+{sanitizeContent(data.content[activeTab].content).map((item, index) => (
+  <CarouselItem
+    key={index}
+    item={item}
+    isMuted={isMuted}
+    videoRef={(el) => (videoRefs.current[index] = el)}
+    onPauseCarousel={() => setIsPaused(true)}
+  />
+))}
       </FadeCarousel>
     </div>
   </Modal.Body>

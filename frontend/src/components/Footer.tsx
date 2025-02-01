@@ -119,7 +119,9 @@ const Footer = () => {
                 </p>
                 <p>
                   <i className="fa fa-phone-alt text-primary me-2"></i>
-                  (+012) 3456 7890 123
+                  <a href="tel: +255765647567" className="text-decoration-none" style={{ color: "#9c27b0" }}>
+                    +255 765 647 567
+                  </a>
                 </p>
                 <p>
                   <i className="fas fa-envelope text-primary me-2"></i>
