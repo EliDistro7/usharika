@@ -182,7 +182,7 @@ const HighlightsWrapper = () => {
   
               {/* Search Button */}
               <button
-                className="btn btn-purple mt-2 w-100 shadow-sm"
+                className="btn btn-purple mt-2 w-100 shadow-sm text-white"
                 onClick={handleSearch}
                 style={{
                   zIndex: 1060,
