@@ -259,7 +259,7 @@ const getRecentHighlights = async (req, res) => {
   try {
     // Calculate the date for 3 days ago
     const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 60);
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 35);
 
     // Query highlights created within the last 3 days
     const recentHighlights = await Highlight.find({
