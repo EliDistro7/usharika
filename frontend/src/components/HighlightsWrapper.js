@@ -126,11 +126,13 @@ const HighlightsWrapper = () => {
   return (
     <div className="container-fluid mt-3">
       {/* Search and Filters Section */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* Author Filter Dropdown */}
         <select
           value={selectedAuthor}
           onChange={(e) => setSelectedAuthor(e.target.value)}
-          className="form-select w-25"
+          className="form-select w-25 border-purple shadow-sm"
+          style={{ backgroundColor: "#fff", color: "#6f42c1" }}
         >
           <option value="All">Vikundi Vyote</option>
           {[...new Set(dataSets.flatMap((item) =>
@@ -143,85 +145,75 @@ const HighlightsWrapper = () => {
             </option>
           ))}
         </select>
-    
-    {/*
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="form-select w-25"
-        >
-          <option value="recent">Hivi Karibuni</option>
-        </select>
-        */}
-
-        <div className="position-relative ">
-  {/* Search Icon */}
-  <i
-    className="fa fa-search text-primary cursor-pointer "
-    onClick={() => setSearchActive(!searchActive)}
-    style={{ fontSize: "1.5rem", cursor: "pointer", marginRight:"13px" }}
-  ></i>
-
-  {/* Search Overlay */}
-  {searchActive && (
-    <div
-      className="position-absolute bg-white shadow-lg p-3"
-      style={{
-        top: "2.5rem",
-        right: "0",
-        zIndex: 1050, // High zIndex to ensure it overlays
-        borderRadius: "0.5rem",
-        width: "300px",
-      }}
-    >
-      {/* Input Field */}
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Tafuta..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={{
-          zIndex: 1060, // Higher zIndex for interaction priority
-        }}
-      />
-
-      {/* Search Button */}
-      <button
-        className="btn btn-primary mt-2  w-100"
-        onClick={handleSearch}
-        style={{
-          zIndex: 1060,
-        }}
-      >
-        Tafuta
-      </button>
-    </div>
-  )}
-</div>
-
+  
+        {/* Search Icon and Overlay */}
+        <div className="position-relative">
+          {/* Search Icon */}
+          <i
+            className="fa fa-search text-purple cursor-pointer"
+            onClick={() => setSearchActive(!searchActive)}
+            style={{ fontSize: "1.5rem", cursor: "pointer", marginRight: "13px" }}
+          ></i>
+  
+          {/* Search Overlay */}
+          {searchActive && (
+            <div
+              className="position-absolute bg-white shadow-lg p-3"
+              style={{
+                top: "2.5rem",
+                right: "0",
+                zIndex: 1050, // High zIndex to ensure it overlays
+                borderRadius: "0.5rem",
+                width: "300px",
+              }}
+            >
+              {/* Input Field */}
+              <input
+                type="text"
+                className="form-control border-purple shadow-sm"
+                placeholder="Tafuta..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  zIndex: 1060, // Higher zIndex for interaction priority
+                  color: "#6f42c1",
+                }}
+              />
+  
+              {/* Search Button */}
+              <button
+                className="btn btn-purple mt-2 w-100 shadow-sm"
+                onClick={handleSearch}
+                style={{
+                  zIndex: 1060,
+                }}
+              >
+                Tafuta
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-
+  
       {/* Highlights or Search Results */}
       <div className="row">
         {(searchActive && searchResults.length > 0 ? searchResults : filteredData).map(
-          (data, index) => {    
-           // console.log('filtered data', filteredData);
-            console.log('search results', searchResults);
+          (data, index) => {
             return (
-            <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
-              <Highlights
-                data={data}
-                datatype={searchResults.length > 0 ? "searchResults" : "default"}
-              />
-            </div>
-          )}
+              <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
+                <Highlights
+                  data={data}
+                  datatype={searchResults.length > 0 ? "searchResults" : "default"}
+                />
+              </div>
+            );
+          }
         )}
         {searchActive && searchResults.length === 0 && (
-          <div className="text-center">Hamna matokeo ya utafutaji</div>
+          <div className="text-center text-purple">Hamna matokeo ya utafutaji</div>
         )}
         {!searchActive && filteredData.length === 0 && (
-          <div className="text-center">Hamna albamu</div>
+          <div className="text-center text-purple">Hamna albamu</div>
         )}
       </div>
     </div>

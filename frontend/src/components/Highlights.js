@@ -62,7 +62,7 @@ if(datatype === 'searchResults')console.log('interface at Object.keys(data.conte
   };
 
   return (
-    <div className="position-relative mt-4 p-4 px-0 rounded shadow">
+    <div className="position-relative z-10 mt-4 p-4 px-0 rounded shadow">
       <h1 className="fs-4 mb-3 text-dark fw-bold">{data.name}</h1>
 
       {/* Dropdown for Chapters */}

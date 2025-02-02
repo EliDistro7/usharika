@@ -123,8 +123,8 @@ const Pledge = () => {
   };
 
   return (
-    <div className={`container py-5 ${merriweather.className}`}>
-      <h2 className="text-center fw-bold text-primary mb-4 animate__animated animate__fadeIn">
+    <div className={`container py-5 ${merriweather.className}`} style={{ backgroundColor: "#f8f1fc" }}>
+      <h2 className="text-center fw-bold text-purple mb-4 animate__animated animate__fadeIn">
         Ungana nasi kwa njia ya Sadaka
       </h2>
   
@@ -133,7 +133,7 @@ const Pledge = () => {
         <div className="text-center mb-4">
           <p className="text-muted">
             Tafadhali{" "}
-            <Link href="/auth"   className="text-primary fw-bold">
+            <Link href="/auth" className="text-purple fw-bold">
               log in kwenye akaunti yako
             </Link>{" "}
             ili uweze kuweka ahadi.
@@ -148,8 +148,8 @@ const Pledge = () => {
               onClick={() => setSelectedOption(option)}
               className={`cursor-pointer shadow-lg animate__animated ${
                 selectedOption?.id === option.id
-                  ? "animate__pulse border-primary bg-gradient"
-                  : "border-secondary"
+                  ? "animate__pulse border-purple bg-light-purple"
+                  : "border-light"
               }`}
               style={{
                 transition: "transform 0.3s ease",
@@ -157,30 +157,30 @@ const Pledge = () => {
               }}
             >
               <Card.Body className="d-flex align-items-center">
-                {option.icon}
+                <div className="text-purple">{option.icon}</div>
                 <div className="ms-3">
-                  <h4 className="fw-bold">{option.title}</h4>
+                  <h4 className="fw-bold text-purple">{option.title}</h4>
                   <p className="text-muted">{option.description}</p>
                 </div>
               </Card.Body>
             </Card>
   
             {selectedOption?.id === option.id && (
-              <Card className="mt-3 p-4 bg-light border-primary shadow">
-                <h4 className="fw-bold mb-4 text-success">{selectedOption.title}</h4>
+              <Card className="mt-3 p-4 bg-white border-purple shadow">
+                <h4 className="fw-bold mb-4 text-purple">{selectedOption.title}</h4>
   
                 <div className="d-flex gap-3 mb-4">
                   <Button
-                    variant={isPledge ? "primary" : "outline-primary"}
+                    variant={isPledge ? "purple" : "outline-purple"}
                     onClick={() => setIsPledge(true)}
-                    className="rounded-pill px-4"
+                    className="rounded-pill px-4 fw-bold text-white"
                   >
                     Weka ahadi
                   </Button>
                   <Button
-                    variant={!isPledge ? "primary" : "outline-primary"}
+                    variant={!isPledge ? "purple" : "outline-purple"}
                     onClick={() => setIsPledge(false)}
-                    className="rounded-pill px-4"
+                    className="rounded-pill px-4 fw-bold"
                   >
                     Lipa sasa
                   </Button>
@@ -219,11 +219,12 @@ const Pledge = () => {
   
                   {!isPledge && (
                     <Form.Group className="mb-3">
-                      <Form.Label className="fw-bold">Njia ya Malipo</Form.Label>
+                      <Form.Label className="fw-bold text-purple">Njia ya Malipo</Form.Label>
                       <Form.Select
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         required
+                        className="border-purple"
                       >
                         <option value="" disabled>
                           Chagua njia ya Malipo
@@ -242,8 +243,8 @@ const Pledge = () => {
   
                 <Button
                   onClick={handleSubmit}
-                  variant="success"
-                  className="mt-4 w-100 rounded-pill py-2"
+                  variant="purple"
+                  className="mt-4 w-100 rounded-pill py-2 fw-bold text-white"
                 >
                   {isPledge ? "Weka ahadi" : "Lipa sasa"}
                 </Button>

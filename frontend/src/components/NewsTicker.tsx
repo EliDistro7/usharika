@@ -74,7 +74,6 @@ export const NewsTicker = ({
       setStart(true);
     }
   };
-
   return (
     <div
       className={`news-ticker-container d-flex align-items-center ${className}`}
@@ -83,7 +82,8 @@ export const NewsTicker = ({
         position: "relative",
         height: "50px",
         borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        
+        backgroundColor: "#f6f1ff", // light purple background
       }}
     >
       <div
@@ -97,7 +97,7 @@ export const NewsTicker = ({
         }}
       >
         {loading ? (
-          <p>Loading...</p>
+          <p style={{ color: "#6f42c1" }}>Loading...</p>
         ) : (
           <ul
             ref={scrollerRef}
@@ -121,14 +121,14 @@ export const NewsTicker = ({
                   display: "inline-block",
                   flex: "0 0 auto",
                   minWidth: "200px",
-                  backgroundColor: "#f8f9fa",
+                  backgroundColor: "#e9d8fd", // slightly different light purple for contrast
                   borderRadius: "10px",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  boxShadow: "0 2px 4px rgba(111, 66, 193, 0.1)",
                 }}
               >
                 <span
-                  className="text-primary fw-bold me-1"
-                  style={{ color: "#007bff" }}
+                  className="fw-bold me-1"
+                  style={{ color: "#6f42c1" }} // purple text for the group name
                 >
                   {formatRoleName(update.group)}:
                 </span>
@@ -153,4 +153,5 @@ export const NewsTicker = ({
       `}</style>
     </div>
   );
+  
 };

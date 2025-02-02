@@ -1266,3 +1266,23 @@ code {
   border: none;                   /* Remove border */
   color:white;
 }
+
+
+
+.btn-purple {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+}
+.btn-outline-purple {
+  color: #6f42c1;
+  border-color: #6f42c1;
+}
+.btn-purple:hover,
+.btn-outline-purple:hover {
+  background-color: #5a2d91;
+  border-color: #5a2d91;
+  color: #fff;
+}
+.text-purple {
+  color: #6f42c1;
+}
