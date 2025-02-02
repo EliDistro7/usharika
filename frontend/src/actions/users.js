@@ -246,17 +246,45 @@ export const getTopRankingUsers = async ({ group, interval }) => {
 };
 
 
-// Fetch default roles
-export const getDefaultRoles= async () => {
- 
+// Fetch default roles with leadership positions
+export const getDefaultRoles = async () => {
   try {
     const response = await axios.post(`${api}/getRoles`);
     
-    return response.data.roles; // Array of donations along with username details
+    // Ensure that roles are returned as an array of objects with role and defaultPositions
+    return response.data.roles.map(roleObj => ({
+      role: roleObj.role,
+      defaultPositions: roleObj.defaultPositions || [] // Ensure defaultPositions is always an array
+    }));
   } catch (error) {
-    console.error('Error fetching defaul roles:', error.response?.data || error.message);
+    console.error('Error fetching default roles:', error.response?.data || error.message);
     throw new Error(
-      error.response?.data?.message || 'Failed to fetch default errors.'
+      error.response?.data?.message || 'Failed to fetch default roles.'
+    );
+  }
+};
+
+// Fetch leaders by role (now considers both role and leadership positions)
+export const getLeadersByRole = async (role) => {
+  try {
+    const response = await axios.post(`${api}/getLeadersByRole`, { role });
+
+    return {
+      role,
+      leaders: response.data.users, // Array of leader users
+      categories: response.data.categories, // Analytics categories
+      currentPage: response.data.currentPage,
+      totalPages: response.data.totalPages,
+      totalUsers: response.data.totalUsers,
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching leaders for role "${role}":`,
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message ||
+        `Failed to fetch leaders for role: ${role}`
     );
   }
 };

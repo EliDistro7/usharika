@@ -125,3 +125,24 @@ export const addSelectedRole = async ({ userId, selected }) => {
     console.log(err);
   }
 }
+
+export const updateUserRoles = async ({ userId, selectedRoles, leadershipPositions }) => {
+  const adminId = process.env.NEXT_PUBLIC_MKUU; // Admin ID from environment variables
+  try {
+    // Send a POST request to the backend endpoint to update user roles
+    const response = await axios.post(`${api}/admin/updateUserRoles`, {
+      adminId,
+      userId,
+      selectedRoles,
+      leadershipPositions, // This can be omitted or set to {} if the user is not a leader
+    });
+
+    if (response.status === 200) {
+      console.log('User roles updated successfully:', response.data.message);
+      return response.data.message;
+    }
+  } catch (error) {
+    console.error('Error updating user roles:', error.response?.data?.message || error.message);
+    throw error;
+  }
+}; 

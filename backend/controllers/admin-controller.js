@@ -3,8 +3,9 @@
 const Post = require('../models/postSchema.js');
 const Admin = require('../models/adminSchema.js');
 const bcrypt = require('bcrypt');
+const User = require('../models/yombo/yomboUserSchema.js');
 
-
+const { fetchDefaultRoles } = require("../controllers/roles-controller");
 
 const createStaticAdmin = async () => {
   const email = 'nishauri@gmail.com';
@@ -220,10 +221,91 @@ const deleteRegisteringNotification = async (req, res) => {
 };
 
 
+const updateUserRoles = async (req, res) => {
+  try {
+    // Destructure required fields from the request body.
+    const { userId, selectedRoles, leadershipPositions } = req.body;
+
+    // Ensure userId and selectedRoles are provided.
+    if (!userId || !selectedRoles) {
+      return res
+        .status(400)
+        .send({ message: 'User ID and selected roles are required.' });
+    }
+
+    // Find the user by ID.
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    // Fetch default roles from the database for validation.
+    const defaultRolesData = await fetchDefaultRoles();
+    const defaultRoles = defaultRolesData.map((item) => item.role);
+
+    // Validate each role in selectedRoles.
+    for (let role of selectedRoles) {
+      if (!defaultRoles.includes(role)) {
+        return res
+          .status(400)
+          .send({ message: `Invalid role: ${role} is not registered.` });
+      }
+    }
+
+    // Update the user's selectedRoles.
+    user.selectedRoles = selectedRoles;
+
+    // Determine if the user qualifies as a leader.
+    user.isLeader = selectedRoles.some((role) => role.startsWith("kiongozi_"));
+
+    // If the user is a leader, process the leadershipPositions.
+    if (user.isLeader) {
+      let formattedLeadershipPositions = new Map();
+
+      if (leadershipPositions && typeof leadershipPositions === "object") {
+        Object.entries(leadershipPositions).forEach(([group, positions]) => {
+          if (Array.isArray(positions) && positions.length > 0) {
+            formattedLeadershipPositions.set(group, positions);
+          }
+        });
+      }
+
+      // Leadership validation: ensure at least one valid position exists.
+      if (formattedLeadershipPositions.size === 0) {
+        return res.status(400).send({
+          message: "Kiongozi lazima awe na angalau nafasi moja ya uongozi."
+        });
+      }
+
+      user.leadershipPositions = formattedLeadershipPositions;
+    } else {
+      // If the user is not a leader, clear any existing leadership positions.
+      user.leadershipPositions = new Map();
+    }
+
+    // Save the updated user.
+    const savedUser = await user.save();
+    // Remove the password field from the response.
+    savedUser.password = undefined;
+
+    res.status(200).send({
+      message: "User roles updated successfully",
+      user: savedUser
+    });
+  } catch (err) {
+    console.error("Error updating user roles:", err);
+    res.status(500).send({
+      message: "An error occurred while updating user roles",
+      error: err.message
+    });
+  }
+};
+
 
 module.exports = {
   registerAdmin,
   loginAdmin,
+  updateUserRoles,
   addRegisteringNotification,
   getAdminById,
   markRegisteringNotificationAsRead,

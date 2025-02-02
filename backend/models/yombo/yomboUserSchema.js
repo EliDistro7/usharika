@@ -1,34 +1,15 @@
-const mongoose = require('mongoose');
-
-
-
-
+const mongoose = require("mongoose");
 
 const DependentSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  dob: {
-    type: Date,
-    required: true,
-  },
-  relation: {
-    type: String,
-    required: true,
-  },
+  name: { type: String, required: true },
+  dob: { type: Date, required: true },
+  relation: { type: String, required: true },
 });
 
 const YomboUserSchema = new mongoose.Schema(
   {
-    profilePicture: {
-      type: String, // URL to the uploaded image
-      required: false,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
+    profilePicture: { type: String, required: false },
+    name: { type: String, required: true },
     phone: {
       type: Number,
       required: true,
@@ -42,19 +23,9 @@ const YomboUserSchema = new mongoose.Schema(
       required: false,
       match: [/.+@.+\..+/, "Tafadhali ingiza Email sahihi."],
     },
-    gender: {
-      type: String,
-      enum: ["me", "ke"], // Male, Female
-      required: true,
-    },
-    dob: {
-      type: Date,
-      required: true,
-    },
-    birthPlace: {
-      type: String,
-      required: false,
-    },
+    gender: { type: String, enum: ["me", "ke"], required: true },
+    dob: { type: Date, required: true },
+    birthPlace: { type: String, required: false },
     maritalStatus: {
       type: String,
       enum: ["umeoa", "hujaoa", "umeolewa", "hujaolewa"],
@@ -62,143 +33,83 @@ const YomboUserSchema = new mongoose.Schema(
     },
     marriageType: {
       type: String,
-      enum: [
-        "Ndoa ya Kikristo", // Christian Marriage
-        "Ndoa ya Kiserikali", // Civil Marriage
-        "Nyingineyo", // Other
-        "bado",
-      ],
+      enum: ["Ndoa ya Kikristo", "Ndoa ya Kiserikali", "Nyingineyo", "bado"],
       required: function () {
         return ["umeoa", "umeolewa"].includes(this.maritalStatus);
       },
     },
-    dependents: [DependentSchema], // Array of dependent objects
-    password: {
-      type: String,
-      required: true,
-    },
-   
-    selectedRoles: {
-      type: [String], // Array of strings
-      default: ["msharika"],
-    },
-    kipaimara: {
+    dependents: [DependentSchema],
+    password: { type: String, required: true },
+    selectedRoles: { type: [String], default: ["msharika"] },
+    
+    isLeader: {
       type: Boolean,
-      default: false,
+      default: function () {
+        return this.selectedRoles.some((role) => role.startsWith("kiongozi_"));
+      },
     },
-    ubatizo: {
-      type: Boolean,
-      default: false,
+
+    leadershipPositions: {
+      type: Map,
+      of: [String], // Each key maps to an array of positions
+      default: {},
+      validate: {
+        validator: function (v) {
+          if (this.isLeader) {
+            // Convert Mongoose Map to a plain object
+            const leadershipObj = v instanceof Map ? Object.fromEntries(v) : v;
+    
+            // Ensure leadershipObj is a valid object
+            if (!leadershipObj || typeof leadershipObj !== 'object') {
+              return false;
+            }
+    
+            // Ensure at least one valid position exists
+            return Object.values(leadershipObj).some(
+              (positions) => Array.isArray(positions) && positions.length > 0
+            );
+          }
+          return true;
+        },
+        message: "Kiongozi lazima awe na angalau nafasi moja ya uongozi.",
+      },
     },
-    verified: {
-      type: Boolean,
-      default: false,
-    },
-    occupation: {
-      type: String,
-      required: true,
-    },
-    jumuiya: {
-      type: String,
-      enum: ["Malawi", "Kanisani", "Golani"],
-      required: true,
-    },
-    kiongozi_jumuiya: {
-      type: Boolean,
-      default: false,
-    },
+    
+    
+
+    kipaimara: { type: Boolean, default: false },
+    ubatizo: { type: Boolean, default: false },
+    verified: { type: Boolean, default: false },
+    occupation: { type: String, required: true },
+    jumuiya: { type: String, enum: ["Malawi", "Kanisani", "Golani"], required: true },
+
     matangazoNotifications: [
       {
-        group: {
-          type: String,
-          required: true,
-        },
-        type: {
-          type: String,
-          default: "matangazoNotification",
-        },
-      
-        message: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        status: {
-          type: String,
-          enum: ["read", "unread"], // Restrict to "read" or "unread"
-          default: "unread", // Default status is "unread"
-        },
-        time: {
-          type: Date,
-          default: Date.now, // Automatically sets the current timestamp
-        },
-        pinned: {
-          type: Boolean,
-          default: false
-        },
+        group: { type: String, required: true },
+        type: { type: String, default: "matangazoNotification" },
+        message: { type: String, required: true, trim: true },
+        status: { type: String, enum: ["read", "unread"], default: "unread" },
+        time: { type: Date, default: Date.now },
+        pinned: { type: Boolean, default: false },
       },
     ],
-
     donations: [
       {
-        name: {
-          type: String,
-          required: true, // Name of the donation or purpose is required
-          trim: true,
-        },
-        group: {
-          type:String,
-        required: true,
-        trim: true
-        },
-        
-        details: {
-          type: String,
-          required: true, // Details about the donation are required
-          trim: true,
-        },
-        startingDate: {
-          type: Date,
-          required: true, // A starting date for collecting donations is required
-        },
-        deadline: {
-          type: Date,
-          required: true, // Deadline for collecting donations is required
-        },
-        amountPaid: {
-          type: Number,
-          default: 0, // Default amount paid is 0
-          min: 0, // Prevent negative values
-        },
-        total: {
-          type: Number,
-          default: 0, // Default amount paid is 0
-          min: 0, // Prevent negative values
-        },
-        createdAt: {
-          type: Date,
-          default: Date.now, // Automatically sets the timestamp when the field is created
-        },
+        name: { type: String, required: true, trim: true },
+        group: { type: String, required: true, trim: true },
+        details: { type: String, required: true, trim: true },
+        startingDate: { type: Date, required: true },
+        deadline: { type: Date, required: true },
+        amountPaid: { type: Number, default: 0, min: 0 },
+        total: { type: Number, default: 0, min: 0 },
+        createdAt: { type: Date, default: Date.now },
       },
     ],
-    
     pledges: {
-      ahadi: {
-        type: Number,
-        required: true,
-      },
-      paidAhadi: {
-        type: Number,
-        default: 0,
-      },
-      jengo: {
-        type: Number,
-        required: true,
-      },
-      paidJengo: {
-        type: Number,
-        default: 0,
-      },
+      ahadi: { type: Number, required: true },
+      paidAhadi: { type: Number, default: 0 },
+      jengo: { type: Number, required: true },
+      paidJengo: { type: Number, default: 0 },
       other: {
         type: Map,
         of: {
@@ -209,9 +120,8 @@ const YomboUserSchema = new mongoose.Schema(
       },
     },
   },
-  { timestamps: true } // Adds createdAt and updatedAt timestamps
-);
-
+  { timestamps: true }
+)
 
 
 

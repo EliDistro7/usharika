@@ -25,7 +25,7 @@ const {
     getMatangazoNotifications,
     editMatangazoNotification,
     deleteMatangazoNotification,
-    verifyUser,addSelectedRole
+    verifyUser,addSelectedRole, getLeadersByRole
 } = require('../controllers/user-controller-yombo.js');
 
 // User Routes
@@ -51,6 +51,8 @@ router.get("/users/:userId/donations", getUserDonations);
 router.post("/users/getDonations", getUsersByGroupAndFieldType);
 
 router.patch("/users/:userId/donations/:donationId/add", addDonationAmount);
+
+router.post("/getLeadersByRole", getLeadersByRole);
 
 
 

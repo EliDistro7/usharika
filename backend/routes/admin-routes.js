@@ -7,6 +7,7 @@ const {
            addRegisteringNotification,
            markRegisteringNotificationAsRead,
            deleteRegisteringNotification,
+           updateUserRoles,
            getAdminById } = require('../controllers/admin-controller.js');
 const { verifyUser, unverifyUser } = require('../controllers/user-controller.js');
 
@@ -32,5 +33,6 @@ router.get('/admin/:adminId', getAdminById);
 router.post('/admin/markNotificationAsRead', markRegisteringNotificationAsRead);
 
 
-
+// New route for updating user roles and leadership positions
+router.post('/admin/updateUserRoles', updateUserRoles);
 module.exports = router;

@@ -9,12 +9,13 @@ import axios from "axios";
 import { formatRoleName } from "@/actions/utils";
 import Link from "next/link";
 import { getDefaultRoles } from "@/actions/users";
-import { Tabs, Tab } from "react-bootstrap";
+import RoleSelector from "./RoleSelector";
 
 
 
 
-const jumuiyas = ["Malawi", "Kanisani", "Golani"];
+
+
 
 const Msharika= () => {
   const [dependents, setDependents] = useState([{ name: "", dob: "", relation: "" }]);
@@ -47,6 +48,7 @@ const Msharika= () => {
     password: "",
     confirmPassword: "",
     selectedRoles: [],
+    leadershipPositions: [],
     dependents: [{ name: "", dob: "", relation: "" }],
     profilePicture: "",
     kipaimara:false,
@@ -73,7 +75,7 @@ const Msharika= () => {
       const getDefaultUserRoles = async ()=>{
         try {
           const defaultRoles = await getDefaultRoles();
-          //console.log('default roles:', defaultRoles)
+          console.log('default roles:', defaultRoles)
           setUserRoles(defaultRoles);
           } catch(error){
             console.log(error)
@@ -83,6 +85,14 @@ const Msharika= () => {
       getDefaultUserRoles();
      
     }, [])
+
+    const handleLeadershipPositionsChange = (updatedLeadershipPositions) => {
+      setFormData((prev) => ({
+        ...prev,
+        leadershipPositions: updatedLeadershipPositions,
+      }));
+    };
+    
 
     // Handle Input Change
     const handleInputChange = (e) => {
@@ -106,90 +116,7 @@ const Msharika= () => {
 
    
 
-    function RoleSelector({ userRoles, formData, handleRoleChange }) {
-      // Categorize roles
-      const kiongoziRoles = userRoles.filter((role) => role.startsWith("kiongozi_"));
-      const choirRoles = userRoles.filter((role) =>
-        !role.toLowerCase().includes("kiongozi_kwaya") && role.toLowerCase().includes("kwaya")
-      );
-      const jumuiyaRoles = userRoles.filter((role) =>
-         role.toLowerCase().includes("jumuiya") &&
-      !role.toLowerCase().includes("kiongozi_jumuiya")
-      );
-
-      const viongoziJumuiyaRoles = userRoles.filter((role) =>
-     role.toLowerCase().includes("kiongozi_jumuiya")
-     );
-     
-
-      const otherRoles = userRoles.filter(
-        (role) =>
-          !role.startsWith("kiongozi_") &&
-        
-          !role.toLowerCase().includes("choir") &&
-          !role.toLowerCase().includes("kwaya") &&
-          !role.toLowerCase().includes("jumuiya")
-      );
-    
-      // Helper function to render checkboxes
-      const renderRoleCheckboxes = (roles) => {
-        return roles.map((role) => (
-          <div className="form-check" key={role}>
-            <input
-              type="checkbox"
-              id={role}
-              className="form-check-input"
-              checked={formData.selectedRoles.includes(role)}
-              onChange={() => handleRoleChange(role)}
-            />
-            <label className="form-check-label">{formatRoleName(role)}</label>
-          </div>
-        ));
-      };
-    
-      return (
-        <Tabs defaultActiveKey="jumuiya" id="role-tabs" className="mb-3">
-          {/* Tab for Kiongozi Roles */}
-       
-    
-            {/* Tab for jumuiya Roles */}
-            <Tab eventKey="jumuiya" title="Jumuiya">
-            {jumuiyaRoles.length > 0 ? (
-              renderRoleCheckboxes(jumuiyaRoles)
-            ) : (
-              <p className="text-muted">No jumuiya roles available.</p>
-            )}
-          </Tab>  
-    
-          {/* Tab for Choir Roles */}
-          <Tab eventKey="choir" title="Kwaya">
-            {choirRoles.length > 0 ? (
-              renderRoleCheckboxes(choirRoles)
-            ) : (
-              <p className="text-muted">No Choir roles available.</p>
-            )}
-          </Tab>
-    
-          {/* Tab for Other Roles */}
-          <Tab eventKey="others" title="vikundi vingine">
-            {otherRoles.length > 0 ? (
-              renderRoleCheckboxes(otherRoles)
-            ) : (
-              <p className="text-muted">No other roles available.</p>
-            )}
-          </Tab>
-
-          <Tab eventKey="kiongozi" title="viongozi">
-            {kiongoziRoles.length > 0 ? (
-              renderRoleCheckboxes(kiongoziRoles)
-            ) : (
-              <p className="text-muted">No Kiongozi roles available.</p>
-            )}
-          </Tab>
-
-        </Tabs>
-      );
-    }
+ 
     
    
     
@@ -281,7 +208,7 @@ const Msharika= () => {
   
   
     try {
-      //console.log('formData', formData);
+      console.log('formData', formData);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER}/registerYombo`,
         formData);
@@ -300,29 +227,16 @@ const Msharika= () => {
   };
 
     // Categorize roles
-    const kiongoziRoles = userRoles.filter((role) => role.startsWith("kiongozi_"));
-    const otherRoles = userRoles.filter((role) => !role.startsWith("kiongozi_"));
+  //  const kiongoziRoles = userRoles.filter((role) => role.startsWith("kiongozi_"));
+   // const otherRoles = userRoles.filter((role) => !role.startsWith("kiongozi_"));
 
-  const renderRoleCheckboxes = (roles) => {
-    return roles.map((role) => (
-      <div className="form-check" key={role}>
-        <input
-          type="checkbox"
-          id={role}
-          className="form-check-input"
-          checked={formData.selectedRoles.includes(role)}
-          onChange={() => handleRoleChange(role)}
-        />
-        <label className="form-check-label">{formatRoleName(role)}</label>
-      </div>
-    ));
-  };
+ 
 
 
 
   return (
-    <div className="container mt-5">
-      <form className="p-4 rounded shadow " onSubmit={handleSubmit}>
+    <div className="container mt-5 px-0">
+      <form className="p-4 px-0 rounded  " onSubmit={handleSubmit}>
         <h2 className="text-center mb-4 text-primary fw-bold">Usajili wa Msharika</h2>
 
         {(errorMessage || successMessage) && (
@@ -676,8 +590,16 @@ const Msharika= () => {
         <div className="mb-4">
           <h3 className="text-secondary fw-bold">Vikundi unavyoshiriki au una nafasi unazohudumu kanisani</h3>
           <span className='text-danger text-xs'>hakikisha unaingiza vikundi vyote unavyoshiriki au nafasi za kiuongozi</span>
-          {RoleSelector({ userRoles, formData, handleRoleChange })}
+          <RoleSelector
+  userRoles={userRoles}
+  formData={formData}
+  handleRoleChange={handleRoleChange}
+  handleLeadershipPositionsChange={handleLeadershipPositionsChange}
+/>
+
         </div>
+
+      
 
         {/* Dependents Section */}
         <div className="mb-4">

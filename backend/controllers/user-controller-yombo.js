@@ -12,77 +12,123 @@ const origin = process.env.ORIGIN;
 
 
 const userRegister = async (req, res) => {
-    try {
-      // Handle the file upload
-    
-     // console.log('Form Data:', req.body); // For debugging purposes
-  
-        // Parse the form data (including roles, dob, etc.)
-        const { name, password, selectedRoles, jumuiya,occupation,phone,pledges,gender,
-           dob,maritalStatus,kipaimara,ubatizo,marriageType,profilePicture } = req.body;
-        // const selectedRoles = roles; 
-  
-       const defaultRoles = await fetchDefaultRoles().roles;
+  try {
+    // Parse the form data
+    const {
+      name,
+      password,
+      selectedRoles,
+      jumuiya,
+      occupation,
+      phone,
+      pledges,
+      gender,
+      dob,
+      maritalStatus,
+      kipaimara,
+      ubatizo,
+      marriageType,
+      profilePicture,
+      leadershipPositions, // Object mapping roles to arrays of positions
+    } = req.body;
 
-      // console,log("default roles",defaultRoles);
-/*
-       if(!defaultRoles){
-        return res.status(500).send({message: 'No default roles'})
-       }
+    console.log('req body', req.body);
 
-       for(let role of selectedRoles){
-           if(!defaultRoles.includes(role)){
-            return res.status(500).send({message: `enum error, ${role} is not registered`})
-       }
+    // Fetch default roles from the database.
+    const defaultRolesData = await fetchDefaultRoles();
+    const defaultRoles = defaultRolesData.map((item) => item.role);
+
+    // Validate selected roles
+    for (let role of selectedRoles) {
+      if (!defaultRoles.includes(role)) {
+        return res.status(400).send({ message: `Invalid role: ${role} is not registered` });
       }
-*/
-    
-        // Validate input
-        if (!name || !password) {
-          return res.status(400).send({ message: 'Jina na password vinahitajika' });
-        }
-  
-        // Check if user already exists
-        const existingUser = await User.findOne({ name });
-        if (existingUser) {
-          return res.status(400).send({ message: 'Jina tayari lipo, jaribu jina lingine' });
-        }
-  
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
-        if (!salt) throw new Error("Salt generation failed"); // Optional debugging step
-        const hashedPassword = await bcrypt.hash(password, salt);
-        if (!hashedPassword) throw new Error("Hashing failed"); // Optional debugging step
-  
-        // Create new user object
-        const user = new User({
-          name,
-          password: hashedPassword,
-          selectedRoles, // Make sure roles are saved as an array
-          jumuiya,
-          dob, // Ensure dob is properly formatted
-          profilePicture, // Save the file path if file is uploaded
-          occupation,phone,pledges,gender,maritalStatus,
-          marriageType:marriageType==='' ? 'bado':marriageType,
-          kipaimara: kipaimara === 'on' ? true : false,
-          ubatizo: ubatizo === 'on' ? true : false,
-        });
-  
-        // Save the user
-        const savedUser = await user.save();
-        savedUser.password = undefined; // Remove password from response for security
-  
-        // Send success response
-        res.status(201).send({
-          message: 'User registered successfully',
-          user: savedUser,
-        });
-    ;
-    } catch (err) {
-      console.error('Registration Error:', err);
-      res.status(500).send({ message: 'An error occurred during registration', error: err.message });
     }
-  };
+
+    // Ensure name and password are provided
+    if (!name || !password) {
+      return res.status(400).send({ message: 'Jina na password vinahitajika' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ name });
+    if (existingUser) {
+      return res.status(400).send({ message: 'Jina tayari lipo, jaribu jina lingine' });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Determine if the user is a leader
+    const isLeader = selectedRoles.some((role) => role.startsWith("kiongozi_"));
+
+    // Ensure leadershipPositions is stored in the correct format
+    let formattedLeadershipPositions = new Map();
+
+    if (isLeader && leadershipPositions && typeof leadershipPositions === 'object') {
+      Object.entries(leadershipPositions).forEach(([group, positions]) => {
+        if (Array.isArray(positions) && positions.length > 0) {
+          formattedLeadershipPositions.set(group, positions);
+        }
+      });
+    }
+
+    // Leadership validation: A leader must have at least one position
+    if (isLeader && formattedLeadershipPositions.size === 0) {
+      return res.status(400).send({ message: 'Kiongozi lazima awe na angalau nafasi moja ya uongozi.' });
+    }
+
+    // Create new user object
+    const user = new User({
+      name,
+      password: hashedPassword,
+      selectedRoles,
+      jumuiya,
+      dob,
+      profilePicture,
+      occupation,
+      phone,
+      pledges,
+      gender,
+      maritalStatus,
+      marriageType: marriageType === '' ? 'bado' : marriageType,
+      kipaimara: kipaimara === 'on',
+      ubatizo: ubatizo === 'on',
+      isLeader,
+      leadershipPositions: formattedLeadershipPositions, // Store as a Map
+    });
+
+    // Save the user
+    const savedUser = await user.save();
+    savedUser.password = undefined; // Remove password from response
+
+    // Send success response
+    res.status(201).send({
+      message: 'User registered successfully',
+      user: savedUser,
+    });
+  } catch (err) {
+    console.log('Registration Error:', err);
+    res.status(500).send({ message: 'An error occurred during registration', error: err.message });
+  }
+};
+
+
+
+
+
+const deleteUsers = async () => {
+  try {
+    await User.deleteMany({});
+    console.log("All users deleted successfully.");
+  } catch (error) {
+    console.log("Error deleting roles:", error);
+  }
+};
+
+deleteUsers()
+
 
 
 
@@ -259,29 +305,53 @@ const verifyUser = async (req, res) =>{
   }
 }
 
-const addSelectedRole = async (req, res) =>{
-  try{
-    const {adminId, userId, selectedRole} = req.body;
-  // Find the user by userId (assuming userId is a unique field like _id or custom id)
-  const user = await User.findById(userId); // Use findById if you are using MongoDB's ObjectId
-  const isAdmin = await Admin.findById(adminId); 
+const addSelectedRole = async (req, res) => {
+  try {
+    const { adminId, userId, selectedRole, leadershipPositions } = req.body;
 
-  if(!isAdmin){
-    console.error('admin not found');
-    return res.status(404).send({message:"admin hayupo"});
-  }
+    // Validate Admin
+    const isAdmin = await Admin.findById(adminId);
+    if (!isAdmin) {
+      return res.status(404).send({ message: "Admin hayupo" });
+    }
 
-  if (user) {
-    // Remove sensitive data
-    user.selectedRoles.push(selectedRole) ;
-    user.save() ;
-    return res.send(user);
-  } 
-  } catch(err){
-    console.log(err);
-    return res.status(404).json({message: err.message});
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "Mtumiaji hayupo" });
+    }
+
+    // Check if the role already exists
+    if (user.selectedRoles.includes(selectedRole)) {
+      return res.status(400).send({ message: "Mtumiaji tayari ana nafasi hii" });
+    }
+
+    // If the role is a leadership role, leadership positions must be provided
+    if (selectedRole.startsWith("kiongozi_")) {
+      if (!leadershipPositions || leadershipPositions.length === 0) {
+        return res.status(400).send({ message: "Kiongozi lazima awe na angalau nafasi moja ya uongozi." });
+      }
+
+      // Ensure `leadershipPositions` is an array
+      if (!Array.isArray(leadershipPositions)) {
+        return res.status(400).send({ message: "Nafasi za uongozi lazima ziwe orodha (array)." });
+      }
+
+      // Add leadership positions to the user
+      user.leadershipPositions = [...new Set([...user.leadershipPositions, ...leadershipPositions])];
+    }
+
+    // Add the new role
+    user.selectedRoles.push(selectedRole);
+    await user.save();
+
+    return res.status(200).send({ message: "Nafasi mpya imeongezwa kwa mafanikio", user });
+  } catch (err) {
+    console.error("Error:", err);
+    return res.status(500).json({ message: "Tatizo limetokea", error: err.message });
   }
-}
+};
+
 
 
 // Example function to add payment using username
@@ -427,6 +497,57 @@ const getUsersByRole = async (req, res) => {
     res.status(500).json({ message: 'Server error while retrieving users.' });
   }
 };
+const getLeadersByRole = async (req, res) => {
+  // Destructure and set defaults for pagination
+  let { role, page = 1, limit = 10 } = req.body;
+
+  try {
+    // Validate that role is provided.
+    if (!role) {
+      return res.status(400).json({ message: 'Role parameter is required.' });
+    }
+
+    // Parse page and limit as integers
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    // Build query object. For leadership roles, ensure the user is flagged as a leader.
+    const query = { selectedRoles: role };
+    if (role.startsWith('kiongozi_')) {
+      query.isLeader = true;
+    }
+
+    // Retrieve users that match the query (with pagination and sorting)
+    const users = await User.find(query)
+      .select('-password') // Exclude password
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    // Count total users that match the query
+    const totalUsers = await User.countDocuments(query);
+
+    // Calculate category counts for analytics (only among the matched users)
+    const categories = await User.aggregate([
+      { $match: query },
+      { $unwind: '$selectedRoles' },
+      { $group: { _id: '$selectedRoles', count: { $sum: 1 } } },
+      { $sort: { _id: 1 } }
+    ]);
+
+    res.status(200).json({
+      users,
+      categories,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+    });
+  } catch (error) {
+    console.error('Error retrieving users:', error);
+    res.status(500).json({ message: 'Server error while retrieving users.' });
+  }
+};
+
 
 // Function to push a notification
 const pushMatangazoNotification = async (req, res) => {
@@ -971,4 +1092,5 @@ module.exports = {
     getMatangazoNotifications,
     deleteMatangazoNotification,
     editMatangazoNotification,
+    getLeadersByRole,
   };

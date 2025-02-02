@@ -40,7 +40,7 @@ const FullUserModal = ({ user, onClose,notification }) => {
         zIndex: 1050,
       }}
     >
-      <ToastContainer autoClose={4000}/>
+      <ToastContainer autoClose={4000} />
       <div
         className="modal-content p-4 d-flex flex-column"
         style={{
@@ -48,7 +48,7 @@ const FullUserModal = ({ user, onClose,notification }) => {
           borderRadius: "12px",
           maxWidth: "700px",
           width: "100%",
-          maxHeight: "90vh", // Restricts modal height to 90% of viewport height
+          maxHeight: "90vh",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
         }}
       >
@@ -57,9 +57,14 @@ const FullUserModal = ({ user, onClose,notification }) => {
           className="d-flex justify-content-between align-items-center border-bottom pb-3"
           style={{ marginBottom: "20px", flexShrink: 0 }}
         >
-          <h5 className="modal-title mb-0" style={{ fontWeight: "600" }} align="center">
-
-            {notification.type === 'registeringNotification' ? "Maombi ya Usajili" : `Kujiunga na Kikundi:${formatRoleName(notification.selectedRole)}`}
+          <h5
+            className="modal-title mb-0"
+            style={{ fontWeight: "600", color: "#6a0dad" }}
+            align="center"
+          >
+            {notification.type === "registeringNotification"
+              ? "Maombi ya Usajili"
+              : `Kujiunga na Kikundi: ${formatRoleName(notification.selectedRole)}`}
           </h5>
           <button
             type="button"
@@ -69,34 +74,34 @@ const FullUserModal = ({ user, onClose,notification }) => {
               border: "none",
               fontSize: "20px",
               cursor: "pointer",
+              color: "#6a0dad",
             }}
           >
             &times;
           </button>
         </div>
-
+  
         {/* Scrollable Body */}
         <div
           className="modal-body flex-grow-1 overflow-auto"
-          style={{
-            paddingRight: "15px", // Add padding to prevent scrollbars from overlapping content
-          }}
+          style={{ paddingRight: "15px" }}
         >
           {/* User Profile */}
           <div className="d-flex align-items-center mb-4">
             <img
               src={user.profilePicture || "/img/default-profile.png"}
               alt={`${user.name}'s profile`}
-              className="rounded-circle"
+              className="rounded-circle border shadow-sm"
               style={{
                 width: "100px",
                 height: "100px",
                 objectFit: "cover",
                 marginRight: "20px",
+                borderColor: "#e0d8ff",
               }}
             />
             <div>
-              <h5 className="mb-1" style={{ fontWeight: "500" }}>
+              <h5 className="mb-1" style={{ fontWeight: "500", color: "#4a2ea0" }}>
                 {user.name}
               </h5>
               <p className="mb-1">
@@ -111,20 +116,18 @@ const FullUserModal = ({ user, onClose,notification }) => {
               </p>
             </div>
           </div>
-
+  
           {/* User Details */}
           <div className="mb-4">
-            <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
+            <h6 className="text-primary mb-2" style={{ fontWeight: "600", color: "#6a0dad" }}>
               Taarifa binafsi
             </h6>
             <p className="mb-1">
               <strong>Umri:</strong>{" "}
-              {new Date().getFullYear() - new Date(user.dob).getFullYear()}{" "}
-              miaka
+              {new Date().getFullYear() - new Date(user.dob).getFullYear()} miaka
             </p>
             <p className="mb-1">
-              <strong>Hali ya Ndoa:</strong> {user.maritalStatus} (
-              {user.marriageType})
+              <strong>Hali ya Ndoa:</strong> {user.maritalStatus} ({user.marriageType})
             </p>
             <p className="mb-1">
               <strong>Ubatizo:</strong> {user.ubatizo ? "Ndiyo" : "Hapana"}
@@ -136,20 +139,23 @@ const FullUserModal = ({ user, onClose,notification }) => {
               <strong>Kazi:</strong> {user.occupation}
             </p>
             <p className="mb-0">
-              <strong>Amethibitishwa:</strong>{" "}
-              {user.verified ? "Ndiyo" : "Hapana"}
+              <strong>Amethibitishwa:</strong> {user.verified ? "Ndiyo" : "Hapana"}
             </p>
           </div>
-
+  
           {/* Roles */}
           <div className="mb-4">
-            <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
+            <h6 className="text-primary mb-2" style={{ fontWeight: "600", color: "#6a0dad" }}>
               Nafasi na Vikundi alivyomo
             </h6>
             {user.selectedRoles.length > 0 ? (
               <ul className="list-group">
                 {user.selectedRoles.map((role, index) => (
-                  <li key={index} className="list-group-item">
+                  <li
+                    key={index}
+                    className="list-group-item"
+                    style={{ borderColor: "#e0d8ff" }}
+                  >
                     {role.replace(/_/g, " ")}
                   </li>
                 ))}
@@ -158,44 +164,51 @@ const FullUserModal = ({ user, onClose,notification }) => {
               <p className="text-muted">Hakuna majukumu yaliyotolewa.</p>
             )}
           </div>
-
-         {/* Pledges */}
-<div className="mb-4">
-  <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
-    Ahadi za Msharika
-  </h6>
-  <ul className="list-group">
-    {/* Default pledge types */}
-    <li className="list-group-item">
-      <strong>Ahadi:</strong> {user.pledges.ahadi} TZS / Iliyolipwa:{" "}
-      {user.pledges.paidAhadi} TZS
-    </li>
-    <li className="list-group-item">
-      <strong>Jengo:</strong> {user.pledges.jengo} TZS / Iliyolipwa:{" "}
-      {user.pledges.paidJengo} TZS
-    </li>
-
-    {/* Dynamic pledge types from 'other' */}
-    {user.pledges.other &&
-      Object.entries(user.pledges.other).map(([key, { total, paid }]) => (
-        <li className="list-group-item" key={key}>
-          <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>{" "}
-          {total} TZS / Iliyolipwa: {paid} TZS
-        </li>
-      ))}
-  </ul>
-</div>
-
-
+  
+          {/* Pledges */}
+          <div className="mb-4">
+            <h6 className="text-primary mb-2" style={{ fontWeight: "600", color: "#6a0dad" }}>
+              Ahadi za Msharika
+            </h6>
+            <ul className="list-group">
+              {/* Default pledge types */}
+              <li className="list-group-item" style={{ borderColor: "#e0d8ff" }}>
+                <strong>Ahadi:</strong> {user.pledges.ahadi} TZS / Iliyolipwa:{" "}
+                {user.pledges.paidAhadi} TZS
+              </li>
+              <li className="list-group-item" style={{ borderColor: "#e0d8ff" }}>
+                <strong>Jengo:</strong> {user.pledges.jengo} TZS / Iliyolipwa:{" "}
+                {user.pledges.paidJengo} TZS
+              </li>
+  
+              {/* Dynamic pledge types from 'other' */}
+              {user.pledges.other &&
+                Object.entries(user.pledges.other).map(([key, { total, paid }]) => (
+                  <li
+                    className="list-group-item"
+                    key={key}
+                    style={{ borderColor: "#e0d8ff" }}
+                  >
+                    <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>{" "}
+                    {total} TZS / Iliyolipwa: {paid} TZS
+                  </li>
+                ))}
+            </ul>
+          </div>
+  
           {/* Dependents */}
           <div className="mb-4">
-            <h6 className="text-primary mb-2" style={{ fontWeight: "600" }}>
+            <h6 className="text-primary mb-2" style={{ fontWeight: "600", color: "#6a0dad" }}>
               Wategemezi
             </h6>
             {user.dependents.length > 0 ? (
               <ul className="list-group">
                 {user.dependents.map((dependent, index) => (
-                  <li key={index} className="list-group-item">
+                  <li
+                    key={index}
+                    className="list-group-item"
+                    style={{ borderColor: "#e0d8ff" }}
+                  >
                     {dependent.name} ({dependent.relation})
                   </li>
                 ))}
@@ -205,26 +218,24 @@ const FullUserModal = ({ user, onClose,notification }) => {
             )}
           </div>
         </div>
-
+  
         {/* Footer */}
         <div
-          className="text-end border-top pt-3 d-flex-grow justify-content-between w-100 "
+          className="text-end border-top pt-3 d-flex justify-content-between w-100"
           style={{ flexShrink: 0 }}
         >
           <button
             type="button"
-            className="btn btn-primary"
-            style={{ padding: "10px 20px" }}
+            className="btn btn-outline-purple"
+            style={{ padding: "10px 20px", borderColor: "#6a0dad", color: "#6a0dad" }}
             onClick={onClose}
           >
             Funga
           </button>
-
-          {' '}
           <button
             type="button"
-            className="btn btn-primary"
-            style={{ padding: "10px 20px" }}
+            className="btn btn-purple"
+            style={{ padding: "10px 20px", backgroundColor: "#6a0dad", border: "none" , color:"white" }}
             onClick={handleVerification}
           >
             Thibitisha

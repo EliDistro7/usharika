@@ -7,8 +7,8 @@ const UserTableRows = ({
   handleUserClick,
 }) => {
 
-console.log('users', users);
-console.log('sort by', sortBy);
+//console.log('users', users);
+//console.log('sort by', sortBy);
 
   if (users.length === 0) {
     return (
@@ -37,35 +37,42 @@ console.log('sort by', sortBy);
             className="align-middle"
             style={{
               cursor: "pointer",
-              transition: "background-color 0.2s ease",
+              transition: "background-color 0.2s ease, transform 0.2s ease",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#f9f9f9")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "white")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f5f3ff"; // Light purple background on hover
+              e.currentTarget.style.transform = "scale(1.005)"; // Slight scale effect
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "white"; // Reset background
+              e.currentTarget.style.transform = "scale(1)"; // Reset scale
+            }}
           >
             {/* Profile Picture */}
             <td className="text-center">
               <img
                 src={user.profilePicture || "/img/default-profile.png"}
                 alt={user.name}
-                className="rounded-circle border"
+                className="rounded-circle border shadow-sm"
                 width="40"
                 height="40"
+                style={{ borderColor: "#e0d8ff" }} // Light purple border
               />
             </td>
   
             {/* User Name with Kiongozi Badge */}
             <td>
-              <span className="fw-bold">{user.name}</span>
+              <span className="fw-bold" style={{ color: "#4a2ea0" }}>
+                {user.name}
+              </span>
               {hasKiongoziRole && (
                 <span
                   className="badge ms-2 text-white"
                   style={{
-                    backgroundColor: "#17a2b8",
+                    backgroundColor: "#6a0dad", // Purple badge
                     fontSize: "0.75rem",
+                    padding: "0.25rem 0.5rem",
+                    borderRadius: "12px",
                   }}
                 >
                   Kiongozi
@@ -78,7 +85,7 @@ console.log('sort by', sortBy);
               <>
                 {/* Phone column - hidden on small screens */}
                 <td className="text-muted d-none d-md-table-cell">{user.phone}</td>
-                
+  
                 {/* Gender column - hidden on extra small screens */}
                 <td className="text-capitalize d-none d-sm-table-cell">
                   {user.gender === "me" ? "Mume" : "Mke"}
@@ -92,6 +99,7 @@ console.log('sort by', sortBy);
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
+                    color: "#6a0dad", // Purple text
                   }}
                   title={user.jumuiya}
                 >
@@ -99,7 +107,7 @@ console.log('sort by', sortBy);
                 </td>
   
                 {/* Occupation column - always visible */}
-                <td>{user.occupation}</td>
+                <td style={{ color: "#4a2ea0" }}>{user.occupation}</td>
               </>
             ) : (
               <>
@@ -113,7 +121,6 @@ console.log('sort by', sortBy);
       })}
     </>
   );
-  
 };
 
 export default UserTableRows;

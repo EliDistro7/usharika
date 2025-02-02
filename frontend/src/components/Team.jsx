@@ -1,76 +1,84 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Team = ({ title, subtitle, members }) => {
+const Team = ({ leaders, activeSelection }) => {
+  console.log('leaders', leaders);
+  
+  // Format activeSelection: remove spaces and replace with underscores, then prefix with "kiongozi_"
+  const formattedSelection = `kiongozi_${(activeSelection || "").toLowerCase().replace(/\s+/g, '_')}`;
+
   return (
-    <div className="container-fluid team py-5">
+    <div className="container-fluid team py-0" style={{ backgroundColor: "#F3E5F5" }}>
       <div className="container py-5">
         <div
           className="mx-auto text-center wow fadeIn"
           data-wow-delay="0.1s"
           style={{ maxWidth: "600px" }}
         >
-          <h4 className="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">
-            {title}
-          </h4>
-          <h1 className="mb-5 display-3">{subtitle}</h1>
+          <h4 className="text-purple mb-3">{activeSelection || "Leadership Team"}</h4>
+          <h1 className="display-5 text-dark mb-5">USHARIKA WA YOMBO</h1>
         </div>
-        <div className="row g-5 justify-content-center ">
-          {members.map((member, index) => (
-            <div
-              key={index}
-              className="col-md-6 col-lg-4 col-xl-3 wow fadeIn "
-              data-wow-delay={member.delay || "0.1s"}
-            >
-              <div className="team-item border border-primary rounded overflow-hidden">
-                <img
-                  src={member.image}
-                  className="img-fluid w-100"
-                  alt={member.name}
-                />
-                <div className="team-icon d-flex align-items-center justify-content-center">
-                  {member.socialLinks &&
-                    member.socialLinks.map((link, linkIndex) => (
-                      <a
-                        key={linkIndex}
-                        className="btn btn-primary btn-md-square text-white rounded-circle me-3"
-                        href={link.url}
-                      >
-                        <i className={link.icon}></i>
-                      </a>
-                    ))}
-                </div>
-                <div className="team-content text-center py-3">
-                  <h4 className="text-primary">{member.name}</h4>
-                  <p className="text-muted mb-2">{member.role}</p>
+        <div className="row g-4 justify-content-center">
+          {leaders.map((leader, index) => {
+            // Extract the positions from the leader's `leadershipPositions` field
+            const leaderPositions = leader.leadershipPositions?.[formattedSelection] || [];
+
+            return (
+              <div
+                className="col-lg-4 col-md-6 col-sm-12 wow fadeInUp"
+                data-wow-delay={`${0.1 * index}s`}
+                key={leader.id || index}
+              >
+                <div
+                  className="team-item text-center rounded p-4 shadow-sm position-relative"
+                  style={{
+                    backgroundColor: "#E1BEE7",
+                    color: "#4A148C",
+                    border: "1px solid #D1C4E9",
+                    transition: "transform 0.3s ease-in-out",
+                  }}
+                >
+                  <img
+                    src={leader.profilePicture || "/default-profile.png"}
+                    alt={leader.name}
+                    className="img-fluid rounded-circle mb-3"
+                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                  />
+                  <h5 className="mb-1">{leader.name}</h5>
+                  <p className="text-dark">
+                    <i className="fas fa-user-tie me-1"></i> 
+                    {leaderPositions.length > 0 ? leaderPositions.join(", ") : "Leader"}
+                  </p>
+                  <p className="mb-0">
+                    <a
+                      href={`tel:${leader.phone}`}
+                      className="text-purple fw-bold"
+                      style={{ textDecoration: "none", color: "#6A1B9A" }}
+                    >
+                      <i className="fas fa-phone-alt me-1"></i> {leader.phone}
+                    </a>
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
   );
 };
 
-// Define PropTypes for validation
 Team.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  members: PropTypes.arrayOf(
+  leaders: PropTypes.arrayOf(
     PropTypes.shape({
-      image: PropTypes.string.isRequired,
+      id: PropTypes.string,
       name: PropTypes.string.isRequired,
-      role: PropTypes.string.isRequired,
-      delay: PropTypes.string,
-      socialLinks: PropTypes.arrayOf(
-        PropTypes.shape({
-          url: PropTypes.string.isRequired,
-          icon: PropTypes.string.isRequired,
-        })
-      ),
+      phone: PropTypes.string.isRequired,
+      profilePicture: PropTypes.string,
+      leadershipPositions: PropTypes.object, // Ensuring leaders have leadershipPositions
     })
   ).isRequired,
+  activeSelection: PropTypes.string,
 };
 
 export default Team;
