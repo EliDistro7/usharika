@@ -41,7 +41,7 @@ const getDefaultRoles = async (req, res) => {
       error: err.message,
     });
   }
-};
+}
 
 // Fetch Roles with Default Leadership Positions
 const fetchDefaultRoles = async () => {
