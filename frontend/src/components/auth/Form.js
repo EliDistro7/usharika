@@ -80,7 +80,7 @@ const Form = () => {
         <p className="text-muted">Ingia kuendelea</p>
       </header>
   
-      <div className="p-4 shadow rounded w-100" style={{ maxWidth: '400px',  }}>
+      <div className="p-4 shadow rounded w-100" style={{ maxWidth: '400px', backgroundColor: 'white' }}>
         <h2 className="text-center mb-4" style={{ color: '#6a0dad' }}>Akaunti</h2>
   
         {error && <div className="alert alert-danger text-center">{error}</div>}
