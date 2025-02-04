@@ -65,13 +65,16 @@ export const CountdownDisplay = ({
       style={{
         position: "relative",
         backgroundImage: backgroundVideo ? "none" : `url(${backgroundImage})`,
-        background: "linear-gradient(135deg, #D8BFD8, #800080)",
+        background: "linear-gradient(135deg, #6a0dad, #9b59b6)",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        padding: "50px 20px",
+        padding: "100px 20px",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      {/* Video Background */}
       {backgroundVideo && (
         <video
           autoPlay
@@ -92,7 +95,6 @@ export const CountdownDisplay = ({
         </video>
       )}
 
-      {/* Overlay */}
       <div
         className="overlay"
         style={{
@@ -101,37 +103,55 @@ export const CountdownDisplay = ({
           left: 0,
           right: 0,
           bottom: 0,
-          background: "rgba(0, 0, 0, 0.4)",
+          background: "rgba(106, 13, 173, 0.6)",
         }}
       />
 
       {showCountdown && (
         <Container className="py-5" style={{ position: "relative", zIndex: 1 }}>
-          <h1 className="display-4 fw-bold mb-4" style={{ color: "#D8BFD8" }}>
-            Countdown to <span className="text-light">{eventName}</span>
+          <h1
+            className="display-3 fw-bold mb-4"
+            style={{ color: "#ffffff", fontFamily: "'Poppins', sans-serif" }}
+          >
+            Countdown to <span style={{ color: "#d8b4e2" }}>{eventName}</span>
           </h1>
-          <Row className="g-3 justify-content-center">
+          <Row className="g-4 justify-content-center">
             {[
-              { value: padTo2(months), label: "Miezi" },
-              { value: padTo2(days), label: "Siku" },
-              { value: padTo2(hours), label: "Masaa" },
-              { value: padTo2(minutes), label: "Dakika" },
-              { value: padTo2(seconds), label: "Sekunde" },
+              { value: padTo2(months), label: "Months" },
+              { value: padTo2(days), label: "Days" },
+              { value: padTo2(hours), label: "Hours" },
+              { value: padTo2(minutes), label: "Minutes" },
+              { value: padTo2(seconds), label: "Seconds" },
             ].map((unit, index) => (
               <Col key={index} xs={6} sm={4} md={2}>
                 <div
-                  className="countdown-box p-3 rounded shadow"
+                  className="countdown-box p-4 rounded shadow"
                   style={{
-                    background: "#D8BFD8",
-                    color: "#800080",
+                    background: "rgba(155, 89, 182, 0.2)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(155, 89, 182, 0.4)",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 16px rgba(106, 13, 173, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 8px rgba(106, 13, 173, 0.2)";
                   }}
                 >
-                  <div className="countdown-number display-5 fw-bold">
+                  <div
+                    className="countdown-number display-4 fw-bold"
+                    style={{ color: "#d8b4e2", fontFamily: "'Roboto Mono', monospace" }}
+                  >
                     {unit.value}
                   </div>
                   <small
                     className="text-uppercase fw-semibold"
-                    style={{ color: "#4B0082" }}
+                    style={{ color: "rgba(255, 255, 255, 0.8)" }}
                   >
                     {unit.label}
                   </small>
