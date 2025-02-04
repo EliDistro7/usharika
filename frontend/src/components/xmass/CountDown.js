@@ -1,54 +1,39 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import "./CountDown.css";
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 
-export const useCountdown = (targetDate) => {
-  const validDate = new Date(targetDate);
-  if (isNaN(validDate)) {
-    console.error(
-      "Invalid targetDate provided. Please ensure it is a valid Date or a parsable string."
-    );
-    return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-  }
+const padTo2 = (num) => String(num).padStart(2, '0');
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(validDate));
+const useCountdown = (targetDate) => {
+  const calculateTimeLeft = () => {
+    const now = new Date();
+    const target = new Date(targetDate);
+    const diff = target - now;
+
+    if (diff <= 0) {
+      return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+    const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return { months, days, hours, minutes, seconds };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(validDate));
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [validDate]);
+  }, [targetDate]);
 
   return timeLeft;
 };
-
-function calculateTimeLeft(targetDate) {
-  const now = new Date();
-  const timeDifference = targetDate.getTime() - now.getTime();
-
-  if (timeDifference <= 0) {
-    return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-  }
-
-  const totalSeconds = Math.floor(timeDifference / 1000);
-  const totalMinutes = Math.floor(totalSeconds / 60);
-  const totalHours = Math.floor(totalMinutes / 60);
-  const totalDays = Math.floor(totalHours / 24);
-
-  const months = Math.floor(totalDays / 30);
-  const days = totalDays % 30;
-  const hours = totalHours % 24;
-  const minutes = totalMinutes % 60;
-  const seconds = totalSeconds % 60;
-
-  return { months, days, hours, minutes, seconds };
-}
-
-function padTo2(num) {
-  return num.toString().padStart(2, "0");
-}
 
 export const CountdownDisplay = ({
   eventName,
@@ -58,6 +43,12 @@ export const CountdownDisplay = ({
   showCountdown = true,
 }) => {
   const { months, days, hours, minutes, seconds } = useCountdown(targetDate);
+
+  const eventDate = new Date(targetDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <div
@@ -118,6 +109,12 @@ export const CountdownDisplay = ({
           >
             Countdown to <span style={{ color: "#d8b4e2" }}>{eventName}</span>
           </h1>
+          <p
+            className="lead mb-5"
+            style={{ color: "rgba(255, 255, 255, 0.8)", fontFamily: "'Poppins', sans-serif" }}
+          >
+            Event Date: <span style={{ color: "#d8b4e2" }}>{eventDate}</span>
+          </p>
           <Row className="g-4 justify-content-center">
             {[
               { value: padTo2(months), label: "Months" },
