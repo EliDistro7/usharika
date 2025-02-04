@@ -121,7 +121,7 @@ export const NewsTicker = ({
                   display: "inline-block",
                   flex: "0 0 auto",
                   minWidth: "200px",
-                  backgroundColor: "#e9d8fd", // slightly different light purple for contrast
+                
                   borderRadius: "10px",
                   boxShadow: "0 2px 4px rgba(111, 66, 193, 0.1)",
                 }}
