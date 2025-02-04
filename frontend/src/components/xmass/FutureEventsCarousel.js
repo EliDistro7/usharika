@@ -6,14 +6,10 @@ import {CountdownDisplay} from "./CountDown"; // Adjust the path as necessary
 
 const FutureEventsCarousel = () => {
   const events = [
-    {
-      targetDate: "2025-01-30T00:00:00Z",
-      eventName: "Ibada ya Mkesha",
-      backgroundImage: "/img/worship1.jpg",
-    },
+ 
     {
       targetDate: "2025-02-14T00:00:00Z",
-      eventName: "Maombi ya Vijana",
+      eventName: "The Cross Episode II",
       backgroundImage: "/img/cross.jpeg",
     },
     {

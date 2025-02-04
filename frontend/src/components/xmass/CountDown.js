@@ -64,8 +64,9 @@ export const CountdownDisplay = ({
       className="countdown-body text-center text-white mt-0"
       style={{
         position: "relative",
-        backgroundImage: backgroundVideo ? "none" : `url(${backgroundImage})`,
-        background: "linear-gradient(135deg, #6a0dad, #9b59b6)",
+        backgroundImage: backgroundVideo
+          ? "none"
+          : `linear-gradient(rgba(106, 13, 173, 0.7), rgba(155, 89, 182, 0.7)), url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         padding: "100px 20px",
@@ -73,6 +74,7 @@ export const CountdownDisplay = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        overflow: "hidden",
       }}
     >
       {backgroundVideo && (
@@ -103,7 +105,8 @@ export const CountdownDisplay = ({
           left: 0,
           right: 0,
           bottom: 0,
-          background: "rgba(106, 13, 173, 0.6)",
+          background: "rgba(106, 13, 173, 0.4)",
+          backdropFilter: "blur(5px)",
         }}
       />
 
@@ -128,7 +131,7 @@ export const CountdownDisplay = ({
                   className="countdown-box p-4 rounded shadow"
                   style={{
                     background: "rgba(155, 89, 182, 0.2)",
-                    backdropFilter: "blur(10px)",
+                    backdropFilter: "blur(15px)",
                     border: "1px solid rgba(155, 89, 182, 0.4)",
                     transition: "transform 0.3s ease, box-shadow 0.3s ease",
                   }}
@@ -145,7 +148,10 @@ export const CountdownDisplay = ({
                 >
                   <div
                     className="countdown-number display-4 fw-bold"
-                    style={{ color: "#d8b4e2", fontFamily: "'Roboto Mono', monospace" }}
+                    style={{
+                      color: "#d8b4e2",
+                      fontFamily: "'Roboto Mono', monospace",
+                    }}
                   >
                     {unit.value}
                   </div>
