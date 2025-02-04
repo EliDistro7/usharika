@@ -41,30 +41,23 @@ const YomboUserSchema = new mongoose.Schema(
     dependents: [DependentSchema],
     password: { type: String, required: true },
     selectedRoles: { type: [String], default: ["msharika"] },
-    
     isLeader: {
       type: Boolean,
       default: function () {
         return this.selectedRoles.some((role) => role.startsWith("kiongozi_"));
       },
     },
-
     leadershipPositions: {
       type: Map,
-      of: [String], // Each key maps to an array of positions
+      of: [String],
       default: {},
       validate: {
         validator: function (v) {
           if (this.isLeader) {
-            // Convert Mongoose Map to a plain object
             const leadershipObj = v instanceof Map ? Object.fromEntries(v) : v;
-    
-            // Ensure leadershipObj is a valid object
             if (!leadershipObj || typeof leadershipObj !== 'object') {
               return false;
             }
-    
-            // Ensure at least one valid position exists
             return Object.values(leadershipObj).some(
               (positions) => Array.isArray(positions) && positions.length > 0
             );
@@ -74,15 +67,11 @@ const YomboUserSchema = new mongoose.Schema(
         message: "Kiongozi lazima awe na angalau nafasi moja ya uongozi.",
       },
     },
-    
-    
-
     kipaimara: { type: Boolean, default: false },
     ubatizo: { type: Boolean, default: false },
     verified: { type: Boolean, default: false },
     occupation: { type: String, required: true },
     jumuiya: { type: String, enum: ["Malawi", "Kanisani", "Golani"], required: true },
-
     matangazoNotifications: [
       {
         group: { type: String, required: true },
@@ -119,9 +108,13 @@ const YomboUserSchema = new mongoose.Schema(
         default: new Map(),
       },
     },
+    series: {
+      notifications: { type: [String], default: [] },
+      subscriptions: { type: [String], default: [] },
+    },
   },
   { timestamps: true }
-)
+);
 
 
 

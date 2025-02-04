@@ -128,7 +128,97 @@ const deleteUsers = async () => {
 };
 
 
+const addSeriesSubscription = async (req, res) => {
+  try {
+    const { userId, subscription } = req.body;
 
+    if (!userId || !subscription) {
+      return res.status(400).send({ message: 'User ID and subscription are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    user.series.subscription.push(subscription);
+    await user.save();
+
+    res.status(200).send({ message: 'Subscription added successfully.', user });
+  } catch (error) {
+    console.log('Add Subscription Error:', error);
+    res.status(500).send({ message: 'An error occurred while adding subscription.', error: error.message });
+  }
+};
+
+const removeSeriesSubscription = async (req, res) => {
+  try {
+    const { userId, subscription } = req.body;
+
+    if (!userId || !subscription) {
+      return res.status(400).send({ message: 'User ID and subscription are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    user.series.subscription = user.series.subscription.filter(sub => sub !== subscription);
+    await user.save();
+
+    res.status(200).send({ message: 'Subscription removed successfully.', user });
+  } catch (error) {
+    console.log('Remove Subscription Error:', error);
+    res.status(500).send({ message: 'An error occurred while removing subscription.', error: error.message });
+  }
+};
+
+const addSeriesNotification = async (req, res) => {
+  try {
+    const { userId, notification } = req.body;
+
+    if (!userId || !notification) {
+      return res.status(400).send({ message: 'User ID and notification are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    user.series.notification.push(notification);
+    await user.save();
+
+    res.status(200).send({ message: 'Notification added successfully.', user });
+  } catch (error) {
+    console.log('Add Notification Error:', error);
+    res.status(500).send({ message: 'An error occurred while adding notification.', error: error.message });
+  }
+};
+
+const removeSeriesNotification = async (req, res) => {
+  try {
+    const { userId, notification } = req.body;
+
+    if (!userId || !notification) {
+      return res.status(400).send({ message: 'User ID and notification are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found.' });
+    }
+
+    user.series.notification = user.series.notification.filter(notif => notif !== notification);
+    await user.save();
+
+    res.status(200).send({ message: 'Notification removed successfully.', user });
+  } catch (error) {
+    console.log('Remove Notification Error:', error);
+    res.status(500).send({ message: 'An error occurred while removing notification.', error: error.message });
+  }
+};
 
 
 
@@ -1093,4 +1183,8 @@ module.exports = {
     deleteMatangazoNotification,
     editMatangazoNotification,
     getLeadersByRole,
+    addSeriesNotification,
+    addSeriesSubscription,
+    removeSeriesNotification,
+    removeSeriesSubscription
   };

@@ -25,7 +25,11 @@ const {
     getMatangazoNotifications,
     editMatangazoNotification,
     deleteMatangazoNotification,
-    verifyUser,addSelectedRole, getLeadersByRole
+    verifyUser,addSelectedRole, getLeadersByRole,
+    addSeriesNotification,
+    addSeriesSubscription,
+    removeSeriesSubscription,
+    removeSeriesNotification
 } = require('../controllers/user-controller-yombo.js');
 
 // User Routes
@@ -53,6 +57,13 @@ router.post("/users/getDonations", getUsersByGroupAndFieldType);
 router.patch("/users/:userId/donations/:donationId/add", addDonationAmount);
 
 router.post("/getLeadersByRole", getLeadersByRole);
+
+// Routes for subscriptions and notifications
+router.post("/users/:userId/subscriptions", addSeriesSubscription);
+router.delete("/users/:userId/subscriptions/:subscriptionId", removeSeriesSubscription);
+
+router.post("/users/:userId/notifications", addSeriesNotification);
+router.delete("/users/:userId/notifications/:notificationId", removeSeriesNotification);
 
 
 

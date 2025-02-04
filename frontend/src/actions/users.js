@@ -288,3 +288,56 @@ export const getLeadersByRole = async (role) => {
     );
   }
 };
+
+
+// Add a subscription for a user
+export const addSeriesSubscription = async (userId, subscriptionData) => {
+  try {
+    const response = await axios.post(`${api}/users/${userId}/subscriptions`, subscriptionData);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding subscription:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to add subscription.'
+    );
+  }
+};
+
+// Remove a subscription for a user
+export const removeSeriesSubscription = async (userId, subscriptionId) => {
+  try {
+    const response = await axios.delete(`${api}/users/${userId}/subscriptions/${subscriptionId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error removing subscription:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to remove subscription.'
+    );
+  }
+};
+
+// Add a notification for a user
+export const addSeriesNotification = async (userId, notificationData) => {
+  try {
+    const response = await axios.post(`${api}/users/${userId}/notifications`, notificationData);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to add notification.'
+    );
+  }
+};
+
+// Remove a notification for a user
+export const removeSeriesNotification = async (userId, notificationId) => {
+  try {
+    const response = await axios.delete(`${api}/users/${userId}/notifications/${notificationId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error removing notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to remove notification.'
+    );
+  }
+};

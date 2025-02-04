@@ -123,7 +123,7 @@ const Pledge = () => {
   };
 
   return (
-    <div className={`container py-5 ${merriweather.className}`} style={{ backgroundColor: "#f8f1fc" }}>
+    <div className={`px-4 py-5 ${merriweather.className}`} >
       <h2 className="text-center fw-bold text-purple mb-4 animate__animated animate__fadeIn">
         Ungana nasi kwa njia ya Sadaka
       </h2>

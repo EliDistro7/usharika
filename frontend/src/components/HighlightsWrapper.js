@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Highlights from "./Highlights";
+import Highlights from "./Highlights2";
 import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
 

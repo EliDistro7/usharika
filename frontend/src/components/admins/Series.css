@@ -1,0 +1,51 @@
+/* Custom styles for the seminar card */
+.text-purple {
+    color: #8a2be2 !important;
+  }
+  
+  .btn-purple {
+    background-color: #8a2be2;
+    border-color: #8a2be2;
+    color: white;
+  }
+  
+  .btn-purple:hover {
+    background-color: #6a11cb;
+    border-color: #6a11cb;
+  }
+  
+  .progress-bar-purple {
+    background-color: #8a2be2;
+  }
+  
+  /* Session card hover effect */
+  .session-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 10px;
+  }
+  
+  .session-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Header styling */
+  .display-4 {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+  
+  .lead {
+    font-size: 1.25rem;
+    color: #6c757d;
+  }
+  
+  /* Progress bar styling */
+  .progress {
+    height: 10px;
+    border-radius: 5px;
+  }
+  
+  .progress-bar {
+    border-radius: 5px;
+  }

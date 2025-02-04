@@ -62,19 +62,20 @@ if(datatype === 'searchResults')console.log('interface at Object.keys(data.conte
   };
 
   return (
-    <div className="position-relative z-10 mt-4 p-4 px-0 rounded shadow">
-      <h1 className="fs-4 mb-3 text-dark fw-bold">{data.name}</h1>
-
+    <div className="position-relative z-10 mt-4 p-4 rounded shadow bg-white">
+      {/* Title */}
+      <h1 className="h4 mb-4 text-dark fw-bold">{data.name}</h1>
+  
       {/* Dropdown for Chapters */}
       <div className="mb-4">
         <button
-          className="btn btn-dark w-100 text-start d-flex justify-content-between align-items-center"
+          className="btn btn-dark w-100 text-start d-flex justify-content-between align-items-center py-2"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          {data.content[activeTab].groupName}
+          <span>{data.content[activeTab].groupName}</span>
           {dropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
         </button>
-
+  
         {dropdownOpen && (
           <div className="mt-2">
             {Object.keys(data.content).map((tab) => (
@@ -94,95 +95,79 @@ if(datatype === 'searchResults')console.log('interface at Object.keys(data.conte
           </div>
         )}
       </div>
-
+  
       {/* Carousel Content */}
-      <FadeCarousel
-        isPaused={isPaused}
-        isMuted={isMuted}
-        onToggleMute={toggleMute}
-      >
+      <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
         {data.content[activeTab].content.map((item, index) => (
           <CarouselItem
             key={index}
             item={item}
             isMuted={isMuted}
             videoRef={(el) => (videoRefs.current[index] = el)}
-            onPauseCarousel={() => setIsPaused(true)} // Pauses the carousel
+            onPauseCarousel={() => setIsPaused(true)}
           />
         ))}
       </FadeCarousel>
-
-      {/* Play/Pause, Mute/Unmute Buttons */}
+  
+      {/* Control Buttons */}
       <div className="d-flex justify-content-between align-items-center mt-3">
-        <div className="d-flex gap-3">
+        <div className="d-flex gap-2">
           <button
             onClick={togglePause}
-            className="btn btn-primary rounded-circle shadow-sm"
+            className="btn btn-primary rounded-circle shadow-sm p-2"
           >
             {isPaused ? <FaPlay /> : <FaPause />}
           </button>
           <button
             onClick={toggleMute}
-            className="btn btn-secondary rounded-circle shadow-sm"
+            className="btn btn-secondary rounded-circle shadow-sm p-2"
           >
             {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
           </button>
         </div>
         <button
           onClick={handleModalShow}
-          className="btn btn-outline-dark rounded-circle shadow-sm"
+          className="btn btn-outline-dark rounded-circle shadow-sm p-2"
           title="Fullscreen"
         >
           <FaExpand />
         </button>
-        {/* Use ShareButton component */}
         <ShareButton url={window.location.href} title={data.name} />
       </div>
-
-     {/* Fullscreen Modal */}
-<Modal
-  show={showModal}
-  onHide={handleModalClose}
-  size="lg"
-  centered
-  backdrop={false} // Disable the default backdrop
-  className="custom-modal text-white" // Add a custom class for further customization
->
-  <Modal.Header closeButton style={{ color: "white", backgroundColor: "#6f42c1" }}>
-    <Modal.Title style={{ color: "white", marginBottom:0 }}>{data.name}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    {/* Modal Content */}
-    <div className="p-3 text-white">
-      <FadeCarousel
-        isPaused={isPaused}
-        isMuted={isMuted}
-        onToggleMute={toggleMute}
+  
+      {/* Fullscreen Modal */}
+      <Modal
+        show={showModal}
+        onHide={handleModalClose}
+        size="lg"
+        centered
+        backdrop={false}
+        className="custom-modal"
       >
-        // In your component rendering
-{sanitizeContent(data.content[activeTab].content).map((item, index) => (
-  <CarouselItem
-    key={index}
-    item={item}
-    isMuted={isMuted}
-    videoRef={(el) => (videoRefs.current[index] = el)}
-    onPauseCarousel={() => setIsPaused(true)}
-  />
-))}
-      </FadeCarousel>
+        <Modal.Header closeButton className="bg-purple-600 text-white">
+          <Modal.Title className="text-white">{data.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0">
+          <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
+            {data.content[activeTab].content.map((item, index) => (
+              <CarouselItem
+                key={index}
+                item={item}
+                isMuted={isMuted}
+                videoRef={(el) => (videoRefs.current[index] = el)}
+                onPauseCarousel={() => setIsPaused(true)}
+              />
+            ))}
+          </FadeCarousel>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleModalClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={handleModalClose}>
-      Funga
-    </Button>
-  </Modal.Footer>
-</Modal>
-
-
-
-    </div>
-  );
+  );  
 };
 
 
