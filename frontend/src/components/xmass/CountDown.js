@@ -97,7 +97,7 @@ export const CountdownDisplay = ({
           right: 0,
           bottom: 0,
           background: "rgba(106, 13, 173, 0.4)",
-          backdropFilter: "blur(5px)",
+          backdropFilter: "blur(1px)",
         }}
       />
 
@@ -107,27 +107,27 @@ export const CountdownDisplay = ({
             className="display-3 fw-bold mb-4"
             style={{ color: "#ffffff", fontFamily: "'Poppins', sans-serif" }}
           >
-            Countdown to <span style={{ color: "#d8b4e2" }}>{eventName}</span>
+            <span style={{ color: "#d8b4e2" }}>{eventName}</span>
           </h1>
           <p
             className="lead mb-5"
             style={{ color: "rgba(255, 255, 255, 0.8)", fontFamily: "'Poppins', sans-serif" }}
           >
-            Event Date: <span style={{ color: "#d8b4e2" }}>{eventDate}</span>
+            Siku: <span style={{ color: "#d8b4e2" }}>{eventDate}</span>
           </p>
           <Row className="g-4 justify-content-center">
             {[
-              { value: padTo2(months), label: "Months" },
-              { value: padTo2(days), label: "Days" },
-              { value: padTo2(hours), label: "Hours" },
-              { value: padTo2(minutes), label: "Minutes" },
-              { value: padTo2(seconds), label: "Seconds" },
+              { value: padTo2(months), label: "Miezi" },
+              { value: padTo2(days), label: "Siku" },
+              { value: padTo2(hours), label: "Saa" },
+              { value: padTo2(minutes), label: "Dakika" },
+              { value: padTo2(seconds), label: "Sekunde" },
             ].map((unit, index) => (
               <Col key={index} xs={6} sm={4} md={2}>
                 <div
                   className="countdown-box p-4 rounded shadow"
                   style={{
-                    background: "rgba(155, 89, 182, 0.2)",
+                   // background: "rgba(155, 89, 182, 0.2)",
                     backdropFilter: "blur(15px)",
                     border: "1px solid rgba(155, 89, 182, 0.4)",
                     transition: "transform 0.3s ease, box-shadow 0.3s ease",

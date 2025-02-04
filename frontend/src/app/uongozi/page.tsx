@@ -4,17 +4,19 @@ import React, { useState, useEffect } from "react";
 import Team from "@/components/Team";
 import { getDefaultRoles, getLeadersByRole } from "@/actions/users";
 import { formatRoleName2 } from "@/actions/utils";
-import { Tabs, Tab } from "react-bootstrap"; // Import Tabs and Tab from React-Bootstrap
+import { Tabs, Tab } from "react-bootstrap";
+import Image from "next/image";
 
 const Leadership: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [leaders, setLeaders] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  // Group roles by their prefix
   const groupedRoles = userRoles.reduce((acc, role) => {
-    const prefix = role.split("_")[1]; // Extract the prefix (e.g., "kwaya", "jumuiya", "umoja")
+    const prefix = role.split("_")[1];
     if (!acc[prefix]) {
       acc[prefix] = [];
     }
@@ -59,36 +61,47 @@ const Leadership: React.FC = () => {
 
   return (
     <div className="p-3 p-md-4 pt-0" style={{ backgroundColor: "#f8f1fc" }}>
-      {/* Church Leader Section */}
       <div className="text-center mb-5">
-        <div className="bg-white p-4 p-md-5 rounded-lg ">
+        <div className="bg-white p-4 p-md-5 rounded-lg">
           <div
             className="mb-4"
             style={{
-              width: "100%",
-              height: "400px",
-              overflow: "hidden",
-              borderRadius: "10px",
+              width: '100%',
+              height: '400px',
+              overflow: 'hidden',
+              borderRadius: '10px',
+              position: 'relative',
+              backgroundColor: imageLoaded ? 'transparent' : '#eee', // Placeholder background
             }}
           >
-            <img
-              src="/img/mchungaji.jpg"
-              alt="Deogratias Katabazi"
-              className="img-fluid"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                
-              }}
-            />
+            {!imageLoaded && !imageError && (
+              <p style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#888' }}>
+                Loading image...
+              </p>
+            )}
+
+            {imageError ? (
+              <p style={{ textAlign: 'center', paddingTop: '180px', color: 'red' }}>
+                Failed to load image.
+              </p>
+            ) : (
+              <Image
+                src="/img/mchungaji.jpg"
+                alt="Deogratias Katabazi"
+                layout="fill"
+                objectFit="cover"
+                priority
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+              />
+            )}
           </div>
+
           <h2 className="display-4 font-weight-bold text-dark mb-3">Deogratias Katabazi</h2>
           <p className="h5 text-purple font-weight-medium">Mchungaji Kiongozi</p>
         </div>
       </div>
 
-      {/* Tab Navigation */}
       <Tabs
         id="role-tabs"
         activeKey={activeTab || ""}
@@ -124,7 +137,6 @@ const Leadership: React.FC = () => {
         ))}
       </Tabs>
 
-      {/* Content Area */}
       <div className="mt-5">
         {loading ? (
           <div className="d-flex justify-content-center align-items-center h-100">

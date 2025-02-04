@@ -18,8 +18,9 @@ export default function Home() {
      <NewsTicker  direction="left"
  
   pauseOnHover={true}/> 
-      {/* Highlights <Series />Section */}
-      
+      {/* Highlights  <Series />
+      Section */}
+     
       <HighlightsWrapper  />
 
       {/* Pledge Section */}
