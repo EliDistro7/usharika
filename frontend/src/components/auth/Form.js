@@ -74,21 +74,21 @@ const Form = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-light px-3">
+    <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-light-purple px-3" style={{ backgroundColor: '#f3e8ff' }}>
       <header className="text-center mb-4">
-        <h1 className="display-4 text-primary">Fungua akaunti yako</h1>
+        <h1 className="display-4" style={{ color: '#6a0dad' }}>Fungua akaunti yako</h1>
         <p className="text-muted">Ingia kuendelea</p>
       </header>
-
-      <div className="bg-white p-4 shadow rounded w-100" style={{ maxWidth: '400px' }}>
-        <h2 className="text-center mb-4">Akaunti</h2>
-
+  
+      <div className="p-4 shadow rounded w-100" style={{ maxWidth: '400px',  }}>
+        <h2 className="text-center mb-4" style={{ color: '#6a0dad' }}>Akaunti</h2>
+  
         {error && <div className="alert alert-danger text-center">{error}</div>}
         {message && <div className="alert alert-success text-center">{message}</div>}
-
+  
         <BootstrapForm onSubmit={handleSubmit}>
           <BootstrapForm.Group className="mb-3">
-            <BootstrapForm.Label htmlFor="name">Jina</BootstrapForm.Label>
+            <BootstrapForm.Label htmlFor="name" style={{ color: '#6a0dad' }}>Jina</BootstrapForm.Label>
             <BootstrapForm.Control
               type="text"
               id="name"
@@ -99,9 +99,9 @@ const Form = () => {
               required
             />
           </BootstrapForm.Group>
-
+  
           <BootstrapForm.Group className="mb-3">
-            <BootstrapForm.Label htmlFor="password">Nenosiri</BootstrapForm.Label>
+            <BootstrapForm.Label htmlFor="password" style={{ color: '#6a0dad' }}>Nenosiri</BootstrapForm.Label>
             <InputGroup>
               <BootstrapForm.Control
                 type={showPassword ? 'text' : 'password'}
@@ -113,48 +113,49 @@ const Form = () => {
                 required
               />
               <Button
-                variant="outline-secondary"
+                variant="outline-light"
+                style={{ color: '#6a0dad', borderColor: '#6a0dad' }}
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? 'Ficha' : 'Onyesha'}
               </Button>
             </InputGroup>
           </BootstrapForm.Group>
-
+  
           <Button
             type="submit"
-            variant="primary"
-            className="w-100"
+            style={{ backgroundColor: '#6a0dad', borderColor: '#6a0dad' }}
+            className="w-100 text-white"
             disabled={loading}
           >
             {loading ? 'Inapakia...' : 'Ingia'}
           </Button>
-
+  
           <Button
             variant="link"
-            className="w-100 mt-2 text-decoration-none text-primary"
+            className="w-100 mt-2 text-decoration-none"
+            style={{ color: '#6a0dad' }}
             onClick={() => setShowNambaModal(true)}
           >
             Umesahau password?
           </Button>
         </BootstrapForm>
-
+  
         <p className="mt-3 text-center">
           Hauna akaunti?{' '}
-          <Link href="/usajili" className="text-decoration-none text-primary">
+          <Link href="/usajili" className="text-decoration-none" style={{ color: '#6a0dad' }}>
             Unda akaunti
           </Link>
         </p>
       </div>
-
-      {/* Modal for Namba ya Ahadi */}
+  
       <Modal show={showNambaModal} onHide={() => setShowNambaModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Ingiza Namba ya Ahadi</Modal.Title>
+        <Modal.Header closeButton style={{ backgroundColor: '#f3e8ff' }}>
+          <Modal.Title style={{ color: '#6a0dad' }}>Ingiza Namba ya Ahadi</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <BootstrapForm.Group>
-            <BootstrapForm.Label>Namba ya Ahadi</BootstrapForm.Label>
+            <BootstrapForm.Label style={{ color: '#6a0dad' }}>Namba ya Ahadi</BootstrapForm.Label>
             <BootstrapForm.Control
               type="text"
               value={nambaYaAhadi}
@@ -167,21 +168,20 @@ const Form = () => {
           <Button variant="secondary" onClick={() => setShowNambaModal(false)}>
             Funga
           </Button>
-          <Button variant="primary" onClick={handleNambaSubmit}>
+          <Button style={{ backgroundColor: '#6a0dad', borderColor: '#6a0dad' }} onClick={handleNambaSubmit}>
             Tuma Msimbo
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* Prompt for Code */}
+  
       {showCodePrompt && (
         <Modal show={showCodePrompt} onHide={() => setShowCodePrompt(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Ingiza Msimbo</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#f3e8ff' }}>
+            <Modal.Title style={{ color: '#6a0dad' }}>Ingiza Msimbo</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <BootstrapForm.Group>
-              <BootstrapForm.Label>Msimbo Uliopewa</BootstrapForm.Label>
+              <BootstrapForm.Label style={{ color: '#6a0dad' }}>Msimbo Uliopewa</BootstrapForm.Label>
               <BootstrapForm.Control
                 type="text"
                 value={verificationCode}
@@ -194,14 +194,13 @@ const Form = () => {
             <Button variant="secondary" onClick={() => setShowCodePrompt(false)}>
               Funga
             </Button>
-            <Button variant="primary" onClick={handleCodeSubmit}>
+            <Button style={{ backgroundColor: '#6a0dad', borderColor: '#6a0dad' }} onClick={handleCodeSubmit}>
               Thibitisha
             </Button>
           </Modal.Footer>
         </Modal>
       )}
-
-      {/* ToastContainer */}
+  
       <ToastContainer position="top-center" autoClose={5000} />
     </div>
   );
