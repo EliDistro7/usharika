@@ -38,9 +38,9 @@ export default function Header() {
             <div className="d-flex align-items-center">
               <small>
                 <i className="fas fa-phone-alt me-2"></i>
-                <a href="tel:+255617833806" className="text-white text-decoration-none">
-                  +255 617 833 806
-                </a>
+                <a href="tel: +255765647567" className="text-decoration-none" style={{ color: "WHITE" }}>
+                    +255 765 647 567
+                  </a>
               </small>
             </div>
   
