@@ -9,7 +9,7 @@ dotenv.config();
 
 //const userRoutes = require("./routes/user-routes.js");
 const userRoutesYombo = require("./routes/user-routes-yombo.js");
-//const postRoutes = require("./routes/post-routes.js");
+const seriesRoutes = require("./routes/series-routes.js");
 const rolesRoutes = require("./routes/roles-routes.js");
 const updateRoutes = require("./routes/update-routes.js");
 const futureEventRoutes = require("./routes/futureEvents-routes.js");
@@ -61,7 +61,8 @@ app.use('/', attendanceRoutes);
 app.use('/', highlightRoutes);
 app.use('/', futureEventRoutes);
 app.use('/', updateRoutes);
-app.use('/',rolesRoutes)
+app.use('/',rolesRoutes);
+app.use('/', seriesRoutes);
 
 
 // Start the server

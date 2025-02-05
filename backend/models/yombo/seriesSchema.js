@@ -1,5 +1,3 @@
-
-
 const mongoose = require('mongoose');
 
 // Session Schema for individual days
@@ -19,6 +17,22 @@ const SessionSchema = new mongoose.Schema({
   attendanceCount: {
     type: Number,
     default: 0,
+  },
+  // Audio field as an object with additional properties
+  audio: {
+    link: { 
+      type: String, 
+      default: null 
+    },
+    isFree: { 
+      type: Boolean, 
+      default: true 
+    },
+    paidBy: { 
+      type: mongoose.Schema.Types.ObjectId, // reference to a User document
+      ref: 'YomboUser', 
+      default: null 
+    },
   },
 }, { timestamps: true });
 
@@ -43,6 +57,10 @@ const SeriesSchema = new mongoose.Schema({
   totalAttendance: {
     type: Number,
     default: 0,
+  },
+  author: {
+    type: String,
+    required: true,
   },
   sessions: [SessionSchema], // Embedding sessions for each day
 }, { timestamps: true });
