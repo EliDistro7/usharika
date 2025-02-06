@@ -6,6 +6,7 @@ import { getDesanitezedCookie } from "@/hooks/useUser";
 import Notifications from "./Notifications";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TopBar from "./TopBar";
 
 export default function Header() {
   const router = useRouter();
@@ -26,30 +27,7 @@ export default function Header() {
       {/* Navbar Start */}
       <header className="border-bottom bg-white shadow-sm">
         {/* Top bar */}
-        <div
-          className="container-fluid text-white py-2"
-          style={{
-            backgroundColor: "#6a0dad", // Deep purple background
-            borderRadius: "0 0 46px 46px",
-          }}
-        >
-          <div className="container d-flex justify-content-between align-items-center">
-            {/* Contact Info */}
-            <div className="d-flex align-items-center">
-              <small>
-                <i className="fas fa-phone-alt me-2"></i>
-                <a href="tel: +255765647567" className="text-decoration-none" style={{ color: "WHITE" }}>
-                    +255 765 647 567
-                  </a>
-              </small>
-            </div>
-  
-            {/* Social Icons */}
-            <div className="d-flex">
-              <Notifications />
-            </div>
-          </div>
-        </div>
+        <TopBar />
   
         {/* Main Navbar */}
         <nav className="navbar navbar-expand-lg navbar-light py-3 container">

@@ -12,6 +12,8 @@ import {
  
   // other actions like getSingleSeries, addSession, etc.
 } from '@/actions/series'; // adjust the import path as needed
+import Cookies from 'js-cookie';
+import CustomNavbar from '@/components/admins/CustomNavbar';
 
 
 const SeriesManagementPage = () => {
@@ -30,8 +32,8 @@ const SeriesManagementPage = () => {
   useEffect(() => {
     const fetchSeries = async () => {
       try {
-        const data = await getAllSeries();
-        console.log('series', data);
+        const data = await getAllSeries({author: Cookies.get('role')});
+       // console.log('series', data);
         setSeriesList(data);
       } catch (error) {
         alert(error.message);
@@ -44,6 +46,7 @@ const SeriesManagementPage = () => {
   const handleCreateSeries = async (e) => {
     e.preventDefault();
     try {
+      newSeries.author = Cookies.get('role');
       await createSeries(newSeries);
       alert('Series created successfully!');
       setNewSeries({
@@ -75,7 +78,8 @@ const SeriesManagementPage = () => {
   };
 
   return (
-    <div className="container my-4">
+    <div className="container my-4 ">
+      <CustomNavbar />
       <h1 className="mb-4">
         <i className="fa fa-tv"></i> Series Management
       </h1>

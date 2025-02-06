@@ -11,6 +11,7 @@ const {
   getSession,
   getAllAudio,
   getAudioBySeries,
+  addNotificationToUser
 } = require('../controllers/series-controller');
 
 // Series routes
@@ -28,4 +29,6 @@ router.get('/series/:seriesId/sessions/:sessionId', getSession); // New route fo
 // routes/series.js (or your existing routes file)
 router.get('/series/:seriesId/audio', getAudioBySeries);
 
+// Route to add notification to user series
+router.post('/user/:userId/series/notifications', addNotificationToUser);
 module.exports = router;

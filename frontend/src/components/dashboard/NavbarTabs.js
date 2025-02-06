@@ -106,6 +106,18 @@ const RoleDropdown = ({
                 icon: <FaCrown className="me-2 text-warning" />,
                 link: `/create-highlight/${getLoggedInUserId()}`,
               },
+
+              {
+                label: "Update status",
+                icon: <FaCrown className="me-2 text-warning" />,
+                link: `/create-highlight/${getLoggedInUserId()}`,
+              },
+                {
+                label: "Anzisha series",
+                icon: <FaBook className="me-2 text-warning" />,
+                link: `/admins/series/${getLoggedInUserId()}`,
+              },
+
             ].map((item, index) => (
               <li key={index} className="mb-1">
                 {item.link ? (

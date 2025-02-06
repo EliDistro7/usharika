@@ -1,5 +1,6 @@
 // controllers/seriesController.js
 const Series = require('../models/yombo/seriesSchema'); // Adjust the path as needed
+const User = require('../models/yombo/yomboUserSchema'); // Adjust the
 
 // Create a new Series with optional sessions
 exports.createSeries = async (req, res) => {
@@ -36,6 +37,30 @@ exports.createSeries = async (req, res) => {
   } catch (error) {
     console.error('Error creating series:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.addNotificationToUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { notification } = req.body;
+
+    if (!notification) {
+      return res.status(400).json({ message: "Notification content is required." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    user.series.notifications.push(notification);
+    await user.save();
+
+    return res.status(200).json({ message: "Notification added successfully."});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -213,11 +238,15 @@ exports.updateAttendance = async (req, res) => {
 };
 
 // Get all series with optional date range filter
+// Backend controller to fetch series by author
 exports.getAllSeries = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { author, startDate, endDate } = req.query;
     const filter = {};
 
+    if (author) {
+      filter.author = author;
+    }
     if (startDate && endDate) {
       filter.startDate = { $gte: new Date(startDate) };
       filter.endDate = { $lte: new Date(endDate) };

@@ -174,7 +174,7 @@ export default function RoleSelector({
         <Tab eventKey="kwaya" title="Kwaya">
           {renderRoleRows(kwayaGroup)}
         </Tab>
-        <Tab eventKey="others" title="Mengine">
+        <Tab eventKey="others" title="Huduma Nyingine">
           {renderRoleRows(otherGroup)}
         </Tab>
       </Tabs>

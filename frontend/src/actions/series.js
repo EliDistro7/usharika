@@ -21,9 +21,9 @@ export const createSeries = async ({ name, description, startDate, endDate, auth
 };
 
 // Get all Series
-export const getAllSeries = async () => {
+export const getAllSeries = async ({ author }) => {
   try {
-    const response = await axios.post(`${api}/get-series`);
+    const response = await axios.post(`${api}/get-series`, { author });
     return response.data;
   } catch (error) {
     console.error('Error fetching series:', error.response?.data || error.message);
@@ -32,6 +32,7 @@ export const getAllSeries = async () => {
     );
   }
 };
+
 
 // Delete a Series
 export const deleteSeries = async ({ seriesId, author }) => {
@@ -137,6 +138,20 @@ export const getAudioBySeries = async (seriesId) => {
     console.error('Error fetching audio sessions:', error.response?.data || error.message);
     throw new Error(
       error.response?.data?.message || 'Failed to fetch audio sessions. Please try again later.'
+    );
+  }
+};
+
+
+// Add Notification to User Series
+export const addNotificationToUser = async ({ userId, notification }) => {
+  try {
+    const response = await axios.post(`${api}/user/${userId}/series/notifications`, { notification });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding notification:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to add notification. Please try again later.'
     );
   }
 };
