@@ -107,11 +107,7 @@ const RoleDropdown = ({
                 link: `/create-highlight/${getLoggedInUserId()}`,
               },
 
-              {
-                label: "Update status",
-                icon: <FaCrown className="me-2 text-warning" />,
-                link: `/create-highlight/${getLoggedInUserId()}`,
-              },
+      
                 {
                 label: "Anzisha series",
                 icon: <FaBook className="me-2 text-warning" />,
