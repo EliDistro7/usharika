@@ -6,6 +6,7 @@ import { generateTimetable } from '@/hooks/generateTimetable';
 import EventModal from '@/components/EventModal';
 import SlideCarousel from '@/components/SlideCarousel';
 import { CountdownDisplay } from '@/components/xmass/CountDown';
+import UserCards from "@/components/kalenda/UserCards";
 
 const Calendar = () => {
     const [selectedEvent, setSelectedEvent] = useState(null); // For event details
@@ -88,22 +89,25 @@ const Calendar = () => {
                     </SlideCarousel>
                 </div>
 
+                {/* UserCards Section */}
+                <div className="container text-center mt-5">
+
+                    <UserCards />
+                </div>
+
                 <div className="container text-center mt-5">
                     <div id="calendar" className="rounded shadow-sm p-4 px-0 mx-0">
                         {/* Calendar will render here */}
                     </div>
                     {showDownload && (
-    <button
-        onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
-        className="btn btn-primary ms-auto px-4 py-2 rounded-3 mt-8 shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
-    >
-        Download Ratiba
-    </button>
-)}
+                        <button
+                            onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
+                            className="btn btn-primary ms-auto px-4 py-2 rounded-3 mt-8 shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                        >
+                            Download Ratiba
+                        </button>
+                    )}
                 </div>
-
-         
-
             </section>
 
             {selectedEvent && (

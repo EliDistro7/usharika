@@ -28,6 +28,7 @@ const {
     verifyUser,addSelectedRole, getLeadersByRole,
     addSeriesNotification,
     addSeriesSubscription,
+    getUsersBornThisMonth,
     removeSeriesSubscription,
     removeSeriesNotification
 } = require('../controllers/user-controller-yombo.js');
@@ -89,6 +90,7 @@ router.post('/notifications/:userId/:notificationId', deleteMatangazoNotificatio
 router.put('/notifications/:userId/:notificationId', editMatangazoNotification);
 // Add this route for retrieving matangazo notifications
 router.get('/notifications/:userId', getMatangazoNotifications);
-
+// Route to get users born this month
+router.post('/users/bornThisMonth', getUsersBornThisMonth);
 
 module.exports = router;

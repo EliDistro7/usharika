@@ -1204,6 +1204,26 @@ const getUsersByGroupAndFieldType = async (req, res) => {
   }
 };
 
+const getUsersBornThisMonth = async (req, res) => {
+  try {
+    console.log('Fetching users born in the current month...');
+    const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+
+    const users = await User.find({
+      $expr: { $eq: [{ $month: "$dob" }, currentMonth] } // Match users born in this month
+    });
+
+    res.status(200).json({ 
+      users,
+      currentMonth
+    });
+  } catch (error) {
+    console.error("Error fetching users born this month:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 
 
 
@@ -1234,5 +1254,6 @@ module.exports = {
     addSeriesNotification,
     addSeriesSubscription,
     removeSeriesNotification,
+    getUsersBornThisMonth,
     removeSeriesSubscription
   };

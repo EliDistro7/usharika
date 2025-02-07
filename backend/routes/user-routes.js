@@ -11,6 +11,7 @@ const {
     getUserWithFollowers,
     updateUserProfile,
     getUserFollowers,
+    getUsersBornThisMonth,
     getUserFollowing,  // New import for fetching user's followers and following list (for lazy loading)
     deleteUser,  // New import for updating user profile
 } = require('../controllers/user-controller.js');
@@ -37,4 +38,8 @@ router.put('/user/:userId/update-profile', updateUserProfile); // Update user pr
 
 // new route fo deleting use
 router.post('/user/:userId/delete-profile', deleteUser)
+
+// Route to get users born this month
+router.get('/users/born-this-month', getUsersBornThisMonth);
+
 module.exports = router;

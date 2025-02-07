@@ -341,3 +341,19 @@ export const removeSeriesNotification = async (userId, notificationId) => {
     );
   }
 };
+
+
+// Fetch users born this month;
+export const fetchUsersBornThisMonth = async () => {
+  try {
+    const response = await axios.post(`${api}/users/bornThisMonth`); 
+    console.log('response received', response);
+    return response.data;
+  } catch (error) {
+    console.log('error', error);
+    console.error('Error fetching users born this month:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch users born this month.'
+    );
+  }
+};
