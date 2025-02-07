@@ -62,7 +62,7 @@ const Calendar = () => {
 
     return (
         <div>
-            <section className="owl pt-0">
+            <section className="owl pt-0 mb-8">
                 <div className="container text-center px-0">
                     <SlideCarousel>
                         <div>
@@ -96,7 +96,17 @@ const Calendar = () => {
                 </div>
 
                 <div className="container text-center mt-5">
-                    <div id="calendar" className="rounded shadow-sm p-4 px-0 mx-0">
+                <h2
+        className="text-center fw-bold mb-4"
+        style={{
+          fontSize: "2rem",
+          color: "#6a0dad",
+          textShadow: "2px 2px 4px rgba(106, 13, 173, 0.3)",
+        }}
+      >
+        Ratiba za Mwezi za Usharika na Vikundi
+      </h2>
+                    <div id="calendar" className="rounded shadow-sm p-4 px-0 mx-0 ">
                         {/* Calendar will render here */}
                     </div>
                     {showDownload && (

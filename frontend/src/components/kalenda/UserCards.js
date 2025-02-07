@@ -36,7 +36,7 @@ const UserCards = () => {
           textShadow: "2px 2px 4px rgba(106, 13, 173, 0.3)",
         }}
       >
-        🎂 Birthdays This Month 🎉
+        🎂 Birthdays Mwezi huu 🎉
       </h2>
 
       {loading && (
