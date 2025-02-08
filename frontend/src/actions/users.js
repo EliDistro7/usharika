@@ -45,7 +45,7 @@ export const pushMatangazoNotification = async ({ group, message, userId }) => {
 
 // Create a new donation
 export const createDonation = async ({ name, details, startingDate, deadline, group,total }) => {
-  console.log('Creating donation:', { name, details, startingDate, deadline, group });
+//  console.log('Creating donation:', { name, details, startingDate, deadline, group });
   
   try {
     const response = await axios.post(`${api}/users/createDonation`, {
@@ -142,7 +142,7 @@ export const getMatangazoNotifications = async (userId) => {
 // Delete a specific matangazo notification for a user and optionally for a group
 export const deleteMatangazoNotification = async ({ userId, notificationId, group,message }) => {
   try {
-    console.log('group is defined', group)
+   // console.log('group is defined', group)
     // Include group in the request body if provided
     const config = group ? { data: { group } } : {};
     const response = await axios.post(`${api}/notifications/${userId}/${notificationId}`, {group,message});
@@ -194,7 +194,7 @@ export const pinNotification = async ({ userId, notificationId }) => {
 
 // Fetch donations by group and field type
 export const getDonationsByGroupAndFieldType = async ({ userId, group, field_type }) => {
-  console.log('group', group)
+  //console.log('group', group)
   try {
     const response = await axios.post(`${api}/users/getDonations`, {
       userId,
@@ -347,10 +347,10 @@ export const removeSeriesNotification = async (userId, notificationId) => {
 export const fetchUsersBornThisMonth = async () => {
   try {
     const response = await axios.post(`${api}/users/bornThisMonth`); 
-    console.log('response received', response);
+   // console.log('response received', response);
     return response.data;
   } catch (error) {
-    console.log('error', error);
+   // console.log('error', error);
     console.error('Error fetching users born this month:', error.response?.data || error.message);
     throw new Error(
       error.response?.data?.message || 'Failed to fetch users born this month.'
