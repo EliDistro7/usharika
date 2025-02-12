@@ -60,7 +60,7 @@ const CreateSeriesForm = ({ newSeries, onChange, onSubmit }) => {
         />
       </Form.Group>
       <Button variant="primary" type="submit">
-        <i className="fa fa-save"></i> Create Series
+        <i className="fa fa-save"></i> Unda Series
       </Button>
     </Form>
   );

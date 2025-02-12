@@ -157,21 +157,7 @@ const Footer = () => {
               KKKT Usharika wa Yombo Online System 2024 <br />
               Haki zote zimehifadhiwa
             </p>
-            <p className="mt-2">
-              Designed with{" "}
-              <span role="img" aria-label="love">
-                ❤️
-              </span>{" "}
-              by{" "}
-              <a
-                href="https://wa.me/255765762688"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary"
-              >
-                Bari Kaneno
-              </a>
-            </p>
+          
           </div>
         </div>
       </div>

@@ -1,0 +1,28 @@
+/* Custom table styling */
+.custom-table thead th {
+    background-color: #6a0dad; /* Purple */
+    color: #ffffff; /* White text */
+  }
+  
+  .custom-table tbody tr:hover {
+    background-color: #fff3cd; /* Light yellow for hover effect */
+  }
+  
+  /* Custom button styling */
+  .btn-warning {
+    background-color: #ffc107; /* Yellow */
+    border-color: #ffc107;
+    color: #000000; /* Black text */
+  }
+  
+  .btn-primary {
+    background-color: #6a0dad; /* Purple */
+    border-color: #6a0dad;
+    color: #ffffff; /* White text */
+  }
+  
+  .btn-dark {
+    background-color: #000000; /* Black */
+    border-color: #000000;
+    color: #ffffff; /* White text */
+  }

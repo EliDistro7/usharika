@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +7,7 @@ import AddSessionModal from '@/components/series/AddSessionModal'; // adjust the
 import ViewSessionModal from '@/components/series/ViewSessionModal'; // adjust the import path as needed
 import { addSession } from '@/actions/series'; // adjust the import path as needed
 import MusicPlayer from './MusicPlayer'; // adjust the import path as needed
+import './SeriesList2.css';
 
 const SeriesList = ({ seriesList, onDeleteSeries }) => {
   const [showSessionModal, setShowSessionModal] = useState(false);
@@ -67,14 +66,12 @@ const SeriesList = ({ seriesList, onDeleteSeries }) => {
           {errorMessage}
         </Alert>
       )}
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover responsive className="custom-table">
         <thead>
           <tr>
             <th>Kichwa</th>
-            <th>Maelezo</th>
-            <th>Kuanzia</th>
-            <th>Kuisha</th>
-            <th>Author</th>
+            <th className="d-none d-md-table-cell">Kuanzia</th>
+            <th className="d-none d-md-table-cell">Kuisha</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -84,45 +81,43 @@ const SeriesList = ({ seriesList, onDeleteSeries }) => {
               <React.Fragment key={series._id}>
                 <tr>
                   <td>{series.name}</td>
-                  <td>{series.description}</td>
-                  <td>{new Date(series.startDate).toLocaleDateString()}</td>
-                  <td>{new Date(series.endDate).toLocaleDateString()}</td>
-                  <td>{series.author}</td>
+                  <td className="d-none d-md-table-cell">
+                    {new Date(series.startDate).toLocaleDateString()}
+                  </td>
+                  <td className="d-none d-md-table-cell">
+                    {new Date(series.endDate).toLocaleDateString()}
+                  </td>
                   <td>
-                    
-                    
                     <Button
-                      variant="info"
+                      variant="warning"
                       size="sm"
                       className="me-2"
                       onClick={() => toggleExpandSeries(series._id)}
                     >
-                      <i className="fa fa-eye"></i> {expandedSeries[series._id] ? 'Funga' : 'Fungua'} Sessions
+                      <i className="fa fa-eye"></i> {expandedSeries[series._id] ? 'Funga' : 'Fungua'}
                     </Button>
                     {seriesHasAudio(series) && (
                       <Button
-                        variant="success"
+                        variant="primary"
                         size="sm"
                         onClick={() => setPlayingSeriesId(series._id)}
                       >
-                        <i className="fa fa-play"></i> Cheza Series
+                        <i className="fa fa-play"></i> Cheza
                       </Button>
                     )}
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan="6" className="p-0">
+                  <td colSpan="4" className="p-0">
                     <Collapse in={expandedSeries[series._id]}>
-                      <div className="p-3 ">
+                      <div className="p-3 bg-light">
                         {series.sessions && series.sessions.length > 0 ? (
-                          <Table bordered size="sm" responsive>
+                          <Table bordered size="sm" responsive className="custom-table">
                             <thead>
                               <tr>
                                 <th>Tarehe</th>
                                 <th>Kichwa</th>
-                                <th>Yaliyomo</th>
-                                <th>Mahudhurio</th>
-                                <th>Audio</th>
+                                <th className="d-none d-sm-table-cell">Audio</th>
                                 <th>Actions</th>
                               </tr>
                             </thead>
@@ -131,35 +126,20 @@ const SeriesList = ({ seriesList, onDeleteSeries }) => {
                                 <tr key={session._id}>
                                   <td>{new Date(session.date).toLocaleDateString()}</td>
                                   <td>{session.title}</td>
-                                  <td>{session.content}</td>
-                                  <td>{session.attendanceCount}</td>
-                                  <td>
-                                    {session.audio && session.audio.link ? (
+                                  <td className="d-none d-sm-table-cell">
+                                    {session.audio?.link ? (
                                       <>
                                         <i className="fa fa-music me-1"></i>
-                                        <a
-                                          href={session.audio.link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
+                                        <a href={session.audio.link} target="_blank" rel="noopener noreferrer">
                                           Sikiliza
                                         </a>
-                                        <br />
-                                        <small>
-                                          {session.audio.isFree ? 'Free' : 'Paid'}{' '}
-                                          {session.audio.paidBy ? `- Paid by ${session.audio.paidBy}` : ''}
-                                        </small>
                                       </>
                                     ) : (
                                       'N/A'
                                     )}
                                   </td>
                                   <td>
-                                    <Button
-                                      variant="secondary"
-                                      size="sm"
-                                      onClick={() => handleViewSession(session)}
-                                    >
+                                    <Button variant="dark" size="sm" onClick={() => handleViewSession(session)}>
                                       <i className="fa fa-eye"></i> Tazama
                                     </Button>
                                   </td>
@@ -168,7 +148,7 @@ const SeriesList = ({ seriesList, onDeleteSeries }) => {
                             </tbody>
                           </Table>
                         ) : (
-                          <p className="mb-0">No sessions available for this series.</p>
+                          <p className="mb-0">Hakuna sessions kwa series hii.</p>
                         )}
                       </div>
                     </Collapse>
@@ -178,39 +158,38 @@ const SeriesList = ({ seriesList, onDeleteSeries }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center">
-                No series found.
+              <td colSpan="4" className="text-center">
+                Hakuna series zilizopatikana.
               </td>
             </tr>
           )}
         </tbody>
       </Table>
-
-      {/* Modal for adding a session */}
+  
       <AddSessionModal
         show={showSessionModal}
         handleClose={() => setShowSessionModal(false)}
         onSubmit={handleSessionSubmit}
       />
-
-      {/* Modal for viewing a session */}
+  
       <ViewSessionModal
         show={showViewSessionModal}
         handleClose={() => setShowViewSessionModal(false)}
         session={selectedSession}
       />
-
-      {/* Render MusicPlayer if a series is selected to play */}
+  
       {playingSeriesId && (
         <div className="mt-3">
           <Button variant="secondary" size="sm" onClick={() => setPlayingSeriesId(null)}>
-            Close Player
+            Funga Player
           </Button>
           <MusicPlayer seriesId={playingSeriesId} />
         </div>
       )}
     </>
   );
+  
+  
 };
 
 SeriesList.propTypes = {

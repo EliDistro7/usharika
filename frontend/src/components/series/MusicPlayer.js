@@ -195,23 +195,23 @@ const MusicPlayer = ({ seriesId }) => {
     <Container className="my-5">
       <Row className="justify-content-center">
         <Col md={10}>
-          <Card className="mb-4 shadow-sm border-0">
+          <Card className="mb-4 shadow-sm border-0" style={{ backgroundColor: '#1a1a1a', color: '#ffd700' }}>
             <Card.Body className="p-4">
               {/* Toggle Playlist Button */}
               <div className="d-flex justify-content-end mb-3">
                 <Button
-                  variant="outline-secondary"
+                  style={{ backgroundColor: '#ffd700', color: '#1a1a1a', border: 'none' }}
                   onClick={() => setShowPlaylist(!showPlaylist)}
                 >
-                  {showPlaylist ? 'Hide Playlist' : 'Show Playlist'}
+                  {showPlaylist ? 'Ficha Playlist' : 'Onyesha Playlist'}
                 </Button>
               </div>
-
+  
               {/* Toggleable Playlist */}
               <Collapse in={showPlaylist}>
                 <div>
                   <Card className="mb-4">
-                    <Card.Header className="bg-primary text-white">
+                    <Card.Header style={{ backgroundColor: '#6a0dad', color: '#fff' }}>
                       <h5 className="mb-0">Playlist</h5>
                     </Card.Header>
                     <ListGroup variant="flush" style={{ maxHeight: '300px', overflowY: 'auto' }}>
@@ -221,10 +221,15 @@ const MusicPlayer = ({ seriesId }) => {
                           action
                           active={index === currentIndex}
                           onClick={() => handleSelectTrack(index)}
+                          style={{
+                            backgroundColor: index === currentIndex ? '#ffd700' : '#333',
+                            color: index === currentIndex ? '#1a1a1a' : '#ffd700',
+                            border: 'none',
+                          }}
                           className="d-flex align-items-center"
                         >
                           <Image
-                            src={session.audio.link || 'https://via.placeholder.com/50'}
+                            src={'https://via.placeholder.com/50'}
                             alt="Track Art"
                             roundedCircle
                             className="me-3"
@@ -233,7 +238,7 @@ const MusicPlayer = ({ seriesId }) => {
                           <div>
                             <strong>{session.title}</strong>
                             <br />
-                            <small className="text-muted">{formatTime(session.duration || 0)}</small>
+                            <small style={{ color: '#bfbfbf' }}>{formatTime(session.duration || 0)}</small>
                           </div>
                         </ListGroup.Item>
                       ))}
@@ -241,22 +246,22 @@ const MusicPlayer = ({ seriesId }) => {
                   </Card>
                 </div>
               </Collapse>
-
+  
               {/* Main Player Section */}
               <div className="d-flex align-items-center mb-4">
                 <Image
-                  src={currentSession.audio.link || 'https://via.placeholder.com/80'}
+                  src={'/img/lutherRose.jpg'}
                   alt="Album Art"
                   roundedCircle
                   className="me-3"
                   style={{ width: '80px', height: '80px', objectFit: 'cover' }}
                 />
                 <div>
-                  <h2 className="mb-0 fw-bold">{currentSession.title}</h2>
-                  <p className="mb-0 text-muted">{currentSession.content}</p>
+                  <h2 className="mb-0 fw-bold" style={{ color: '#ffd700' }}>{currentSession.title}</h2>
+                  <p className="mb-0" style={{ color: '#bfbfbf' }}>{currentSession.content}</p>
                 </div>
               </div>
-
+  
               {/* Audio element without native controls */}
               <audio
                 ref={audioRef}
@@ -266,17 +271,26 @@ const MusicPlayer = ({ seriesId }) => {
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
               />
-
+  
               {/* Custom audio control buttons */}
               <div className="d-flex justify-content-center mb-3">
-                <Button variant="outline-secondary" className="mx-2" onClick={handlePrev} disabled={currentIndex === 0}>
+                <Button
+                  style={{ backgroundColor: '#6a0dad', color: '#fff', border: 'none' }}
+                  className="mx-2"
+                  onClick={handlePrev}
+                  disabled={currentIndex === 0}
+                >
                   <i className="fas fa-backward"></i>
                 </Button>
-                <Button variant="outline-primary" className="mx-2" onClick={togglePlayPause}>
+                <Button
+                  style={{ backgroundColor: '#ffd700', color: '#1a1a1a', border: 'none' }}
+                  className="mx-2"
+                  onClick={togglePlayPause}
+                >
                   {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
                 </Button>
                 <Button
-                  variant="outline-secondary"
+                  style={{ backgroundColor: '#6a0dad', color: '#fff', border: 'none' }}
                   className="mx-2"
                   onClick={handleNext}
                   disabled={currentIndex >= audioSessions.length - 1}
@@ -284,22 +298,22 @@ const MusicPlayer = ({ seriesId }) => {
                   <i className="fas fa-forward"></i>
                 </Button>
               </div>
-
+  
               {/* Custom progress bar */}
               <div className="mt-3" ref={progressBarRef} onClick={handleProgressBarClick} style={{ cursor: 'pointer' }}>
-                <div className="progress" style={{ height: '5px' }}>
+                <div className="progress" style={{ height: '5px', backgroundColor: '#333' }}>
                   <div
                     className="progress-bar"
                     role="progressbar"
-                    style={{ width: `${progressPercentage}%` }}
+                    style={{ width: `${progressPercentage}%`, backgroundColor: '#ffd700' }}
                     aria-valuenow={progressPercentage}
                     aria-valuemin="0"
                     aria-valuemax="100"
                   ></div>
                 </div>
                 <div className="d-flex justify-content-between mt-2">
-                  <span className="text-muted">{formatTime(currentTime)}</span>
-                  <span className="text-muted">{formatTime(duration)}</span>
+                  <span style={{ color: '#bfbfbf' }}>{formatTime(currentTime)}</span>
+                  <span style={{ color: '#bfbfbf' }}>{formatTime(duration)}</span>
                 </div>
               </div>
             </Card.Body>
@@ -308,6 +322,7 @@ const MusicPlayer = ({ seriesId }) => {
       </Row>
     </Container>
   );
+  
 };
 
 export default MusicPlayer;
