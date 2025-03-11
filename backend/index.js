@@ -22,6 +22,7 @@ const highlightRoutes = require("./routes/highlight-routes.js");
 
 const PORT = process.env.PORT || 5000;
 
+console.log("origin", process.env.ORIGIN);
 const app = express();
 app.use(cors({
   origin: process.env.ORIGIN  // Allow only this origin

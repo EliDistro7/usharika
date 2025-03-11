@@ -5,7 +5,7 @@ import { getAudioBySeries } from '@/actions/series'; // adjust import path as ne
 import { Container, Row, Col, Card, Button, ListGroup, Image, Collapse } from 'react-bootstrap';
 
 const MusicPlayer = ({ seriesId }) => {
-  console.log('series Id', seriesId);
+ // console.log('series Id', seriesId);
   const [audioSessions, setAudioSessions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -212,7 +212,7 @@ const MusicPlayer = ({ seriesId }) => {
                 <div>
                   <Card className="mb-4">
                     <Card.Header style={{ backgroundColor: '#6a0dad', color: '#fff' }}>
-                      <h5 className="mb-0">Playlist</h5>
+                      <h5 className="mb-0 text-white">Playlist</h5>
                     </Card.Header>
                     <ListGroup variant="flush" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                       {audioSessions.map((session, index) => (
@@ -229,7 +229,7 @@ const MusicPlayer = ({ seriesId }) => {
                           className="d-flex align-items-center"
                         >
                           <Image
-                            src={'https://via.placeholder.com/50'}
+                            src={'/img/lutherRose.jpg'}
                             alt="Track Art"
                             roundedCircle
                             className="me-3"

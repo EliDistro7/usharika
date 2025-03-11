@@ -5,7 +5,7 @@ const messageEvents = require('./events/messageEvents'); // Import messageEvents
 const roomEvents = require('./events/roomEvents');
 const searchEvents = require('./events/searchEvents');
 const audio2Events = require('./events/audio2');
-const questionsEvents = require('./events/questionsEvents');
+const questionsEvents = require('./events/seriesEvent.js');
 const answerEvents = require('./events/answerEvents');
 
 const room2 = require('./events/room2');

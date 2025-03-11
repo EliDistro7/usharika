@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import SeriesList from '@/components/series/SeriesList2';
 import CreateSeriesForm from '@/components/series/CreateSeriesForm';
+
 import {
   createSeries,
   getAllSeries,
@@ -82,7 +83,7 @@ const SeriesManagementPage = () => {
     <div className="container my-4 ">
    
       <h1 className="mb-4">
-        <i className="fa fa-tv"></i> My Series
+        <i className="fa fa-tv"></i>  Series/campaigns
       </h1>
       <Tabs
         id="series-management-tabs"
@@ -94,7 +95,7 @@ const SeriesManagementPage = () => {
           eventKey="view"
           title={
             <span>
-              <i className="fa fa-list"></i> Tazama Series
+              <i className="fa fa-list"></i> Orodha
             </span>
           }
         >
