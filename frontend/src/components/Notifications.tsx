@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
+import { Dropdown, Badge, Button, Spinner } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { getLoggedInUserId } from "@/hooks/useUser";
@@ -14,7 +14,6 @@ import { formatRoleName } from "@/actions/utils";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,8 +34,6 @@ export default function Notifications() {
 
     loadNotifications();
   }, []);
-
-  const handleModalToggle = () => setShowModal((prev) => !prev);
 
   const handleDeleteNotification = async (userId: string, id: string) => {
     toast.warn(
@@ -83,96 +80,112 @@ export default function Notifications() {
   return (
     <>
       <ToastContainer />
-      {/* Bell Button */}
-      <button
-        className="btn  rounded-circle position-relative bg-blend-saturation"
-        onClick={handleModalToggle}
-        aria-expanded={showModal}
-        style={{
-          width: "40px",
-          height: "40px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          border: "none",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <i
-          className="fas fa-bell"
-          style={{ color: "purple", fontSize: "1.2rem" }}
-        ></i>
-        {notifications.length > 0 && (
-          <span
-            className="badge bg-danger position-absolute"
+      
+      <Dropdown align="end">
+        <Dropdown.Toggle
+          as="div"
+          role="button"
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: '#333',
+            padding: '0.5rem',
+            position: 'relative',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            transition: 'background-color 0.2s',
+          }}
+          className="notification-toggler"
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+        >
+          <i className="fas fa-bell fs-5"></i>
+
+          {notifications.length > 0 && (
+            <Badge
+              bg="danger"
+              className="position-absolute top-0 start-100 translate-middle"
+              style={{
+                fontSize: '0.75rem',
+                padding: '0.3rem 0.5rem',
+                borderRadius: '50%',
+                transform: 'translate(-50%, -50%)',
+                minWidth: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {notifications.length}
+            </Badge>
+          )}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu
+          style={{
+            minWidth: '350px',
+            backgroundColor: '#ffffff',
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            padding: '0',
+          }}
+        >
+          <div
             style={{
-              top: "5px",
-              right: "5px",
-              fontSize: "0.7rem",
-              padding: "3px 6px",
+              padding: '0.75rem 1rem',
+              fontWeight: 'bold',
+              borderBottom: '1px solid #ddd',
+              color: '#333',
             }}
           >
-            {notifications.length}
-          </span>
-        )}
-      </button>
-
-      {/* Notifications Modal */}
-      <Modal
-        show={showModal}
-        onHide={handleModalToggle}
-        centered
-        backdrop="static"
-        aria-labelledby="notifications-modal"
-      >
-        <Modal.Header closeButton style={{ backgroundColor: "#f3e8ff" }}>
-          <Modal.Title id="notifications-modal" style={{ color: "#6a1b9a" }}>
             Notifications
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ backgroundColor: "#faf5ff" }}>
+          </div>
+
           {isLoading ? (
-            <div className="text-center">
+            <div className="text-center p-3">
               <Spinner animation="border" role="status" style={{ color: "#6a1b9a" }}>
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
             </div>
-          ) : notifications.length === 0 ? (
-            <p className="text-muted text-center">Hamna matangazo</p>
-          ) : (
-            <ul className="list-group">
-              {notifications.map((notification: any) => (
-              <li
-              key={notification._id}
-              className="list-group-item border-0"
-              style={{
-                padding: "10px 15px",
-                backgroundColor: notification.isRead ? "#f9f7fc" : "#ffffff",
-                border: "1px solid #e3dced",
-                borderRadius: "8px",
-                marginBottom: "8px",
-              }}
-            >
-              <div>
-                <strong className="d-block" style={{ color: "#6a1b9a" }}>
+          ) : notifications.length > 0 ? (
+            notifications.map((notification) => (
+              <Dropdown.Item
+                key={notification._id}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.25rem',
+                  backgroundColor: notification.isRead ? "#f9f7fc" : "#ffffff",
+                  color: '#333',
+                  fontSize: '0.9rem',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0',
+                  transition: 'background-color 0.2s',
+                  borderBottom: '1px solid #eee',
+                }}
+                className="hover-effect"
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ffffff')}
+              >
+                <strong style={{ color: "#6a1b9a" }}>
                   {formatRoleName(notification.group)}
                 </strong>
-                <p
-                  className="mb-0 text-muted"
-                  style={{ fontSize: "0.85rem", lineHeight: "1.2" }}
-                >
-                  {notification.message}
-                </p>
-                <small className="text-muted d-block">
+                {notification.message}
+                <small style={{ color: '#888', fontSize: '0.8rem' }}>
                   {new Date(notification.time).toLocaleString()}
                 </small>
+                
                 {/* Buttons Row */}
                 <div
                   className="d-flex justify-content-start mt-2"
-                  style={{
-                    gap: "10px",
-                    flexWrap: "wrap",
-                  }}
+                  style={{ gap: "10px", flexWrap: "wrap" }}
                 >
                   <Button
                     size="sm"
@@ -193,27 +206,22 @@ export default function Notifications() {
                     Futa
                   </Button>
                 </div>
-              </div>
-            </li>
-            
-              ))}
-            </ul>
+              </Dropdown.Item>
+            ))
+          ) : (
+            <Dropdown.Item
+              style={{
+                textAlign: 'center',
+                padding: '1rem',
+                color: '#888',
+                fontSize: '0.9rem',
+              }}
+            >
+              Hamna matangazo
+            </Dropdown.Item>
           )}
-        </Modal.Body>
-        <Modal.Footer style={{ backgroundColor: "#f3e8ff" }}>
-          <Button
-            variant="primary"
-            onClick={handleModalToggle}
-            style={{
-              backgroundColor: "#6a1b9a",
-              borderColor: "#6a1b9a",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            funga
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        </Dropdown.Menu>
+      </Dropdown>
     </>
   );
 }

@@ -37,144 +37,80 @@ export default function Header() {
       {/* Main Navbar */}
       <header className="border-bottom bg-white shadow-sm">
         <nav className="navbar navbar-expand-lg navbar-light py-3 container">
+          {/* Notifications and Series Notifications */}
+          {isLoggedIn && (
+            <div className="d-flex align-items-center gap-3">
+              {/* Series Notifications */}
+              <SeriesNotifications />
 
-           {/* Notifications and Series Notifications */}
-{isLoggedIn && (
-  <div className="d-flex align-items-center gap-3">
-    {/* Series Notifications */}
-    <div className="position-relative">
-      <i
-        className="fas fa-book hover-scale"
-        style={{
-          color: '#6a0dad',
-          fontSize: '1.2rem',
-          cursor: 'pointer',
-          transition: 'transform 0.2s ease, color 0.2s ease',
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)';
-          e.currentTarget.style.color = '#4b0082'; // Darker purple on hover
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.color = '#6a0dad';
-        }}
-      ></i>
-      {/* Notification Badge */}
-      <span
-        className="badge bg-danger position-absolute"
-        style={{
-          top: '0',
-          right: '0',
-          fontSize: '0.7rem',
-          padding: '3px 6px',
-          transform: 'translate(50%, -50%)',
-          borderRadius: '50%',
-        }}
-      >
-        3 {/* Replace with dynamic count */}
-      </span>
-    </div>
+              {/* Notifications */}
+              <Notifications />
+            </div>
+          )}
 
-    {/* Notifications */}
-    <div className="position-relative">
-      <i
-        className="fas fa-bell hover-scale"
-        style={{
-          color: '#6a0dad',
-          fontSize: '1.2rem',
-          cursor: 'pointer',
-          transition: 'transform 0.2s ease, color 0.2s ease',
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)';
-          e.currentTarget.style.color = '#4b0082'; // Darker purple on hover
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.color = '#6a0dad';
-        }}
-      ></i>
-      {/* Notification Badge */}
-      <span
-        className="badge bg-danger position-absolute"
-        style={{
-          top: '0',
-          right: '0',
-          fontSize: '0.7rem',
-          padding: '3px 6px',
-          transform: 'translate(50%, -50%)',
-          borderRadius: '50%',
-        }}
-      >
-        5 {/* Replace with dynamic count */}
-      </span>
-    </div>
-  </div>
-)}
+          {/* Login/Signup Buttons */}
+          {!isLoggedIn && (
+            <div className="d-flex align-items-center gap-3">
+              <a
+                href="/auth"
+                className="btn btn-outline-purple px-4 py-2 rounded-pill hover-scale"
+                title="Log In"
+                style={{
+                  transition: 'all 0.3s ease',
+                  borderColor: '#6a0dad',
+                  color: '#6a0dad',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#6a0dad';
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#6a0dad';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                Ingia
+              </a>
+              <a
+                href="/usajili"
+                className="btn btn-purple text-white px-4 py-2 rounded-pill hover-scale"
+                title="Sign Up"
+                style={{
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#6a0dad',
+                  color: '#ffffff',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#4b0082'; // Darker purple
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#6a0dad';
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                Jisajili
+              </a>
+            </div>
+          )}
 
-{/* Login/Signup Buttons */}
-{!isLoggedIn && (
-  <div className="d-flex align-items-center gap-3">
-    <a
-      href="/auth"
-      className="btn btn-outline-purple px-4 py-2 rounded-pill hover-scale"
-      title="Log In"
-      style={{
-        transition: 'all 0.3s ease',
-        borderColor: '#6a0dad',
-        color: '#6a0dad',
-      }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.backgroundColor = '#6a0dad';
-        e.currentTarget.style.color = '#ffffff';
-        e.currentTarget.style.transform = 'scale(1.05)';
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.backgroundColor = 'transparent';
-        e.currentTarget.style.color = '#6a0dad';
-        e.currentTarget.style.transform = 'scale(1)';
-      }}
-    >
-      Ingia
-    </a>
-    <a
-      href="/usajili"
-      className="btn btn-purple text-white px-4 py-2 rounded-pill hover-scale"
-      title="Sign Up"
-      style={{
-        transition: 'all 0.3s ease',
-        backgroundColor: '#6a0dad',
-        color: '#ffffff',
-      }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.backgroundColor = '#4b0082'; // Darker purple
-        e.currentTarget.style.color = '#ffffff';
-        e.currentTarget.style.transform = 'scale(1.05)';
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.backgroundColor = '#6a0dad';
-        e.currentTarget.style.color = '#ffffff';
-        e.currentTarget.style.transform = 'scale(1)';
-      }}
-    >
-      Jisajili
-    </a>
-  </div>
-)}
+          {/* Navbar Toggler Button */}
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-{/* Navbar Toggler Button */}
-<button
-  className="navbar-toggler"
-  type="button"
-  data-bs-toggle="collapse"
-  data-bs-target="#navbarCollapse"
-  aria-controls="navbarCollapse"
-  aria-expanded="false"
-  aria-label="Toggle navigation"
->
-  <span className="navbar-toggler-icon"></span>
-</button>
           {/* Navbar Collapse */}
           <div className="collapse navbar-collapse" id="navbarCollapse">
             <ul className="navbar-nav mx-auto">
@@ -265,8 +201,6 @@ export default function Header() {
 
             {/* Right-aligned Icons and Buttons */}
             <div className="d-flex align-items-center gap-4">
-            
-
               {/* Phone Icon */}
               <div className="d-flex align-items-center">
                 <div className="me-2">
@@ -288,8 +222,6 @@ export default function Header() {
                   </p>
                 </div>
               </div>
-
-              
             </div>
           </div>
         </nav>
