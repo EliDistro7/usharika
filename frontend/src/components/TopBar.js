@@ -34,47 +34,8 @@ const TopBar = () => {
 
         {/* Icons Section */}
         <div className="d-flex align-items-center gap-4">
-          {isLoggedIn ? (
-            <>
-              <SeriesNotifications />
-              <Notifications />
-            </>
-          ) : (
-            <div className="d-flex align-items-center gap-3">
-              <a
-                href="/auth"
-                className="btn btn-outline-light px-4 py-2 rounded-pill"
-                title="Log In"
-                style={{ transition: 'all 0.3s ease' }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.color = '#6a0dad';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
-              >
-                Ingia
-              </a>
-              <a
-                href="/usajili"
-                className="btn btn-light text-dark px-4 py-2 rounded-pill"
-                title="Sign Up"
-                style={{ transition: 'all 0.3s ease' }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#6a0dad';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.color = '#000000';
-                }}
-              >
-                Jisajili Online
-              </a>
-            </div>
-          )}
+          {/* Login/Signup Buttons */}
+        
         </div>
       </div>
     </div>

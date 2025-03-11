@@ -85,7 +85,7 @@ export default function Notifications() {
       <ToastContainer />
       {/* Bell Button */}
       <button
-        className="btn  rounded-circle position-relative"
+        className="btn  rounded-circle position-relative bg-blend-saturation"
         onClick={handleModalToggle}
         aria-expanded={showModal}
         style={{
@@ -100,7 +100,7 @@ export default function Notifications() {
       >
         <i
           className="fas fa-bell"
-          style={{ color: "white", fontSize: "1.2rem" }}
+          style={{ color: "purple", fontSize: "1.2rem" }}
         ></i>
         {notifications.length > 0 && (
           <span

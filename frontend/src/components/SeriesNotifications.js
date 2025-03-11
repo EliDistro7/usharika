@@ -27,20 +27,20 @@ const SeriesNotifications = () => {
         }}
       >
         {/* Book icon for notifications */}
-        <i className="fas fa-book fs-5"></i>
+        <i className="fas fa-book fs-5"  style={{ color: "purple", fontSize: "1.2rem" }}></i>
 
         {notificationCount > 0 && (
-          <Badge
-            bg="danger"
-            className="position-absolute top-0 start-100 translate-middle"
-            style={{
-              fontSize: '0.75rem',
-              padding: '0.3rem 0.5rem',
-              borderRadius: '50%',
-            }}
-          >
-            {notificationCount}
-          </Badge>
+           <span
+           className="badge bg-danger position-absolute"
+           style={{
+             top: "5px",
+             right: "5px",
+             fontSize: "0.7rem",
+             padding: "3px 6px",
+           }}
+         >
+           {notificationCount}
+         </span>
         )}
       </Dropdown.Toggle>
 
