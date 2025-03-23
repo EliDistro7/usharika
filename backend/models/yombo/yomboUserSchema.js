@@ -109,8 +109,15 @@ const YomboUserSchema = new mongoose.Schema(
       },
     },
     series: {
-      notifications: { type: [String], default: [] },
-      subscriptions: { type: [String], default: [] },
+      notifications: [
+        {
+          author: { type: String, required: true }, // Name of the series author
+          seriesId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Reference to the Series
+          title: { type: String, required: true }, // Title of the series
+          read: { type: Boolean, default: false }, // Whether the notification is read
+          createdAt: { type: Date, default: Date.now }, // Timestamp of the notification
+        },
+      ],
     },
   },
   { timestamps: true }

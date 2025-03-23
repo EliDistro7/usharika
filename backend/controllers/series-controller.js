@@ -1,8 +1,8 @@
 // controllers/seriesController.js
 const Series = require('../models/yombo/seriesSchema'); // Adjust the path as needed
-const User = require('../models/yombo/yomboUserSchema'); // Adjust the
+const User = require('../models/yombo/yomboUserSchema'); // Adjust the path as needed
 
-// Create a new Series with optional sessions
+// Create a new Series with optional sessions and send notifications to all users
 exports.createSeries = async (req, res) => {
   try {
     const {
@@ -10,9 +10,12 @@ exports.createSeries = async (req, res) => {
       description,
       startDate,
       endDate,
+      group,
       author,             // Required author field added
       sessions = []       // Default to an empty array if not provided
     } = req.body;
+
+    console.log('req.body', req.body);
 
     if (!author) {
       return res.status(400).json({ message: 'Author is required.' });
@@ -23,19 +26,93 @@ exports.createSeries = async (req, res) => {
       return res.status(400).json({ message: 'Sessions must be an array.' });
     }
 
+    // Create the new series
     const newSeries = new Series({
       name,
       description,
       startDate,
       endDate,
+      group,
       author,             // Set the author here
-      sessions,         // Embedded documents
+      sessions,           // Embedded documents
     });
 
+    // Save the new series
     const savedSeries = await newSeries.save();
+
+    // Fetch all users
+    const users = await User.find({});
+
+    // Prepare bulk update operations
+    const updateOperations = users.map((user) => ({
+      updateOne: {
+        filter: { _id: user._id },
+        update: {
+          $push: {
+            "series.notifications": {
+              author: savedSeries.author,
+              seriesId: savedSeries._id,
+              title: savedSeries.name,
+              read: false, // Default to unread
+            },
+          },
+        },
+      },
+    }));
+
+    // Execute bulk update
+    await User.bulkWrite(updateOperations);
+
+    // Respond with the saved series
     res.status(201).json(savedSeries);
   } catch (error) {
+
     console.error('Error creating series:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Mark a notification as read
+exports.markNotificationAsRead = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    // Find the user and update the specific notification
+    const user = await User.findOneAndUpdate(
+      { _id: userId, "series.notifications._id": notificationId },
+      { $set: { "series.notifications.$.read": true } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User or notification not found.' });
+    }
+
+    res.status(200).json({ message: 'Notification marked as read.', user });
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.deleteNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    // Find the user and remove the specific notification
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { "series.notifications": { _id: notificationId } } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User or notification not found.' });
+    }
+
+    res.status(200).json({ message: 'Notification deleted.', user });
+  } catch (error) {
+    console.error('Error deleting notification:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

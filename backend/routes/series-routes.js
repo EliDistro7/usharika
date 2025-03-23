@@ -14,6 +14,14 @@ const {
   addNotificationToUser
 } = require('../controllers/series-controller');
 
+const notificationController=require('../controllers/series-controller');
+
+// Mark a notification as read
+router.patch('/users/:userId/notifications/:notificationId/mark-as-read', notificationController.markNotificationAsRead);
+
+// Delete a notification
+router.delete('/users/:userId/notifications/:notificationId', notificationController.deleteNotification);
+
 // Series routes
 router.post('/series', createSeries);
 router.delete('/series/:id', deleteSeries);

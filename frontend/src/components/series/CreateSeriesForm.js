@@ -49,16 +49,7 @@ const CreateSeriesForm = ({ newSeries, onChange, onSubmit }) => {
           required
         />
       </Form.Group>
-      <Form.Group controlId="seriesAuthor" className="mb-3">
-        <Form.Label>Author</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter author name"
-          value={newSeries.author}
-          onChange={(e) => onChange({ ...newSeries, author: e.target.value })}
-          required
-        />
-      </Form.Group>
+     
       <Button variant="primary" type="submit">
         <i className="fa fa-save"></i> Unda Series
       </Button>

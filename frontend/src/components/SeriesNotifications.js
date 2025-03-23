@@ -1,14 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Badge } from 'react-bootstrap';
+import { getUser } from '@/hooks/useUser';
 
 const SeriesNotifications = () => {
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "New session added to Series A", time: "2m ago" },
-    { id: 2, message: "Series B has been updated", time: "1h ago" },
-    { id: 3, message: "Reminder: Upcoming event for Series C", time: "1d ago" },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+
+  // Fetch notifications from the user object
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const user = getUser(); // Get the current user object
+      if (user && user.series && user.series.notifications) {
+        setNotifications(user.series.notifications);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   return (
     <Dropdown align="end">
@@ -81,7 +90,7 @@ const SeriesNotifications = () => {
         {notifications.length > 0 ? (
           notifications.map((notif) => (
             <Dropdown.Item
-              key={notif.id}
+              key={notif._id} // Use the notification's _id as the key
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -98,8 +107,10 @@ const SeriesNotifications = () => {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ffffff')}
             >
-              {notif.message}
-              <small style={{ color: '#888', fontSize: '0.8rem' }}>{notif.time}</small>
+              {`New series: ${notif.title} by ${notif.author}`}
+              <small style={{ color: '#888', fontSize: '0.8rem' }}>
+                {new Date(notif.createdAt).toLocaleString()} {/* Format the timestamp */}
+              </small>
             </Dropdown.Item>
           ))
         ) : (

@@ -2,13 +2,14 @@ import axios from 'axios';
 const api = process.env.NEXT_PUBLIC_SERVER;
 
 // Create a new Series
-export const createSeries = async ({ name, description, startDate, endDate, author }) => {
+export const createSeries = async ({ name, description, startDate, endDate, author, group }) => {
   try {
     const response = await axios.post(`${api}/series`, {
       name,
       description,
       startDate,
       endDate,
+      group,
       author,
     });
     return response.data;

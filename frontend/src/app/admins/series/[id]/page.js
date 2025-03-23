@@ -14,6 +14,7 @@ import {
 } from '@/actions/series'; // adjust the import path as needed
 import Cookies from 'js-cookie';
 import CustomNavbar from '@/components/admins/CustomNavbar';
+import { getDesanitezedCookie } from '@/hooks/useUser';
 
 
 const SeriesManagementPage = () => {
@@ -24,6 +25,7 @@ const SeriesManagementPage = () => {
     description: '',
     startDate: '',
     endDate: '',
+    group:"",
     author: '',
   });
   const [refreshFlag, setRefreshFlag] = useState(false);
@@ -32,6 +34,7 @@ const SeriesManagementPage = () => {
   useEffect(() => {
     const fetchSeries = async () => {
       try {
+       
         const data = await getAllSeries({author: Cookies.get('role')});
        // console.log('series', data);
         setSeriesList(data);
@@ -46,7 +49,11 @@ const SeriesManagementPage = () => {
   const handleCreateSeries = async (e) => {
     e.preventDefault();
     try {
-      newSeries.author = Cookies.get('role');
+      console.log('it opened handleCreateSeries');
+      newSeries.author = getDesanitezedCookie();
+      console.log('it reaches her', newSeries.author);
+      newSeries.group =  Cookies.get('role');
+      console.log('it reaches her group', newSeries.group);
       await createSeries(newSeries);
       alert('Series created successfully!');
       setNewSeries({
@@ -54,11 +61,14 @@ const SeriesManagementPage = () => {
         description: '',
         startDate: '',
         endDate: '',
+        group:'',
         author: '',
       });
+
       setActiveTab('view');
       setRefreshFlag(!refreshFlag);
     } catch (error) {
+      console.log(error)
       alert(error.message);
     }
   };
