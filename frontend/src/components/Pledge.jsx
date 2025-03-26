@@ -9,19 +9,33 @@ import { Card, Button, Form, Row, Col } from "react-bootstrap";
 import { getUser } from "@/hooks/useUser";
 import { addPledge } from "@/actions/pledge";
 import Link from 'next/link';
-import { Merriweather } from "next/font/google";
-import { Dancing_Script } from "next/font/google";
+import { Cinzel, Playfair_Display, Cormorant_Garamond } from "next/font/google";
 
-const dancingScript = Dancing_Script({
+// Font declarations
+const cinzel = Cinzel({
   subsets: ["latin"],
-  weight: ["400", "700"], // Include regular and bold weights
+  weight: ["700", "900"],
 });
 
-const merriweather = Merriweather({
-  weight: ["400", "700"],
+const playfair = Playfair_Display({
   subsets: ["latin"],
+  weight: ["700", "900"],
 });
 
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+});
+
+// Color scheme
+const colors = {
+  black: "#1a1a1a",         // Bold black
+  purple: "#9370DB",        // Lighter purple (softer than #6a0dad)
+  yellow: "#FFD700",        // Gold yellow
+  lightPurple: "#E6E6FA",   // Very light purple for backgrounds
+  white: "#ffffff",         // Pure white
+  gray: "#666666"           // Medium gray for secondary text
+};
 
 const paymentOptions = [
   { id: "mpesa", name: "MPESA", number: "255-123-456-789" },
@@ -32,18 +46,50 @@ const paymentOptions = [
 ];
 
 const donationOptions = [
-  { id: 1, title: "Maboresho ya Kanisa", description: "Tuungane mkono wapendwa kuboresha kanisa letu", icon: <FaChurch className="fs-1 text-primary" /> },
-  { id: 2, title: "Sadaka ya Mabenchi", description: "Tunaomba washarika mmalizie ahadi zenu za kuongeza mabenchi kwenye kanisa letu", icon: <FaGraduationCap className="fs-1 text-success" /> },
-  { id: 3, title: "Diakonia", description: "Wiki tutatembelea kitu cha mwane kuwaona watoto, shiriki nasi baraka hizi kwa sadaka yako ya hali na mali", icon: <FaHandHoldingHeart className="fs-1 text-danger" /> },
-  { id: 4, title: "Kulipa Deni", description: "Tuungane pamoja ili kumaliza deni letu la kanisa kabla ya mwaka huu kuisha.", icon: <FaCoins className="fs-1 text-warning" /> },
+  { 
+    id: 1, 
+    title: "Maboresho ya Kanisa", 
+    description: "Tuungane mkono wapendwa kuboresha kanisa letu", 
+    icon: <FaChurch size={28} style={{ color: colors.purple }} /> 
+  },
+  { 
+    id: 2, 
+    title: "Sadaka ya Mabenchi", 
+    description: "Tunaomba washarika mmalizie ahadi zenu za kuongeza mabenchi kwenye kanisa letu", 
+    icon: <FaGraduationCap size={28} style={{ color: colors.yellow }} /> 
+  },
+  { 
+    id: 3, 
+    title: "Diakonia", 
+    description: "Wiki tutatembelea kitu cha mwane kuwaona watoto, shiriki nasi baraka hizi kwa sadaka yako ya hali na mali", 
+    icon: <FaHandHoldingHeart size={28} style={{ color: colors.purple }} /> 
+  },
+  { 
+    id: 4, 
+    title: "Kulipa Deni", 
+    description: "Tuungane pamoja ili kumaliza deni letu la kanisa kabla ya mwaka huu kuisha.", 
+    icon: <FaCoins size={28} style={{ color: colors.yellow }} /> 
+  },
 ];
 
 const InputField = ({ label, type, placeholder, value, onChange, required }) => (
-  <div className="mb-3">
-    <label className="form-label fw-bold">{label}</label>
+  <div className="mb-4">
+    <label className={`form-label fw-bold ${cormorant.className}`} style={{ 
+      fontSize: "1.2rem", 
+      color: colors.black,
+      marginBottom: "8px"
+    }}>
+      {label}
+    </label>
     <input
       type={type}
-      className="form-control shadow-sm border-0"
+      className={`form-control ${cormorant.className}`}
+      style={{ 
+        fontSize: "1.1rem",
+        padding: "12px",
+        border: `2px solid ${colors.black}`,
+        borderRadius: "8px"
+      }}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
@@ -64,12 +110,11 @@ const Pledge = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await getUser(); // Fetch user data
+        const user = await getUser();
         if (user) {
           setUsername(user.name || null)
           setPhoneNumber(user.phone || "");
         }
-
       } catch (err) {
         console.error("Failed to fetch user data:", err);
       }
@@ -123,66 +168,117 @@ const Pledge = () => {
   };
 
   return (
-    <div className={`px-4 py-5 ${merriweather.className}`} >
-      <h2 className="text-center fw-bold text-purple mb-4 animate__animated animate__fadeIn">
-        Ungana nasi kwa njia ya Sadaka
+    <div className={`px-4 py-5 ${playfair.className}`} style={{ backgroundColor: colors.lightPurple }}>
+      <h2 className={`text-center mb-5 animate__animated animate__fadeIn ${cinzel.className}`} 
+          style={{ 
+            fontSize: "2.8rem", 
+            color: colors.black,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase"
+          }}>
+        Ungana Nasi Kwa Njia ya Sadaka
       </h2>
   
-      {/* Login prompt */}
       {!username && (
-        <div className="text-center mb-4">
-          <p className="text-muted">
+        <div className="text-center mb-5">
+          <p className={`${cormorant.className}`} style={{ 
+            fontSize: "1.3rem", 
+            color: colors.gray,
+            lineHeight: "1.6"
+          }}>
             Tafadhali{" "}
-            <Link href="/auth" className="text-purple fw-bold">
-              log in kwenye akaunti yako
+            <Link href="/auth" className="fw-bold" style={{ 
+              color: colors.purple,
+              textDecoration: "underline"
+            }}>
+              Ingia kwenye akaunti yako
             </Link>{" "}
             ili uweze kuweka ahadi.
           </p>
         </div>
       )}
   
-      <Row className="g-4">
+      <Row className="g-4 justify-content-center">
         {donationOptions.map((option) => (
           <Col key={option.id} xs={12} md={6} lg={4}>
             <Card
               onClick={() => setSelectedOption(option)}
-              className={`cursor-pointer shadow-lg animate__animated ${
+              className={`cursor-pointer animate__animated ${
                 selectedOption?.id === option.id
-                  ? "animate__pulse border-purple bg-light-purple"
-                  : "border-light"
+                  ? "animate__pulse border-3"
+                  : "border-2"
               }`}
               style={{
-                transition: "transform 0.3s ease",
-                transform: selectedOption?.id === option.id ? "scale(1.05)" : "scale(1)",
+                transition: "all 0.3s ease",
+                transform: selectedOption?.id === option.id ? "scale(1.02)" : "scale(1)",
+                borderColor: selectedOption?.id === option.id ? colors.purple : colors.black,
+                backgroundColor: colors.white,
+                minHeight: "220px",
+                borderRadius: "12px"
               }}
             >
-              <Card.Body className="d-flex align-items-center">
-                <div className="text-purple">{option.icon}</div>
-                <div className="ms-3">
-                  <h4 className="fw-bold text-purple">{option.title}</h4>
-                  <p className="text-muted">{option.description}</p>
+              <Card.Body className="d-flex align-items-center p-4">
+                <div className="me-4">{option.icon}</div>
+                <div>
+                  <h4 className={`fw-bold ${playfair.className}`} style={{ 
+                    color: colors.black, 
+                    fontSize: "1.5rem",
+                    marginBottom: "12px"
+                  }}>
+                    {option.title}
+                  </h4>
+                  <p className={`${cormorant.className}`} style={{ 
+                    fontSize: "1.2rem",
+                    color: colors.gray,
+                    lineHeight: "1.5"
+                  }}>
+                    {option.description}
+                  </p>
                 </div>
               </Card.Body>
             </Card>
   
             {selectedOption?.id === option.id && (
-              <Card className="mt-3 p-4 bg-white border-purple shadow">
-                <h4 className="fw-bold mb-4 text-purple">{selectedOption.title}</h4>
+              <Card className="mt-4 p-4" style={{ 
+                backgroundColor: colors.white,
+                border: `3px solid ${colors.purple}`,
+                borderRadius: "12px"
+              }}>
+                <h4 className={`fw-bold mb-4 ${playfair.className}`} style={{ 
+                  color: colors.purple, 
+                  fontSize: "1.8rem",
+                  textAlign: "center"
+                }}>
+                  {selectedOption.title}
+                </h4>
   
                 <div className="d-flex gap-3 mb-4">
                   <Button
-                    variant={isPledge ? "purple" : "outline-purple"}
                     onClick={() => setIsPledge(true)}
-                    className="rounded-pill px-4 fw-bold text-white"
+                    className="rounded-pill px-4 py-2 fw-bold"
+                    style={{ 
+                      backgroundColor: isPledge ? colors.purple : colors.white,
+                      border: `2px solid ${colors.purple}`,
+                      color: isPledge ? colors.white : colors.purple,
+                      fontSize: "1.2rem",
+                      flex: 1
+                    }}
                   >
-                    Weka ahadi
+                    Weka Ahadi
                   </Button>
                   <Button
-                    variant={!isPledge ? "purple" : "outline-purple"}
                     onClick={() => setIsPledge(false)}
-                    className="rounded-pill px-4 fw-bold"
+                    className="rounded-pill px-4 py-2 fw-bold"
+                    style={{ 
+                      backgroundColor: !isPledge ? colors.purple : colors.white,
+                      border: `2px solid ${colors.purple}`,
+                      color: !isPledge ? colors.white : colors.purple,
+                      fontSize: "1.2rem",
+                      flex: 1
+                    }}
                   >
-                    Lipa sasa
+                    Lipa Sasa
                   </Button>
                 </div>
   
@@ -190,7 +286,7 @@ const Pledge = () => {
                   {isPledge && (
                     <>
                       <InputField
-                        label="Jina lako"
+                        label="Jina Lako"
                         type="text"
                         placeholder="Ingiza jina lako"
                         value={username}
@@ -198,7 +294,7 @@ const Pledge = () => {
                         required
                       />
                       <InputField
-                        label="Namba ya simu"
+                        label="Namba ya Simu"
                         type="tel"
                         placeholder="Ingiza namba ya simu"
                         value={phoneNumber}
@@ -211,23 +307,34 @@ const Pledge = () => {
                   <InputField
                     label="Kiasi (TZS)"
                     type="number"
-                    placeholder="Ingiza kiasi (e.g., 50)"
+                    placeholder="Ingiza kiasi (e.g., 50,000)"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     required
                   />
   
                   {!isPledge && (
-                    <Form.Group className="mb-3">
-                      <Form.Label className="fw-bold text-purple">Njia ya Malipo</Form.Label>
+                    <Form.Group className="mb-4">
+                      <Form.Label className={`fw-bold ${cormorant.className}`} style={{ 
+                        fontSize: "1.2rem", 
+                        color: colors.black,
+                        marginBottom: "8px"
+                      }}>
+                        Njia ya Malipo
+                      </Form.Label>
                       <Form.Select
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         required
-                        className="border-purple"
+                        style={{ 
+                          fontSize: "1.1rem",
+                          padding: "12px",
+                          border: `2px solid ${colors.black}`,
+                          borderRadius: "8px"
+                        }}
                       >
                         <option value="" disabled>
-                          Chagua njia ya Malipo
+                          Chagua Njia ya Malipo
                         </option>
                         {paymentOptions.map((method) => (
                           <option key={method.id} value={method.name}>
@@ -239,14 +346,28 @@ const Pledge = () => {
                   )}
                 </Form>
   
-                {error && <div className="text-danger mt-3">{error}</div>}
+                {error && (
+                  <div className={`mt-3 ${cormorant.className}`} style={{ 
+                    fontSize: "1.2rem",
+                    color: "#e74c3c",
+                    textAlign: "center"
+                  }}>
+                    {error}
+                  </div>
+                )}
   
                 <Button
                   onClick={handleSubmit}
-                  variant="purple"
-                  className="mt-4 w-100 rounded-pill py-2 fw-bold text-white"
+                  className="mt-4 w-100 rounded-pill py-3 fw-bold"
+                  style={{ 
+                    backgroundColor: colors.yellow,
+                    border: "none",
+                    color: colors.black,
+                    fontSize: "1.3rem",
+                    transition: "all 0.2s ease"
+                  }}
                 >
-                  {isPledge ? "Weka ahadi" : "Lipa sasa"}
+                  {isPledge ? "Weka Ahadi" : "Lipa Sasa"}
                 </Button>
               </Card>
             )}
