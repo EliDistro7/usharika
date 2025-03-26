@@ -19,16 +19,17 @@ const cormorant = Cormorant_Garamond({
 
 // Color scheme
 const colors = {
-  black: "#1a1a1a",         // Bold black
-  purple: "#9370DB",        // Lighter purple
-  yellow: "#FFD700",        // Gold yellow
-  lightBg: "#F5F3FF",       // Very light purple background
-  white: "#ffffff",         // Pure white
-  gray: "#666666"           // Medium gray
+  white: "#ffffff",
+  lightPurple: "#F5F3FF",
+  purple: "#9370DB",
+  darkPurple: "#6a0dad",
+  black: "#1a1a1a",
+  gold: "#FFD700"
 };
 
 const padTo2 = (num) => String(num).padStart(2, '0');
 
+// Complete useCountdown hook implementation
 const useCountdown = (targetDate) => {
   const calculateTimeLeft = () => {
     const now = new Date();
@@ -36,7 +37,13 @@ const useCountdown = (targetDate) => {
     const diff = target - now;
 
     if (diff <= 0) {
-      return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      return { 
+        months: 0, 
+        days: 0, 
+        hours: 0, 
+        minutes: 0, 
+        seconds: 0 
+      };
     }
 
     const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
@@ -51,11 +58,11 @@ const useCountdown = (targetDate) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, [targetDate]);
 
   return timeLeft;
@@ -83,15 +90,14 @@ export const CountdownDisplay = ({
         position: "relative",
         backgroundImage: backgroundVideo
           ? "none"
-          : `linear-gradient(rgba(26, 26, 26, 0.8), rgba(106, 13, 173, 0.6)), url(${backgroundImage})`,
+          : `linear-gradient(rgba(255, 255, 255, 0.9), rgba(245, 243, 255, 0.95)), url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        padding: "100px 20px",
+        padding: "80px 20px",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
       }}
     >
       {backgroundVideo && (
@@ -107,51 +113,43 @@ export const CountdownDisplay = ({
             height: "100%",
             objectFit: "cover",
             zIndex: -1,
+            opacity: 0.2
           }}
         >
           <source src={backgroundVideo} type="video/mp4" />
-          Your browser does not support the video tag.
         </video>
       )}
 
-      <div
-        className="overlay"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `linear-gradient(135deg, ${colors.black}80, ${colors.purple}80)`,
-          backdropFilter: "blur(2px)",
-          zIndex: 0,
-        }}
-      />
-
       {showCountdown && (
-        <Container className="py-5" style={{ position: "relative", zIndex: 1 }}>
-          <h1
-            className={`mb-4 ${cinzel.className}`}
-            style={{
-              fontSize: "3rem",
-              color: colors.white,
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              textShadow: `2px 2px 4px ${colors.black}`
-            }}
-          >
-            <span style={{ color: colors.yellow }}>{eventName}</span>
-          </h1>
-          <p
-            className={`mb-5 ${cormorant.className}`}
-            style={{
-              fontSize: "1.4rem",
-              color: colors.white,
-              textShadow: `1px 1px 2px ${colors.black}`
-            }}
-          >
-            Siku: <span style={{ color: colors.yellow }}>{eventDate}</span>
-          </p>
+        <Container className="py-4">
+          <div className="mb-5">
+            <h1
+              className={`${cinzel.className} mb-3`}
+              style={{
+                fontSize: "2.8rem",
+                color: colors.darkPurple,
+                fontWeight: 700,
+                letterSpacing: "1px",
+                lineHeight: 1.2
+              }}
+            >
+              {eventName}
+            </h1>
+            <div 
+              className={`${cormorant.className} mx-auto`}
+              style={{
+                fontSize: "1.3rem",
+                color: colors.black,
+                maxWidth: "600px",
+                borderTop: `2px solid ${colors.purple}`,
+                borderBottom: `2px solid ${colors.purple}`,
+                padding: "12px 0"
+              }}
+            >
+              Siku: <span style={{ color: colors.darkPurple, fontWeight: 600 }}>{eventDate}</span>
+            </div>
+          </div>
+
           <Row className="g-4 justify-content-center">
             {[
               { value: padTo2(months), label: "Miezi" },
@@ -162,33 +160,31 @@ export const CountdownDisplay = ({
             ].map((unit, index) => (
               <Col key={index} xs={6} sm={4} md={2}>
                 <div
-                  className="p-4 rounded-3"
+                  className="p-4 rounded-lg h-100 d-flex flex-column justify-content-center"
                   style={{
-                    background: `rgba(26, 26, 26, 0.7)`,
-                    backdropFilter: "blur(10px)",
-                    border: `2px solid ${colors.purple}`,
+                    background: colors.white,
+                    border: `3px solid ${colors.lightPurple}`,
+                    boxShadow: `0 4px 12px ${colors.purple}20`,
                     transition: "all 0.3s ease",
-                    boxShadow: `0 4px 8px ${colors.purple}40`,
-                    height: "100%"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow = `0 8px 16px ${colors.purple}60`;
-                    e.currentTarget.style.borderColor = colors.yellow;
+                    e.currentTarget.style.transform = "translateY(-8px)";
+                    e.currentTarget.style.boxShadow = `0 8px 24px ${colors.purple}30`;
+                    e.currentTarget.style.borderColor = colors.purple;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = `0 4px 8px ${colors.purple}40`;
-                    e.currentTarget.style.borderColor = colors.purple;
+                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.purple}20`;
+                    e.currentTarget.style.borderColor = colors.lightPurple;
                   }}
                 >
                   <div
                     className={`${cinzel.className}`}
                     style={{
-                      color: colors.yellow,
-                      fontSize: "2.5rem",
+                      color: colors.darkPurple,
+                      fontSize: "2.2rem",
                       fontWeight: 700,
-                      lineHeight: 1.2
+                      lineHeight: 1
                     }}
                   >
                     {unit.value}
@@ -196,8 +192,8 @@ export const CountdownDisplay = ({
                   <div
                     className={`mt-2 ${cormorant.className}`}
                     style={{
-                      color: colors.white,
-                      fontSize: "1rem",
+                      color: colors.purple,
+                      fontSize: "0.9rem",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       letterSpacing: "1px"
@@ -209,6 +205,18 @@ export const CountdownDisplay = ({
               </Col>
             ))}
           </Row>
+
+          <div className="mt-5 pt-4">
+            <div 
+              style={{
+                height: "2px",
+                width: "120px",
+                background: `linear-gradient(90deg, transparent, ${colors.purple}, transparent)`,
+                margin: "0 auto",
+                opacity: 0.6
+              }} 
+            />
+          </div>
         </Container>
       )}
     </div>

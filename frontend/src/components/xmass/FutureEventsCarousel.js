@@ -8,12 +8,12 @@ const FutureEventsCarousel = () => {
   const events = [
  
     {
-      targetDate: "2025-02-14T00:00:00Z",
+      targetDate: "2025-04-14T00:00:00Z",
       eventName: "The Cross Episode II",
       backgroundImage: "/img/cross.jpeg",
     },
     {
-      targetDate: "2025-03-25T00:00:00Z",
+      targetDate: "2025-04-25T00:00:00Z",
       eventName: "Tamasha la Muziki",
       backgroundVideo: "https://res.cloudinary.com/df9gkjxm8/video/upload/v1736323913/profile/yghwfekbdmjtou9kbv97.mp4",
     },
