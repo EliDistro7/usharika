@@ -19,7 +19,7 @@ const cormorant = Cormorant_Garamond({
 
 // Color scheme
 const colors = {
-  white: "#ffffff",
+  white: "#F5F3FF",       // Very light purple background",
   lightPurple: "#F5F3FF",
   purple: "#9370DB",
   darkPurple: "#6a0dad",
