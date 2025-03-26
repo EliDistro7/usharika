@@ -90,7 +90,7 @@ const Highlights = ({ data, datatype = "default" }) => {
               item={item}
               isMuted={isMuted}
               videoRef={(el) => (videoRefs.current[index] = el)}
-              onPauseCarousel={() => setIsPaused(true)}
+             
               colors={colors}
             />
           ))}
