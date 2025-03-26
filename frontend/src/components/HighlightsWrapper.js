@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Highlights from "./Highlights2";
 import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
+import { Spinner, Placeholder, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Search, XCircle, Filter } from 'react-bootstrap-icons';
 
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
@@ -71,9 +73,8 @@ const HighlightsWrapper = () => {
             innerItem.author
               .toLowerCase()
               .includes(selectedAuthor.toLowerCase())
-          )
         )
-      );
+      ))
     }
 
     // Sort by most recent
@@ -103,11 +104,7 @@ const HighlightsWrapper = () => {
     try {
       setSearchLoading(true);
       const results = await searchHighlights({ query: searchQuery });
-     
       setDataSets(results.data);
-      //console.log('results in the state:', searchResults);
-      //console.log('search result fetched', results.data)
-
     } catch (err) {
       console.error("Error searching highlights:", err);
     } finally {
@@ -115,107 +112,160 @@ const HighlightsWrapper = () => {
     }
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchActive(false);
+    setSearchResults([]);
+  };
+
   if (loading) {
-    return <div>Albamu zinapakia...</div>; // Add a spinner or loader here if needed
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
+        <Spinner animation="border" variant="primary" role="status">
+          <span className="visually-hidden">Inapakia...</span>
+        </Spinner>
+        <p className="mt-3 text-primary">Albamu zinapakia...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Tatizo kupakia albamu: {error}</div>;
+    return (
+      <Alert variant="danger" className="mx-3 my-5">
+        <Alert.Heading>Tatizo limetokea</Alert.Heading>
+        <p>Tatizo kupakia albamu: {error}</p>
+      </Alert>
+    );
   }
 
   return (
     <div className="container-fluid mt-3">
       {/* Search and Filters Section */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        {/* Author Filter Dropdown */}
-        <select
-          value={selectedAuthor}
-          onChange={(e) => setSelectedAuthor(e.target.value)}
-          className="form-select w-25 border-purple shadow-sm"
-          style={{ backgroundColor: "#fff", color: "#6f42c1" }}
-        >
-          <option value="All">Vikundi Vyote</option>
-          {[...new Set(dataSets.flatMap((item) =>
-            item.content.flatMap((group) =>
-              group.content.map((inner) => inner.author)
-            )
-          ))].map((author) => (
-            <option key={author} value={author}>
-              {formatRoleName(author)}
-            </option>
-          ))}
-        </select>
+      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        {/* Author Filter Dropdown with icon */}
+        <div className="d-flex align-items-center" style={{ width: '150px' }}>
+          <Filter className="me-2 text-purple" size={20} />
+          <select
+            value={selectedAuthor}
+            onChange={(e) => setSelectedAuthor(e.target.value)}
+            className="form-select border-purple shadow-sm"
+            style={{ 
+              backgroundColor: "#fff", 
+              color: "#6f42c1",
+              flex: 1
+            }}
+          >
+            <option value="All">Vikundi Vyote</option>
+            {[...new Set(dataSets.flatMap((item) =>
+              item.content.flatMap((group) =>
+                group.content.map((inner) => inner.author)
+              )
+            ))].map((author) => (
+              <option key={author} value={author}>
+                {formatRoleName(author)}
+              </option>
+            ))}
+          </select>
+        </div>
   
-        {/* Search Icon and Overlay */}
-        <div className="position-relative">
-          {/* Search Icon */}
-          <i
-            className="fa fa-search text-purple cursor-pointer"
-            onClick={() => setSearchActive(!searchActive)}
-            style={{ fontSize: "1.5rem", cursor: "pointer", marginRight: "13px" }}
-          ></i>
-  
-          {/* Search Overlay */}
-          {searchActive && (
-            <div
-              className="position-absolute bg-white shadow-lg p-3"
+        {/* Search Input with loading state */}
+        <div className="position-relative d-flex align-items-center" style={{ width: '150px' }}>
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control border-purple shadow-sm"
+              placeholder="Tafuta..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               style={{
-                top: "2.5rem",
-                right: "0",
-                zIndex: 1050, // High zIndex to ensure it overlays
-                borderRadius: "0.5rem",
-                width: "300px",
+                color: "#6f42c1",
+                paddingRight: '2.5rem'
               }}
-            >
-              {/* Input Field */}
-              <input
-                type="text"
-                className="form-control border-purple shadow-sm"
-                placeholder="Tafuta..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  zIndex: 1060, // Higher zIndex for interaction priority
-                  color: "#6f42c1",
-                }}
-              />
-  
-              {/* Search Button */}
-              <button
-                className="btn btn-purple mt-2 w-100 shadow-sm text-white"
-                onClick={handleSearch}
-                style={{
-                  zIndex: 1060,
-                }}
+            />
+            {searchQuery && (
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Futa utafutaji</Tooltip>}
               >
-                Tafuta
-              </button>
-            </div>
-          )}
+                <button
+                  className="btn btn-link position-absolute end-0 top-50 translate-middle-y me-4"
+                  onClick={clearSearch}
+                  style={{ zIndex: 5 }}
+                >
+                  <XCircle className="text-secondary" />
+                </button>
+              </OverlayTrigger>
+            )}
+            <button
+              className="btn btn-purple text-white"
+              onClick={handleSearch}
+              disabled={searchLoading || !searchQuery.trim()}
+            >
+              {searchLoading ? (
+                <Spinner animation="border" size="sm" role="status" />
+              ) : (
+                <Search />
+              )}
+            </button>
+          </div>
         </div>
       </div>
   
-      {/* Highlights or Search Results */}
-      <div className="row">
-        {(searchActive && searchResults.length > 0 ? searchResults : filteredData).map(
-          (data, index) => {
-            return (
-              <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
-                <Highlights
-                  data={data}
-                  datatype={searchResults.length > 0 ? "searchResults" : "default"}
-                />
+      {/* Content Area */}
+      {searchLoading ? (
+        <div className="row">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
+              <div className="card h-100 border-light shadow-sm">
+                <Placeholder as="div" animation="wave">
+                  <Placeholder xs={12} style={{ height: '200px' }} bg="light" />
+                  <div className="card-body">
+                    <Placeholder as="h5" animation="wave">
+                      <Placeholder xs={6} />
+                    </Placeholder>
+                    <Placeholder as="p" animation="wave">
+                      <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} /> <Placeholder xs={6} /> <Placeholder xs={8} />
+                    </Placeholder>
+                  </div>
+                </Placeholder>
               </div>
-            );
-          }
-        )}
-        {searchActive && searchResults.length === 0 && (
-          <div className="text-center text-purple">Hamna matokeo ya utafutaji</div>
-        )}
-        {!searchActive && filteredData.length === 0 && (
-          <div className="text-center text-purple">Hamna albamu</div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Highlights or Search Results */}
+          <div className="row">
+            {(searchActive && searchResults.length > 0 ? searchResults : filteredData).map(
+              (data, index) => (
+                <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
+                  <Highlights
+                    data={data}
+                    datatype={searchResults.length > 0 ? "searchResults" : "default"}
+                  />
+                </div>
+              )
+            )}
+          </div>
+          
+          {/* Empty State Messages */}
+          {searchActive && searchResults.length === 0 && (
+            <div className="text-center my-5 py-5">
+              <Search size={48} className="text-muted mb-3" />
+              <h5 className="text-purple">Hamna matokeo ya utafutaji</h5>
+              <p className="text-muted">Hakuna albamu zilizo na "{searchQuery}"</p>
+            </div>
+          )}
+          {!searchActive && filteredData.length === 0 && (
+            <div className="text-center my-5 py-5">
+              <Search size={48} className="text-muted mb-3" />
+              <h5 className="text-purple">Hamna albamu</h5>
+              <p className="text-muted">Hakuna albamu zilizopatikana kwa sasa</p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
