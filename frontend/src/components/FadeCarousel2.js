@@ -8,32 +8,76 @@ const FadeCarousel = ({
   children,
   isPaused = false,
   isFullscreen = false,
-  onToggleFullscreen,
   isMuted = false,
+  colors,
   onToggleMute,
 }) => {
   return (
     <Carousel
       autoPlay={!isPaused}
       infiniteLoop={true}
-      showArrows={false}
+      showArrows={isFullscreen}
       showThumbs={false}
       showStatus={false}
-      transitionTime={2000}
-      interval={4000}
+      transitionTime={500}
+      interval={6000}
       animationHandler="fade"
-      swipeable={false}
+      swipeable={true}
       stopOnHover={false}
+      renderArrowPrev={(onClickHandler, hasPrev, label) => (
+        <button
+          type="button"
+          onClick={onClickHandler}
+          title={label}
+          style={{
+            position: 'absolute',
+            zIndex: 2,
+            left: 15,
+            top: '50%',
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            backgroundColor: colors.purple,
+            color: colors.white,
+            border: 'none',
+            cursor: 'pointer',
+            transform: 'translateY(-50%)'
+          }}
+        >
+          ←
+        </button>
+      )}
+      renderArrowNext={(onClickHandler, hasNext, label) => (
+        <button
+          type="button"
+          onClick={onClickHandler}
+          title={label}
+          style={{
+            position: 'absolute',
+            zIndex: 400,
+            right: 15,
+            top: '50%',
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            backgroundColor: colors.purple,
+            color: colors.white,
+            border: 'none',
+            cursor: 'pointer',
+            transform: 'translateY(-50%)'
+          }}
+        >
+          →
+        </button>
+      )}
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
-            ...(typeof child.type === "function" && {
-              isFullscreen,
-              onToggleFullscreen,
-              isMuted,
-              onToggleMute,
-            }),
+            isFullscreen,
+            isMuted,
+            onToggleMute,
+            colors
           });
         }
         return child;
