@@ -13,7 +13,6 @@ const CarouselItem = ({
   isMuted,
   isFullscreen,
   videoRef,
-  onPauseCarousel,
   colors
 }) => {
   return (
@@ -37,7 +36,7 @@ const CarouselItem = ({
           isMuted={isMuted}
           isFullscreen={isFullscreen}
           videoRef={videoRef}
-          onPauseCarousel={onPauseCarousel}
+          
         />
       ) : null}
 
