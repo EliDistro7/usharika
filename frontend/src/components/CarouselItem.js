@@ -19,7 +19,7 @@ const CarouselItem = ({
   return (
     <div
       className="position-relative"
-      onMouseEnter={onPauseCarousel}
+    
       style={{ 
         position: "relative",
         height: isFullscreen ? "calc(100vh - 120px)" : "auto"

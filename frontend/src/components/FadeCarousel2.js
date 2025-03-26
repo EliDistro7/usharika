@@ -38,6 +38,7 @@ const FadeCarousel = ({
             height: 40,
             borderRadius: '50%',
             backgroundColor: colors.purple,
+           
             color: colors.white,
             border: 'none',
             cursor: 'pointer',
