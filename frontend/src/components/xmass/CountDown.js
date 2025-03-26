@@ -1,5 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { Cinzel, Playfair_Display, Cormorant_Garamond } from "next/font/google";
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+});
+
+// Color scheme
+const colors = {
+  black: "#1a1a1a",         // Bold black
+  purple: "#9370DB",        // Lighter purple
+  yellow: "#FFD700",        // Gold yellow
+  lightBg: "#F5F3FF",       // Very light purple background
+  white: "#ffffff",         // Pure white
+  gray: "#666666"           // Medium gray
+};
 
 const padTo2 = (num) => String(num).padStart(2, '0');
 
@@ -52,12 +78,12 @@ export const CountdownDisplay = ({
 
   return (
     <div
-      className="countdown-body text-center text-white mt-0"
+      className={`countdown-body text-center ${playfair.className}`}
       style={{
         position: "relative",
         backgroundImage: backgroundVideo
           ? "none"
-          : `linear-gradient(rgba(106, 13, 173, 0.7), rgba(155, 89, 182, 0.7)), url(${backgroundImage})`,
+          : `linear-gradient(rgba(26, 26, 26, 0.8), rgba(106, 13, 173, 0.6)), url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         padding: "100px 20px",
@@ -96,24 +122,35 @@ export const CountdownDisplay = ({
           left: 0,
           right: 0,
           bottom: 0,
-          background: "rgba(106, 13, 173, 0.4)",
-          backdropFilter: "blur(1px)",
+          background: `linear-gradient(135deg, ${colors.black}80, ${colors.purple}80)`,
+          backdropFilter: "blur(2px)",
+          zIndex: 0,
         }}
       />
 
       {showCountdown && (
         <Container className="py-5" style={{ position: "relative", zIndex: 1 }}>
           <h1
-            className="display-3 fw-bold mb-4"
-            style={{ color: "#ffffff", fontFamily: "'Poppins', sans-serif" }}
+            className={`mb-4 ${cinzel.className}`}
+            style={{
+              fontSize: "3rem",
+              color: colors.white,
+              textTransform: "uppercase",
+              letterSpacing: "2px",
+              textShadow: `2px 2px 4px ${colors.black}`
+            }}
           >
-            <span style={{ color: "#d8b4e2" }}>{eventName}</span>
+            <span style={{ color: colors.yellow }}>{eventName}</span>
           </h1>
           <p
-            className="lead mb-5"
-            style={{ color: "rgba(255, 255, 255, 0.8)", fontFamily: "'Poppins', sans-serif" }}
+            className={`mb-5 ${cormorant.className}`}
+            style={{
+              fontSize: "1.4rem",
+              color: colors.white,
+              textShadow: `1px 1px 2px ${colors.black}`
+            }}
           >
-            Siku: <span style={{ color: "#d8b4e2" }}>{eventDate}</span>
+            Siku: <span style={{ color: colors.yellow }}>{eventDate}</span>
           </p>
           <Row className="g-4 justify-content-center">
             {[
@@ -125,39 +162,49 @@ export const CountdownDisplay = ({
             ].map((unit, index) => (
               <Col key={index} xs={6} sm={4} md={2}>
                 <div
-                  className="countdown-box p-4 rounded shadow"
+                  className="p-4 rounded-3"
                   style={{
-                   // background: "rgba(155, 89, 182, 0.2)",
-                    backdropFilter: "blur(15px)",
-                    border: "1px solid rgba(155, 89, 182, 0.4)",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    background: `rgba(26, 26, 26, 0.7)`,
+                    backdropFilter: "blur(10px)",
+                    border: `2px solid ${colors.purple}`,
+                    transition: "all 0.3s ease",
+                    boxShadow: `0 4px 8px ${colors.purple}40`,
+                    height: "100%"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 16px rgba(106, 13, 173, 0.4)";
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow = `0 8px 16px ${colors.purple}60`;
+                    e.currentTarget.style.borderColor = colors.yellow;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 8px rgba(106, 13, 173, 0.2)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = `0 4px 8px ${colors.purple}40`;
+                    e.currentTarget.style.borderColor = colors.purple;
                   }}
                 >
                   <div
-                    className="countdown-number display-4 fw-bold"
+                    className={`${cinzel.className}`}
                     style={{
-                      color: "#d8b4e2",
-                      fontFamily: "'Roboto Mono', monospace",
+                      color: colors.yellow,
+                      fontSize: "2.5rem",
+                      fontWeight: 700,
+                      lineHeight: 1.2
                     }}
                   >
                     {unit.value}
                   </div>
-                  <small
-                    className="text-uppercase fw-semibold"
-                    style={{ color: "rgba(255, 255, 255, 0.8)" }}
+                  <div
+                    className={`mt-2 ${cormorant.className}`}
+                    style={{
+                      color: colors.white,
+                      fontSize: "1rem",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "1px"
+                    }}
                   >
                     {unit.label}
-                  </small>
+                  </div>
                 </div>
               </Col>
             ))}
