@@ -111,7 +111,7 @@ const Footer = () => {
                 <div className={`${cormorant.className} mt-3`} style={{ fontSize: "1.1rem" }}>
                   <p className="mb-2">
                     <i className="fas fa-map-marker-alt me-2" style={{ color: "#9370DB" }}></i>
-                    104 Yombo Kiwalani, Dar Es Salaam
+                    1110 Yombo Kiwalani, Dar Es Salaam
                   </p>
                   <p className="mb-2">
                     <i className="fas fa-phone-alt me-2" style={{ color: "#9370DB" }}></i>
@@ -122,7 +122,7 @@ const Footer = () => {
                   <p className="mb-3">
                     <i className="fas fa-envelope me-2" style={{ color: "#9370DB" }}></i>
                     <a href="mailto:yombolutheran@gmail.com" className="text-decoration-none" style={{ color: "#6A0DAD" }}>
-                      yombolutheran@gmail.com
+                      info@kkktyombo.org
                     </a>
                   </p>
                   <div className="d-flex">
@@ -155,7 +155,7 @@ const Footer = () => {
         <div className="row mt-4 pt-3 border-top border-purple">
           <div className="col-12 text-center">
             <p className={`${cormorant.className} mb-0`} style={{ fontSize: "1rem", color: "#6A0DAD" }}>
-              KKKT Usharika wa Yombo Online System 2025<br />
+              KKKT Usharika wa Yombo Online 2025<br />
               <span style={{ color: "#9370DB" }}>Haki zote zimehifadhiwa</span>
             </p>
           </div>
