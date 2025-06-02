@@ -133,7 +133,7 @@ const FadeCarousel = ({
 
   const containerStyle = {
     position: 'relative',
-    background: isFullscreen ? 'transparent' : colors.surface,
+    background: isFullscreen ? 'transparent' : '',
     borderRadius: isFullscreen ? '0' : '16px',
     overflow: 'hidden',
   };
@@ -167,8 +167,7 @@ const FadeCarousel = ({
           margin: 0;
           padding: 10px 0;
           text-align: center;
-          background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
-          backdrop-filter: blur(5px);
+       
           border-radius: 25px;
           left: 50%;
           transform: translateX(-50%);

@@ -15,12 +15,12 @@ const DescriptionOverlay = memo(({ description, isFullscreen, colors, isVisible 
     bottom: 0,
     left: 0,
     right: 0,
-    background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
+   // background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
     padding: isFullscreen ? "3rem 2rem 2rem" : "2rem 1.5rem 1.5rem",
     zIndex: 1000,
     transform: isVisible ? "translateY(0)" : "translateY(100%)",
     transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-    backdropFilter: "blur(10px)",
+   // backdropFilter: "blur(10px)",
   };
 
   const textStyle = {
@@ -115,7 +115,7 @@ const CarouselItem = ({
     minHeight: isFullscreen ? "600px" : "400px",
     overflow: "hidden",
     borderRadius: isFullscreen ? "0" : "12px",
-    background: `linear-gradient(135deg, ${colors.background}, ${colors.surface})`,
+   // background: `linear-gradient(135deg, ${colors.background}, ${colors.surface})`,
     cursor: item.description ? "pointer" : "default",
   };
 
@@ -164,7 +164,7 @@ const CarouselItem = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: `linear-gradient(135deg, ${colors.primary}20, ${colors.secondary}20)`,
+           // background: `linear-gradient(135deg, ${colors.primary}20, ${colors.secondary}20)`,
             color: colors.textSecondary,
             fontSize: "1.2rem",
           }}
@@ -173,7 +173,7 @@ const CarouselItem = ({
         </div>
       )}
 
-      {/* Enhanced description overlay */}
+      {/* Enhanced description overlay 
       {item.description && (
         <DescriptionOverlay
           description={item.description}
@@ -182,8 +182,9 @@ const CarouselItem = ({
           isVisible={showDescription || isFullscreen}
         />
       )}
+        */}
 
-      {/* Gradient overlay for better text contrast */}
+      {/* Gradient overlay for better text contrast 
       {item.description && (
         <div
           style={{
@@ -201,7 +202,7 @@ const CarouselItem = ({
           }}
         />
       )}
-
+*/}
       <style jsx>{`
         .carousel-item-container {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

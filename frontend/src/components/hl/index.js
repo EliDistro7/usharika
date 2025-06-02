@@ -67,10 +67,11 @@ const Highlights = ({ data, datatype = "default" }) => {
   }, [data.content, activeTab]);
 
   const containerStyle = {
-    background: `linear-gradient(135deg, ${colors.background} 0%, rgba(255, 255, 255, 0.9) 100%)`,
-    backdropFilter: "blur(10px)",
-    border: `1px solid rgba(99, 102, 241, 0.1)`,
-    boxShadow: colors.shadow,
+   // background: `linear-gradient(135deg, ${colors.background} 0%, rgba(255, 255, 255, 0.9) 100%)`,
+   // backdropFilter: "blur(10px)",
+   // border: `1px solid rgba(99, 102, 241, 0.1)`,
+    //boxShadow: colors.shadow,
+    paddingTop: "8px",
     borderRadius: "24px",
     overflow: "hidden",
     position: "relative",
@@ -128,8 +129,8 @@ const Highlights = ({ data, datatype = "default" }) => {
         className="rounded-2xl overflow-hidden"
         style={{
           boxShadow: colors.glowShadow,
-          border: `2px solid rgba(99, 102, 241, 0.1)`,
-          background: colors.surface,
+         
+         // background: colors.surface,
         }}
       >
         <FadeCarousel 
