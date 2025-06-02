@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Highlights from "./Highlights2";
+import Highlights from "./hl/index";
 import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
 import { Spinner, Placeholder, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -142,7 +142,7 @@ const HighlightsWrapper = () => {
   return (
     <div className="container-fluid mt-3">
       {/* Search and Filters Section */}
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div className="d-flex justify-content-between align-items-center mb-4 gap-3">
         {/* Author Filter Dropdown with icon */}
         <div className="d-flex align-items-center" style={{ width: '150px' }}>
           <Filter className="me-2 text-purple" size={20} />
