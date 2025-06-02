@@ -124,7 +124,7 @@ const CarouselItem = ({
     height: "100%",
     objectFit: "cover",
     transition: "transform 0.3s ease",
-    transform: isHovered ? "scale(1.02)" : "scale(1)",
+    //transform: isHovered ? "scale(1.02)" : "scale(1)",
   };
 
   return (
@@ -134,8 +134,9 @@ const CarouselItem = ({
       onMouseLeave={handleMouseLeave}
       className="carousel-item-container"
     >
-      {/* Loading spinner */}
+      {/* Loading spinner 
       {isLoading && <LoadingSpinner colors={colors} />}
+      */}
 
       {/* Media content */}
       {item.imageUrl ? (
