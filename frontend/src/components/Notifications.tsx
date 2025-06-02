@@ -109,7 +109,7 @@ export default function Notifications() {
           {notifications.length > 0 && (
             <Badge
               bg="danger"
-              className="position-absolute top-0 start-100 translate-middle"
+              className="position-absolute top-0 start-100 translate-middle z-50"
               style={{
                 fontSize: '0.75rem',
                 padding: '0.3rem 0.5rem',
