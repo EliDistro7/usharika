@@ -4,11 +4,7 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
         return;
     }
 
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) {
-        console.error('Calendar element not found. Aborting calendar initialization.');
-        return;
-    }
+
 
     const today = new Date();
 
@@ -91,28 +87,5 @@ export function initializeCalendar(setSelectedEvent, setModalOpen, setEvents, se
     setEvents(fullEvents);
     
 
-    const calendar = new window.FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        },
-        events: fullEvents,
-        eventClick: (info) => {
-            setSelectedEvent({
-                title: info.event.title,
-                start: info.event.start.toISOString(),
-                end: info.event.end.toISOString(),
-                group: info.event.extendedProps.group, // Include group in modal data
-            });
-            setModalOpen(true);
-        },
-        datesSet: (info) => {
-            // Capture the current view type and pass it back to the parent component
-            setViewType(info.view.type);
-        },
-    });
-
-    calendar.render();
+ 
 }

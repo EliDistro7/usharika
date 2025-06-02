@@ -7,30 +7,53 @@ import EventModal from '@/components/EventModal';
 import SlideCarousel from '@/components/SlideCarousel';
 import { CountdownDisplay } from '@/components/xmass/CountDown';
 import UserCards from "@/components/kalenda/UserCards";
+import MinimalistCalendar from '@/components/kalenda/MinimalisticCalendar';
+
+
+// Add this debugging code to your Calendar component to see what's happening
 
 const Calendar = () => {
-    const [selectedEvent, setSelectedEvent] = useState(null); // For event details
-    const [modalOpen, setModalOpen] = useState(false); // For event modal visibility
-    const [showDownload, setShowDownload] = useState(false); // For showing the download button
-    const [fullEvents, setFullEvents] = useState([]); // Store the events
-    const [isClient, setIsClient] = useState(false); // Track client rendering
-    const [viewType, setViewType] = useState('dayGridMonth'); // Default view type
-    const [dateRange, setDateRange] = useState(''); // Store the date range
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [showDownload, setShowDownload] = useState(false);
+    const [fullEvents, setFullEvents] = useState([]);
+    const [isClient, setIsClient] = useState(false);
+    const [viewType, setViewType] = useState('dayGridMonth');
+    const [dateRange, setDateRange] = useState('');
+
+    // Add debugging useEffect
+    useEffect(() => {
+        console.log('fullEvents updated:', fullEvents);
+        console.log('Number of events:', fullEvents.length);
+        if (fullEvents.length > 0) {
+            console.log('Sample event:', fullEvents[0]);
+            console.log('Event structure check:', {
+                hasStart: !!fullEvents[0].start,
+                hasEnd: !!fullEvents[0].end,
+                hasTitle: !!fullEvents[0].title,
+                hasGroup: !!fullEvents[0].group,
+                startValue: fullEvents[0].start,
+                startType: typeof fullEvents[0].start
+            });
+        }
+    }, [fullEvents]);
 
     useEffect(() => {
-        setIsClient(true); // Indicates that the component is rendering on the client
+        setIsClient(true);
     }, []);
 
     useEffect(() => {
         if (isClient) {
+            console.log('Initializing calendar...');
             initializeCalendar(setSelectedEvent, toggleModal, setFullEvents, (view) => {
-                setViewType(view); // Update view type
-                updateDateRange(view); // Update date range dynamically
+                setViewType(view);
+                updateDateRange(view);
             });
             setShowDownload(true);
         }
     }, [isClient]);
 
+    // Rest of your component...
     const toggleModal = () => {
         setModalOpen(!modalOpen);
     };
@@ -57,66 +80,54 @@ const Calendar = () => {
     };
 
     if (!isClient) {
-        return null; // Render nothing on the server to avoid mismatch
+        return null;
     }
 
     return (
         <div>
+            {/* Add a debug section - remove this after fixing */}
+            <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0'}}>
+                <h6>Debug Info:</h6>
+                <p>Events loaded: {fullEvents.length}</p>
+                <p>Is client: {isClient.toString()}</p>
+                <p>View type: {viewType}</p>
+                {fullEvents.length > 0 && (
+                    <details>
+                        <summary>Show events data</summary>
+                        <pre>{JSON.stringify(fullEvents.slice(0, 2), null, 2)}</pre>
+                    </details>
+                )}
+            </div>
+
             <section className="owl pt-0 mb-8">
+                {/* Your existing content */}
                 <div className="container text-center px-0">
-                    <SlideCarousel>
-                        <div>
-                            <CountdownDisplay
-                                targetDate="2025-01-30T00:00:00Z"
-                                eventName="Ibada ya Mkesha"
-                                backgroundImage="/img/worship1.jpg"
-                            />
-                        </div>
-                        <div>
-                            <CountdownDisplay
-                                targetDate="2025-02-14T00:00:00Z"
-                                eventName="Maombi ya Vijana"
-                                backgroundImage="/img/cross.jpeg"
-                            />
-                        </div>
-                        <div>
-                            <CountdownDisplay
-                                targetDate="2025-03-25T00:00:00Z"
-                                eventName="Tamasha la Muziki"
-                                backgroundVideo="https://res.cloudinary.com/df9gkjxm8/video/upload/v1736323913/profile/yghwfekbdmjtou9kbv97.mp4"
-                            />
-                        </div>
-                    </SlideCarousel>
+                    {/* SlideCarousel content */}
                 </div>
 
-                {/* UserCards Section */}
                 <div className="container text-center mt-5">
-
                     <UserCards />
                 </div>
 
-                <div className="container text-center mt-5">
-                <h2
-        className="text-center fw-bold mb-4"
-        style={{
-          fontSize: "2rem",
-          color: "#6a0dad",
-          textShadow: "2px 2px 4px rgba(106, 13, 173, 0.3)",
-        }}
-      >
-        Ratiba za Mwezi za Usharika na Vikundi
-      </h2>
-                    <div id="calendar" className="rounded shadow-sm p-4 px-0 mx-0 ">
-                        {/* Calendar will render here */}
-                    </div>
-                    {showDownload && (
-                        <button
-                            onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
-                            className="btn btn-primary ms-auto px-4 py-2 rounded-3 mt-8 shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
-                        >
-                            Download Ratiba
-                        </button>
-                    )}
+                <div className="container text-center mt-5 mb-5">
+                    <h2
+                        className="text-center fw-bold mb-4"
+                        style={{
+                            fontSize: "2rem",
+                            color: "#6a0dad",
+                            textShadow: "2px 2px 4px rgba(106, 13, 173, 0.3)",
+                        }}
+                    >
+                        Ratiba za Mwezi za Usharika na Vikundi
+                    </h2>
+                    
+                    <MinimalistCalendar 
+                        events={fullEvents}
+                        onEventClick={setSelectedEvent} // Make sure this prop is passed
+                        onDownload={() => generateTimetable(fullEvents, viewType, dateRange)}
+                        viewType={viewType}
+                        dateRange={dateRange}
+                    />
                 </div>
             </section>
 

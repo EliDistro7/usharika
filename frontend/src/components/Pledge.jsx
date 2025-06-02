@@ -228,9 +228,10 @@ const Pledge = () => {
                   }}>
                     {option.title}
                   </h4>
-                  <p className={`${cormorant.className}`} style={{ 
+                  <p style={{ 
                     fontSize: "1.2rem",
-                    color: colors.gray,
+                    color:"black",
+                  
                     lineHeight: "1.5"
                   }}>
                     {option.description}
