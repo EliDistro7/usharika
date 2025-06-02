@@ -379,7 +379,7 @@ const Leadership: React.FC = () => {
                         </div>
                       ) : (
                         <Image
-                          src="/img/mchungaji.jpg"
+                          src="/img/mchungaji.jpeg"
                           alt="Deogratias Katabazi"
                           layout="fill"
                           objectFit="cover"
