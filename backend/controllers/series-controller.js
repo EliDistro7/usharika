@@ -1,6 +1,6 @@
 // controllers/seriesController.js
-const Series = require('../models/yombo/seriesSchema'); // Adjust the path as needed
-const User = require('../models/yombo/yomboUserSchema'); // Adjust the path as needed
+const Series = require('../models/yombo/seriesSchema'); 
+const User = require('../models/yombo/yomboUserSchema'); 
 
 // Create a new Series with optional sessions and send notifications to all users
 exports.createSeries = async (req, res) => {
@@ -11,8 +11,8 @@ exports.createSeries = async (req, res) => {
       startDate,
       endDate,
       group,
-      author,             // Required author field added
-      sessions = []       // Default to an empty array if not provided
+      author,           
+      sessions = []       
     } = req.body;
 
     console.log('req.body', req.body);
@@ -33,8 +33,8 @@ exports.createSeries = async (req, res) => {
       startDate,
       endDate,
       group,
-      author,             // Set the author here
-      sessions,           // Embedded documents
+      author,             
+      sessions,           
     });
 
     // Save the new series
