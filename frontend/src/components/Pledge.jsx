@@ -270,7 +270,7 @@ const Pledge = () => {
             maxWidth: "600px",
             lineHeight: "1.6"
           }}>
-            Tuungane mkono ili kuendeleza kazi za kimungu na kuboresha mazingira yetu ya ibada
+            Tuungane mkono ili kuendeleza kazi za kiMungu na kuboresha mazingira yetu ya ibada
           </p>
         </div>
 
