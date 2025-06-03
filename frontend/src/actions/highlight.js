@@ -26,7 +26,7 @@ export const createHighlight = async ({ name, content, author }) => {
 export const getRecentHighlights = async () => {
   try {
     const response = await axios.get(`${api}/highlights/recent`);
-   // console.log('data received', response.data)
+   console.log('data received', response.data)
     return response.data; // Contains success message and the list of recent highlights
   } catch (error) {
     console.error("Error fetching recent highlights:", error.response?.data || error.message);

@@ -265,6 +265,8 @@ const getRecentHighlights = async (req, res) => {
     const recentHighlights = await Highlight.find({
       createdAt: { $gte: threeDaysAgo },
     }).sort({ createdAt: -1 }); // Sort by most recent
+
+    console.log('highlight data',recentHighlights )
      
     console.log('recent highlights', recentHighlights)
     return res.status(200).json({

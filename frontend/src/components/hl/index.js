@@ -7,6 +7,7 @@ import Dropdown from "./Dropdown";
 import ControlButtons from "./ControlButtons";
 import FullscreenModal from "./FullscreenModal";
 import { Cinzel, Playfair_Display, Cormorant_Garamond } from "next/font/google";
+import Link from "next/link";
 
 // Optimized font loading with display swap
 const cinzel = Cinzel({
@@ -43,6 +44,7 @@ const colors = {
 };
 
 const Highlights = ({ data, datatype = "default" }) => {
+  console.log('data ', data);
   // Memoized initial tab to prevent unnecessary recalculations
   const initialTab = useMemo(() => {
     return Object.keys(data.content)[0];
@@ -91,6 +93,25 @@ const Highlights = ({ data, datatype = "default" }) => {
     textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
+  const linkButtonStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "12px 24px",
+    borderRadius: "12px",
+    background: colors.gradient,
+    color: "white",
+    textDecoration: "none",
+    fontSize: "0.9rem",
+    fontWeight: 600,
+    letterSpacing: "0.5px",
+    boxShadow: colors.glowShadow,
+    transition: "all 0.3s ease",
+    marginTop: "1rem",
+    border: "none",
+    cursor: "pointer",
+  };
+
   return (
     <article 
       className={`relative z-10 mt-6 p-8 ${playfair.className}`}
@@ -107,10 +128,43 @@ const Highlights = ({ data, datatype = "default" }) => {
       />
 
       {/* Enhanced title with gradient text */}
-      <header>
+      <header className="text-center">
         <h1 className={`${cinzel.className}`} style={titleStyle}>
           {data.name}
         </h1>
+        
+        {/* Link to full page view */}
+        <div className="flex justify-center">
+          <Link 
+            href={`/highlight/${data._id}`}
+            style={linkButtonStyle}
+            className={`${cormorant.className} hover:scale-105 hover:shadow-lg`}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 8px 25px -5px rgba(99, 102, 241, 0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = colors.glowShadow;
+            }}
+          >
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15,3 21,3 21,9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Fungua Stori
+          </Link>
+        </div>
       </header>
 
       {/* Dropdown for Chapters */}

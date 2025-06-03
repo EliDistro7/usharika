@@ -52,6 +52,7 @@ const HighlightsWrapper = () => {
             content: group.content.map((innerContent) => ({
               ...innerContent,
               parentLastUpdated: item.lastUpdated,
+             
             })),
           };
         });
@@ -59,6 +60,7 @@ const HighlightsWrapper = () => {
           name: item.name,
           lastUpdated: item.lastUpdated,
           content: groupedContent,
+          _id:item._id,
         });
       });
       return flattened;

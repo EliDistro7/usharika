@@ -290,7 +290,7 @@ export const NewsTicker = ({
         )}
       </div>
 
-      {/* Gradient Overlays for Smooth Fade */}
+      {/* Gradient Overlays for Smooth Fade 
       <div
         className="position-absolute top-0 end-0 h-100"
         style={{
@@ -300,6 +300,7 @@ export const NewsTicker = ({
           pointerEvents: "none",
         }}
       />
+      */}
 
       {/* Pause Indicator */}
       {isPaused && (
