@@ -16,7 +16,7 @@ export default function Home() {
     <div className="px-0">
      
      <NewsTicker  direction="left"
- 
+    className=""
   pauseOnHover={true}/> 
       {/* Highlights  <Series />
       Section */}
