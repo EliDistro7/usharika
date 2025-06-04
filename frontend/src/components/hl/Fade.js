@@ -216,6 +216,30 @@ const FadeCarousel = ({
         .enhanced-carousel .carousel.carousel-slider .control-arrow {
           transition: all 0.3s ease;
         }
+
+        /* Add these new styles */
+  .enhanced-carousel button,
+  .enhanced-carousel .carousel .control-dots .dot {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Prevent hover effects on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    .enhanced-carousel button:hover {
+      transform: translateY(-50%) scale(1) !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+  
+  /* Suppress default carousel touch feedback */
+  .enhanced-carousel .carousel,
+  .enhanced-carousel .carousel * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
         
         .enhanced-carousel .carousel.carousel-slider .control-arrow:hover {
           background: rgba(0, 0, 0, 0.2);

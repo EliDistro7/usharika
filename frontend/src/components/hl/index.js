@@ -135,19 +135,17 @@ const Highlights = ({ data, datatype = "default" }) => {
         
         {/* Link to full page view */}
         <div className="flex justify-center">
-          <Link 
-            href={`/highlight/${data._id}`}
-            style={linkButtonStyle}
-            className={`${cormorant.className} hover:scale-105 hover:shadow-lg`}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "scale(1.05)";
-              e.target.style.boxShadow = "0 8px 25px -5px rgba(99, 102, 241, 0.3)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "scale(1)";
-              e.target.style.boxShadow = colors.glowShadow;
-            }}
-          >
+        <Link 
+  href={`/highlight/${data._id}`}
+  style={{
+    ...linkButtonStyle,
+    WebkitTapHighlightColor: 'transparent',
+    WebkitTouchCallout: 'none',
+    WebkitUserSelect: 'none',
+    userSelect: 'none'
+  }}
+  className={`${cormorant.className} highlight-link`}
+>
             <svg 
               width="16" 
               height="16" 
@@ -236,6 +234,22 @@ const Highlights = ({ data, datatype = "default" }) => {
       />
 
       <style jsx>{`
+             .highlight-link {
+    transition: all 0.3s ease;
+  }
+  
+  .highlight-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px -5px rgba(99, 102, 241, 0.3);
+  }
+  
+  @media (hover: none) and (pointer: coarse) {
+    .highlight-link:hover {
+      transform: scale(1);
+      box-shadow: ${colors.glowShadow};
+    }
+  }
+      
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-10px) rotate(2deg); }
