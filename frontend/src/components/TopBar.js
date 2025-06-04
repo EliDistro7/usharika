@@ -30,12 +30,12 @@ const TopBar = () => {
 
   const handleLogin = () => {
     // Add your login navigation logic here
-    window.location.href = '/login';
+    window.location.href = '/auth';
   };
 
   const handleSignup = () => {
     // Add your signup navigation logic here
-    window.location.href = '/signup';
+    window.location.href = '/usajili';
   };
 
   return (
