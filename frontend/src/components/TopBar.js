@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import SeriesNotifications from '@/components/SeriesNotifications';
 import Notifications from './Notifications';
 import { getLoggedInUserId } from '@/hooks/useUser';
@@ -26,6 +27,16 @@ const TopBar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
+
+  const handleLogin = () => {
+    // Add your login navigation logic here
+    window.location.href = '/login';
+  };
+
+  const handleSignup = () => {
+    // Add your signup navigation logic here
+    window.location.href = '/signup';
+  };
 
   return (
     <>
@@ -160,8 +171,8 @@ const TopBar = () => {
 
           {/* Right Side Content */}
           <div className="d-flex align-items-center gap-3 animate__animated animate__fadeInRight">
-            {/* Notifications for logged in users */}
-            {isLoggedIn && (
+            {isLoggedIn ? (
+              /* Notifications for logged in users */
               <div className="d-flex align-items-center gap-3">
                 <div 
                   className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center"
@@ -205,10 +216,85 @@ const TopBar = () => {
                   <Notifications />
                 </div>
               </div>
+            ) : (
+              /* Login/Signup buttons for non-logged in users */
+              <div className="d-flex align-items-center gap-3">
+                {/* Login Button */}
+                <Button
+                  onClick={handleLogin}
+                  className="d-flex align-items-center gap-2 px-4 py-2"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15))',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(255,255,255,0.4)',
+                    borderRadius: '25px',
+                    color: 'white',
+                    fontWeight: '600',
+                    fontSize: '0.9rem',
+                    letterSpacing: '0.5px',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    minWidth: '120px',
+                    justifyContent: 'center',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.25))';
+                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                    e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15))';
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.4)';
+                  }}
+                >
+                  <i className="fas fa-sign-in-alt"></i>
+                  <span>Ingia</span>
+                </Button>
+
+                {/* Signup Button */}
+                <Button
+                  onClick={handleSignup}
+                  className="d-flex align-items-center gap-2 px-4 py-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                    border: '2px solid rgba(255,255,255,0.8)',
+                    borderRadius: '25px',
+                    color: '#6a0dad',
+                    fontWeight: '700',
+                    fontSize: '0.9rem',
+                    letterSpacing: '0.5px',
+                    boxShadow: '0 8px 32px rgba(255,255,255,0.2)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    minWidth: '120px',
+                    justifyContent: 'center',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #6a0dad 0%, #9c27b0 100%)';
+                    e.target.style.color = 'white';
+                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                    e.target.style.boxShadow = '0 12px 40px rgba(106, 13, 173, 0.3)';
+                    e.target.style.borderColor = '#6a0dad';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)';
+                    e.target.style.color = '#6a0dad';
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = '0 8px 32px rgba(255,255,255,0.2)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.8)';
+                  }}
+                >
+                  <i className="fas fa-user-plus"></i>
+                  <span>Jisajili</span>
+                </Button>
+              </div>
             )}
 
-            {/* Quick Actions */}
-            <div className="d-none d-md-flex align-items-center gap-2">
+            {/* Quick Actions - Show for both logged in and out users */}
+            <div className="d-none d-lg-flex align-items-center gap-2 ms-2">
               <div 
                 className="p-2 rounded-circle d-flex align-items-center justify-content-center"
                 style={{
@@ -305,11 +391,45 @@ const TopBar = () => {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        @media (max-width: 768px) {
+        /* Enhanced button hover effects */
+        .btn:active {
+          transform: translateY(1px) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1199px) {
+          .d-none.d-lg-flex {
+            display: none !important;
+          }
+        }
+        
+        @media (max-width: 991px) {
           .container {
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
             text-align: center;
+          }
+          
+          .animate__fadeInLeft,
+          .animate__fadeInRight {
+            animation: none !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
+          .d-flex.gap-3 {
+            gap: 0.75rem !important;
+          }
+          
+          .btn {
+            min-width: 100px !important;
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.8rem !important;
+          }
+          
+          .d-flex.align-items-center.gap-3 {
+            flex-wrap: wrap;
+            justify-content: center;
           }
         }
       `}</style>
