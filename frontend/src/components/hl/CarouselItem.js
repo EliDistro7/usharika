@@ -130,8 +130,7 @@ const CarouselItem = ({
   return (
     <div
       style={containerStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    
       className="carousel-item-container"
     >
       {/* Loading spinner 
