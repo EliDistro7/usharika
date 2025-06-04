@@ -24,14 +24,14 @@ const FutureEventsCarousel = () => {
 
   const events = [
     {
-      targetDate: "2025-08-14T00:00:00Z",
-      eventName: "The Cross Episode II",
-      backgroundImage: "/img/cross.jpeg",
+      targetDate: "2025-06-26T00:00:00Z",
+      eventName: "Vijana Expirience",
+      backgroundImage: "/img/vijana.webp",
     },
     {
-      targetDate: "2025-06-25T00:00:00Z",
-      eventName: "Tamasha la Muziki",
-      backgroundVideo: "https://res.cloudinary.com/df9gkjxm8/video/upload/v1736323913/profile/yghwfekbdmjtou9kbv97.mp4",
+      targetDate: "2025-06-19T00:00:00Z",
+      eventName: "Twen'zetu Kwa Yesu",
+      backgroundVideo: "/videos/YesuVideo.mp4",
     },
   ];
 
@@ -243,7 +243,8 @@ const FutureEventsCarousel = () => {
                       transition: `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${0.5 + index * 0.2}s`
                     }}
                   >
-                    <EventCard event={event} index={index} />
+                    <EventCard event={event} index={index}  isPromoImage={!event.backgroundVideo} // Only show as promo image if no video
+  isPromoVideo={!!event.backgroundVideo} />
                   </div>
                 </Col>
               ))}
