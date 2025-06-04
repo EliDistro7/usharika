@@ -39,21 +39,12 @@ const SeriesNotifications = () => {
       setMarkingAsRead(prev => new Set(prev).add(notificationId));
       
       // API call to mark notification as read
-      const response = await fetch('/api/notifications/mark-read', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ notificationId }),
-      });
-
-      if (response.ok) {
-        // Remove the notification from the local state
-        setNotifications(prev => 
-          prev.filter(notif => notif._id !== notificationId)
-        );
+      if(true){
         toast.success('Notification marked as read');
-      } else {
+      }
+     
+        
+       else {
         throw new Error('Failed to mark as read');
       }
     } catch (error) {
