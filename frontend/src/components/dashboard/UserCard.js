@@ -194,7 +194,7 @@ const UserCard = ({ user }) => {
           {/* Save Changes button */}
           <div className="mt-3">
             <button className="btn btn-primary" onClick={handleSaveRoles}>
-              Save Role Changes
+              Tuma
             </button>
           </div>
         </div>
