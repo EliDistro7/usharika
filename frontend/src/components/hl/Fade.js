@@ -36,14 +36,7 @@ const NavigationButton = memo(({ direction, onClick, colors, label }) => {
       onClick={onClick}
       title={label}
       style={buttonStyle}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-        e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.3)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.2)';
-      }}
+    
     >
       {isNext ? '→' : '←'}
     </button>
