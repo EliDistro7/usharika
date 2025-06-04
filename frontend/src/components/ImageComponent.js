@@ -17,7 +17,7 @@ const ImageComponent = ({ imageUrl, altText }) => {
   // Inline styles for fullscreen and normal modes
   const styles = {
     container: {
-      position: "relative", // Ensure container positioning
+      position: "relative",
       transition: "all 0.3s ease-in-out",
       width: isFullscreen ? "100vw" : "100%",
       height: isFullscreen ? "100vh" : "auto",
@@ -26,17 +26,36 @@ const ImageComponent = ({ imageUrl, altText }) => {
       alignItems: isFullscreen ? "center" : "initial",
       justifyContent: isFullscreen ? "center" : "initial",
       overflow: isFullscreen ? "hidden" : "visible",
+      // Remove tap highlight on mobile devices
+      WebkitTapHighlightColor: "transparent",
+      tapHighlightColor: "transparent",
+    },
+    image: {
+      maxWidth: "100%",
+      maxHeight: "100%",
+      objectFit: "contain",
+      transition: "all 0.3s ease-in-out",
+      // Remove tap highlight specifically for the image
+      WebkitTapHighlightColor: "transparent",
+      tapHighlightColor: "transparent",
+      // Prevent text selection on touch
+      WebkitUserSelect: "none",
+      userSelect: "none",
+      // Prevent touch callout on iOS
+      WebkitTouchCallout: "none",
     },
     button: {
       position: "absolute",
       top: "10px",
       right: "10px",
-      zIndex: 1000, // Ensure the button is above other elements
+      zIndex: 1000,
       cursor: "pointer",
-      background: "rgba(255, 255, 255, 0.8)", // Add a semi-transparent background for better visibility
+      background: "rgba(255, 255, 255, 0.8)",
+      // Remove tap highlight for button
+      WebkitTapHighlightColor: "transparent",
+      tapHighlightColor: "transparent",
     },
   };
-  
 
   return (
     <div style={styles.container}>
@@ -44,9 +63,17 @@ const ImageComponent = ({ imageUrl, altText }) => {
         src={imageUrl}
         alt={altText || "Image Content"}
         style={styles.image}
+        onClick={toggleFullscreen} // Make image clickable
       />
 
-     
+      <Button
+        style={styles.button}
+        onClick={toggleFullscreen}
+        variant="light"
+        size="sm"
+      >
+        {isFullscreen ? <FaCompressAlt /> : <FaExpandAlt />}
+      </Button>
     </div>
   );
 };
