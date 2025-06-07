@@ -8,7 +8,7 @@ import PaymentModal from '../../components/admin/PaymentModal';
 import {formatRoleName} from "../../actions/utils"
 import { Dropdown } from 'react-bootstrap';
 import {handleDownloadPDF} from "@/actions/pdf"
-import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle } from 'lucide-react';
+import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle, Plus } from 'lucide-react';
 
 import UserTableRows from '../../components/admin/UserTableRows';
 import Notification from '../../components/admin/Notification';
@@ -319,7 +319,7 @@ const AdminDashboard = () => {
               </div>
 
               {/* Right side - Search and Notification */}
-              <div className="col-lg-4">
+              <div className="col-lg-4" style={{ position: 'relative', zIndex: 1000 }}>
                 <div className="d-flex gap-3 align-items-center justify-content-lg-end">
                   {/* Search Input */}
                   <div className="input-group">
@@ -343,6 +343,7 @@ const AdminDashboard = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                    
                   </div>
                   
                   <Notification />
@@ -354,8 +355,8 @@ const AdminDashboard = () => {
 
         {/* Enhanced Totals Summary */}
         {!isLoading && currentTotals && (
-          <div className="card mb-4" style={customStyles.summaryCard}>
-            <div className="card-body p-4">
+          <div className=" mb-4" style={customStyles.summaryCard}>
+            <div className=" p-4">
               <div className="text-center mb-4">
                 <h3 className="fw-bold text-uppercase mb-2" style={{color: '#667eea'}}>
                   <TrendingUp size={28} className="me-2" />
@@ -405,45 +406,105 @@ const AdminDashboard = () => {
         )}
 
         {/* Enhanced Users Table */}
-        {!isLoading && (
-          <div className="card" style={customStyles.tableCard}>
-            <div className="table-responsive">
-              <table className="table table-hover mb-0">
-                <thead style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
-                  <tr>
-                    <th className="text-white border-0 py-3">
-                      <Users size={18} className="me-2" />
-                      Profile
-                    </th>
-                    <th className="text-white border-0 py-3">Jina</th>
-                    {sortBy === "none" ? (
-                      <>
-                        <th className="text-white border-0 py-3 d-none d-md-table-cell">Simu</th>
-                        <th className="text-white border-0 py-3 d-none d-sm-table-cell">Jinsia</th>
-                        <th className="text-white border-0 py-3 d-none d-lg-table-cell">Jumuiya</th>
-                        <th className="text-white border-0 py-3">Kazi</th>
-                      </>
-                    ) : (
-                      <>
-                        <th className="text-white border-0 py-3">{sortBy}</th>
-                        <th className="text-white border-0 py-3">Alicholipa</th>
-                        <th className="text-white border-0 py-3">Kilichobaki</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  <UserTableRows
-                    users={sortedUsers()}
-                    sortBy={sortBy}
-                    calculatePledgeTotals={calculatePledgeTotals}
-                    handleUserClick={handleUserClick}
-                  />
-                </tbody>
-              </table>
+     
+
+        {/* Enhanced Users Table */}
+{!isLoading && (
+  <>
+    {/* Check if there are no users and show message above table */}
+    {sortedUsers().length === 0 ? (
+      <div style={customStyles.tableCard}>
+        <div className="p-5">
+          <div 
+            style={{
+              background: "linear-gradient(135deg, #f8f6ff 0%, #f0f9ff 100%)",
+              borderRadius: "16px",
+              padding: "48px 32px",
+              border: "2px dashed rgba(139, 69, 193, 0.2)",
+              textAlign: "center"
+            }}
+          >
+            <div className="d-flex flex-column align-items-center">
+              <div 
+                style={{
+                  background: "linear-gradient(135deg, rgba(139, 69, 193, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%)",
+                  borderRadius: "50%",
+                  padding: "24px",
+                  marginBottom: "24px",
+                }}
+              >
+                <Users size={64} style={{ color: "#8b45c1" }} />
+              </div>
+              <h3 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "12px" }}>
+                Hakuna Washarika
+              </h3>
+              <p style={{ color: "#64748b", margin: 0, fontSize: "1.1rem", maxWidth: "400px" }}>
+                Hakuna washarika walioorodheshwa bado. Washarika wataonekana hapa baada ya kujiunga.
+              </p>
+              {/* Optional: Add action button */}
+              <button 
+                className="btn mt-3 px-4 py-2"
+                style={{
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontWeight: "500"
+                }}
+                onClick={() => {
+                  // Add your action here, e.g., navigate to add user page
+                  console.log("Add user clicked");
+                }}
+              >
+                <Plus size={18} className="me-2" />
+                Ongeza Msharika
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      </div>
+    ) : (
+      /* Show table only when there are users */
+      <div >
+        <div className="table-responsive">
+          <table className="table table-hover mb-0">
+            <thead style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+              <tr>
+                <th className="text-white border-0 py-3">
+                  <Users size={18} className="me-2" />
+                  Profile
+                </th>
+                <th className="text-white border-0 py-3">Jina</th>
+                {sortBy === "none" ? (
+                  <>
+                    <th className="text-white border-0 py-3 d-none d-md-table-cell">Simu</th>
+                    <th className="text-white border-0 py-3 d-none d-sm-table-cell">Jinsia</th>
+                    <th className="text-white border-0 py-3 d-none d-lg-table-cell">Jumuiya</th>
+                    <th className="text-white border-0 py-3">Kazi</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="text-white border-0 py-3">{sortBy}</th>
+                    <th className="text-white border-0 py-3">Alicholipa</th>
+                    <th className="text-white border-0 py-3">Kilichobaki</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              <UserTableRows
+                users={sortedUsers()}
+                sortBy={sortBy}
+                calculatePledgeTotals={calculatePledgeTotals}
+                handleUserClick={handleUserClick}
+              />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+  </>
+)}
 
         {/* Payment Modal */}
         {selectedUser && (

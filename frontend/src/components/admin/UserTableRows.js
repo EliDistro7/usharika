@@ -8,41 +8,7 @@ const UserTableRows = ({
   handleUserClick,
 }) => {
 
-  if (users.length === 0) {
-    return (
-      <tr>
-        <td colSpan="8" className="text-center p-5">
-          <div 
-            style={{
-              background: "linear-gradient(135deg, #f8f6ff 0%, #f0f9ff 100%)",
-              borderRadius: "16px",
-              padding: "32px",
-              border: "2px dashed rgba(139, 69, 193, 0.2)",
-            }}
-          >
-            <div className="d-flex flex-column align-items-center">
-              <div 
-                style={{
-                  background: "linear-gradient(135deg, rgba(139, 69, 193, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%)",
-                  borderRadius: "50%",
-                  padding: "20px",
-                  marginBottom: "16px",
-                }}
-              >
-                <User size={48} style={{ color: "#8b45c1" }} />
-              </div>
-              <h5 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "8px" }}>
-                Hakuna Mtumiaji
-              </h5>
-              <p style={{ color: "#64748b", margin: 0, fontSize: "0.9rem" }}>
-                Hakuna mtumiaji aliyesajiliwa bado
-              </p>
-            </div>
-          </div>
-        </td>
-      </tr>
-    );
-  }
+ 
 
   return (
     <>
@@ -72,18 +38,8 @@ const UserTableRows = ({
                 ? "linear-gradient(135deg, #ffffff 0%, #fefeff 100%)" 
                 : "linear-gradient(135deg, #fafafa 0%, #f8f6ff 100%)",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "linear-gradient(135deg, #f3f0ff 0%, #f0f9ff 100%)";
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(139, 69, 193, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = index % 2 === 0 
-                ? "linear-gradient(135deg, #ffffff 0%, #fefeff 100%)" 
-                : "linear-gradient(135deg, #fafafa 0%, #f8f6ff 100%)";
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
+        
+      
           >
             {/* Enhanced Profile Picture */}
             <td className="text-center" style={{ padding: "16px 12px" }}>

@@ -5,6 +5,7 @@ import { fetchAdminById, markNotificationAsRead, deleteNotification } from '@/ac
 import { Bell, CheckCircle, Circle, User, Trash2, Eye, X } from 'lucide-react';
 import FullUserModal from '@/components/admin/FullUserModal';
 import axios from 'axios';
+//import {fetchUserById} from '@/actions/users';
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -165,6 +166,7 @@ const Notification = () => {
   const fetchUserById = async (userId, notif) => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/users/${userId}`);
+      console.log('user data:', response.data);
       setUser(response.data);
       setShowModal(true);
     } catch (error) {
@@ -213,7 +215,7 @@ const Notification = () => {
   const unreadCount = notifications.filter(n => n.status === 'unread').length;
 
   return (
-    <div className="position-relative notification-wrapper">
+    <div className="position-relative notification-wrapper" style={{zIndex:2000}} >
       {/* Enhanced Bell Button */}
       <button
         style={customStyles.bellButton}
