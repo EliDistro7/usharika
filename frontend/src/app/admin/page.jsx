@@ -8,9 +8,10 @@ import PaymentModal from '../../components/admin/PaymentModal';
 import {formatRoleName} from "../../actions/utils"
 import { Dropdown } from 'react-bootstrap';
 import {handleDownloadPDF} from "@/actions/pdf"
+import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle } from 'lucide-react';
 
 import UserTableRows from '../../components/admin/UserTableRows';
-import Notification from '../../components/admin/Notification';  // Import Notification component
+import Notification from '../../components/admin/Notification';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -18,8 +19,8 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('washarika');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState('none'); // Sorting criteria
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search input
+  const [sortBy, setSortBy] = useState('none');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
             adminId: process.env.NEXT_PUBLIC_KIONGOZI,
           },
           {
-            params: { page: 1, limit: 50 }, // Adjust pagination as needed
+            params: { page: 1, limit: 50 },
           }
         );
         const { users, categories } = response.data;
@@ -47,12 +48,11 @@ const AdminDashboard = () => {
     fetchMembers();
   }, []);
 
-
-// Sort users based on the selected pledge type
-const filteredUsers =
-    activeTab === 'washarika'
-      ? users
-      : users.filter((user) => user.selectedRoles.includes(activeTab));
+  // Sort users based on the selected pledge type
+  const filteredUsers =
+      activeTab === 'washarika'
+        ? users
+        : users.filter((user) => user.selectedRoles.includes(activeTab));
 
   const sortedUsers = () => {
     let userList = filteredUsers;
@@ -83,42 +83,37 @@ const filteredUsers =
     return userList;
   };
 
+  // Calculate totals for the selected pledge type
+  const calculatePledgeTotals = (user, pledgeType) => {
+    let pledgeAmount = 0;
+    let paidAmount = 0;
 
-// Calculate totals for the selected pledge type
-const calculatePledgeTotals = (user, pledgeType) => {
-  let pledgeAmount = 0;
-  let paidAmount = 0;
+    if (pledgeType === 'ahadi' || pledgeType === 'jengo') {
+      pledgeAmount = user.pledges[pledgeType] || 0;
+      paidAmount =
+        user.pledges[
+          `paid${pledgeType.charAt(0).toUpperCase() + pledgeType.slice(1)}`
+        ] || 0;
+    } 
+    else if (user.pledges.other?.[pledgeType]) {
+      pledgeAmount = user.pledges.other[pledgeType]?.total || 0;
+      paidAmount = user.pledges.other[pledgeType]?.paid || 0;
+    }
 
-  // Check if the pledgeType is from the default fields
-  if (pledgeType === 'ahadi' || pledgeType === 'jengo') {
-    pledgeAmount = user.pledges[pledgeType] || 0;
-    paidAmount =
-      user.pledges[
-        `paid${pledgeType.charAt(0).toUpperCase() + pledgeType.slice(1)}`
-      ] || 0;
-  } 
-  // Check if the pledgeType is in the `other` field
-  else if (user.pledges.other?.[pledgeType]) {
-    pledgeAmount = user.pledges.other[pledgeType]?.total || 0;
-    paidAmount = user.pledges.other[pledgeType]?.paid || 0;
-  }
+    const remainingAmount = pledgeAmount - paidAmount;
 
-  const remainingAmount = pledgeAmount - paidAmount;
-
-  return {
-    totalPledged: pledgeAmount,
-    totalPaid: paidAmount,
-    totalRemaining: remainingAmount,
+    return {
+      totalPledged: pledgeAmount,
+      totalPaid: paidAmount,
+      totalRemaining: remainingAmount,
+    };
   };
-};
-
 
   const calculateOverallTotals = (users, pledgeType) => {
     if (!pledgeType || pledgeType === 'washarika') return null;
   
     return users.reduce(
       (totals, user) => {
-        // Check if pledgeType exists in default fields or 'other'
         if (pledgeType === 'ahadi' || pledgeType === 'jengo') {
           const pledgeAmount = user.pledges[pledgeType] || 0;
           const paidAmount =
@@ -130,7 +125,6 @@ const calculatePledgeTotals = (user, pledgeType) => {
           totals.totalPaid += paidAmount;
           totals.totalRemaining += pledgeAmount - paidAmount;
         } else if (user.pledges.other?.[pledgeType]) {
-          // Handle dynamic pledges in 'other'
           const pledgeAmount = user.pledges.other[pledgeType]?.total || 0;
           const paidAmount = user.pledges.other[pledgeType]?.paid || 0;
   
@@ -144,9 +138,7 @@ const calculatePledgeTotals = (user, pledgeType) => {
       { totalPledged: 0, totalPaid: 0, totalRemaining: 0 }
     );
   };
-  
 
-  // Calculate totals for the current sorting
   const currentTotals =
     sortBy !== 'none' ? calculateOverallTotals(sortedUsers(), sortBy) : null;
 
@@ -161,8 +153,14 @@ const calculatePledgeTotals = (user, pledgeType) => {
         pledgeType,
         amount,
       });
-      toast.success('Umefanikiwa kuingiza malipo!', { position: 'top-center' });
-      setSelectedUser(null); // Reset selected user
+      toast.success('Umefanikiwa kuingiza malipo!', { 
+        position: 'top-center',
+        style: {
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white'
+        }
+      });
+      setSelectedUser(null);
     } catch (error) {
       console.error('Error adding payment:', error);
       toast.error('Haikufanikiwa. Tafadhali jaribu tena.', {
@@ -172,163 +170,309 @@ const calculatePledgeTotals = (user, pledgeType) => {
   };
 
   const handleModalClose = () => {
-    setSelectedUser(null); // Close modal by clearing selected user
+    setSelectedUser(null);
   };
 
-  
+  const customStyles = {
+    container: {
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      minHeight: '100vh',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+    },
+    headerCard: {
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      borderRadius: '20px',
+      boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)',
+      border: 'none'
+    },
+    controlsCard: {
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(20px)',
+      borderRadius: '16px',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)'
+    },
+    summaryCard: {
+      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+      borderRadius: '16px',
+      border: '1px solid rgba(102, 126, 234, 0.2)',
+      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)'
+    },
+    tableCard: {
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(20px)',
+      borderRadius: '16px',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)',
+      overflow: 'hidden'
+    },
+    button: {
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      border: 'none',
+      borderRadius: '12px',
+      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+      transition: 'all 0.3s ease'
+    },
+    searchInput: {
+      borderRadius: '12px',
+      border: '2px solid rgba(102, 126, 234, 0.2)',
+      background: 'rgba(255, 255, 255, 0.9)',
+      transition: 'all 0.3s ease'
+    },
+    select: {
+      borderRadius: '12px',
+      border: '2px solid rgba(102, 126, 234, 0.2)',
+      background: 'rgba(255, 255, 255, 0.9)',
+      transition: 'all 0.3s ease'
+    }
+  };
 
   return (
-    <div className="container mt-5">
-      {/* Page Header */}
-      <header className="text-center mb-4">
-        <h2 className="fw-bold">Usharika</h2>
-      </header>
-  
-      {/* Loading State */}
-      {isLoading && (
-        <div className="text-center py-3">
-          <p className="text-muted">Inapakia washarika...</p>
-        </div>
-      )}
-  
-      {/* Notification, Search, Sort & Download */}
-      <section className="d-flex justify-content-between align-items-center mb-4">
-       
-     
-        <div className="d-flex gap-3">
-          <Dropdown>
-            <Dropdown.Toggle variant="primary" size="sm">
-              <i className="fas fa-filter"></i>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setActiveTab('all')} active={activeTab === 'all'}>
-                Washarika ({users.length})
-              </Dropdown.Item>
-              {categories.map((category) => (
-                <Dropdown.Item
-                  key={category._id}
-                  onClick={() => setActiveTab(category._id)}
-                  active={activeTab === category._id}
-                >
-                  {formatRoleName(category._id.toUpperCase())} ({category.count})
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <select
-            id="sortBy"
-            className="form-select form-select-sm shadow-sm"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="ahadi">Ahadi</option>
-            <option value="jengo">Jengo</option>
-            {users[0]?.pledges?.other &&
-              Object.entries(users[0].pledges.other).map(([key]) => (
-                <option key={key} value={key}>
-                  {key}
-                </option>
-              ))}
-          </select>
-          <button className="btn btn-success btn-sm" onClick={handleDownloadPDF}>
-            <i className="fas fa-download"></i>
-          </button>
-        
-        
-          <div className="input-group w-auto">
-          <span className="input-group-text bg-primary text-white">
-            <i className="fas fa-search"></i>
-          </span>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Ingiza jina..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        </div>
-
-
-         <Notification />
-      </section>
-  
-      {/* Totals Summary */}
-      {!isLoading && currentTotals && (
-        <section className="alert alert-primary text-center shadow-sm mb-4">
-          <h4 className="fw-bold text-uppercase"> {sortBy}</h4>
-          <div className="d-flex justify-content-around">
-            <p>
-              <strong>Kiasi kilichoahidiwa:</strong>{' '}
-              <span className="fs-5 text-success fw-bolder">{currentTotals.totalPledged}</span>
-            </p>
-            <p>
-              <strong>Kiasi kilicholipwa:</strong>{' '}
-              <span className="fs-5 text-primary fw-bolder">{currentTotals.totalPaid}</span>
-            </p>
-            <p>
-              <strong>Kiasi kilichobaki:</strong>{' '}
-              <span className="fs-5 text-danger fw-bolder">{currentTotals.totalRemaining}</span>
-            </p>
+    <div style={customStyles.container} className="min-vh-100 py-4">
+      <div className="container">
+        {/* Enhanced Header */}
+        <div className="card mb-4" style={customStyles.headerCard}>
+          <div className="card-body text-center py-5">
+            <div className="d-flex justify-content-center align-items-center mb-3">
+              <Users size={48} className="text-white me-3" />
+              <h1 className="text-white fw-bold mb-0 display-4">Usharika</h1>
+            </div>
+            <p className="text-white-50 mb-0 fs-5">Mfumo wa Usimamizi wa Washarika</p>
           </div>
-        </section>
-      )}
-  
-   {/* Users Table */}
-{!isLoading && (
-  <section className="table-responsive shadow-sm">
-    <table className="table table-striped table-bordered">
-      <thead className="table-dark">
-        <tr>
-          <th>
-            <i className="fas fa-user me-2"></i>Profile
-          </th>
-          <th>Jina</th>
-          {sortBy === "none" ? (
-            <>
-              <th className="d-none d-md-table-cell">Simu</th>
-              <th className="d-none d-sm-table-cell">Jinsia</th>
-              <th className="d-none d-lg-table-cell">Jumuiya</th>
-              <th>Kazi</th>
-            </>
-          ) : (
-            <>
-              <th>{sortBy}</th>
-              <th>Alicholipa</th>
-              <th>Kilichobaki</th>
-            </>
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        <UserTableRows
-          users={sortedUsers()}
-          sortBy={sortBy}
-          calculatePledgeTotals={calculatePledgeTotals}
-          handleUserClick={handleUserClick}
-        />
-      </tbody>
-    </table>
-  </section>
-)}
+        </div>
 
-  
-      {/* Payment Modal */}
-      {selectedUser && (
-        <PaymentModal
-          selectedUser={selectedUser}
-          onClose={handleModalClose}
-          onSubmit={handlePaymentSubmit}
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center py-5">
+            <div className="spinner-border text-purple" role="status" style={{color: '#667eea'}}>
+              <span className="visually-hidden">Inapakia...</span>
+            </div>
+            <p className="mt-3 text-muted fs-5">Inapakia washarika...</p>
+          </div>
+        )}
+
+        {/* Enhanced Controls Section */}
+        <div className="card mb-4" style={customStyles.controlsCard}>
+          <div className="card-body p-4">
+            <div className="row align-items-center g-3">
+              {/* Left side - Filters and controls */}
+              <div className="col-lg-8">
+                <div className="d-flex flex-wrap gap-3 align-items-center">
+                  {/* Category Filter */}
+                  <Dropdown>
+                    <Dropdown.Toggle 
+                      style={customStyles.button} 
+                      className="d-flex align-items-center px-4 py-2"
+                    >
+                      <Filter size={18} className="me-2" />
+                      Chuja
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="shadow-lg border-0" style={{borderRadius: '12px'}}>
+                      <Dropdown.Item 
+                        onClick={() => setActiveTab('all')} 
+                        active={activeTab === 'all'}
+                        className="py-2"
+                      >
+                        <Users size={16} className="me-2" />
+                        Washarika ({users.length})
+                      </Dropdown.Item>
+                      {categories.map((category) => (
+                        <Dropdown.Item
+                          key={category._id}
+                          onClick={() => setActiveTab(category._id)}
+                          active={activeTab === category._id}
+                          className="py-2"
+                        >
+                          {formatRoleName(category._id.toUpperCase())} ({category.count})
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  {/* Sort Select */}
+                  <select
+                    className="form-select px-3 py-2"
+                    style={customStyles.select}
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="ahadi">Ahadi</option>
+                    <option value="jengo">Jengo</option>
+                    {users[0]?.pledges?.other &&
+                      Object.entries(users[0].pledges.other).map(([key]) => (
+                        <option key={key} value={key}>
+                          {key}
+                        </option>
+                      ))}
+                  </select>
+
+                  {/* Download Button */}
+                  <button 
+                    className="btn px-4 py-2 d-flex align-items-center" 
+                    style={customStyles.button}
+                    onClick={handleDownloadPDF}
+                  >
+                    <Download size={18} className="me-2" />
+                    Pakua
+                  </button>
+                </div>
+              </div>
+
+              {/* Right side - Search and Notification */}
+              <div className="col-lg-4">
+                <div className="d-flex gap-3 align-items-center justify-content-lg-end">
+                  {/* Search Input */}
+                  <div className="input-group">
+                    <span 
+                      className="input-group-text border-0" 
+                      style={{
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: '12px 0 0 12px'
+                      }}
+                    >
+                      <Search size={18} className="text-white" />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control border-0 px-3 py-2"
+                      style={{
+                        ...customStyles.searchInput,
+                        borderRadius: '0 12px 12px 0'
+                      }}
+                      placeholder="Tafuta jina..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  
+                  <Notification />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Totals Summary */}
+        {!isLoading && currentTotals && (
+          <div className="card mb-4" style={customStyles.summaryCard}>
+            <div className="card-body p-4">
+              <div className="text-center mb-4">
+                <h3 className="fw-bold text-uppercase mb-2" style={{color: '#667eea'}}>
+                  <TrendingUp size={28} className="me-2" />
+                  {sortBy}
+                </h3>
+              </div>
+              
+              <div className="row g-4">
+                <div className="col-md-4">
+                  <div className="text-center p-3">
+                    <div className="d-flex justify-content-center align-items-center mb-2">
+                      <DollarSign size={24} style={{color: '#28a745'}} />
+                    </div>
+                    <h5 className="text-muted mb-1">Kiasi kilichoahidiwa</h5>
+                    <h2 className="fw-bold mb-0" style={{color: '#28a745'}}>
+                      {currentTotals.totalPledged.toLocaleString()}
+                    </h2>
+                  </div>
+                </div>
+                
+                <div className="col-md-4">
+                  <div className="text-center p-3">
+                    <div className="d-flex justify-content-center align-items-center mb-2">
+                      <DollarSign size={24} style={{color: '#667eea'}} />
+                    </div>
+                    <h5 className="text-muted mb-1">Kiasi kilicholipwa</h5>
+                    <h2 className="fw-bold mb-0" style={{color: '#667eea'}}>
+                      {currentTotals.totalPaid.toLocaleString()}
+                    </h2>
+                  </div>
+                </div>
+                
+                <div className="col-md-4">
+                  <div className="text-center p-3">
+                    <div className="d-flex justify-content-center align-items-center mb-2">
+                      <AlertCircle size={24} style={{color: '#dc3545'}} />
+                    </div>
+                    <h5 className="text-muted mb-1">Kiasi kilichobaki</h5>
+                    <h2 className="fw-bold mb-0" style={{color: '#dc3545'}}>
+                      {currentTotals.totalRemaining.toLocaleString()}
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Enhanced Users Table */}
+        {!isLoading && (
+          <div className="card" style={customStyles.tableCard}>
+            <div className="table-responsive">
+              <table className="table table-hover mb-0">
+                <thead style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+                  <tr>
+                    <th className="text-white border-0 py-3">
+                      <Users size={18} className="me-2" />
+                      Profile
+                    </th>
+                    <th className="text-white border-0 py-3">Jina</th>
+                    {sortBy === "none" ? (
+                      <>
+                        <th className="text-white border-0 py-3 d-none d-md-table-cell">Simu</th>
+                        <th className="text-white border-0 py-3 d-none d-sm-table-cell">Jinsia</th>
+                        <th className="text-white border-0 py-3 d-none d-lg-table-cell">Jumuiya</th>
+                        <th className="text-white border-0 py-3">Kazi</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="text-white border-0 py-3">{sortBy}</th>
+                        <th className="text-white border-0 py-3">Alicholipa</th>
+                        <th className="text-white border-0 py-3">Kilichobaki</th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  <UserTableRows
+                    users={sortedUsers()}
+                    sortBy={sortBy}
+                    calculatePledgeTotals={calculatePledgeTotals}
+                    handleUserClick={handleUserClick}
+                  />
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Modal */}
+        {selectedUser && (
+          <PaymentModal
+            selectedUser={selectedUser}
+            onClose={handleModalClose}
+            onSubmit={handlePaymentSubmit}
+          />
+        )}
+
+        {/* Toast Notifications */}
+        <ToastContainer 
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          toastStyle={{
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(102, 126, 234, 0.2)'
+          }}
         />
-      )}
-  
-      {/* Toast Notifications */}
-      <ToastContainer />
+      </div>
     </div>
   );
-  
-  
-  
 };
 
 export default AdminDashboard;
