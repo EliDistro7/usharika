@@ -49,7 +49,7 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 // Initialize Socket.IO with the HTTP server
-//const io = initSocket(server); // Initialize socket instance
+const io = initSocket(server); // Initialize socket instance
 
 
 

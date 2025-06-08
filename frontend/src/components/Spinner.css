@@ -1,17 +1,280 @@
+/* Yombo KKKT Enhanced Loader Styles */
 
+.yombo-loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8e5ff 50%, #f0f0ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+}
 
-/*** Spinner Start ***/
-#spinner {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease-out, visibility 0s linear 0.5s;
-    z-index: 99999;
+/* Animated background */
+.yombo-bg-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 70%, rgba(186, 85, 211, 0.06) 0%, transparent 50%);
+  animation: bgFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes bgFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-10px, -5px) scale(1.02); }
+}
+
+/* Main content container */
+.yombo-loader-content {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+
+/* Brand section */
+.yombo-brand {
+  margin-bottom: 40px;
+  animation: brandFadeIn 1s ease-out;
+}
+
+.yombo-logo-circle {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #9370db, #8a2be2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(147, 112, 219, 0.3);
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+.yombo-logo-text {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.yombo-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6a5acd, #8a2be2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+}
+
+.yombo-subtitle {
+  color: #6a5acd;
+  font-size: 1rem;
+  font-weight: 300;
+  opacity: 0.8;
+  animation: subtitlePulse 2s ease-in-out infinite;
+}
+
+/* Spinner animations */
+.yombo-spinners {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 40px;
+}
+
+.yombo-spinner-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(147, 112, 219, 0.2);
+  border-top: 4px solid #9370db;
+  border-radius: 50%;
+  animation: spinMain 1.5s linear infinite;
+}
+
+.yombo-spinner-orbit {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-right: 2px solid #8a2be2;
+  border-radius: 50%;
+  animation: spinOrbit 2s linear infinite reverse;
+}
+
+.yombo-spinner-dots {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+}
+
+.dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #9370db, #8a2be2);
+  border-radius: 50%;
+  animation: dotOrbit 2s ease-in-out infinite;
+}
+
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.6s; }
+.dot:nth-child(3) { animation-delay: 1.2s; }
+
+/* Progress bar */
+.yombo-progress-container {
+  width: 250px;
+  margin: 0 auto 30px;
+}
+
+.yombo-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(147, 112, 219, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.yombo-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9370db, #8a2be2, #ba55d3);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.yombo-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: progressShine 1.5s ease-in-out infinite;
+}
+
+.yombo-progress-text {
+  font-size: 0.9rem;
+  color: #6a5acd;
+  font-weight: 600;
+}
+
+/* Floating particles */
+.yombo-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(147, 112, 219, 0.6);
+  border-radius: 50%;
+  animation: particleFloat 4s ease-in-out infinite;
+}
+
+.particle-1 { top: 20%; left: 10%; animation-delay: 0s; }
+.particle-2 { top: 60%; left: 90%; animation-delay: 0.5s; }
+.particle-3 { top: 80%; left: 20%; animation-delay: 1s; }
+.particle-4 { top: 30%; left: 80%; animation-delay: 1.5s; }
+.particle-5 { top: 70%; left: 60%; animation-delay: 2s; }
+.particle-6 { top: 40%; left: 40%; animation-delay: 2.5s; }
+.particle-7 { top: 15%; left: 70%; animation-delay: 3s; }
+.particle-8 { top: 90%; left: 50%; animation-delay: 3.5s; }
+
+/* Animations */
+@keyframes brandFadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(180deg); }
+}
+
+@keyframes subtitlePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes spinMain {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinOrbit {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes dotOrbit {
+  0% { transform: rotate(0deg) translateX(25px) rotate(0deg); opacity: 0; }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: rotate(360deg) translateX(25px) rotate(-360deg); opacity: 0; }
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+  25% { opacity: 1; }
+  50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; }
+  75% { opacity: 1; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .yombo-title {
+    font-size: 2rem;
   }
   
-  #spinner.show {
-    transition: opacity 0.8s ease-out, visibility 0s linear 0s;
-    visibility: visible;
-    opacity: 1;
+  .yombo-logo-circle {
+    width: 60px;
+    height: 60px;
   }
-  /*** Spinner End ***/
   
+  .yombo-logo-text {
+    font-size: 24px;
+  }
+  
+  .yombo-spinners {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .yombo-progress-container {
+    width: 200px;
+  }
+}

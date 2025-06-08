@@ -3,11 +3,6 @@ import type { Metadata } from "next";
 
 import Script from "next/script";
 import "./globals.css";
-// import "mdb-react-ui-kit/dist/css/mdb.min.css";
-
-
-
-
 
 
 import Header from "@/components/Header";
