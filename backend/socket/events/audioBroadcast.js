@@ -19,11 +19,16 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
   const notifyRoom = (roomId, event, eventData, excludeSocketId = null) => {
     const room = activeRooms.get(roomId);
     if (room) {
+        console.log(`Notifying room ${roomId} about event: ${event}`, eventData);
+
       room.participants.forEach(participant => {
         const targetSocketId = userSockets[participant.userId];
-        if (targetSocketId && targetSocketId !== excludeSocketId) {
+       
+                if (targetSocketId && targetSocketId !== excludeSocketId) {
           io.to(targetSocketId).emit(event, eventData);
+          console.log(`Emitted event ${event} to user ${participant.userName} (${participant.userId}) via socket ${targetSocketId}`);
         }
+        console.log(`Emitted event ${event} to user ${participant.userName} (${participant.userId})`);
       });
     }
   };
@@ -115,6 +120,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
+        console.log(`Room ${roomId} not found for broadcaster ${broadcasterName}`);
         return;
       }
 
@@ -122,11 +128,13 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
       const broadcaster = room.participants.find(p => p.socketId === socket.id && p.userRole === 'broadcaster');
       if (!broadcaster) {
         socket.emit('error', { message: 'Only broadcasters can start broadcast' });
+        console.log(`User ${broadcasterName} attempted to start broadcast without broadcaster role`);
         return;
       }
 
       room.isActive = true;
       room.startedAt = new Date();
+      console.log(`Broadcast started by ${broadcasterName} in room ${roomId}`);
 
       // Notify all participants that broadcast started
       notifyRoom(roomId, 'broadcast-started', {

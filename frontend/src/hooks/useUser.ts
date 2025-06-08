@@ -138,7 +138,11 @@ export const getLoggedInUserId = (): string | null => {
   return userId ? userId : null;
 };
 
+export const getLoggedInUsername = (): string | null => {
+  const username = Cookies.get('yomboChurchUsername');
+  return username ? username.replace(/_/g, ' ') : null; // Replace underscores with spaces
 
+}
 // Function to fetch users by role
 export const getUsersByRole = async ({
   role,

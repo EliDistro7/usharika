@@ -8,7 +8,7 @@ const searchEvents = require('./events/searchEvents');
 const questionsEvents = require('./events/seriesEvent.js');
 
 const room2 = require('./events/room2');
-const User = require("../models/userSchema.js");
+const User = require("../models/yombo/yomboUserSchema.js");
 const taggingUser = require('./events/taggingUser');
 const audio3 = require('./events/audio3');
 const audioBroadcast = require('./events/audioBroadcast');

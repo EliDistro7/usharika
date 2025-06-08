@@ -4,17 +4,40 @@ import ConnectionStatus from './ConnectionStatus';
 import AudioVisualizer from './AudioVisualizer';
 import BroadcastControls from './BroadcastControls';
 
-// Broadcaster Interface Component
-const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality, socketConnected }) => {
-  const [isBroadcasting, setIsBroadcasting] = useState(false);
+// Updated Broadcaster Interface Component with AudioStreamManager Integration
+const BroadcasterInterface = ({ 
+  roomId, 
+  participants, 
+  socket, 
+  connectionQuality, 
+  socketConnected,
+  roomState,
+  onStartBroadcast,
+  onStopBroadcast,
+  onSendAudio,
+  broadcastStatus,
+  audioStreamManager
+}) => {
+  console.log('room state', roomState);
+  console.log('socketConnected', socketConnected);
+  // Local state for UI management
   const [isMuted, setIsMuted] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
-  const mediaRecorderRef = useRef(null);
+  
+  // Refs for audio processing
   const audioStreamRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
 
-  // Setup audio recording and analysis
+  // Derive broadcasting state from roomState and broadcastStatus
+  const isBroadcasting = roomState?.isActive && roomState?.broadcaster?.role === 'broadcaster';
+  
+  // Get listener count from participants or roomState
+  const listenerCount = participants?.filter(p => p.isConnected && p.role === 'listener').length || 
+                       roomState?.participants?.filter(p => p.role === 'listener').length || 0;
+
+  // Setup audio recording and analysis when broadcasting starts
   useEffect(() => {
     if (isBroadcasting && socketConnected) {
       startAudioCapture();
@@ -49,6 +72,19 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
     };
   }, [isBroadcasting, isMuted]);
 
+  // Listen for broadcast status changes
+  useEffect(() => {
+    if (broadcastStatus) {
+      if (broadcastStatus.type === 'started') {
+        console.log('Broadcast started:', broadcastStatus.data);
+      } else if (broadcastStatus.type === 'stopped') {
+        console.log('Broadcast stopped:', broadcastStatus.data);
+        // Clean up audio when broadcast stops
+        stopAudioCapture();
+      }
+    }
+  }, [broadcastStatus]);
+
   const startAudioCapture = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -61,7 +97,7 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
       
       audioStreamRef.current = stream;
 
-      // Setup audio analysis
+      // Setup audio analysis for visualizer
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       const source = audioContextRef.current.createMediaStreamSource(stream);
       analyserRef.current = audioContextRef.current.createAnalyser();
@@ -74,29 +110,34 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
       });
 
       mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0 && socket && !isMuted) {
-          // Convert blob to base64 and send via socket
+        if (event.data.size > 0 && !isMuted) {
+          // Use the parent's onSendAudio handler instead of direct socket emission
           const reader = new FileReader();
           reader.onload = () => {
-            socket.emit('broadcast-audio', {
-              roomId,
-              audioData: reader.result,
-              timestamp: Date.now()
-            });
+            if (onSendAudio) {
+              onSendAudio({
+                audioData: reader.result,
+                timestamp: Date.now(),
+                roomId
+              });
+            } else if (audioStreamManager) {
+              // Fallback to audioStreamManager if onSendAudio not provided
+              audioStreamManager.sendAudioData(reader.result);
+            }
           };
           reader.readAsDataURL(event.data);
         }
       };
 
       mediaRecorderRef.current.start(100); // Send data every 100ms
-      
-      // Notify server that broadcast started
-      socket.emit('broadcast-started', { roomId });
 
     } catch (error) {
       console.error('Error accessing microphone:', error);
       alert('Could not access microphone. Please check permissions.');
-      setIsBroadcasting(false);
+      // Use parent's stop handler
+      if (onStopBroadcast) {
+        onStopBroadcast();
+      }
     }
   };
 
@@ -107,15 +148,15 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
     
     if (audioStreamRef.current) {
       audioStreamRef.current.getTracks().forEach(track => track.stop());
+      audioStreamRef.current = null;
     }
     
     if (audioContextRef.current) {
       audioContextRef.current.close();
+      audioContextRef.current = null;
     }
 
-    if (socket && isBroadcasting) {
-      socket.emit('broadcast-stopped', { roomId });
-    }
+    analyserRef.current = null;
   };
 
   const toggleBroadcast = () => {
@@ -123,19 +164,47 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
       alert('Not connected to server. Please wait...');
       return;
     }
-    setIsBroadcasting(!isBroadcasting);
-  };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (audioStreamRef.current) {
-      audioStreamRef.current.getAudioTracks().forEach(track => {
-        track.enabled = isMuted; // Toggle track
-      });
+    if (isBroadcasting) {
+      // Stop broadcasting using parent handler
+      if (onStopBroadcast) {
+        onStopBroadcast();
+      } else if (audioStreamManager) {
+        audioStreamManager.stopBroadcast();
+      }
+    } else {
+      // Start broadcasting using parent handler
+      if (onStartBroadcast) {
+        onStartBroadcast();
+      } else if (audioStreamManager) {
+        audioStreamManager.startBroadcast();
+      }
     }
   };
 
-  const listenerCount = participants.filter(p => p.isConnected && p.role === 'listener').length;
+  const toggleMute = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getAudioTracks().forEach(track => {
+        track.enabled = !newMutedState; // Enable/disable track based on mute state
+      });
+    }
+
+    // Notify AudioStreamManager about mute state if available
+    if (audioStreamManager && audioStreamManager.setMuteState) {
+      audioStreamManager.setMuteState(newMutedState);
+    }
+  };
+
+  // Get connection status from AudioStreamManager if available
+  const getConnectionStatus = () => {
+    if (audioStreamManager && audioStreamManager.getConnectionQuality) {
+      return audioStreamManager.getConnectionQuality();
+    }
+    return connectionQuality;
+  };
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -146,11 +215,19 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
             <div className="col">
               <h4 className="mb-1 text-purple">Broadcasting Live</h4>
               <small className="text-muted">Room: {roomId}</small>
+              {/* Show broadcaster info from roomState */}
+              {roomState?.broadcaster && (
+                <div>
+                  <small className="text-muted d-block">
+                    Broadcaster: {roomState.broadcaster.userName || 'Unknown'}
+                  </small>
+                </div>
+              )}
             </div>
             <div className="col-auto">
               <ConnectionStatus 
                 socketConnected={socketConnected}
-                connectionQuality={connectionQuality}
+                connectionQuality={getConnectionStatus()}
               />
             </div>
           </div>
@@ -179,14 +256,29 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
                 <p className="text-muted mb-0">
                   {listenerCount} people listening
                 </p>
-                {isMuted && <small className="text-warning">Microphone muted</small>}
+                {isMuted && <small className="text-warning d-block">Microphone muted</small>}
+                {/* Show broadcast status info */}
+                {broadcastStatus && (
+                  <small className="text-info d-block">
+                    Status: {broadcastStatus.type}
+                  </small>
+                )}
               </div>
             ) : (
               <div>
                 <h5 className="mb-2 text-muted">Ready to Broadcast</h5>
                 <p className="text-muted mb-0">
-                  {socketConnected ? 'Click start when ready to begin the service' : 'Connecting to server...'}
+                  {socketConnected ? 
+                    'Click start when ready to begin the service' : 
+                    'Connecting to server...'
+                  }
                 </p>
+                {/* Show room state info when not broadcasting */}
+                {roomState && !roomState.isActive && (
+                  <small className="text-muted d-block">
+                    Room inactive • {roomState.participants?.length || 0} participants waiting
+                  </small>
+                )}
               </div>
             )}
           </div>
@@ -215,12 +307,25 @@ const BroadcasterInterface = ({ roomId, participants, socket, connectionQuality,
             <div className="col">
               <button className="btn btn-outline-purple btn-sm">
                 <MessageCircle size={16} className="me-1" />
-                Chat
+                Chat ({participants?.length || 0})
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Debug Info (remove in production) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="card mt-2 border-0 bg-light">
+          <div className="card-body p-2">
+            <small className="text-muted">
+              Debug: Broadcasting={isBroadcasting.toString()}, 
+              RoomActive={roomState?.isActive?.toString()}, 
+              SocketConnected={socketConnected.toString()}
+            </small>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
