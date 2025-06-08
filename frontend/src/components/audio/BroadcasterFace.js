@@ -18,8 +18,15 @@ const BroadcasterInterface = ({
   broadcastStatus,
   audioStreamManager
 }) => {
-  console.log('room state', roomState);
-  console.log('socketConnected', socketConnected);
+  console.log('🔄 BroadcasterInterface render - Props received:', {
+    roomId,
+    participants: participants?.length,
+    socketConnected,
+    roomState,
+    broadcastStatus,
+    hasAudioStreamManager: !!audioStreamManager
+  });
+
   // Local state for UI management
   const [isMuted, setIsMuted] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
@@ -31,7 +38,16 @@ const BroadcasterInterface = ({
   const mediaRecorderRef = useRef(null);
 
   // Derive broadcasting state from roomState and broadcastStatus
-  const isBroadcasting = roomState?.isActive && roomState?.broadcaster?.role === 'broadcaster';
+  console.log('room state now', roomState);
+  const isBroadcasting = roomState?.isActive && roomState?.broadCasterRole === 'broadcaster';
+  console.log('🔍 broadcasting state:', isBroadcasting);
+  
+  console.log('📊 Broadcasting state calculation:', {
+    roomStateIsActive: roomState?.isActive,
+    broadcasterRole: roomState?.broadcasterRole,
+    isBroadcasting,
+    socketConnected
+  });
   
   // Get listener count from participants or roomState
   const listenerCount = participants?.filter(p => p.isConnected && p.role === 'listener').length || 
@@ -39,34 +55,59 @@ const BroadcasterInterface = ({
 
   // Setup audio recording and analysis when broadcasting starts
   useEffect(() => {
+    console.log('🎵 Audio capture effect triggered:', {
+      isBroadcasting,
+      socketConnected,
+      condition: isBroadcasting && socketConnected
+    });
+
     if (isBroadcasting && socketConnected) {
+      console.log('✅ Starting audio capture - conditions met');
       startAudioCapture();
     } else {
+      console.log('❌ Not starting audio capture - conditions not met:', {
+        isBroadcasting,
+        socketConnected,
+        reason: !isBroadcasting ? 'Not broadcasting' : 'Socket not connected'
+      });
       stopAudioCapture();
     }
 
-    return () => stopAudioCapture();
+    return () => {
+      console.log('🧹 Audio capture effect cleanup');
+      stopAudioCapture();
+    };
   }, [isBroadcasting, socketConnected]);
 
   // Audio level visualization
   useEffect(() => {
+    console.log('📈 Audio level effect triggered:', {
+      isBroadcasting,
+      isMuted,
+      hasAnalyser: !!analyserRef.current
+    });
+
     let animationFrame;
     
     if (isBroadcasting && !isMuted && analyserRef.current) {
+      console.log('🎤 Starting audio level monitoring');
       const updateAudioLevel = () => {
         const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
         analyserRef.current.getByteFrequencyData(dataArray);
         const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        setAudioLevel((average / 255) * 100);
+        const level = (average / 255) * 100;
+        setAudioLevel(level);
         animationFrame = requestAnimationFrame(updateAudioLevel);
       };
       updateAudioLevel();
     } else {
+      console.log('🔇 Stopping audio level monitoring');
       setAudioLevel(0);
     }
 
     return () => {
       if (animationFrame) {
+        console.log('🧹 Cancelling audio level animation frame');
         cancelAnimationFrame(animationFrame);
       }
     };
@@ -74,11 +115,13 @@ const BroadcasterInterface = ({
 
   // Listen for broadcast status changes
   useEffect(() => {
+    console.log('📡 Broadcast status effect triggered:', broadcastStatus);
+
     if (broadcastStatus) {
       if (broadcastStatus.type === 'started') {
-        console.log('Broadcast started:', broadcastStatus.data);
+        console.log('🟢 Broadcast started:', broadcastStatus.data);
       } else if (broadcastStatus.type === 'stopped') {
-        console.log('Broadcast stopped:', broadcastStatus.data);
+        console.log('🔴 Broadcast stopped:', broadcastStatus.data);
         // Clean up audio when broadcast stops
         stopAudioCapture();
       }
@@ -86,7 +129,10 @@ const BroadcasterInterface = ({
   }, [broadcastStatus]);
 
   const startAudioCapture = async () => {
+    console.log('🎤 startAudioCapture() called');
+    
     try {
+      console.log('📱 Requesting microphone access...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           echoCancellation: true,
@@ -95,98 +141,148 @@ const BroadcasterInterface = ({
         } 
       });
       
+      console.log('✅ Microphone access granted, stream obtained:', stream);
       audioStreamRef.current = stream;
 
       // Setup audio analysis for visualizer
+      console.log('🔧 Setting up audio context and analyser...');
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       const source = audioContextRef.current.createMediaStreamSource(stream);
       analyserRef.current = audioContextRef.current.createAnalyser();
       analyserRef.current.fftSize = 256;
       source.connect(analyserRef.current);
+      console.log('✅ Audio analysis setup complete');
 
       // Setup MediaRecorder for streaming
+      console.log('🔧 Setting up MediaRecorder...');
       mediaRecorderRef.current = new MediaRecorder(stream, {
         mimeType: 'audio/webm;codecs=opus'
       });
 
       mediaRecorderRef.current.ondataavailable = (event) => {
+        console.log('📊 Audio data available:', {
+          dataSize: event.data.size,
+          isMuted,
+          hasOnSendAudio: !!onSendAudio,
+          hasAudioStreamManager: !!audioStreamManager
+        });
+
         if (event.data.size > 0 && !isMuted) {
           // Use the parent's onSendAudio handler instead of direct socket emission
           const reader = new FileReader();
           reader.onload = () => {
             if (onSendAudio) {
+              console.log('📤 Sending audio via onSendAudio callback');
               onSendAudio({
                 audioData: reader.result,
                 timestamp: Date.now(),
                 roomId
               });
             } else if (audioStreamManager) {
+              console.log('📤 Sending audio via audioStreamManager');
               // Fallback to audioStreamManager if onSendAudio not provided
               audioStreamManager.sendAudioData(reader.result);
+            } else {
+              console.warn('⚠️ No audio sending method available');
             }
           };
           reader.readAsDataURL(event.data);
         }
       };
 
+      console.log('▶️ Starting MediaRecorder...');
       mediaRecorderRef.current.start(100); // Send data every 100ms
+      console.log('✅ Audio capture fully initialized');
 
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error('❌ Error accessing microphone:', error);
       alert('Could not access microphone. Please check permissions.');
       // Use parent's stop handler
       if (onStopBroadcast) {
+        console.log('🛑 Calling onStopBroadcast due to error');
         onStopBroadcast();
       }
     }
   };
 
   const stopAudioCapture = () => {
+    console.log('🛑 stopAudioCapture() called');
+    
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      console.log('⏹️ Stopping MediaRecorder');
       mediaRecorderRef.current.stop();
     }
     
     if (audioStreamRef.current) {
+      console.log('🔇 Stopping audio stream tracks');
       audioStreamRef.current.getTracks().forEach(track => track.stop());
       audioStreamRef.current = null;
     }
     
     if (audioContextRef.current) {
+      console.log('🔇 Closing audio context');
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
 
     analyserRef.current = null;
+    console.log('✅ Audio capture cleanup complete');
   };
 
   const toggleBroadcast = () => {
+    console.log('🎬 toggleBroadcast() called:', {
+      socketConnected,
+      isBroadcasting,
+      hasOnStartBroadcast: !!onStartBroadcast,
+      hasOnStopBroadcast: !!onStopBroadcast,
+      hasAudioStreamManager: !!audioStreamManager
+    });
+
     if (!socketConnected) {
+      console.warn('⚠️ Cannot toggle broadcast - not connected to server');
       alert('Not connected to server. Please wait...');
       return;
     }
 
     if (isBroadcasting) {
+      console.log('🛑 Stopping broadcast...');
       // Stop broadcasting using parent handler
       if (onStopBroadcast) {
+        console.log('📞 Calling onStopBroadcast callback');
         onStopBroadcast();
       } else if (audioStreamManager) {
+        console.log('📞 Calling audioStreamManager.stopBroadcast()');
         audioStreamManager.stopBroadcast();
+      } else {
+        console.warn('⚠️ No stop broadcast method available');
       }
     } else {
+      console.log('▶️ Starting broadcast...');
       // Start broadcasting using parent handler
       if (onStartBroadcast) {
+        console.log('📞 Calling onStartBroadcast callback');
         onStartBroadcast();
       } else if (audioStreamManager) {
+        console.log('📞 Calling audioStreamManager.startBroadcast()');
         audioStreamManager.startBroadcast();
+      } else {
+        console.warn('⚠️ No start broadcast method available');
       }
     }
   };
 
   const toggleMute = () => {
     const newMutedState = !isMuted;
+    console.log('🔇 toggleMute() called:', {
+      currentMuted: isMuted,
+      newMuted: newMutedState,
+      hasAudioStream: !!audioStreamRef.current
+    });
+    
     setIsMuted(newMutedState);
     
     if (audioStreamRef.current) {
+      console.log('🎤 Toggling audio track enabled state');
       audioStreamRef.current.getAudioTracks().forEach(track => {
         track.enabled = !newMutedState; // Enable/disable track based on mute state
       });
@@ -194,6 +290,7 @@ const BroadcasterInterface = ({
 
     // Notify AudioStreamManager about mute state if available
     if (audioStreamManager && audioStreamManager.setMuteState) {
+      console.log('📞 Notifying audioStreamManager of mute state');
       audioStreamManager.setMuteState(newMutedState);
     }
   };
@@ -314,18 +411,21 @@ const BroadcasterInterface = ({
         </div>
       </div>
 
-      {/* Debug Info (remove in production) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="card mt-2 border-0 bg-light">
-          <div className="card-body p-2">
-            <small className="text-muted">
-              Debug: Broadcasting={isBroadcasting.toString()}, 
-              RoomActive={roomState?.isActive?.toString()}, 
-              SocketConnected={socketConnected.toString()}
-            </small>
-          </div>
+      {/* Debug Info */}
+      <div className="card mt-2 border-0 bg-light">
+        <div className="card-body p-2">
+          <small className="text-muted">
+            <strong>Debug Info:</strong><br/>
+            Broadcasting: {isBroadcasting.toString()}<br/>
+            RoomActive: {roomState?.isActive?.toString()}<br/>
+            BroadcasterRole: {roomState?.broadcasterRole}<br/>
+            SocketConnected: {socketConnected.toString()}<br/>
+            AudioStream: {audioStreamRef.current ? 'Active' : 'Inactive'}<br/>
+            MediaRecorder: {mediaRecorderRef.current?.state || 'None'}<br/>
+            BroadcastStatus: {broadcastStatus?.type || 'None'}
+          </small>
         </div>
-      )}
+      </div>
     </div>
   );
 };

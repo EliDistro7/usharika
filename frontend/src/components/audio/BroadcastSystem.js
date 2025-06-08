@@ -51,6 +51,7 @@ const AudioBroadcastSystem = () => {
           setRoomState({
             isActive: true,
             broadcaster: data.broadcaster,
+            broadCasterRole: userRole,
             participants: data.participants
           });
         }
