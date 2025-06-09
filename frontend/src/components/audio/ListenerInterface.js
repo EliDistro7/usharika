@@ -4,109 +4,280 @@ import ConnectionStatus from './ConnectionStatus';
 import ListenerControls from './ListenerControls';
 import AudioPlayer from './AudioPlayer';
 
-// Listener Interface Component
-const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connectionQuality, socketConnected }) => {
+// Updated Listener Interface Component with AudioStreamManager Integration
+const ListenerInterface = ({ 
+  roomId, 
+  socket, 
+  userName, 
+  isReceivingAudio, 
+  connectionQuality, 
+  socketConnected,
+  roomState,
+  onRaiseHand,
+  onSendReaction,
+  onLeaveRoom,
+  broadcastStatus,
+  audioStreamManager,
+  peerConnected
+}) => {
+  console.log('🔄 ListenerInterface render - Props received:', {
+    roomId,
+    userName,
+    isReceivingAudio,
+    socketConnected,
+    roomState,
+    hasAudioStreamManager: !!audioStreamManager,
+    peerConnected,
+    broadcastStatus
+  });
+
+  // Local state for UI management
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
   const [hasRaisedHand, setHasRaisedHand] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
-  const audioBufferQueue = useRef([]);
+  const analyserRef = useRef(null);
 
-  // Setup audio playback
+  // Derive broadcasting state from roomState
+  const isBroadcasting = roomState?.isActive;
+  const broadcasterName = roomState?.broadcaster?.userName || 'Unknown';
+  
+  console.log('📊 Listener state calculation:', {
+    isBroadcasting,
+    broadcasterName,
+    isReceivingAudio,
+    peerConnected,
+    socketConnected
+  });
+
+  // Handle audio stream from audioStreamManager
   useEffect(() => {
-    if (isPlaying && socketConnected) {
-      setupAudioPlayback();
-    }
-    
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    };
-  }, [isPlaying, socketConnected]);
+    console.log('🎵 Audio stream effect triggered:', {
+      hasAudioStreamManager: !!audioStreamManager,
+      isReceivingAudio,
+      peerConnected
+    });
 
-  // Handle incoming audio data
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleAudioStream = async (audioData) => {
-      if (isPlaying && !isMuted && audioContextRef.current) {
-        try {
-          // Convert base64 to arraybuffer
-          const audioBuffer = await fetch(audioData.audioData).then(r => r.arrayBuffer());
-          const decodedBuffer = await audioContextRef.current.decodeAudioData(audioBuffer);
-          
-          // Play the audio buffer
-          const source = audioContextRef.current.createBufferSource();
-          source.buffer = decodedBuffer;
-          const gainNode = audioContextRef.current.createGain();
-          gainNode.gain.value = volume / 100;
-          
-          source.connect(gainNode);
-          gainNode.connect(audioContextRef.current.destination);
-          source.start();
-        } catch (error) {
-          console.error('Error playing audio:', error);
+    if (audioStreamManager && peerConnected) {
+      console.log('🔧 Setting up audio stream listener');
+      
+      // Listen for audio data from audioStreamManager
+      const handleAudioData = (audioData) => {
+        console.log('📥 Received audio data:', {
+          dataSize: audioData?.size || 'unknown',
+          hasAudioRef: !!audioRef.current
+        });
+        
+        if (audioRef.current && audioData) {
+          // Convert audio data to playable format if needed
+          if (typeof audioData === 'string' && audioData.startsWith('data:')) {
+            // Handle base64 audio data
+            audioRef.current.src = audioData;
+          } else if (audioData instanceof Blob) {
+            // Handle blob audio data
+            const audioUrl = URL.createObjectURL(audioData);
+            audioRef.current.src = audioUrl;
+          }
         }
-      }
-    };
+      };
 
-    socket.on('audio-stream', handleAudioStream);
+      // Set up audio stream handling through audioStreamManager
+      if (audioStreamManager.onAudioReceived) {
+        audioStreamManager.onAudioReceived = handleAudioData;
+      }
+
+      return () => {
+        console.log('🧹 Cleaning up audio stream listener');
+        if (audioStreamManager.onAudioReceived) {
+          audioStreamManager.onAudioReceived = null;
+        }
+      };
+    }
+  }, [audioStreamManager, peerConnected]);
+
+  // Handle volume and mute changes
+  useEffect(() => {
+    console.log('🔊 Volume/mute effect triggered:', { volume, isMuted });
+    
+    if (audioRef.current) {
+      audioRef.current.volume = (volume / 100) * (isMuted ? 0 : 1);
+      console.log('🔊 Audio volume set to:', audioRef.current.volume);
+    }
+  }, [volume, isMuted]);
+
+  // Handle play/pause based on receiving audio state
+  useEffect(() => {
+    console.log('▶️ Play/pause effect triggered:', {
+      isReceivingAudio,
+      isBroadcasting,
+      isPlaying,
+      hasAudioRef: !!audioRef.current
+    });
+
+    if (audioRef.current) {
+      if (isReceivingAudio && isBroadcasting && isPlaying) {
+        console.log('▶️ Starting audio playback');
+        audioRef.current.play().catch(err => {
+          console.error('❌ Error playing audio:', err);
+        });
+      } else {
+        console.log('⏸️ Pausing audio playback');
+        audioRef.current.pause();
+      }
+    }
+  }, [isReceivingAudio, isBroadcasting, isPlaying]);
+
+  // Audio level visualization (if receiving audio)
+  useEffect(() => {
+    console.log('📈 Audio level effect triggered:', {
+      isReceivingAudio,
+      isPlaying,
+      hasAudioRef: !!audioRef.current
+    });
+
+    let animationFrame;
+    
+    if (isReceivingAudio && isPlaying && audioRef.current) {
+      console.log('🎤 Starting audio level monitoring for listener');
+      
+      const setupAudioAnalysis = () => {
+        try {
+          if (!audioContextRef.current) {
+            audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          
+          if (!analyserRef.current && audioRef.current) {
+            const source = audioContextRef.current.createMediaElementSource(audioRef.current);
+            analyserRef.current = audioContextRef.current.createAnalyser();
+            analyserRef.current.fftSize = 256;
+            source.connect(analyserRef.current);
+            source.connect(audioContextRef.current.destination);
+          }
+
+          const updateAudioLevel = () => {
+            if (analyserRef.current) {
+              const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+              analyserRef.current.getByteFrequencyData(dataArray);
+              const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+              const level = (average / 255) * 100;
+              setAudioLevel(level);
+              animationFrame = requestAnimationFrame(updateAudioLevel);
+            }
+          };
+          updateAudioLevel();
+        } catch (error) {
+          console.error('❌ Error setting up audio analysis:', error);
+        }
+      };
+
+      setupAudioAnalysis();
+    } else {
+      console.log('🔇 Stopping audio level monitoring');
+      setAudioLevel(0);
+    }
 
     return () => {
-      socket.off('audio-stream', handleAudioStream);
-    };
-  }, [socket, isPlaying, isMuted, volume]);
-
-  const setupAudioPlayback = async () => {
-    try {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioContextRef.current.state === 'suspended') {
-        await audioContextRef.current.resume();
+      if (animationFrame) {
+        console.log('🧹 Cancelling audio level animation frame');
+        cancelAnimationFrame(animationFrame);
       }
-    } catch (error) {
-      console.error('Error setting up audio playback:', error);
+    };
+  }, [isReceivingAudio, isPlaying]);
+
+  // Listen for broadcast status changes
+  useEffect(() => {
+    console.log('📡 Broadcast status effect triggered:', broadcastStatus);
+
+    if (broadcastStatus) {
+      if (broadcastStatus.type === 'started') {
+        console.log('🟢 Broadcast started - listener ready');
+      } else if (broadcastStatus.type === 'stopped') {
+        console.log('🔴 Broadcast stopped - pausing playback');
+        setIsPlaying(false);
+      }
     }
-  };
+  }, [broadcastStatus]);
 
   const togglePlay = () => {
-    if (!socketConnected) {
-      alert('Not connected to server. Please wait...');
+    console.log('▶️ togglePlay() called:', {
+      peerConnected,
+      socketConnected,
+      isBroadcasting,
+      isReceivingAudio,
+      currentPlaying: isPlaying
+    });
+
+    if (!peerConnected || !socketConnected) {
+      alert('Not connected to broadcaster. Please wait...');
       return;
     }
+
+    if (!isBroadcasting) {
+      alert('No active broadcast to listen to.');
+      return;
+    }
+
     setIsPlaying(!isPlaying);
   };
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
+    const newMutedState = !isMuted;
+    console.log('🔇 toggleMute() called:', {
+      currentMuted: isMuted,
+      newMuted: newMutedState
+    });
+    
+    setIsMuted(newMutedState);
 
-  const toggleRaiseHand = () => {
-    if (socket) {
-      const newHandState = !hasRaisedHand;
-      setHasRaisedHand(newHandState);
-      socket.emit('raise-hand', {
-        roomId,
-        userName,
-        raised: newHandState
-      });
+    // Notify audioStreamManager about mute state if available
+    if (audioStreamManager && audioStreamManager.setMuteState) {
+      console.log('📞 Notifying audioStreamManager of mute state');
+      audioStreamManager.setMuteState(newMutedState);
     }
   };
 
-  const sendReaction = (reaction) => {
-    if (socket) {
-      socket.emit('send-reaction', {
-        roomId,
-        userName,
-        reaction
-      });
+  const handleRaiseHand = (raised = !hasRaisedHand) => {
+    console.log('✋ handleRaiseHand() called:', {
+      currentRaised: hasRaisedHand,
+      newRaised: raised,
+      hasCallback: !!onRaiseHand
+    });
+
+    setHasRaisedHand(raised);
+    
+    if (onRaiseHand) {
+      console.log('📞 Calling onRaiseHand callback');
+      onRaiseHand(raised);
+    }
+  };
+
+  const handleSendReaction = (reaction) => {
+    console.log('❤️ handleSendReaction() called:', {
+      reaction,
+      hasCallback: !!onSendReaction
+    });
+
+    if (onSendReaction) {
+      console.log('📞 Calling onSendReaction callback');
+      onSendReaction(reaction);
     }
   };
 
   return (
     <div className="h-100 d-flex flex-column">
+      {/* Hidden audio element for playing the stream */}
+      <audio
+        ref={audioRef}
+        autoPlay={false}
+        controls={false}
+        style={{ display: 'none' }}
+        crossOrigin="anonymous"
+      />
+
       {/* Header */}
       <div className="card mb-3 border-0 shadow-sm">
         <div className="card-body">
@@ -114,6 +285,26 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
             <div className="col">
               <h4 className="mb-1 text-purple">Church Service</h4>
               <small className="text-muted">Room: {roomId}</small>
+              <br />
+              <small className="text-muted d-block">
+                Listener: {userName}
+              </small>
+              {isBroadcasting && (
+                <small className="text-muted d-block">
+                  Broadcaster: {broadcasterName}
+                </small>
+              )}
+              <div className="mt-1">
+                <span className={`badge me-1 ${peerConnected ? 'bg-success' : 'bg-warning'}`}>
+                  {peerConnected ? 'P2P Connected' : 'Connecting...'}
+                </span>
+                {isBroadcasting && (
+                  <span className="badge bg-danger me-1">LIVE</span>
+                )}
+                {isReceivingAudio && (
+                  <span className="badge bg-info">Receiving Audio</span>
+                )}
+              </div>
             </div>
             <div className="col-auto">
               <ConnectionStatus 
@@ -128,11 +319,44 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
       {/* Main Audio Player */}
       <div className="card flex-grow-1 border-0 shadow-sm">
         <div className="card-body d-flex flex-column justify-content-center align-items-center text-center">
+          {/* Audio Visualizer */}
+          {isReceivingAudio && isPlaying && (
+            <div className="mb-4">
+              <div className="d-flex align-items-center justify-content-center">
+                <div 
+                  className="bg-primary rounded-circle me-2" 
+                  style={{ 
+                    width: Math.max(8, audioLevel / 2) + 'px', 
+                    height: Math.max(8, audioLevel / 2) + 'px',
+                    transition: 'all 0.1s ease'
+                  }}
+                ></div>
+                <div 
+                  className="bg-primary rounded-circle me-2" 
+                  style={{ 
+                    width: Math.max(6, audioLevel / 3) + 'px', 
+                    height: Math.max(6, audioLevel / 3) + 'px',
+                    transition: 'all 0.1s ease'
+                  }}
+                ></div>
+                <div 
+                  className="bg-primary rounded-circle" 
+                  style={{ 
+                    width: Math.max(4, audioLevel / 4) + 'px', 
+                    height: Math.max(4, audioLevel / 4) + 'px',
+                    transition: 'all 0.1s ease'
+                  }}
+                ></div>
+              </div>
+            </div>
+          )}
+
           <AudioPlayer
             isPlaying={isPlaying}
-            isReceivingAudio={isReceivingAudio}
-            socketConnected={socketConnected}
+            isReceivingAudio={isReceivingAudio && peerConnected}
+            socketConnected={peerConnected}
             onTogglePlay={togglePlay}
+            isBroadcasting={isBroadcasting}
           />
 
           {/* Main Controls */}
@@ -140,10 +364,12 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
             isPlaying={isPlaying}
             isMuted={isMuted}
             volume={volume}
-            socketConnected={socketConnected}
+            socketConnected={peerConnected}
             onTogglePlay={togglePlay}
             onToggleMute={toggleMute}
             onVolumeChange={setVolume}
+            isReceivingAudio={isReceivingAudio}
+            isBroadcasting={isBroadcasting}
           />
         </div>
       </div>
@@ -155,8 +381,8 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
             <div className="col">
               <button
                 className={`btn btn-sm ${hasRaisedHand ? 'btn-warning' : 'btn-outline-warning'}`}
-                onClick={toggleRaiseHand}
-                disabled={!socketConnected}
+                onClick={() => handleRaiseHand()}
+                disabled={!socketConnected || !peerConnected}
               >
                 <Hand size={16} className="me-1" />
                 {hasRaisedHand ? 'Lower Hand' : 'Raise Hand'}
@@ -165,8 +391,8 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
             <div className="col">
               <button 
                 className="btn btn-outline-danger btn-sm"
-                onClick={() => sendReaction('amen')}
-                disabled={!socketConnected}
+                onClick={() => handleSendReaction('amen')}
+                disabled={!socketConnected || !peerConnected}
               >
                 <Heart size={16} className="me-1" />
                 Amen
@@ -178,9 +404,39 @@ const ListenerInterface = ({ roomId, socket, userName, isReceivingAudio, connect
                 Chat
               </button>
             </div>
+            <div className="col">
+              <button 
+                className="btn btn-outline-danger btn-sm"
+                onClick={onLeaveRoom}
+              >
+                Leave Room
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Debug Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="card mt-2 border-0 bg-light">
+          <div className="card-body p-2">
+            <small className="text-muted">
+              <strong>Debug Info:</strong><br/>
+              Listening: {isPlaying.toString()}<br/>
+              Broadcasting: {isBroadcasting.toString()}<br/>
+              ReceivingAudio: {isReceivingAudio.toString()}<br/>
+              SocketConnected: {socketConnected.toString()}<br/>
+              PeerConnected: {peerConnected.toString()}<br/>
+              Broadcaster: {broadcasterName}<br/>
+              CurrentUser: {userName}<br/>
+              AudioLevel: {Math.round(audioLevel)}<br/>
+              Volume: {volume}% {isMuted ? '(Muted)' : ''}<br/>
+              HandRaised: {hasRaisedHand.toString()}<br/>
+              BroadcastStatus: {broadcastStatus?.type || 'None'}
+            </small>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

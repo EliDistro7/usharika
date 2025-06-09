@@ -12,6 +12,7 @@ const User = require("../models/yombo/yomboUserSchema.js");
 const taggingUser = require('./events/taggingUser');
 const audio3 = require('./events/audio3');
 const audioBroadcast = require('./events/audioBroadcast');
+  const activeRooms = new Map()
 
 const getUserDetails = async (userId) => {
   return await User.findById(userId);  // Assuming you have a generic User schema/model
@@ -168,7 +169,7 @@ function initSocket(server) {
     // Initialize comment-related events
     commentEvents(io, socket, userSockets);
     // taggingUser(io, socket);
-    audioBroadcast(io, socket, userSockets)
+    audioBroadcast(io, socket, userSockets, activeRooms)
     // room2(io, socket, userSockets, roomSocketsMap);
 
     questionsEvents(io, socket, userSockets);

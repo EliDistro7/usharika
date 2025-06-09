@@ -1,8 +1,6 @@
 const User = require("../../models/yombo/yomboUserSchema.js");
 
-module.exports = function audioBroadcastEvents(io, socket, userSockets) {
-  // Store active rooms and their participants
-  const activeRooms = new Map();
+module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRooms) {
   
   // Helper function to get user info by userId
   const getUserById = async (userId) => {
@@ -19,16 +17,15 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
   const notifyRoom = (roomId, event, eventData, excludeSocketId = null) => {
     const room = activeRooms.get(roomId);
     if (room) {
-        console.log(`Notifying room ${roomId} about event: ${event}`, eventData);
+      console.log(`Notifying room ${roomId} about event: ${event}`, eventData);
 
       room.participants.forEach(participant => {
         const targetSocketId = userSockets[participant.userId];
        
-                if (targetSocketId && targetSocketId !== excludeSocketId) {
+        if (targetSocketId && targetSocketId !== excludeSocketId) {
           io.to(targetSocketId).emit(event, eventData);
           console.log(`Emitted event ${event} to user ${participant.userName} (${participant.userId}) via socket ${targetSocketId}`);
         }
-        console.log(`Emitted event ${event} to user ${participant.userName} (${participant.userId})`);
       });
     }
   };
@@ -52,10 +49,71 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
     }
   };
 
-  // Listen for 'join-room' event
-  socket.on("join-room", async ({ roomId, userName, userRole, userId = null }) => {
+  // Listen for 'join-room-listener' event (SimplePeer listener joining)
+  socket.on("join-room-listener", async ({ roomId, userName, userId = null }) => {
     try {
-      console.log(`User ${userName} joining room ${roomId} as ${userRole}`);
+      console.log(`Listener ${userName} requesting to join room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (!room) {
+        socket.emit('error', { message: 'Room not found' });
+        return;
+      }
+
+      // Check if broadcaster exists
+      if (!room.broadcaster) {
+        socket.emit('error', { message: 'No broadcaster in room' });
+        return;
+      }
+
+      // Add listener to room if not already present
+      const existingParticipant = room.participants.find(p => p.userId === (userId || socket.id));
+      if (!existingParticipant) {
+        const participant = {
+          userId: userId || socket.id,
+          userName,
+          userRole: 'listener',
+          socketId: socket.id,
+          joinedAt: new Date(),
+          connectionQuality: 'excellent',
+          handRaised: false,
+          peerConnected: false
+        };
+        room.participants.push(participant);
+        socket.join(roomId);
+      }
+
+      // Notify broadcaster about new listener
+      const broadcasterSocketId = userSockets[room.broadcaster.userId];
+      if (broadcasterSocketId) {
+        io.to(broadcasterSocketId).emit('listener-joined', {
+          userName,
+          userId: userId || socket.id,
+          socketId: socket.id,
+          roomId
+        });
+      }
+
+      // Send current room state to the joining listener
+      socket.emit('room-joined', {
+        roomId,
+        participants: room.participants,
+        isActive: room.isActive,
+        broadcaster: room.broadcaster
+      });
+
+      console.log(`Listener ${userName} added to room ${roomId}, notified broadcaster`);
+
+    } catch (err) {
+      console.error("Error handling join-room-listener event:", err);
+      socket.emit('error', { message: 'Failed to join room as listener' });
+    }
+  });
+
+  // Listen for 'join-room-broadcaster' event (SimplePeer broadcaster joining)
+  socket.on("join-room-broadcaster", async ({ roomId, userName, userId = null }) => {
+    try {
+      console.log(`Broadcaster ${userName} joining room ${roomId}`);
 
       // Get or create room
       if (!activeRooms.has(roomId)) {
@@ -70,25 +128,24 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
 
       const room = activeRooms.get(roomId);
       
-      // Add participant to room
+      // Create broadcaster participant
       const participant = {
         userId: userId || socket.id,
         userName,
-        userRole,
+        userRole: 'broadcaster',
         socketId: socket.id,
         joinedAt: new Date(),
         connectionQuality: 'excellent',
-        handRaised: false
+        handRaised: false,
+        peerConnected: false
       };
 
       // Remove existing participant if rejoining
       room.participants = room.participants.filter(p => p.userId !== participant.userId);
       room.participants.push(participant);
 
-      // Set broadcaster if role is broadcaster
-      if (userRole === 'broadcaster') {
-        room.broadcaster = participant;
-      }
+      // Set as broadcaster
+      room.broadcaster = participant;
 
       // Join socket room
       socket.join(roomId);
@@ -96,7 +153,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
       // Notify all participants about updated participant list
       notifyRoom(roomId, 'participants-updated', room.participants);
 
-      // Send current room state to the joining user
+      // Send current room state to the broadcaster
       socket.emit('room-joined', {
         roomId,
         participants: room.participants,
@@ -104,11 +161,109 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
         broadcaster: room.broadcaster
       });
 
-      console.log(`Room ${roomId} now has ${room.participants.length} participants`);
+      console.log(`Broadcaster ${userName} joined room ${roomId} with ${room.participants.length} total participants`);
 
     } catch (err) {
-      console.error("Error handling join-room event:", err);
-      socket.emit('error', { message: 'Failed to join room' });
+      console.error("Error handling join-room-broadcaster event:", err);
+      socket.emit('error', { message: 'Failed to join room as broadcaster' });
+    }
+  });
+
+  // Listen for 'listener-signal' event (SimplePeer signaling from listener to broadcaster)
+  socket.on("listener-signal", async ({ roomId, userName, signal }) => {
+    try {
+      console.log(`Received listener signal from ${userName} in room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (!room || !room.broadcaster) {
+        socket.emit('error', { message: 'Room or broadcaster not found' });
+        return;
+      }
+
+      // Forward signal to broadcaster
+      const broadcasterSocketId = userSockets[room.broadcaster.userId];
+      if (broadcasterSocketId) {
+        io.to(broadcasterSocketId).emit('listener-signal', {
+          signal,
+          userName,
+          socketId: socket.id,
+          roomId
+        });
+        console.log(`Forwarded listener signal to broadcaster in room ${roomId}`);
+      }
+
+    } catch (err) {
+      console.error("Error handling listener-signal event:", err);
+    }
+  });
+
+  // Listen for 'broadcaster-signal' event (SimplePeer signaling from broadcaster to listener)
+  socket.on("broadcaster-signal", async ({ roomId, signal, targetSocketId }) => {
+    try {
+      console.log(`Received broadcaster signal for room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (!room) {
+        socket.emit('error', { message: 'Room not found' });
+        return;
+      }
+
+      // Verify sender is broadcaster
+      const broadcaster = room.participants.find(p => p.socketId === socket.id && p.userRole === 'broadcaster');
+      if (!broadcaster) {
+        socket.emit('error', { message: 'Only broadcasters can send broadcaster signals' });
+        return;
+      }
+
+      // Forward signal to specific listener
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('broadcaster-signal', {
+          signal,
+          roomId
+        });
+        console.log(`Forwarded broadcaster signal to listener ${targetSocketId} in room ${roomId}`);
+      }
+
+    } catch (err) {
+      console.error("Error handling broadcaster-signal event:", err);
+    }
+  });
+
+  // Listen for 'peer-connected' event
+  socket.on("peer-connected", async ({ roomId, userId }) => {
+    try {
+      console.log(`Peer connected for user ${userId} in room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (room) {
+        const participant = room.participants.find(p => p.userId === userId);
+        if (participant) {
+          participant.peerConnected = true;
+          notifyRoom(roomId, 'participants-updated', room.participants);
+        }
+      }
+
+    } catch (err) {
+      console.error("Error handling peer-connected event:", err);
+    }
+  });
+
+  // Listen for 'peer-disconnected' event
+  socket.on("peer-disconnected", async ({ roomId, userId }) => {
+    try {
+      console.log(`Peer disconnected for user ${userId} in room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (room) {
+        const participant = room.participants.find(p => p.userId === userId);
+        if (participant) {
+          participant.peerConnected = false;
+          notifyRoom(roomId, 'participants-updated', room.participants);
+        }
+      }
+
+    } catch (err) {
+      console.error("Error handling peer-disconnected event:", err);
     }
   });
 
@@ -187,36 +342,10 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
     }
   });
 
-  // Listen for 'audio-stream' event
-  socket.on("audio-stream", async ({ roomId, audioData, timestamp }) => {
-    try {
-      const room = activeRooms.get(roomId);
-      if (!room || !room.isActive) {
-        return;
-      }
-
-      // Verify broadcaster
-      const broadcaster = room.participants.find(p => p.socketId === socket.id && p.userRole === 'broadcaster');
-      if (!broadcaster) {
-        return;
-      }
-
-      // Forward audio stream to all listeners in the room
-      notifyRoom(roomId, 'audio-stream', {
-        audioData,
-        timestamp,
-        broadcasterId: broadcaster.userId
-      }, socket.id);
-
-    } catch (err) {
-      console.error("Error handling audio-stream event:", err);
-    }
-  });
-
   // Listen for 'raise-hand' event
-  socket.on("raise-hand", async ({ roomId, userName }) => {
+  socket.on("raise-hand", async ({ roomId, userName, raised }) => {
     try {
-      console.log(`${userName} raised hand in room ${roomId}`);
+      console.log(`${userName} ${raised ? 'raised' : 'lowered'} hand in room ${roomId}`);
 
       const room = activeRooms.get(roomId);
       if (!room) {
@@ -227,7 +356,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
       // Find and update participant
       const participant = room.participants.find(p => p.socketId === socket.id);
       if (participant) {
-        participant.handRaised = !participant.handRaised;
+        participant.handRaised = raised;
         
         // Notify all participants
         notifyRoom(roomId, 'user-raised-hand', {
@@ -242,6 +371,34 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets) {
 
     } catch (err) {
       console.error("Error handling raise-hand event:", err);
+    }
+  });
+
+  // Listen for 'send-reaction' event
+  socket.on("send-reaction", async ({ roomId, userName, reaction }) => {
+    try {
+      console.log(`${userName} sent reaction ${reaction} in room ${roomId}`);
+
+      const room = activeRooms.get(roomId);
+      if (!room) {
+        socket.emit('error', { message: 'Room not found' });
+        return;
+      }
+
+      // Find participant
+      const participant = room.participants.find(p => p.socketId === socket.id);
+      if (participant) {
+        // Notify all participants about the reaction
+        notifyRoom(roomId, 'reaction-received', {
+          userId: participant.userId,
+          userName: participant.userName,
+          reaction,
+          timestamp: new Date()
+        });
+      }
+
+    } catch (err) {
+      console.error("Error handling send-reaction event:", err);
     }
   });
 

@@ -7,6 +7,7 @@ import BroadcastControls from './BroadcastControls';
 // Updated Broadcaster Interface Component with AudioStreamManager Integration
 const BroadcasterInterface = ({ 
   roomId, 
+  userName,
   participants, 
   socket, 
   connectionQuality, 
@@ -14,17 +15,20 @@ const BroadcasterInterface = ({
   roomState,
   onStartBroadcast,
   onStopBroadcast,
-  onSendAudio,
+  onLeaveRoom,
   broadcastStatus,
-  audioStreamManager
+  audioStreamManager,
+  peerConnected
 }) => {
   console.log('🔄 BroadcasterInterface render - Props received:', {
     roomId,
+    userName,
     participants: participants?.length,
     socketConnected,
     roomState,
     broadcastStatus,
-    hasAudioStreamManager: !!audioStreamManager
+    hasAudioStreamManager: !!audioStreamManager,
+    peerConnected
   });
 
   // Local state for UI management
@@ -37,21 +41,19 @@ const BroadcasterInterface = ({
   const analyserRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
-  // Derive broadcasting state from roomState and broadcastStatus
-  console.log('room state now', roomState);
-  const isBroadcasting = roomState?.isActive && roomState?.broadCasterRole === 'broadcaster';
-  console.log('🔍 broadcasting state:', isBroadcasting);
+  // Derive broadcasting state from roomState - Fix the logic
+  const isBroadcasting = roomState?.isActive && roomState?.broadcaster?.userName === userName;
   
   console.log('📊 Broadcasting state calculation:', {
     roomStateIsActive: roomState?.isActive,
-    broadcasterRole: roomState?.broadcasterRole,
+    broadcasterUserName: roomState?.broadcaster?.userName,
+    currentUserName: userName,
     isBroadcasting,
     socketConnected
   });
   
-  // Get listener count from participants or roomState
-  const listenerCount = participants?.filter(p => p.isConnected && p.role === 'listener').length || 
-                       roomState?.participants?.filter(p => p.role === 'listener').length || 0;
+  // Get listener count from participants
+  const listenerCount = participants?.filter(p => p.isConnected && p.role === 'listener').length || 0;
 
   // Setup audio recording and analysis when broadcasting starts
   useEffect(() => {
@@ -163,28 +165,20 @@ const BroadcasterInterface = ({
         console.log('📊 Audio data available:', {
           dataSize: event.data.size,
           isMuted,
-          hasOnSendAudio: !!onSendAudio,
           hasAudioStreamManager: !!audioStreamManager
         });
 
-        if (event.data.size > 0 && !isMuted) {
-          // Use the parent's onSendAudio handler instead of direct socket emission
+        if (event.data.size > 0 && !isMuted && audioStreamManager) {
+          // Send audio data through audioStreamManager
           const reader = new FileReader();
           reader.onload = () => {
-            if (onSendAudio) {
-              console.log('📤 Sending audio via onSendAudio callback');
-              onSendAudio({
-                audioData: reader.result,
-                timestamp: Date.now(),
-                roomId
-              });
-            } else if (audioStreamManager) {
-              console.log('📤 Sending audio via audioStreamManager');
-              // Fallback to audioStreamManager if onSendAudio not provided
-              audioStreamManager.sendAudioData(reader.result);
-            } else {
-              console.warn('⚠️ No audio sending method available');
-            }
+            console.log('📤 Sending audio via audioStreamManager');
+            audioStreamManager.sendAudioData({
+              audioData: reader.result,
+              timestamp: Date.now(),
+              roomId,
+              userName
+            });
           };
           reader.readAsDataURL(event.data);
         }
@@ -234,8 +228,7 @@ const BroadcasterInterface = ({
       socketConnected,
       isBroadcasting,
       hasOnStartBroadcast: !!onStartBroadcast,
-      hasOnStopBroadcast: !!onStopBroadcast,
-      hasAudioStreamManager: !!audioStreamManager
+      hasOnStopBroadcast: !!onStopBroadcast
     });
 
     if (!socketConnected) {
@@ -246,27 +239,15 @@ const BroadcasterInterface = ({
 
     if (isBroadcasting) {
       console.log('🛑 Stopping broadcast...');
-      // Stop broadcasting using parent handler
       if (onStopBroadcast) {
         console.log('📞 Calling onStopBroadcast callback');
         onStopBroadcast();
-      } else if (audioStreamManager) {
-        console.log('📞 Calling audioStreamManager.stopBroadcast()');
-        audioStreamManager.stopBroadcast();
-      } else {
-        console.warn('⚠️ No stop broadcast method available');
       }
     } else {
       console.log('▶️ Starting broadcast...');
-      // Start broadcasting using parent handler
       if (onStartBroadcast) {
         console.log('📞 Calling onStartBroadcast callback');
         onStartBroadcast();
-      } else if (audioStreamManager) {
-        console.log('📞 Calling audioStreamManager.startBroadcast()');
-        audioStreamManager.startBroadcast();
-      } else {
-        console.warn('⚠️ No start broadcast method available');
       }
     }
   };
@@ -295,14 +276,6 @@ const BroadcasterInterface = ({
     }
   };
 
-  // Get connection status from AudioStreamManager if available
-  const getConnectionStatus = () => {
-    if (audioStreamManager && audioStreamManager.getConnectionQuality) {
-      return audioStreamManager.getConnectionQuality();
-    }
-    return connectionQuality;
-  };
-
   return (
     <div className="h-100 d-flex flex-column">
       {/* Header */}
@@ -312,19 +285,19 @@ const BroadcasterInterface = ({
             <div className="col">
               <h4 className="mb-1 text-purple">Broadcasting Live</h4>
               <small className="text-muted">Room: {roomId}</small>
-              {/* Show broadcaster info from roomState */}
-              {roomState?.broadcaster && (
-                <div>
-                  <small className="text-muted d-block">
-                    Broadcaster: {roomState.broadcaster.userName || 'Unknown'}
-                  </small>
-                </div>
+              <small className="text-muted d-block">
+                Broadcaster: {userName}
+              </small>
+              {peerConnected && (
+                <small className="text-success d-block">
+                  <span className="badge bg-success">P2P Connected</span>
+                </small>
               )}
             </div>
             <div className="col-auto">
               <ConnectionStatus 
                 socketConnected={socketConnected}
-                connectionQuality={getConnectionStatus()}
+                connectionQuality={connectionQuality}
               />
             </div>
           </div>
@@ -354,7 +327,6 @@ const BroadcasterInterface = ({
                   {listenerCount} people listening
                 </p>
                 {isMuted && <small className="text-warning d-block">Microphone muted</small>}
-                {/* Show broadcast status info */}
                 {broadcastStatus && (
                   <small className="text-info d-block">
                     Status: {broadcastStatus.type}
@@ -370,10 +342,9 @@ const BroadcasterInterface = ({
                     'Connecting to server...'
                   }
                 </p>
-                {/* Show room state info when not broadcasting */}
                 {roomState && !roomState.isActive && (
                   <small className="text-muted d-block">
-                    Room inactive • {roomState.participants?.length || 0} participants waiting
+                    Room inactive • {participants?.length || 0} participants waiting
                   </small>
                 )}
               </div>
@@ -407,25 +378,39 @@ const BroadcasterInterface = ({
                 Chat ({participants?.length || 0})
               </button>
             </div>
+            <div className="col">
+              <button 
+                className="btn btn-outline-danger btn-sm"
+                onClick={onLeaveRoom}
+              >
+                Leave Room
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Debug Info */}
-      <div className="card mt-2 border-0 bg-light">
-        <div className="card-body p-2">
-          <small className="text-muted">
-            <strong>Debug Info:</strong><br/>
-            Broadcasting: {isBroadcasting.toString()}<br/>
-            RoomActive: {roomState?.isActive?.toString()}<br/>
-            BroadcasterRole: {roomState?.broadcasterRole}<br/>
-            SocketConnected: {socketConnected.toString()}<br/>
-            AudioStream: {audioStreamRef.current ? 'Active' : 'Inactive'}<br/>
-            MediaRecorder: {mediaRecorderRef.current?.state || 'None'}<br/>
-            BroadcastStatus: {broadcastStatus?.type || 'None'}
-          </small>
+      {process.env.NODE_ENV === 'development' && (
+        <div className="card mt-2 border-0 bg-light">
+          <div className="card-body p-2">
+            <small className="text-muted">
+              <strong>Debug Info:</strong><br/>
+              Broadcasting: {isBroadcasting.toString()}<br/>
+              RoomActive: {roomState?.isActive?.toString()}<br/>
+              BroadcasterName: {roomState?.broadcaster?.userName}<br/>
+              CurrentUser: {userName}<br/>
+              SocketConnected: {socketConnected.toString()}<br/>
+              PeerConnected: {peerConnected?.toString()}<br/>
+              AudioStream: {audioStreamRef.current ? 'Active' : 'Inactive'}<br/>
+              MediaRecorder: {mediaRecorderRef.current?.state || 'None'}<br/>
+              BroadcastStatus: {broadcastStatus?.type || 'None'}<br/>
+              Participants: {participants?.length || 0}<br/>
+              Listeners: {listenerCount}
+            </small>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
