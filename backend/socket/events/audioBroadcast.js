@@ -170,7 +170,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   });
 
   // Listen for 'listener-signal' event (SimplePeer signaling from listener to broadcaster)
-  socket.on("listener-signal", async ({ roomId, userName, signal }) => {
+  socket.on("listener-signal", async ({ roomId, userName, signal,userId }) => {
     try {
       console.log(`Received listener signal from ${userName} in room ${roomId}`);
 
@@ -182,12 +182,14 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
 
       // Forward signal to broadcaster
       const broadcasterSocketId = userSockets[room.broadcaster.userId];
+      const targetSocketId = userSockets[userId];
       if (broadcasterSocketId) {
         io.to(broadcasterSocketId).emit('listener-signal', {
           signal,
           userName,
-          socketId: socket.id,
-          roomId
+          socketId: targetSocketId,
+          roomId,
+          userId
         });
         console.log(`Forwarded listener signal to broadcaster in room ${roomId}`);
       }

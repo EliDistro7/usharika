@@ -390,7 +390,8 @@ class AudioStreamManager {
       this.socket.emit('listener-signal', {
         roomId: this.currentRoom,
         userName: this.getUserName(),
-        signal
+        signal,
+        userId:getLoggedInUserId()
       });
     });
 
