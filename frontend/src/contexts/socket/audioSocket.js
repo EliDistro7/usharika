@@ -387,6 +387,7 @@ class AudioStreamManager {
 
     this.peer.on('signal', (signal) => {
       console.log('📤 Sending listener signal to broadcaster');
+      console.log('userId', getLoggedInUserId())
       this.socket.emit('listener-signal', {
         roomId: this.currentRoom,
         userName: this.getUserName(),
