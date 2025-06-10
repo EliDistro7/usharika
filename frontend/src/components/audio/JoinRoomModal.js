@@ -4,7 +4,7 @@ import { getLoggedInUsername } from '@/hooks/useUser';
 import { Users, Radio, User, LogIn } from 'lucide-react';
 
 // Join Room Modal Component
-const JoinRoomModal = ({ onJoin }) => {
+const JoinRoomModal = ({ onJoin,socket }) => {
   const [roomId, setRoomId] = useState('');
   const [selectedRole, setSelectedRole] = useState('listener');
   const [loggedInUsername, setLoggedInUsername] = useState(null);

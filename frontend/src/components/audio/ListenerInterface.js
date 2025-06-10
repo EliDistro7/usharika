@@ -54,50 +54,65 @@ const ListenerInterface = ({
     socketConnected
   });
 
-  // Handle audio stream from audioStreamManager
-  useEffect(() => {
-    console.log('🎵 Audio stream effect triggered:', {
-      hasAudioStreamManager: !!audioStreamManager,
-      isReceivingAudio,
-      peerConnected
-    });
+ // Additionally, modify the audio stream handling effect to be more robust:
+useEffect(() => {
+  console.log('🎵 Audio stream effect triggered:', {
+    hasAudioStreamManager: !!audioStreamManager,
+    isReceivingAudio,
+    peerConnected
+  });
 
-    if (audioStreamManager && peerConnected) {
-      console.log('🔧 Setting up audio stream listener');
+  if (audioStreamManager && peerConnected) {
+    console.log('🔧 Setting up audio stream listener');
+    
+    const handleAudioData = (audioData) => {
+      console.log('📥 Received audio data:', {
+        dataSize: audioData?.size || 'unknown',
+        hasAudioRef: !!audioRef.current
+      });
       
-      // Listen for audio data from audioStreamManager
-      const handleAudioData = (audioData) => {
-        console.log('📥 Received audio data:', {
-          dataSize: audioData?.size || 'unknown',
-          hasAudioRef: !!audioRef.current
-        });
+      if (audioRef.current && audioData) {
+        const audioElement = audioRef.current;
         
-        if (audioRef.current && audioData) {
-          // Convert audio data to playable format if needed
-          if (typeof audioData === 'string' && audioData.startsWith('data:')) {
-            // Handle base64 audio data
-            audioRef.current.src = audioData;
-          } else if (audioData instanceof Blob) {
-            // Handle blob audio data
-            const audioUrl = URL.createObjectURL(audioData);
-            audioRef.current.src = audioUrl;
+        // Pause current playback before changing source
+        if (!audioElement.paused) {
+          audioElement.pause();
+        }
+        
+        // Set new source
+        if (typeof audioData === 'string' && audioData.startsWith('data:')) {
+          audioElement.src = audioData;
+        } else if (audioData instanceof Blob) {
+          // Revoke old URL to prevent memory leaks
+          if (audioElement.src && audioElement.src.startsWith('blob:')) {
+            URL.revokeObjectURL(audioElement.src);
           }
+          const audioUrl = URL.createObjectURL(audioData);
+          audioElement.src = audioUrl;
         }
-      };
-
-      // Set up audio stream handling through audioStreamManager
-      if (audioStreamManager.onAudioReceived) {
-        audioStreamManager.onAudioReceived = handleAudioData;
+        
+        // Load the new audio
+        audioElement.load();
       }
+    };
 
-      return () => {
-        console.log('🧹 Cleaning up audio stream listener');
-        if (audioStreamManager.onAudioReceived) {
-          audioStreamManager.onAudioReceived = null;
-        }
-      };
+    if (audioStreamManager.onAudioReceived) {
+      audioStreamManager.onAudioReceived = handleAudioData;
     }
-  }, [audioStreamManager, peerConnected]);
+
+    return () => {
+      console.log('🧹 Cleaning up audio stream listener');
+      if (audioStreamManager.onAudioReceived) {
+        audioStreamManager.onAudioReceived = null;
+      }
+      
+      // Clean up any blob URLs
+      if (audioRef.current && audioRef.current.src && audioRef.current.src.startsWith('blob:')) {
+        URL.revokeObjectURL(audioRef.current.src);
+      }
+    };
+  }
+}, [audioStreamManager, peerConnected]);
 
   // Handle volume and mute changes
   useEffect(() => {
@@ -109,27 +124,93 @@ const ListenerInterface = ({
     }
   }, [volume, isMuted]);
 
-  // Handle play/pause based on receiving audio state
-  useEffect(() => {
-    console.log('▶️ Play/pause effect triggered:', {
-      isReceivingAudio,
-      isBroadcasting,
-      isPlaying,
-      hasAudioRef: !!audioRef.current
-    });
+ // Replace the problematic useEffect in ListenerInterface with this improved version
 
-    if (audioRef.current) {
-      if (isReceivingAudio && isBroadcasting && isPlaying) {
-        console.log('▶️ Starting audio playback');
-        audioRef.current.play().catch(err => {
+useEffect(() => {
+  console.log('▶️ Play/pause effect triggered:', {
+    isReceivingAudio,
+    isBroadcasting,
+    isPlaying,
+    hasAudioRef: !!audioRef.current
+  });
+
+  if (audioRef.current) {
+    const audioElement = audioRef.current;
+    
+    // Clear any existing timeouts to prevent race conditions
+    if (window.audioPlayTimeout) {
+      clearTimeout(window.audioPlayTimeout);
+    }
+    
+    if (isReceivingAudio && isBroadcasting && isPlaying) {
+      console.log('▶️ Starting audio playback');
+      
+      // Add a small delay to ensure audio data is ready
+      window.audioPlayTimeout = setTimeout(() => {
+        if (audioElement && !audioElement.paused) {
+          return; // Already playing
+        }
+        
+        audioElement.play().catch(err => {
           console.error('❌ Error playing audio:', err);
+          // Only retry if it's not a user interaction error
+          if (err.name !== 'NotAllowedError') {
+            setTimeout(() => {
+              audioElement.play().catch(console.error);
+            }, 500);
+          }
         });
-      } else {
-        console.log('⏸️ Pausing audio playback');
-        audioRef.current.pause();
+      }, 100);
+      
+    } else {
+      console.log('⏸️ Pausing audio playback');
+      
+      // Only pause if currently playing
+      if (!audioElement.paused) {
+        audioElement.pause();
       }
     }
-  }, [isReceivingAudio, isBroadcasting, isPlaying]);
+  }
+
+  // Cleanup function
+  return () => {
+    if (window.audioPlayTimeout) {
+      clearTimeout(window.audioPlayTimeout);
+    }
+  };
+}, [isReceivingAudio, isBroadcasting, isPlaying]);
+
+// Also add this additional effect to handle the audio src changes more gracefully:
+useEffect(() => {
+  if (audioRef.current) {
+    const audioElement = audioRef.current;
+    
+    // Add event listeners to better handle audio state
+    const handleCanPlay = () => {
+      console.log('🎵 Audio can play - ready state:', audioElement.readyState);
+    };
+    
+    const handleLoadStart = () => {
+      console.log('🔄 Audio load started');
+    };
+    
+    const handleError = (e) => {
+      console.error('🚨 Audio error:', e);
+    };
+    
+    audioElement.addEventListener('canplay', handleCanPlay);
+    audioElement.addEventListener('loadstart', handleLoadStart);
+    audioElement.addEventListener('error', handleError);
+    
+    return () => {
+      audioElement.removeEventListener('canplay', handleCanPlay);
+      audioElement.removeEventListener('loadstart', handleLoadStart);
+      audioElement.removeEventListener('error', handleError);
+    };
+  }
+}, []);
+
+
 
   // Audio level visualization (if receiving audio)
   useEffect(() => {
