@@ -130,7 +130,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
       
       // Create broadcaster participant
       const participant = {
-        userId: userId || socket.id,
+        userId: userId,
         userName,
         userRole: 'broadcaster',
         socketId: socket.id,
@@ -270,7 +270,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   });
 
   // Listen for 'start-broadcast' event
-  socket.on("start-broadcast", async ({ roomId, broadcasterName }) => {
+  socket.on("start-broadcast", async ({ roomId, broadcasterName,userId }) => {
     try {
       console.log(`Starting broadcast in room ${roomId} by ${broadcasterName}`);
 
@@ -282,7 +282,7 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
       }
 
       // Verify broadcaster
-      const broadcaster = room.participants.find(p => p.socketId === socket.id && p.userRole === 'broadcaster');
+      const broadcaster = room.participants.find(p => p.userId === userId && p.userRole === 'broadcaster');
       if (!broadcaster) {
         socket.emit('error', { message: 'Only broadcasters can start broadcast' });
         console.log(`User ${broadcasterName} attempted to start broadcast without broadcaster role`);

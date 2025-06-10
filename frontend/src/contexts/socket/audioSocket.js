@@ -1,5 +1,5 @@
 import { getSocket } from './socketCore';
-import { getLoggedInUserId } from '@/hooks/useUser';
+import { getLoggedInUserId, getLoggedInUsername } from '@/hooks/useUser';
 import SimplePeer from 'simple-peer';
 
 // Audio stream management using SimplePeer
@@ -111,6 +111,7 @@ class AudioStreamManager {
     // Handle signals from listeners (for broadcaster)
     this.socket.on('listener-signal', (data) => {
       console.log('📡 Received listener signal from:', data.userName);
+      
       
       if (this.userRole === 'broadcaster') {
         this.handleListenerSignal(data);
@@ -598,7 +599,7 @@ class AudioStreamManager {
   // Helper methods
   getUserName() {
     // You'll need to implement this based on your user management
-    return 'Current User'; // Replace with actual username retrieval
+    return getLoggedInUsername(); // Replace with actual username retrieval
   }
 
   getSocketConnected() {
