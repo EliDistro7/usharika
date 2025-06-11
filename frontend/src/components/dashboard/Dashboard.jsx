@@ -265,13 +265,14 @@ const Dashboard = ({ user, summary }) => {
         .container {
           background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
           min-height: 100vh;
+          
           padding-top: 20px;
         }
         
         .navbar-enhanced {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          
           border-radius: 25px;
-          box-shadow: 0 10px 30px rgba(111, 66, 193, 0.2);
+        
           border: none;
           margin-bottom: 2rem;
         }
@@ -519,7 +520,7 @@ const Dashboard = ({ user, summary }) => {
         }
       `}</style>
 
-      <div className="container animate-fade-in">
+      <div className="container animate-fade-in ">
         {/* Enhanced Navbar */}
         <div className="mb-4 animate-slide-up">
           <div className="navbar-enhanced p-3">

@@ -39,7 +39,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="d-flex align-items-center justify-content-center vh-100">
         <p>Loading...</p>
       </div>
     );
@@ -47,8 +47,8 @@ export default function Home() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500">{error}</p>
+      <div className="d-flex align-items-center justify-content-center vh-100">
+        <p className="text-danger">{error}</p>
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function Home() {
   };
 
   return (
-    <div className="px-0 mx-0 py-0">
+    <div className="p-0" style={{backgroundColor: '#f3e8ff'}}>
       <Dashboard user={user} contributions={contributions} summary={summary} />
     </div>
   );
