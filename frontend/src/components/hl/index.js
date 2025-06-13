@@ -114,18 +114,10 @@ const Highlights = ({ data, datatype = "default" }) => {
 
   return (
     <article 
-      className={`relative z-10 mt-6 p-8 ${playfair.className}`}
+      className={`relative z-10 mt-6 py-4 px-0  ${playfair.className}`}
       style={containerStyle}
     >
-      {/* Animated background pattern */}
-      <div 
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `radial-gradient(circle at 25% 25%, ${colors.primary} 0%, transparent 50%), 
-                           radial-gradient(circle at 75% 75%, ${colors.secondary} 0%, transparent 50%)`,
-          animation: "float 6s ease-in-out infinite",
-        }}
-      />
+    
 
       {/* Enhanced title with gradient text */}
       <header className="text-center">
@@ -139,10 +131,8 @@ const Highlights = ({ data, datatype = "default" }) => {
   href={`/highlight/${data._id}`}
   style={{
     ...linkButtonStyle,
-    WebkitTapHighlightColor: 'transparent',
-    WebkitTouchCallout: 'none',
-    WebkitUserSelect: 'none',
-    userSelect: 'none'
+  
+   
   }}
   className={`${cormorant.className} highlight-link`}
 >
@@ -179,11 +169,7 @@ const Highlights = ({ data, datatype = "default" }) => {
       {/* Enhanced Carousel Content */}
       <main 
         className="rounded-2xl overflow-hidden"
-        style={{
-          boxShadow: colors.glowShadow,
-         
-         // background: colors.surface,
-        }}
+      
       >
         <FadeCarousel 
           isPaused={isPaused} 
@@ -204,7 +190,7 @@ const Highlights = ({ data, datatype = "default" }) => {
       </main>
 
       {/* Enhanced Control Buttons */}
-      <footer className="mt-6">
+      <footer className="mt-3">
         <ControlButtons
           isPaused={isPaused}
           togglePause={togglePause}
@@ -238,17 +224,8 @@ const Highlights = ({ data, datatype = "default" }) => {
     transition: all 0.3s ease;
   }
   
-  .highlight-link:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px -5px rgba(99, 102, 241, 0.3);
-  }
-  
-  @media (hover: none) and (pointer: coarse) {
-    .highlight-link:hover {
-      transform: scale(1);
-      box-shadow: ${colors.glowShadow};
-    }
-  }
+
+
       
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
