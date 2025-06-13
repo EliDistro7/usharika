@@ -21,7 +21,7 @@ const ImageComponent = ({ imageUrl, altText }) => {
       transition: "all 0.3s ease-in-out",
       width: isFullscreen ? "100vw" : "100%",
       height: isFullscreen ? "100vh" : "auto",
-      backgroundColor: isFullscreen ? "#000" : "transparent",
+     
       display: isFullscreen ? "flex" : "block",
       alignItems: isFullscreen ? "center" : "initial",
       justifyContent: isFullscreen ? "center" : "initial",

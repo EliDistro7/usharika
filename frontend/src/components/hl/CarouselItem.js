@@ -208,9 +208,7 @@ const CarouselItem = ({
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .carousel-item-container:hover {
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
+      
         
         .description-overlay {
           animation: fadeInUp 0.5s ease-out;

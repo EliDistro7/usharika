@@ -23,6 +23,43 @@ const FutureEventsCarousel = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
  const events = [
+  {targetDate:"",
+    description: `# MKUTANO WA INJILI
+
+## 🏛️ KKKT - DMP
+**JIMBO LA KUSINI USHARIKA WA YOMBO**
+
+---
+
+## 📖 Mada Kuu
+**NGUVU MPYA KATIKA KRISTO YESU**  
+*Isaya 40:29*
+
+---
+
+## 📅 Tarehe na Wakati
+**15 - 21 JUNI 2025**
+
+### ⏰ Mipango ya Kila Siku:
+**Kuanzia saa 10 - 12 jioni**
+
+---
+
+## 📍 Mahali
+**KKKT - USHARIKA WA YOMBO**
+
+---
+
+## 🎯 Lengo
+Vikundi vyote vya usharikani vitahudumu waimbaji binafsi na kwaya kutoka nje ya usharika zitakuwepo
+
+---
+
+> **Karibuni nyote katika mkutano huu!** ✝️🙏`,
+eventName:"Mkutano wa Injili",
+backgroundImage:"/img/injili.jpeg",
+targetDate:"2025-06-15T00:00:00Z"
+  },
   {
     targetDate: "2025-06-26T00:00:00Z",
     eventName: "Vijana Expirience",
@@ -60,6 +97,7 @@ const FutureEventsCarousel = () => {
     backgroundVideo: "/videos/YesuVideo.mp4",
     description: "Maelezo kwa Video"
   },
+
 ];
 
   // Entrance animation

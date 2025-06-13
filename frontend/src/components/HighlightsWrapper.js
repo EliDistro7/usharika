@@ -27,6 +27,7 @@ const HighlightsWrapper = () => {
         setLoading(true);
         const response = await getRecentHighlights();
         setDataSets(response.data || []); // Ensure default empty array
+        console.log('data', data)
       } catch (err) {
         console.error("Error fetching highlights:", err);
         setError(err.message || "Tatizo la mtandao.");
