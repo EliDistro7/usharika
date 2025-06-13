@@ -520,7 +520,7 @@ const Dashboard = ({ user, summary }) => {
         }
       `}</style>
 
-      <div className="container animate-fade-in ">
+      <div className="container animate-fade-in">
         {/* Enhanced Navbar */}
         <div className="mb-4 animate-slide-up">
           <div className="navbar-enhanced p-3">

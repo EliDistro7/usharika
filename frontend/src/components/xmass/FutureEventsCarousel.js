@@ -22,18 +22,45 @@ const FutureEventsCarousel = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const events = [
-    {
-      targetDate: "2025-06-26T00:00:00Z",
-      eventName: "Vijana Expirience",
-      backgroundImage: "/img/vijana.webp",
-    },
-    {
-      targetDate: "2025-06-19T00:00:00Z",
-      eventName: "Twen'zetu Kwa Yesu",
-      backgroundVideo: "/videos/YesuVideo.mp4",
-    },
-  ];
+ const events = [
+  {
+    targetDate: "2025-06-26T00:00:00Z",
+    eventName: "Vijana Expirience",
+    backgroundImage: "/img/vijana.webp",
+    description: `# VIJANA EXPERIENCE 2025
+⛪️🐘🦓🦏🐆🦛🌊☀️⛱️🏖️🏝️🐅🦓
+
+## 💰 Ada ya Ushiriki
+**Tsh. 125,000** kwa kila mmoja
+
+### 📋 Ada hii itajumuisha:
+- 🚌 **Usafiri**
+- 🍽️ **Chakula**
+- 🏨 **Malazi**
+- 🦁 **Kutembelea Mbuga ya Wanyama ya Selous**
+- 🏖️ **Ziara ya Kilwa Masoko**
+
+## 💳 Njia za Malipo
+- 💵 **Cash**
+- 📄 **Fomu**
+
+### 📱 Namba ya Kutuma Pesa:
+**0687822465**
+
+## ⏰ Tarehe Muhimu
+**Mwisho wa kupokea michango:** 20.06.2025
+
+---
+
+> **KARIBUNI VIJANA WOTE!** 🎉  
+> *HII NI YETU NA INATUHUSU SISI*`,  },
+  {
+    targetDate: "2025-06-19T00:00:00Z",
+    eventName: "Twen'zetu Kwa Yesu",
+    backgroundVideo: "/videos/YesuVideo.mp4",
+    description: "Maelezo kwa Video"
+  },
+];
 
   // Entrance animation
   useEffect(() => {
