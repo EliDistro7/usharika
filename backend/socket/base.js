@@ -120,7 +120,7 @@ function initSocket(server) {
         roomSocketsMap[userId] = [socket.id,{ socket:socket.id, userId:userId, ...userDetails._doc, isSpeaker:true}];
         io.to(userSockets[userId]).emit('assignedRole', { role: 'speaker' });
         
-        console.log("🗺️ RoomSocketsMap updated:", Object.keys(roomSocketsMap));
+       // console.log("🗺️ RoomSocketsMap updated:", Object.keys(roomSocketsMap));
 
         // Add the socket ID to the userDetails object
         const userWithRoomSocket = {
@@ -134,7 +134,7 @@ function initSocket(server) {
         // Emit to the room that a user has joined and update the list of users in the room
         io.to(roomSocketsMap[roomId][0]).emit('updateRoomUsers', roomSocketsMap[userId]);
         
-        console.log('✅ Room created successfully for userId:', userId);
+       // console.log('✅ Room created successfully for userId:', userId);
         
       } catch (error) {
         console.error('💥 Error creating room:', error);
@@ -157,17 +157,17 @@ function initSocket(server) {
       console.log('🔴 Live groups check requested by:', socket.id);
       // Respond with both registered and guest online users
       socket.emit('liveGroupsResponse', { liveGroupsNow: roomSocketsMap });
-      console.log('📤 Sent live groups response, total rooms:', Object.keys(roomSocketsMap).length);
+   //   console.log('📤 Sent live groups response, total rooms:', Object.keys(roomSocketsMap).length);
     });
 
     // Initialize message-related events
-    messageEvents(io, socket, userSockets);
+  //  messageEvents(io, socket, userSockets);
     //  roomEvents(io, socket, userSockets);
     // Initialize post-related events
-    postEvents(io, socket, userSockets);
-    searchEvents(io, socket, userSockets);
+  //  postEvents(io, socket, userSockets);
+  //  searchEvents(io, socket, userSockets);
     // Initialize comment-related events
-    commentEvents(io, socket, userSockets);
+   // commentEvents(io, socket, userSockets);
     // taggingUser(io, socket);
     audioBroadcast(io, socket, userSockets, activeRooms)
     // room2(io, socket, userSockets, roomSocketsMap);
@@ -177,8 +177,8 @@ function initSocket(server) {
     
     // Handle user disconnection
     socket.on('disconnect', () => {
-      console.log('🔌 User disconnected:', socket.id);
-      console.log('📊 Remaining connected clients:', io.engine.clientsCount);
+     // console.log('🔌 User disconnected:', socket.id);
+    //  console.log('📊 Remaining connected clients:', io.engine.clientsCount);
 
       // Find and remove the disconnected user's socketId from the mapping
       let disconnectedUserId = null;
@@ -190,7 +190,7 @@ function initSocket(server) {
           const userIndex = onlineUsers.findIndex(u => u._id === userId);
           if (userIndex !== -1) {
             const removedUser = onlineUsers.splice(userIndex, 1)[0];
-            console.log('👤 Registered user removed from online list:', removedUser.username || removedUser.name || userId);
+            // console.log('👤 Registered user removed from online list:', removedUser.username || removedUser.name || userId);
           }
           break; // Exit the loop once the user is found and removed
         }
@@ -200,14 +200,14 @@ function initSocket(server) {
       const guestIndex = guestUsers.indexOf(socket.id);
       if (guestIndex !== -1) {
         guestUsers.splice(guestIndex, 1);
-        console.log('👤 Guest user removed from online list:', socket.id);
+        //console.log('👤 Guest user removed from online list:', socket.id);
       }
 
       // Clean up room mappings
       for (const roomId in roomSocketsMap) {
         if (roomSocketsMap[roomId][0] === socket.id) {
           delete roomSocketsMap[roomId];
-          console.log('🏠 Room cleaned up for disconnected user:', roomId);
+          //console.log('🏠 Room cleaned up for disconnected user:', roomId);
           break;
         }
       }

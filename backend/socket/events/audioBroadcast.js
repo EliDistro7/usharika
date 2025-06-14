@@ -17,14 +17,11 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   const notifyRoom = (roomId, event, eventData, excludeSocketId = null) => {
     const room = activeRooms.get(roomId);
     if (room) {
-      console.log(`Notifying room ${roomId} about event: ${event}`, eventData);
-
       room.participants.forEach(participant => {
         const targetSocketId = userSockets[participant.userId];
        
         if (targetSocketId && targetSocketId !== excludeSocketId) {
           io.to(targetSocketId).emit(event, eventData);
-          console.log(`Emitted event ${event} to user ${participant.userName} (${participant.userId}) via socket ${targetSocketId}`);
         }
       });
     }
@@ -52,8 +49,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'join-room-listener' event (SimplePeer listener joining)
   socket.on("join-room-listener", async ({ roomId, userName, userId = null }) => {
     try {
-      console.log(`Listener ${userName} requesting to join room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
@@ -102,8 +97,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
         broadcaster: room.broadcaster
       });
 
-      console.log(`Listener ${userName} added to room ${roomId}, notified broadcaster`);
-
     } catch (err) {
       console.error("Error handling join-room-listener event:", err);
       socket.emit('error', { message: 'Failed to join room as listener' });
@@ -113,8 +106,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'join-room-broadcaster' event (SimplePeer broadcaster joining)
   socket.on("join-room-broadcaster", async ({ roomId, userName, userId = null }) => {
     try {
-      console.log(`Broadcaster ${userName} joining room ${roomId}`);
-
       // Get or create room
       if (!activeRooms.has(roomId)) {
         activeRooms.set(roomId, {
@@ -161,8 +152,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
         broadcaster: room.broadcaster
       });
 
-      console.log(`Broadcaster ${userName} joined room ${roomId} with ${room.participants.length} total participants`);
-
     } catch (err) {
       console.error("Error handling join-room-broadcaster event:", err);
       socket.emit('error', { message: 'Failed to join room as broadcaster' });
@@ -172,8 +161,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'listener-signal' event (SimplePeer signaling from listener to broadcaster)
   socket.on("listener-signal", async ({ roomId, userName, signal,userId }) => {
     try {
-      console.log(`Received listener signal from ${userName} in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room || !room.broadcaster) {
         socket.emit('error', { message: 'Room or broadcaster not found' });
@@ -191,7 +178,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
           roomId,
           userId
         });
-        console.log(`Forwarded listener signal to broadcaster in room ${roomId}`);
       }
 
     } catch (err) {
@@ -202,8 +188,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'broadcaster-signal' event (SimplePeer signaling from broadcaster to listener)
   socket.on("broadcaster-signal", async ({ roomId, signal, targetSocketId }) => {
     try {
-      console.log(`Received broadcaster signal for room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
@@ -223,7 +207,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
           signal,
           roomId
         });
-        console.log(`Forwarded broadcaster signal to listener ${targetSocketId} in room ${roomId}`);
       }
 
     } catch (err) {
@@ -234,8 +217,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'peer-connected' event
   socket.on("peer-connected", async ({ roomId, userId }) => {
     try {
-      console.log(`Peer connected for user ${userId} in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (room) {
         const participant = room.participants.find(p => p.userId === userId);
@@ -253,8 +234,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'peer-disconnected' event
   socket.on("peer-disconnected", async ({ roomId, userId }) => {
     try {
-      console.log(`Peer disconnected for user ${userId} in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (room) {
         const participant = room.participants.find(p => p.userId === userId);
@@ -272,12 +251,9 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'start-broadcast' event
   socket.on("start-broadcast", async ({ roomId, broadcasterName,userId }) => {
     try {
-      console.log(`Starting broadcast in room ${roomId} by ${broadcasterName}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
-        console.log(`Room ${roomId} not found for broadcaster ${broadcasterName}`);
         return;
       }
 
@@ -285,13 +261,11 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
       const broadcaster = room.participants.find(p => p.userId === userId && p.userRole === 'broadcaster');
       if (!broadcaster) {
         socket.emit('error', { message: 'Only broadcasters can start broadcast' });
-        console.log(`User ${broadcasterName} attempted to start broadcast without broadcaster role`);
         return;
       }
 
       room.isActive = true;
       room.startedAt = new Date();
-      console.log(`Broadcast started by ${broadcasterName} in room ${roomId}`);
 
       // Notify all participants that broadcast started
       notifyRoom(roomId, 'broadcast-started', {
@@ -299,8 +273,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
         broadcasterName: broadcaster.userName,
         startedAt: room.startedAt
       });
-
-      console.log(`Broadcast started in room ${roomId}`);
 
     } catch (err) {
       console.error("Error handling start-broadcast event:", err);
@@ -311,8 +283,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'stop-broadcast' event
   socket.on("stop-broadcast", async ({ roomId }) => {
     try {
-      console.log(`Stopping broadcast in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
@@ -336,8 +306,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
         endedAt: room.endedAt
       });
 
-      console.log(`Broadcast stopped in room ${roomId}`);
-
     } catch (err) {
       console.error("Error handling stop-broadcast event:", err);
       socket.emit('error', { message: 'Failed to stop broadcast' });
@@ -347,8 +315,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'raise-hand' event
   socket.on("raise-hand", async ({ roomId, userName, raised }) => {
     try {
-      console.log(`${userName} ${raised ? 'raised' : 'lowered'} hand in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
@@ -379,8 +345,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'send-reaction' event
   socket.on("send-reaction", async ({ roomId, userName, reaction }) => {
     try {
-      console.log(`${userName} sent reaction ${reaction} in room ${roomId}`);
-
       const room = activeRooms.get(roomId);
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
@@ -417,8 +381,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Listen for 'leave-room' event
   socket.on("leave-room", async ({ roomId }) => {
     try {
-      console.log(`User leaving room ${roomId}`);
-      
       const room = activeRooms.get(roomId);
       if (room) {
         // Remove participant
@@ -445,7 +407,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
         // Clean up empty rooms
         if (room.participants.length === 0) {
           activeRooms.delete(roomId);
-          console.log(`Room ${roomId} deleted - no participants left`);
         }
       }
 
@@ -457,8 +418,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
   // Handle disconnect
   socket.on("disconnect", () => {
     try {
-      console.log(`Socket ${socket.id} disconnected`);
-      
       // Find and remove user from all rooms
       for (const [roomId, room] of activeRooms.entries()) {
         const participant = room.participants.find(p => p.socketId === socket.id);
@@ -483,7 +442,6 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
           // Clean up empty rooms
           if (room.participants.length === 0) {
             activeRooms.delete(roomId);
-            console.log(`Room ${roomId} deleted - no participants left`);
           }
           
           break;

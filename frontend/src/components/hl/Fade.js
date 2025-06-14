@@ -126,7 +126,7 @@ const FadeCarousel = ({
 
   const containerStyle = {
     position: 'relative',
-    background: isFullscreen ? 'transparent' : '',
+    background: isFullscreen ? 'transparent' : 'none',
     borderRadius: isFullscreen ? '0' : '16px',
     overflow: 'hidden',
   };

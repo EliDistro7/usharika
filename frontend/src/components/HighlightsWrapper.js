@@ -135,13 +135,7 @@ const HighlightsWrapper = () => {
         }}
       >
         {/* Animated Background */}
-        <div 
-          className="position-absolute w-100 h-100"
-          style={{
-            background: 'radial-gradient(circle at 30% 70%, rgba(106, 13, 173, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(156, 39, 176, 0.05) 0%, transparent 50%)',
-            animation: 'gentle-float 6s ease-in-out infinite',
-          }}
-        />
+       
         
         <div className="position-relative">
           <div 
