@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getLoggedInUsername } from '@/hooks/useUser';
-import { Users, Radio, User, LogIn } from 'lucide-react';
+import { Users, Radio, User, LogIn, AlertCircle, X } from 'lucide-react';
 
 // Join Room Modal Component
-const JoinRoomModal = ({ onJoin,socket }) => {
+const JoinRoomModal = ({ onJoin, socket }) => {
   const [roomId, setRoomId] = useState('');
   const [selectedRole, setSelectedRole] = useState('listener');
   const [loggedInUsername, setLoggedInUsername] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [broadcasterError, setBroadcasterError] = useState(null);
+  const [showBroadcasterAlert, setShowBroadcasterAlert] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,8 +30,32 @@ const JoinRoomModal = ({ onJoin,socket }) => {
     fetchUsername();
   }, []);
 
+  useEffect(() => {
+    // Set up socket listeners when socket is available
+    if (socket) {
+      const handleAlreadyHasBroadcaster = (data) => {
+        setBroadcasterError({
+          message: data.message,
+          existingBroadcaster: data.existingBroadcaster
+        });
+        setShowBroadcasterAlert(true);
+      };
+
+      // Listen for already_has_broadcaster event
+      socket.on('already_has_broadcaster', handleAlreadyHasBroadcaster);
+
+      // Cleanup listener on unmount
+      return () => {
+        socket.off('already_has_broadcaster', handleAlreadyHasBroadcaster);
+      };
+    }
+  }, [socket]);
+
   const handleSubmit = () => {
     if (roomId && loggedInUsername) {
+      // Reset any previous broadcaster errors
+      setBroadcasterError(null);
+      setShowBroadcasterAlert(false);
       onJoin(selectedRole, roomId, loggedInUsername);
     }
   };
@@ -38,17 +64,22 @@ const JoinRoomModal = ({ onJoin,socket }) => {
     router.push('/auth');
   };
 
+  const closeBroadcasterAlert = () => {
+    setShowBroadcasterAlert(false);
+    setBroadcasterError(null);
+  };
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+      <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0 shadow-lg">
+          <div className="modal-content border-0 shadow-2xl">
             <div className="modal-body text-center py-5">
-              <div className="spinner-border text-purple mb-3" role="status">
+              <div className="spinner-border text-purple mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
                 <span className="visually-hidden">Loading...</span>
               </div>
-              <p className="text-muted">Checking authentication...</p>
+              <p className="text-muted fs-5">Checking authentication...</p>
             </div>
           </div>
         </div>
@@ -59,31 +90,32 @@ const JoinRoomModal = ({ onJoin,socket }) => {
   // Not logged in state
   if (!loggedInUsername) {
     return (
-      <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+      <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0 shadow-lg">
-            <div className="modal-header bg-gradient" style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
-              <h5 className="modal-title text-white fw-bold d-flex align-items-center">
-                <LogIn size={20} className="me-2" />
+          <div className="modal-content border-0 shadow-2xl">
+            <div className="modal-header bg-gradient border-0 py-4" 
+                 style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
+              <h5 className="modal-title text-white fw-bold d-flex align-items-center fs-3">
+                <LogIn size={24} className="me-3" />
                 Authentication Required
               </h5>
             </div>
             <div className="modal-body text-center py-5">
               <div className="mb-4">
-                <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" 
-                     style={{ width: '80px', height: '80px' }}>
-                  <User size={32} className="text-purple" />
+                <div className="bg-purple bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center border border-purple border-opacity-25" 
+                     style={{ width: '100px', height: '100px' }}>
+                  <User size={40} className="text-purple" />
                 </div>
               </div>
-              <h6 className="fw-bold text-dark mb-3">Please Login First</h6>
-              <p className="text-muted mb-4">
+              <h4 className="fw-bold text-purple mb-3">Please Login First</h4>
+              <p className="text-dark fs-5 mb-4 opacity-75">
                 You need to be logged in to join a church service. Please authenticate to continue.
               </p>
               <button 
                 onClick={handleLoginRedirect}
-                className="btn btn-purple btn-lg px-4 py-2 fw-semibold"
+                className="btn btn-purple btn-lg px-5 py-3 fw-bold fs-5"
               >
-                <LogIn size={18} className="me-2" />
+                <LogIn size={20} className="me-2" />
                 Go to Login
               </button>
             </div>
@@ -95,36 +127,61 @@ const JoinRoomModal = ({ onJoin,socket }) => {
 
   // Main modal for logged in users
   return (
-    <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+    <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
       <div className="modal-dialog modal-dialog-centered modal-lg" style={{ maxHeight: '90vh' }}>
-        <div className="modal-content border-0 shadow-lg" style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="modal-content border-0 shadow-2xl" style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
           {/* Header */}
           <div className="modal-header bg-gradient border-0 py-4" 
                style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
-            <h5 className="modal-title text-white fw-bold d-flex align-items-center fs-4">
-              <Radio size={24} className="me-3" />
+            <h4 className="modal-title text-white fw-bold d-flex align-items-center">
+              <Radio size={28} className="me-3" />
               Join Church Service
-            </h5>
+            </h4>
           </div>
 
           <div className="modal-body p-4" style={{ overflowY: 'auto', flex: '1' }}>
+            {/* Broadcaster Already Exists Alert */}
+            {showBroadcasterAlert && broadcasterError && (
+              <div className="alert alert-warning border-0 mb-4 position-relative" 
+                   style={{ backgroundColor: '#fff3cd', borderRadius: '12px' }}>
+                <button 
+                  type="button" 
+                  className="btn-close position-absolute top-0 end-0 mt-2 me-2"
+                  onClick={closeBroadcasterAlert}
+                  style={{ fontSize: '0.75rem' }}
+                ></button>
+                <div className="d-flex align-items-start">
+                  <AlertCircle size={24} className="text-warning me-3 mt-1 flex-shrink-0" />
+                  <div>
+                    <h6 className="alert-heading fw-bold text-purple mb-2">Broadcaster Already Active</h6>
+                    <p className="mb-2 text-dark">
+                      This room already has an active broadcaster: <strong className="text-purple">{broadcasterError.existingBroadcaster?.userName}</strong>
+                    </p>
+                    <small className="text-muted">
+                      You can join as a congregation member instead, or try a different room.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Welcome Message */}
-            <div className="bg-light rounded-3 p-3 mb-4 border">
+            <div className="bg-purple bg-opacity-5 rounded-3 p-4 mb-4 border border-purple border-opacity-15">
               <div className="d-flex align-items-center">
-                <div className="bg-white rounded-circle p-2 me-3 shadow-sm">
-                  <User size={20} className="text-purple" />
+                <div className="bg-white rounded-circle p-3 me-3 shadow-sm border border-purple border-opacity-25">
+                  <User size={24} className="text-purple" />
                 </div>
                 <div>
-                  <p className="mb-1 fw-bold text-dark">{loggedInUsername}</p>
-                  <small className="text-secondary">Ready to join the service?</small>
+                  <h5 className="mb-1 fw-bold text-purple">{loggedInUsername}</h5>
+                  <p className="mb-0 text-dark opacity-75">Ready to join the service?</p>
                 </div>
               </div>
             </div>
 
             {/* Room ID Input */}
             <div className="mb-4">
-              <label className="form-label fw-bold text-dark mb-2" style={{ fontSize: '1.1rem' }}>
-                <Users size={18} className="me-2" />
+              <label className="form-label fw-bold text-purple mb-3 fs-5">
+                <Users size={20} className="me-2" />
                 Service Room ID
               </label>
               <input
@@ -137,17 +194,18 @@ const JoinRoomModal = ({ onJoin,socket }) => {
                   borderRadius: '12px',
                   transition: 'all 0.3s ease',
                   borderColor: '#dee2e6',
-                  fontSize: '1rem'
+                  fontSize: '1.1rem',
+                  padding: '0.75rem 1rem'
                 }}
               />
-              <small className="text-secondary mt-2 d-block" style={{ fontSize: '0.85rem' }}>
+              <small className="text-muted mt-2 d-block fs-6">
                 Ask your pastor or church leader for the room ID
               </small>
             </div>
 
             {/* Role Selection */}
             <div className="mb-4">
-              <label className="form-label fw-bold text-dark mb-3" style={{ fontSize: '1.1rem' }}>
+              <label className="form-label fw-bold text-purple mb-3 fs-5">
                 How would you like to join?
               </label>
               
@@ -156,29 +214,29 @@ const JoinRoomModal = ({ onJoin,socket }) => {
                 <div className="col-md-6">
                   <div className={`card h-100 border-2 cursor-pointer transition-all ${
                     selectedRole === 'listener' 
-                      ? 'border-purple bg-purple bg-opacity-10' 
+                      ? 'border-purple bg-purple bg-opacity-10 shadow-lg' 
                       : 'border-light hover-shadow'
                   }`}
-                  style={{ borderRadius: '12px', cursor: 'pointer' }}
+                  style={{ borderRadius: '16px', cursor: 'pointer' }}
                   onClick={() => setSelectedRole('listener')}>
                     <div className="card-body text-center p-4">
                       <div className="form-check d-flex justify-content-center mb-3">
                         <input
-                          className="form-check-input"
+                          className="form-check-input border-2"
                           type="radio"
                           value="listener"
                           checked={selectedRole === 'listener'}
                           onChange={(e) => setSelectedRole(e.target.value)}
-                          style={{ transform: 'scale(1.2)' }}
+                          style={{ transform: 'scale(1.3)', accentColor: '#6f42c1' }}
                         />
                       </div>
-                      <Users size={32} className={`mb-3 ${
+                      <Users size={36} className={`mb-3 ${
                         selectedRole === 'listener' ? 'text-purple' : 'text-muted'
                       }`} />
-                      <h6 className="fw-bold text-dark mb-2">Congregation Member</h6>
-                      <small className="text-secondary">
+                      <h5 className="fw-bold text-purple mb-2">Congregation Member</h5>
+                      <p className="text-dark opacity-75 mb-0">
                         Join as a listener to participate in the service
-                      </small>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -187,29 +245,29 @@ const JoinRoomModal = ({ onJoin,socket }) => {
                 <div className="col-md-6">
                   <div className={`card h-100 border-2 cursor-pointer transition-all ${
                     selectedRole === 'broadcaster' 
-                      ? 'border-purple bg-purple bg-opacity-10' 
+                      ? 'border-purple bg-purple bg-opacity-10 shadow-lg' 
                       : 'border-light hover-shadow'
                   }`}
-                  style={{ borderRadius: '12px', cursor: 'pointer' }}
+                  style={{ borderRadius: '16px', cursor: 'pointer' }}
                   onClick={() => setSelectedRole('broadcaster')}>
                     <div className="card-body text-center p-4">
                       <div className="form-check d-flex justify-content-center mb-3">
                         <input
-                          className="form-check-input"
+                          className="form-check-input border-2"
                           type="radio"
                           value="broadcaster"
                           checked={selectedRole === 'broadcaster'}
                           onChange={(e) => setSelectedRole(e.target.value)}
-                          style={{ transform: 'scale(1.2)' }}
+                          style={{ transform: 'scale(1.3)', accentColor: '#6f42c1' }}
                         />
                       </div>
-                      <Radio size={32} className={`mb-3 ${
+                      <Radio size={36} className={`mb-3 ${
                         selectedRole === 'broadcaster' ? 'text-purple' : 'text-muted'
                       }`} />
-                      <h6 className="fw-bold text-dark mb-2">Pastor/Leader</h6>
-                      <small className="text-secondary">
+                      <h5 className="fw-bold text-purple mb-2">Pastor/Leader</h5>
+                      <p className="text-dark opacity-75 mb-0">
                         Lead the service and broadcast to congregation
-                      </small>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -222,21 +280,20 @@ const JoinRoomModal = ({ onJoin,socket }) => {
             <button 
               onClick={handleSubmit} 
               disabled={!roomId || !loggedInUsername}
-              className={`btn btn-lg w-100 py-3 fw-bold ${
+              className={`btn btn-lg w-100 py-3 fw-bold fs-5 ${
                 roomId && loggedInUsername ? 'btn-purple' : 'btn-secondary'
               }`}
               style={{ 
                 borderRadius: '12px',
-                transition: 'all 0.3s ease',
-                fontSize: '1.1rem'
+                transition: 'all 0.3s ease'
               }}
             >
-              <Radio size={20} className="me-2" />
+              <Radio size={22} className="me-2" />
               {roomId && loggedInUsername ? 'Join Service Now' : 'Enter Room ID to Continue'}
             </button>
             
             {!roomId && loggedInUsername && (
-              <small className="text-secondary text-center w-100 mt-3" style={{ fontSize: '0.9rem' }}>
+              <small className="text-muted text-center w-100 mt-3 fs-6">
                 Please enter a room ID to continue
               </small>
             )}
@@ -246,9 +303,13 @@ const JoinRoomModal = ({ onJoin,socket }) => {
 
       {/* Custom Styles */}
       <style jsx>{`
+        .shadow-2xl {
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
         .focus-purple:focus {
           border-color: #6f42c1 !important;
-          box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25) !important;
+          box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25) !important;
         }
         
         .btn-secondary {
@@ -270,7 +331,7 @@ const JoinRoomModal = ({ onJoin,socket }) => {
         .btn-purple:hover {
           background: linear-gradient(135deg, #5a2d91 0%, #7c3aed 100%) !important;
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+          box-shadow: 0 10px 30px rgba(111, 66, 193, 0.4);
         }
         
         .btn-purple:disabled {
@@ -296,8 +357,8 @@ const JoinRoomModal = ({ onJoin,socket }) => {
         }
         
         .hover-shadow:hover {
-          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+          transform: translateY(-3px);
         }
         
         .cursor-pointer {
@@ -306,6 +367,20 @@ const JoinRoomModal = ({ onJoin,socket }) => {
         
         .transition-all {
           transition: all 0.3s ease;
+        }
+        
+        .spinner-border.text-purple {
+          color: #6f42c1 !important;
+        }
+        
+        .alert-warning {
+          color: #664d03;
+          background-color: #fff3cd;
+          border-color: #ffecb5;
+        }
+        
+        .btn-close:focus {
+          box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
         }
       `}</style>
     </div>

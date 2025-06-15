@@ -119,6 +119,23 @@ module.exports = function audioBroadcastEvents(io, socket, userSockets, activeRo
 
       const room = activeRooms.get(roomId);
       
+      // Check if room already has a broadcaster and it's not the same user
+      if (room.broadcaster && room.broadcaster.userId !== userId) {
+        // Find the existing broadcaster's socket ID
+        const existingBroadcasterSocketId = userSockets[room.broadcaster.userId];
+        if (existingBroadcasterSocketId) {
+          // Emit to the requesting user that broadcaster already exists
+          socket.emit('already_has_broadcaster', {
+            message: 'Room already has a broadcaster',
+            existingBroadcaster: {
+              userId: room.broadcaster.userId,
+              userName: room.broadcaster.userName
+            }
+          });
+          return;
+        }
+      }
+      
       // Create broadcaster participant
       const participant = {
         userId: userId,

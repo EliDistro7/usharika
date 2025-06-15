@@ -105,7 +105,7 @@ function initSocket(server) {
 
     socket.on('createRoom',async ({roomId})=>{
       let userId=roomId;
-      console.log('🏠 Creating room with userId:', userId, 'socketId:', socket.id);
+     // console.log('🏠 Creating room with userId:', userId, 'socketId:', socket.id);
      
       try {
         if(roomSocketsMap[userId]) {
