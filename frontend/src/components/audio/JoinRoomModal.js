@@ -79,7 +79,7 @@ const JoinRoomModal = ({ onJoin, socket }) => {
               <div className="spinner-border text-purple mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
                 <span className="visually-hidden">Loading...</span>
               </div>
-              <p className="text-muted fs-5">Checking authentication...</p>
+              <p className="text-muted fs-5">Inakagua utambulisho...</p>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ const JoinRoomModal = ({ onJoin, socket }) => {
                  style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
               <h5 className="modal-title text-white fw-bold d-flex align-items-center fs-3">
                 <LogIn size={24} className="me-3" />
-                Authentication Required
+                Utambulisho Unahitajika
               </h5>
             </div>
             <div className="modal-body text-center py-5">
@@ -107,16 +107,16 @@ const JoinRoomModal = ({ onJoin, socket }) => {
                   <User size={40} className="text-purple" />
                 </div>
               </div>
-              <h4 className="fw-bold text-purple mb-3">Please Login First</h4>
+              <h4 className="fw-bold text-purple mb-3">Tafadhali Ingia Kwanza</h4>
               <p className="text-dark fs-5 mb-4 opacity-75">
-                You need to be logged in to join a church service. Please authenticate to continue.
+                Unahitaji kuwa umeingia ili ujiunga na huduma ya kanisa. Tafadhali thibitisha ili kuendelea.
               </p>
               <button 
                 onClick={handleLoginRedirect}
                 className="btn btn-purple btn-lg px-5 py-3 fw-bold fs-5"
               >
                 <LogIn size={20} className="me-2" />
-                Go to Login
+                Nenda kwa Kuingia
               </button>
             </div>
           </div>
@@ -133,10 +133,14 @@ const JoinRoomModal = ({ onJoin, socket }) => {
           {/* Header */}
           <div className="modal-header bg-gradient border-0 py-4" 
                style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
-            <h4 className="modal-title text-white fw-bold d-flex align-items-center">
-              <Radio size={28} className="me-3" />
-              Join Church Service
-            </h4>
+            <div className="w-100 text-center">
+              <h3 className="text-white fw-bold mb-1">Usharika wa Yombo</h3>
+              <p className="text-white-50 mb-3 fs-6">Huduma ya Mtandaoni Moja kwa Moja</p>
+              <h4 className="text-white fw-bold d-flex align-items-center justify-content-center">
+                <Radio size={28} className="me-3" />
+                Jiunge na Huduma ya Kanisa
+              </h4>
+            </div>
           </div>
 
           <div className="modal-body p-4" style={{ overflowY: 'auto', flex: '1' }}>
@@ -153,12 +157,12 @@ const JoinRoomModal = ({ onJoin, socket }) => {
                 <div className="d-flex align-items-start">
                   <AlertCircle size={24} className="text-warning me-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h6 className="alert-heading fw-bold text-purple mb-2">Broadcaster Already Active</h6>
+                    <h6 className="alert-heading fw-bold text-purple mb-2">Msambazaji Tayari Yupo</h6>
                     <p className="mb-2 text-dark">
-                      This room already has an active broadcaster: <strong className="text-purple">{broadcasterError.existingBroadcaster?.userName}</strong>
+                      Chumba hiki tayari kina msambazaji anayefanya kazi: <strong className="text-purple">{broadcasterError.existingBroadcaster?.userName}</strong>
                     </p>
                     <small className="text-muted">
-                      You can join as a congregation member instead, or try a different room.
+                      Unaweza kujiunga kama mwanajumuiya au jaribu chumba kingine.
                     </small>
                   </div>
                 </div>
@@ -173,7 +177,7 @@ const JoinRoomModal = ({ onJoin, socket }) => {
                 </div>
                 <div>
                   <h5 className="mb-1 fw-bold text-purple">{loggedInUsername}</h5>
-                  <p className="mb-0 text-dark opacity-75">Ready to join the service?</p>
+                  <p className="mb-0 text-dark opacity-75">Tayari kujiunga na huduma?</p>
                 </div>
               </div>
             </div>
@@ -182,14 +186,14 @@ const JoinRoomModal = ({ onJoin, socket }) => {
             <div className="mb-4">
               <label className="form-label fw-bold text-purple mb-3 fs-5">
                 <Users size={20} className="me-2" />
-                Service Room ID
+                Nambari ya Chumba cha Huduma
               </label>
               <input
                 type="text"
                 className="form-control form-control-lg border-2 focus-purple"
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value)}
-                placeholder="Enter the room ID provided by your church"
+                placeholder="Ingiza nambari ya chumba uliyopewa na kanisa lako"
                 style={{ 
                   borderRadius: '12px',
                   transition: 'all 0.3s ease',
@@ -199,14 +203,14 @@ const JoinRoomModal = ({ onJoin, socket }) => {
                 }}
               />
               <small className="text-muted mt-2 d-block fs-6">
-                Ask your pastor or church leader for the room ID
+                Muulize mchungaji wako au kiongozi wa kanisa nambari ya chumba
               </small>
             </div>
 
             {/* Role Selection */}
             <div className="mb-4">
               <label className="form-label fw-bold text-purple mb-3 fs-5">
-                How would you like to join?
+                Ungependa kujiunga vipi?
               </label>
               
               <div className="row g-3">
