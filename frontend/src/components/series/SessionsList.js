@@ -202,8 +202,7 @@ const SessionsList = ({
                             </Button>
                           )}
                           
-                          {/* Download Button */}
-                          {(session.audio?.link || session.video?.link) && (
+                          {/* Download Button     {(session.audio?.link || session.video?.link) && (
                             <Button
                               variant="outline-secondary"
                               size="sm"
@@ -212,7 +211,8 @@ const SessionsList = ({
                               <Download size={16} />
                               Download
                             </Button>
-                          )}
+                          )}*/}
+                      
                         </div>
                       </Col>
                     </Row>
