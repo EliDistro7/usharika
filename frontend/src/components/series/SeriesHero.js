@@ -9,9 +9,9 @@ import {
   Plus, 
   BookOpen,
   User,
-  Crown,
-  Share2
+  Crown
 } from 'lucide-react';
+import ShareButton from "@/components/ShareButton";
 
 const SeriesHero = ({ 
   series, 
@@ -21,7 +21,8 @@ const SeriesHero = ({
   totalSessions, 
   progressPercentage,
   onAddSession,
-  onEditSeries 
+  onEditSeries,
+
 }) => {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -30,6 +31,19 @@ const SeriesHero = ({
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  // Generate share URL and title if not provided
+  const defaultShareUrl = `https://kkktyombo.org/series/${series._id}`;
+  const defaultShareTitle = `${series.name} - ${series.author}`;
+
+  // Define colors to match the ControlButtons approach
+  const colors = {
+    primary: '#6f42c1',
+    surface: 'white',
+    text: '#333',
+    accent: '#b8860b',
+    background: '#f8f9fa'
   };
 
   return (
@@ -91,7 +105,16 @@ const SeriesHero = ({
             </Col>
             
             <Col lg={4} className="text-lg-end">
-              <div className="d-flex flex-column gap-2">
+              <div 
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  alignItems: "center",
+                  position: "relative",
+                  zIndex: 10
+                }}
+              >
                 {isCreator && (
                   <>
                     <Button
@@ -113,13 +136,12 @@ const SeriesHero = ({
                     </Button>
                   </>
                 )}
-                <Button
-                  variant="outline-light"
-                  className="d-flex align-items-center justify-content-center gap-2"
-                >
-                  <Share2 size={18} />
-                  Share Series
-                </Button>
+                {/* Use the same approach as ControlButtons */}
+                <ShareButton 
+                  url={defaultShareUrl}
+                  title={defaultShareTitle}
+                  colors={colors}
+                />
               </div>
             </Col>
           </Row>

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import MusicPlayer from './MusicPlayer'; // Adjust the import path as needed
 
+
 const SessionsList = ({ 
   sessions, 
   isCreator, 
