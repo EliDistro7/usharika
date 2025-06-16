@@ -53,76 +53,111 @@ const AddSessionModal = ({ show, handleClose, onSubmit }) => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+ // Updated audio file validation with expanded format support
+const handleFileChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    // Validate file type (audio files only)
-    const allowedTypes = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/m4a'];
-    if (!allowedTypes.includes(file.type)) {
-      setUploadState({
-        isUploading: false,
-        progress: 0,
-        error: 'Please select a valid audio file (MP3, WAV, OGG, M4A)',
-        success: false
-      });
-      return;
-    }
+  // Validate file type (audio files only) - Expanded list
+  const allowedTypes = [
+    // Common compressed formats
+    'audio/mp3',
+    'audio/mpeg',
+    'audio/mp4',
+    'audio/m4a',
+    'audio/aac',
+    
+    // Uncompressed formats
+    'audio/wav',
+    'audio/wave',
+    'audio/x-wav',
+    
+    // Open source formats
+    'audio/ogg',
+    'audio/oga',
+    'audio/opus',
+    'audio/flac',
+    
+    // Legacy/Other formats
+    'audio/wma',
+    'audio/amr',
+    'audio/3gpp',
+    'audio/webm',
+    'audio/x-ms-wma',
+    'audio/x-flac',
+    'audio/x-m4a',
+    'audio/x-aac',
+    
+    // Additional MIME types that browsers might use
+    'audio/mp4a-latm',
+    'audio/x-mpeg',
+    'audio/x-mp3'
+  ];
 
-    // Validate file size (max 50MB)
-    const maxSize = 50 * 1024 * 1024; // 50MB
-    if (file.size > maxSize) {
-      setUploadState({
-        isUploading: false,
-        progress: 0,
-        error: 'File size must be less than 50MB',
-        success: false
-      });
-      return;
-    }
-
+  if (!allowedTypes.includes(file.type)) {
     setUploadState({
-      isUploading: true,
+      isUploading: false,
       progress: 0,
-      error: null,
+      error: 'Please select a valid audio file (MP3, WAV, OGG, M4A, AAC, FLAC, OPUS, WMA, WebM, AMR)',
       success: false
     });
+    return;
+  }
 
-    try {
-      const result = await uploadToCloudinary(file, (progress) => {
-        setUploadState(prev => ({ ...prev, progress }));
-      });
+  // Validate file size (max 50MB)
+  const maxSize = 50 * 1024 * 1024; // 50MB
+  if (file.size > maxSize) {
+    setUploadState({
+      isUploading: false,
+      progress: 0,
+      error: 'File size must be less than 50MB',
+      success: false
+    });
+    return;
+  }
 
-      setSessionData(prev => ({
-        ...prev,
-        audio: {
-          ...prev.audio,
-          link: result.secureUrl
-        }
-      }));
+  setUploadState({
+    isUploading: true,
+    progress: 0,
+    error: null,
+    success: false
+  });
 
-      setUploadState({
-        isUploading: false,
-        progress: 100,
-        error: null,
-        success: true
-      });
+  try {
+    const result = await uploadToCloudinary(file, (progress) => {
+      setUploadState(prev => ({ ...prev, progress }));
+    });
 
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setUploadState(prev => ({ ...prev, success: false }));
-      }, 3000);
+    setSessionData(prev => ({
+      ...prev,
+      audio: {
+        ...prev.audio,
+        link: result.secureUrl
+      }
+    }));
 
-    } catch (error) {
-      console.error('Upload failed:', error);
-      setUploadState({
-        isUploading: false,
-        progress: 0,
-        error: 'Upload failed. Please try again.',
-        success: false
-      });
-    }
-  };
+    setUploadState({
+      isUploading: false,
+      progress: 100,
+      error: null,
+      success: true
+    });
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      setUploadState(prev => ({ ...prev, success: false }));
+    }, 3000);
+
+  } catch (error) {
+    console.error('Upload failed:', error);
+    setUploadState({
+      isUploading: false,
+      progress: 0,
+      error: 'Upload failed. Please try again.',
+      success: false
+    });
+  }
+};
 
   const clearAudioLink = () => {
     setSessionData(prev => ({
