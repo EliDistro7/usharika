@@ -105,7 +105,7 @@ const handleFileChange = async (e) => {
   }
 
   // Validate file size (max 50MB)
-  const maxSize = 50 * 1024 * 1024; // 50MB
+  const maxSize = 200 * 1024 * 1024; // 50MB
   if (file.size > maxSize) {
     setUploadState({
       isUploading: false,
