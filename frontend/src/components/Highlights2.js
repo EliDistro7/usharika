@@ -36,7 +36,7 @@ const colors = {
 };
 
 const Highlights = ({ data, datatype = "default" }) => {
-  console.log('data', data)
+ // console.log('data', data)
   const getActiveTab = () => {
     return datatype === "default" ? Object.keys(data.content)[0] : Object.keys(data.content)[0];
   };

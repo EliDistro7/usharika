@@ -7,7 +7,7 @@ const cloudinary = new Cloudinary({ cloud: { cloudName: 'du5yhjfog' } });
 
 // Utility function to upload a file to Cloudinary
 export const uploadToCloudinary = async (file, onProgress) => {
-  const cloudinaryUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_2}`;
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/du5yhjfog/upload`;
   console.log('Uploading to Cloudinary:', cloudinaryUrl);
 
   const formData = new FormData();
