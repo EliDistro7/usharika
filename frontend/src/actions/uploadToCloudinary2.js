@@ -2,17 +2,18 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import axios from 'axios';
 
 // Initialize Cloudinary instance
-const cloudinary = new Cloudinary({ cloud: { cloudName: 'df9gkjxm8' } });
+const cloudinary = new Cloudinary({ cloud: { cloudName: 'du5yhjfog' } }); 
+
 
 // Utility function to upload a file to Cloudinary
 export const uploadToCloudinary = async (file, onProgress) => {
-  const cloudinaryUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY}`;
+  const cloudinaryUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_2}`;
   console.log('Uploading to Cloudinary:', cloudinaryUrl);
 
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('folder', 'profile'); // Specify the folder here
-  formData.append('upload_preset', 'profile') 
+  // formData.append('folder', 'profile'); // Specify the folder here
+  formData.append('upload_preset', 'audio_assets') 
 
   try {
     const response = await axios.post(cloudinaryUrl, formData, {

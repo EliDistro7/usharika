@@ -95,7 +95,7 @@ const JoinRoomModal = ({ onJoin, socket }) => {
           <div className="modal-content border-0 shadow-2xl">
             <div className="modal-header bg-gradient border-0 py-4" 
                  style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%)' }}>
-              <h5 className="modal-title text-white fw-bold d-flex align-items-center fs-3">
+              <h5 className="modal-title fw-bold d-flex align-items-center fs-3">
                 <LogIn size={24} className="me-3" />
                 Utambulisho Unahitajika
               </h5>

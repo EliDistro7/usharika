@@ -245,7 +245,7 @@ exports.addSession = async (req, res) => {
 
     // Update series only if the author matches
     const updatedSeries = await Series.findOneAndUpdate(
-      { _id: id, author },
+      { _id: id },
       { $push: { sessions: sessionData } },
       { new: true } // Return the updated document
     );

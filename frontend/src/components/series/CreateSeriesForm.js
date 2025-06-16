@@ -8,6 +8,7 @@ import { Form, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 
+
 const CreateSeriesForm = ({ newSeries, onChange, onSubmit }) => {
   return (
     <Form onSubmit={onSubmit} className="mt-4">
