@@ -62,7 +62,7 @@ const donationOptions = [
     description: "Tuungane mkono wapendwa kuboresha kanisa letu", 
     icon: <FaChurch size={32} />,
     gradient: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-    target: "2,000,000"
+    target: "40,000,000"
   },
   { 
     id: 2, 
@@ -70,7 +70,7 @@ const donationOptions = [
     description: "Tunaomba washarika mmalizie ahadi zenu za kuongeza mabenchi kwenye kanisa letu", 
     icon: <FaGraduationCap size={32} />,
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)",
-    target: "500,000"
+    target: "25,000,000"
   },
   { 
     id: 3, 
@@ -78,7 +78,7 @@ const donationOptions = [
     description: "Wiki tutatembelea kitu cha mwane kuwaona watoto, shiriki nasi baraka hizi kwa sadaka yako ya hali na mali", 
     icon: <FaHandHoldingHeart size={32} />,
     gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-    target: "300,000"
+    target: "6,000,000"
   },
   { 
     id: 4, 
@@ -86,7 +86,7 @@ const donationOptions = [
     description: "Tuungane pamoja ili kumaliza deni letu la kanisa kabla ya mwaka huu kuisha.", 
     icon: <FaCoins size={32} />,
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
-    target: "1,500,000"
+    target: "30,000,000"
   },
 ];
 
