@@ -8,6 +8,7 @@ import { kipaimara, efm, beach } from '@/data/main';
 import { NewsTicker } from '@/components/NewsTicker';
 import FutureEventsCarousel from "@/components/xmass/FutureEventsCarousel";
 import Series from '@/components/admins/Series';
+import LiveSeries from '@/components/series/LiveSeries';
 
 export default function Home() {
   const dataSets = [beach,kipaimara, efm];
@@ -20,7 +21,7 @@ export default function Home() {
   pauseOnHover={true}/> 
       {/* Highlights  <Series />
       Section */}
-     
+     <LiveSeries />
       <HighlightsWrapper  />
 
       {/* Pledge Section */}
