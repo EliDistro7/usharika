@@ -7,8 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'animate.css';
 import TopBar from './TopBar';
-import SeriesNotifications from '@/components/SeriesNotifications';
-import Notifications from './Notifications';
+
 
 export default function Header() {
   const router = useRouter();
@@ -88,7 +87,7 @@ export default function Header() {
 
       {/* Main Navbar */}
       <header 
-        className={`sticky-top border-bottom shadow-lg animate__animated animate__fadeInDown ${
+        className={` border-bottom animate__animated animate__fadeInDown ${
           isScrolled ? 'bg-white bg-opacity-95 backdrop-blur' : 'bg-white'
         }`}
         style={{
@@ -99,25 +98,7 @@ export default function Header() {
       >
         <nav className="navbar navbar-expand-lg py-3">
           <div className="container-fluid px-4">
-            {/* Brand/Logo Section 
-            <div className="navbar-brand d-flex align-items-center animate__animated animate__fadeInLeft">
-              <div 
-                className="me-3 p-2 rounded-circle d-flex align-items-center justify-content-center"
-                style={{
-                  background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-                  width: '50px',
-                  height: '50px',
-                  boxShadow: '0 4px 15px rgba(106, 13, 173, 0.3)',
-                }}
-              >
-                <i className="fas fa-crown text-white fa-lg"></i>
-              </div>
-              <div>
-                <h5 className="mb-0 fw-bold" style={{ color: '#6a0dad' }}>MFALME</h5>
-                <small className="text-muted">Digital Platform</small>
-              </div>
-            </div>
-            */}
+         
 
             {/* Mobile Toggle Button */}
             <button
@@ -344,30 +325,8 @@ export default function Header() {
 
               {/* Right Side Content */}
               <div className="d-flex align-items-center gap-3">
-                {/* Notifications for logged in users */}
-                {isLoggedIn && (
-                  <div className="d-flex align-items-center gap-2 animate__animated animate__fadeInRight">
-                    <div 
-                      className="p-2 rounded-circle"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                        border: '1px solid rgba(106, 13, 173, 0.2)',
-                      }}
-                    >
-                      <SeriesNotifications />
-                    </div>
-                    <div 
-                      className="p-2 rounded-circle"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                        border: '1px solid rgba(106, 13, 173, 0.2)',
-                      }}
-                    >
-                      <Notifications />
-                    </div>
-                  </div>
-                )}
-
+              
+              
                 {/* Auth buttons for non-logged in users */}
                 {!isLoggedIn && (
                   <div className="d-flex align-items-center gap-2 animate__animated animate__fadeInRight">

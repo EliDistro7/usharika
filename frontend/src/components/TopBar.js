@@ -41,7 +41,7 @@ const TopBar = () => {
   return (
     <>
       <div
-        className={`container-fluid text-white py-4 px-3 position-relative overflow-hidden transition-all ${
+        className={`container-fluid text-white py-4 px-3 position-relative transition-all ${
           isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
         style={{
@@ -52,19 +52,26 @@ const TopBar = () => {
           transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
           position: 'relative',
           zIndex: 1000,
+          // REMOVED: overflow: 'hidden' - this was clipping the dropdowns
         }}
       >
-        {/* Animated Background Elements */}
+        {/* Animated Background Elements - moved to separate container with overflow hidden */}
         <div 
-          className="position-absolute top-0 start-0 w-100 h-100"
+          className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden"
           style={{
-            background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
-            animation: 'float 6s ease-in-out infinite',
+            borderRadius: '0 0 50px 50px',
+            // Overflow hidden only applies to background elements, not notification dropdowns
           }}
-        />
-        
-        {/* Floating Particles */}
-        <div className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden">
+        >
+          <div 
+            className="position-absolute top-0 start-0 w-100 h-100"
+            style={{
+              background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          
+          {/* Floating Particles */}
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -173,15 +180,16 @@ const TopBar = () => {
           <div className="d-flex align-items-center gap-3 animate__animated animate__fadeInRight">
             {isLoggedIn ? (
               /* Notifications for logged in users */
-              <div className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center gap-3 notification-container">
                 <div 
-                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center"
+                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center notification-wrapper"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255,255,255,0.3)',
                     boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: 1050, // Higher z-index for dropdown visibility
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-3px) scale(1.05)';
@@ -196,13 +204,14 @@ const TopBar = () => {
                 </div>
                 
                 <div 
-                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center"
+                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center notification-wrapper"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255,255,255,0.3)',
                     boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: 1050, // Higher z-index for dropdown visibility
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-3px) scale(1.05)';
@@ -348,7 +357,7 @@ const TopBar = () => {
 
         {/* Decorative Bottom Wave */}
         <div 
-          className="position-absolute bottom-0 start-0 w-100"
+          className="position-absolute bottom-0 start-0 w-100 overflow-hidden"
           style={{
             height: '20px',
             background: 'linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%)',
@@ -389,6 +398,24 @@ const TopBar = () => {
         
         .transition-all {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Notification dropdown positioning */
+        .notification-container {
+          position: relative;
+        }
+        
+        .notification-wrapper {
+          position: static; /* Changed from relative to ensure dropdowns can extend beyond container */
+        }
+        
+        /* Ensure notification dropdowns appear above other elements */
+        .notification-wrapper .dropdown-menu,
+        .notification-wrapper [class*="dropdown"],
+        .notification-wrapper [class*="popover"],
+        .notification-wrapper [class*="tooltip"] {
+          z-index: 1060 !important; /* Bootstrap's highest default z-index + 10 */
+          position: fixed !important; /* Use fixed positioning to avoid clipping */
         }
         
         /* Enhanced button hover effects */
