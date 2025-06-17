@@ -173,7 +173,7 @@ const LiveSeries = () => {
 
   return (
     <div className="container-fluid py-5" style={{ backgroundColor: '#f8f9ff' }}>
-      {/* Hero Section */}
+      {/* Hero Section 
       <div className="row mb-5">
         <div className="col-12">
           <div className="text-center text-white p-5" style={customStyles.heroSection}>
@@ -192,6 +192,7 @@ const LiveSeries = () => {
           </div>
         </div>
       </div>
+      */}
 
       {/* Live Series Grid */}
       <div className="row g-4 mb-5">
@@ -247,12 +248,13 @@ const LiveSeries = () => {
 
                   {/* Statistics */}
                   <div className="row g-3 mb-4">
-                    <div className="col-6">
-                      <div className="text-center text-white p-3 rounded-3" style={customStyles.sessionBadge}>
+                   
+                      <div className="text-center text-white p-3 rounded-3" style={customStyles.attendanceBadge}>
                         <div className="fw-bold h4 mb-1">{series.sessions?.length || 0}</div>
-                        <small className="opacity-90">Jumla</small>
-                      </div>
+                        <small className="opacity-90">Audio files</small>
+                   
                     </div>
+                    {/*
                     <div className="col-6">
                       <div className="text-center text-white p-3 rounded-3" style={customStyles.attendanceBadge}>
                         <div className="fw-bold h4 mb-1 d-flex align-items-center justify-content-center">
@@ -262,6 +264,7 @@ const LiveSeries = () => {
                         <small className="opacity-90">Mahudhurio</small>
                       </div>
                     </div>
+                    */}
                   </div>
 
                   {/* Date Range */}
@@ -270,10 +273,11 @@ const LiveSeries = () => {
                     <span>{formatDate(series.startDate)} - {formatDate(series.endDate)}</span>
                   </div>
 
-                  {/* Author */}
+                  {/* Author 
                   <div className="text-muted small mb-4">
                     <strong>Mwalimu:</strong> {series.author}
                   </div>
+                  */}
                 </div>
 
                 {/* Card Footer */}
@@ -292,7 +296,7 @@ const LiveSeries = () => {
                       }}
                     >
                       <Play size={20} className="me-2" />
-                      <span>Chunguza Mfululizo</span>
+                      <span>Sikiliza mahubiri</span>
                     </button>
                   </Link>
                 </div>
@@ -303,19 +307,7 @@ const LiveSeries = () => {
       </div>
 
       {/* Summary Footer */}
-      <div className="row">
-        <div className="col-12">
-          <div className="text-center p-4 rounded-4" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-            <div className="text-white">
-              <h5 className="fw-bold mb-2">
-                <Star size={20} className="me-2 text-warning" />
-                Mfululizo {liveSeries.length} wa Moja kwa Moja Unapatikana
-              </h5>
-              <p className="mb-0 opacity-75">Jiunge na maelfu ya wanafunzi katika mfululizo wetu wa kila siku</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    
 
       <style jsx>{`
         @keyframes pulse {
