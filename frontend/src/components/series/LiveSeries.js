@@ -269,7 +269,7 @@ const LiveSeries = () => {
                       </div>
                       <div className="d-flex align-items-center small bg-white bg-opacity-20 px-3 py-1 rounded-pill">
                         <Clock size={14} className="me-1" />
-                        <span className="fw-medium">
+                        <span className="fw-medium text-black">
                           {daysRemaining > 0 ? `Siku ${daysRemaining} zimebaki` : 'Inaisha hivi karibuni'}
                         </span>
                       </div>
