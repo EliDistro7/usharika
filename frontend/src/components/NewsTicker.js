@@ -12,42 +12,13 @@ export const NewsTicker = ({
   const containerRef = React.useRef(null);
   const scrollerRef = React.useRef(null);
 
-  const [updates, setUpdates] = useState(
-    []
-  );
+  const [updates, setUpdates] = useState([]);
   const [animationDuration, setAnimationDuration] = useState("60s");
   const [scrollWidth, setScrollWidth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
 
-  // Fetch updates only once
-  useEffect(() => {
-    const fetchUpdates = async () => {
-      try {
-        setLoading(true);
-        const updatesData = await getAllUpdates(); // API function to fetch updates
-        setUpdates(updatesData);
-      } catch (error) {
-        console.error("Error fetching updates:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpdates();
-  }, []);
-
-  // Recalculate scroll properties when updates change
-  useEffect(() => {
-    calculateScrollProperties();
-    window.addEventListener("resize", calculateScrollProperties);
-
-    return () => {
-      window.removeEventListener("resize", calculateScrollProperties);
-    };
-  }, [updates]);
-
-   // Function to parse content and make links clickable
+  // Function to parse content and make links clickable
   const parseContentWithLinks = (content) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = content.split(urlRegex);
@@ -88,6 +59,33 @@ export const NewsTicker = ({
       return part;
     });
   };
+
+  // Fetch updates only once
+  useEffect(() => {
+    const fetchUpdates = async () => {
+      try {
+        setLoading(true);
+        const updatesData = await getAllUpdates(); // API function to fetch updates
+        setUpdates(updatesData);
+      } catch (error) {
+        console.error("Error fetching updates:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpdates();
+  }, []);
+
+  // Recalculate scroll properties when updates change
+  useEffect(() => {
+    calculateScrollProperties();
+    window.addEventListener("resize", calculateScrollProperties);
+
+    return () => {
+      window.removeEventListener("resize", calculateScrollProperties);
+    };
+  }, [updates]);
 
   const calculateScrollProperties = () => {
     if (scrollerRef.current) {
@@ -268,7 +266,7 @@ export const NewsTicker = ({
                     {formatRoleName(update.group)}
                   </div>
 
-                  {/* Content */}
+                  {/* Content with clickable links */}
                   <div 
                     className="flex-grow-1 pe-2"
                     style={{
@@ -379,6 +377,15 @@ export const NewsTicker = ({
         
         .news-item:hover::before {
           opacity: 1;
+        }
+        
+        .news-link {
+          position: relative;
+          z-index: 10;
+        }
+        
+        .news-link:hover {
+          text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
         }
         
         @media (max-width: 768px) {
