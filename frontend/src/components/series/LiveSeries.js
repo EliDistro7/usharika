@@ -207,13 +207,9 @@ const LiveSeries = () => {
               </h2>
               <p className="text-muted lead mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.7' }}>
                 Kwa sasa hakuna mahubiri ya moja kwa moja yanaoendelea. 
-                <br />Rudi baadaye kwa maudhui mapya ya kiroho!
+                
               </p>
-              <div className="mt-4">
-                <small className="text-muted opacity-75">
-                  "Neno la Mungu ni kama mchanga mwangaza unaongoza njia yetu"
-                </small>
-              </div>
+            
             </div>
           </div>
         </div>
