@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllSeries } from '@/actions/series';
 import { Calendar, Users, Play, Clock, Star, BookOpen, Heart, Cross } from 'lucide-react';
 import Link from 'next/link';
+import { formatRoleName2 } from '@/actions/utils';
 
 const LiveSeries = () => {
   const [liveSeries, setLiveSeries] = useState([]);
@@ -279,7 +280,7 @@ const LiveSeries = () => {
                     </h4>
                     <p className="card-subtitle mb-0 opacity-90 d-flex align-items-center">
                       <BookOpen size={16} className="me-2" />
-                      <span className="fw-medium">{series.group}</span>
+                      <span className="fw-medium">{formatRoleName2(series.group)}</span>
                     </p>
                   </div>
                 </div>

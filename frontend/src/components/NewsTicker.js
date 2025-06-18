@@ -126,7 +126,7 @@ export const NewsTicker = ({
             animation: 'pulse 2s infinite'
           }}
         />
-        <span className="text-white fw-bold small">LIVE</span>
+        <span className="text-white small">Updates</span>
       </div>
 
       {/* Main Content Container */}
