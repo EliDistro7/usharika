@@ -46,48 +46,7 @@ export const NewsTicker = ({
       window.removeEventListener("resize", calculateScrollProperties);
     };
   }, [updates]);
-
-   // Function to parse content and make links clickable
-  const parseContentWithLinks = (content) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = content.split(urlRegex);
-    
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={index}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="news-link"
-            style={{
-              color: '#8B5CF6',
-              textDecoration: 'underline',
-              textDecorationStyle: 'dotted',
-              textUnderlineOffset: '2px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#7C3AED';
-              e.currentTarget.style.textDecorationStyle = 'solid';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#8B5CF6';
-              e.currentTarget.style.textDecorationStyle = 'dotted';
-            }}
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent event bubbling to parent elements
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return part;
-    });
-  };
+  
 
   const calculateScrollProperties = () => {
     if (scrollerRef.current) {
@@ -281,7 +240,7 @@ export const NewsTicker = ({
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    {parseContentWithLinks(update.content)}
+                    {update.content}
                   </div>
 
                   {/* Subtle Separator Line */}
