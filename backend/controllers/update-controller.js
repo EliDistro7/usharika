@@ -23,11 +23,20 @@ const createUpdate = async (req, res) => {
   }
 };
 
-// Get all updates
+// Get all updates from the last 7 days
 const getAllUpdates = async (req, res) => {
   try {
-    console.log('it reached here in getAllUpdates()');
-    const updates = await Update.find();
+   // console.log('it reached here in getAllUpdates()');
+    
+    // Calculate the date 7 days ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    // Find updates where createdAt is greater than or equal to one week ago
+    const updates = await Update.find({
+      createdAt: { $gte: oneWeekAgo }
+    }).sort({ createdAt: -1 }); // Optional: sort by newest first
+    
     res.status(200).json(updates);
   } catch (error) {
     res.status(500).json({ message: "Error fetching updates.", error });

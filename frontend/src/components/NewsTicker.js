@@ -12,13 +12,53 @@ export const NewsTicker = ({
   const containerRef = React.useRef(null);
   const scrollerRef = React.useRef(null);
 
-  const [updates, setUpdates] = useState(
-    []
-  );
+  const [updates, setUpdates] = useState([]);
   const [animationDuration, setAnimationDuration] = useState("60s");
   const [scrollWidth, setScrollWidth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
+
+  // Function to parse content and make links clickable
+  const parseContentWithLinks = (content) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = content.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="news-link"
+            style={{
+              color: '#8B5CF6',
+              textDecoration: 'underline',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '2px',
+              fontWeight: '600',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#7C3AED';
+              e.currentTarget.style.textDecorationStyle = 'solid';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#8B5CF6';
+              e.currentTarget.style.textDecorationStyle = 'dotted';
+            }}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling to parent elements
+            }}
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
 
   // Fetch updates only once
   useEffect(() => {
@@ -226,7 +266,7 @@ export const NewsTicker = ({
                     {formatRoleName(update.group)}
                   </div>
 
-                  {/* Content */}
+                  {/* Content with clickable links */}
                   <div 
                     className="flex-grow-1 pe-2"
                     style={{
@@ -239,7 +279,7 @@ export const NewsTicker = ({
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    {update.content}
+                    {parseContentWithLinks(update.content)}
                   </div>
 
                   {/* Subtle Separator Line */}
@@ -337,6 +377,15 @@ export const NewsTicker = ({
         
         .news-item:hover::before {
           opacity: 1;
+        }
+        
+        .news-link {
+          position: relative;
+          z-index: 10;
+        }
+        
+        .news-link:hover {
+          text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
         }
         
         @media (max-width: 768px) {
