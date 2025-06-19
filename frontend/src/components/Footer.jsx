@@ -92,7 +92,7 @@ const Footer = () => {
                       {day}: <span style={{ color: "#9370DB" }}>8am - 5pm</span>
                     </p>
                   ))}
-                   <p key={day} className="mb-2">
+                   <p className="mb-2">
                       Jumamosi: <span style={{ color: "#9370DB" }}>8am - 5pm</span>
                     </p>
                     
