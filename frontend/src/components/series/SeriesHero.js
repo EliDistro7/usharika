@@ -85,7 +85,7 @@ const SeriesHero = ({
                 </div>
                 <div className="d-flex align-items-center">
                   <Users size={18} className="me-2" />
-                {/*  <span>{series.totalAttendance} total attendance</span> */}
+                 <span>400 total attendance</span> 
                 </div>
               </div>
               
