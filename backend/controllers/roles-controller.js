@@ -18,7 +18,7 @@ const deleteRoles = async () => {
   }
 };
 
- //deleteRoles();
+ deleteRoles();
 
 
 
