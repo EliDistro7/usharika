@@ -76,7 +76,7 @@ const SeriesHero = ({
               <div className="d-flex align-items-center mb-3 flex-wrap gap-3">
                 <div className="d-flex align-items-center">
                   <User size={18} className="me-2" />
-                  <span>by {series.author}</span>
+                {/*  <span>by {series.author}</span> */}
                   {isCreator && <Crown size={16} className="ms-2 text-warning" />}
                 </div>
                 <div className="d-flex align-items-center">
@@ -85,7 +85,7 @@ const SeriesHero = ({
                 </div>
                 <div className="d-flex align-items-center">
                   <Users size={18} className="me-2" />
-                  <span>{series.totalAttendance} total attendance</span>
+                {/*  <span>{series.totalAttendance} total attendance</span> */}
                 </div>
               </div>
               
