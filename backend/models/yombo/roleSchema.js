@@ -7,9 +7,10 @@ const roleSchema = new mongoose.Schema({
       defaultPositions: [String], // Optional default leadership positions for each leader role
     },
     default: new Map([
-      ["umoja_wa_vijana", {}],
+      
       ["ofisi_ya_mchungaji", {defaultPositions: ["Mchungaji", "Mwinjilisti", "Parish","Mhasibu"]}],
       ["kiongozi_ofisi_ya_mchungaji", {defaultPositions: ["Mchungaji", "Mwinjilisti", "Parish","Mhasibu"]}],
+      ["umoja_wa_vijana", {}],
       ["kiongozi_umoja_wa_vijana", { defaultPositions: ["Mwenyekiti", "Katibu", "Mhasibu"] }],
       ["kwaya_ya_umoja_wa_vijana", {}],
       ["kiongozi_kwaya_ya_umoja_wa_vijana", { defaultPositions: ["Mwenyekiti", "Mwalimu wa Muziki", "Katibu"] }],
