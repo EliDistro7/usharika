@@ -26,11 +26,11 @@ const Usajili: React.FC = () => {
   };
 
   return (
-    <div className="container my-5">
-      <div className="card shadow">
+    <div className="px-0 my-5">
     
-        <div className="card-body">
-          <ul className="nav nav-tabs">
+    
+        
+          
          
        {/*
             <li className="nav-item">
@@ -60,11 +60,11 @@ const Usajili: React.FC = () => {
        
        */}     
       
-          </ul>
+        
           <div className="mt-0">{renderForm()}</div>
-        </div>
+      
       </div>
-    </div>
+    
   );
 };
 
