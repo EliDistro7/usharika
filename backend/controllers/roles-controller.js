@@ -6,7 +6,7 @@ const createRoles = async () => {
   const savedRoles = await roles.save();
 };
 
-//createRoles()
+createRoles()
 
 // Delete All Roles
 const deleteRoles = async () => {
@@ -18,7 +18,7 @@ const deleteRoles = async () => {
   }
 };
 
- deleteRoles();
+ //deleteRoles();
 
 
 
