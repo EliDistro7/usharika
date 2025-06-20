@@ -15,7 +15,7 @@ export default function RoleSelector({
   
   // Toggle states for showing/hiding categories and roles
   const [showCategories, setShowCategories] = useState({
-    jumuiya: true,
+    jumuiya: false,
     kwaya: false,
     ofisi: false,
     others: false
