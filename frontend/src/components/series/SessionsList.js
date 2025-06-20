@@ -15,9 +15,11 @@ import {
   BookOpen,
   Lock,
   CheckCircle,
-  X
+  X,
+  Share2
 } from 'lucide-react';
 import MusicPlayer from './audio-player/index'; // Adjust the import path as needed
+import ShareButton from '@/components/ShareButton'; // Adjust the import path as needed
 
 
 const SessionsList = ({ 
@@ -28,7 +30,8 @@ const SessionsList = ({
   onAddSession, 
   onPlayAudio,
   totalSessions,
-  seriesId // Add seriesId prop to pass to MusicPlayer
+  seriesId, // Add seriesId prop to pass to MusicPlayer
+  seriesTitle // Add seriesTitle prop for sharing
 }) => {
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
 
@@ -62,6 +65,10 @@ const SessionsList = ({
   const hasAudioSessions = sessions && sessions.some(session => 
     session.audio && session.audio.link && (session.audio.isFree || user)
   );
+
+  // Generate share URL for the series
+  const shareUrl = `${window.location.origin}/series/${seriesId}`;
+  const shareTitle = `${seriesTitle} - KKKT YOMBO Series`;
 
   return (
     <>
@@ -252,21 +259,33 @@ const SessionsList = ({
           <Modal.Header className="music-player-header border-0 pb-0">
             <Modal.Title className="d-flex align-items-center music-player-title">
               <Headphones size={28} className="me-3 headphones-icon" />
-              KKKT YOMBO Series Player
+              KKKT YOMBO studios
             </Modal.Title>
-            <Button
-              variant="outline-light"
-              size="lg"
-              onClick={handleCloseMusicPlayer}
-              className="music-player-close-btn"
-            >
-              <X size={24} />
-            </Button>
+            <div className="d-flex align-items-center gap-2">
+              {/* Share Button */}
+              <ShareButton 
+                url={shareUrl} 
+                title={shareTitle}
+              />
+              
+              {/* Close Button */}
+              <Button
+                variant="outline-light"
+                size="lg"
+                onClick={handleCloseMusicPlayer}
+                className="music-player-close-btn"
+              >
+                <X size={24} />
+              </Button>
+            </div>
           </Modal.Header>
+          
           <Modal.Body className="music-player-body p-0">
-            {showMusicPlayer && seriesId && (
-              <MusicPlayer seriesId={seriesId} />
-            )}
+            <div className="music-player-content">
+              {showMusicPlayer && seriesId && (
+                <MusicPlayer seriesId={seriesId} />
+              )}
+            </div>
           </Modal.Body>
         </div>
       </Modal>
@@ -313,6 +332,8 @@ const SessionsList = ({
           width: 100%;
           position: relative;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
 
         .music-player-fullscreen::before {
@@ -335,6 +356,7 @@ const SessionsList = ({
           padding: 1.5rem 2rem !important;
           position: relative;
           z-index: 10;
+          flex-shrink: 0;
         }
 
         .music-player-title {
@@ -388,34 +410,84 @@ const SessionsList = ({
 
         .music-player-body {
           background: transparent !important;
-          height: calc(100vh - 100px) !important;
-          overflow-y: auto !important;
+          flex: 1 !important;
+          overflow: hidden !important;
           position: relative;
           z-index: 5;
+          padding: 0 !important;
+        }
+
+        .music-player-content {
+          height: 100% !important;
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          max-height: calc(100vh - 120px) !important;
+          padding: 1rem !important;
+          scroll-behavior: smooth !important;
         }
 
         /* Custom scrollbar for music player */
-        .music-player-body::-webkit-scrollbar {
-          width: 8px;
+        .music-player-content::-webkit-scrollbar {
+          width: 12px;
         }
 
-        .music-player-body::-webkit-scrollbar-track {
+        .music-player-content::-webkit-scrollbar-track {
           background: rgba(45, 27, 61, 0.3);
+          border-radius: 6px;
         }
 
-        .music-player-body::-webkit-scrollbar-thumb {
+        .music-player-content::-webkit-scrollbar-thumb {
           background: linear-gradient(180deg, #8b5cf6, #a855f7);
-          border-radius: 4px;
+          border-radius: 6px;
+          transition: all 0.3s ease;
         }
 
-        .music-player-body::-webkit-scrollbar-thumb:hover {
+        .music-player-content::-webkit-scrollbar-thumb:hover {
           background: linear-gradient(180deg, #a855f7, #c4b5fd);
+          box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Firefox scrollbar */
+        .music-player-content {
+          scrollbar-width: thin;
+          scrollbar-color: #8b5cf6 rgba(45, 27, 61, 0.3);
         }
 
         /* Backdrop blur effect */
         .music-player-modal .modal-backdrop {
           background-color: rgba(10, 10, 10, 0.95) !important;
           backdrop-filter: blur(10px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .music-player-header {
+            padding: 1rem !important;
+          }
+          
+          .music-player-title {
+            font-size: 1.25rem !important;
+          }
+          
+          .headphones-icon {
+            display: none;
+          }
+          
+          .music-player-content {
+            padding: 0.5rem !important;
+            max-height: calc(100vh - 100px) !important;
+          }
+        }
+
+        /* Ensure modal takes full viewport */
+        .music-player-modal .modal-dialog {
+          margin: 0 !important;
+          max-width: 100% !important;
+          height: 100vh !important;
+        }
+
+        .music-player-modal .modal-content {
+          height: 100vh !important;
         }
       `}</style>
     </>
