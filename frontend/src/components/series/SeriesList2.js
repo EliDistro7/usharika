@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import AddSessionModal from '@/components/series/AddSessionModal';
 import ViewSessionModal from '@/components/series/ViewSessionModal';
 import { addSession } from '@/actions/series';
-import MusicPlayer from './MusicPlayer';
+import MusicPlayer from './audio-player/index';
 import './SeriesList2.css';
 
 const SeriesList = ({ seriesList, onDeleteSeries }) => {
