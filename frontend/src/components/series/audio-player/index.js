@@ -205,7 +205,7 @@ const MusicPlayer = ({ seriesId }) => {
               />
 
               {/* Main Player Section */}
-              <div className="d-flex align-items-center mb-4">
+              <div className="d-flex align-items-center mb-4 mt-4">
                 <Image
                   src={'/img/lutherRose.jpg'}
                   alt="Album Art"
