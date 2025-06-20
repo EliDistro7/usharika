@@ -239,33 +239,36 @@ const SessionsList = ({
         </Card.Body>
       </Card>
 
-      {/* Music Player Modal */}
+      {/* Full-Screen Music Player Modal */}
       <Modal 
         show={showMusicPlayer} 
         onHide={handleCloseMusicPlayer} 
-        size="lg"
+        fullscreen={true}
         backdrop="static"
         keyboard={false}
+        className="music-player-modal"
       >
-        <Modal.Header className="border-0 pb-0">
-          <Modal.Title className="d-flex align-items-center">
-            <Headphones size={24} className="me-2" style={{ color: '#6f42c1' }} />
-            Audio Player
-          </Modal.Title>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={handleCloseMusicPlayer}
-            className="ms-auto"
-          >
-            <X size={18} />
-          </Button>
-        </Modal.Header>
-        <Modal.Body className="p-0">
-          {showMusicPlayer && seriesId && (
-            <MusicPlayer seriesId={seriesId} />
-          )}
-        </Modal.Body>
+        <div className="music-player-fullscreen">
+          <Modal.Header className="music-player-header border-0 pb-0">
+            <Modal.Title className="d-flex align-items-center music-player-title">
+              <Headphones size={28} className="me-3 headphones-icon" />
+              KKKT YOMBO Series Player
+            </Modal.Title>
+            <Button
+              variant="outline-light"
+              size="lg"
+              onClick={handleCloseMusicPlayer}
+              className="music-player-close-btn"
+            >
+              <X size={24} />
+            </Button>
+          </Modal.Header>
+          <Modal.Body className="music-player-body p-0">
+            {showMusicPlayer && seriesId && (
+              <MusicPlayer seriesId={seriesId} />
+            )}
+          </Modal.Body>
+        </div>
       </Modal>
 
       <style jsx>{`
@@ -295,6 +298,124 @@ const SessionsList = ({
         
         .btn {
           transition: all 0.3s ease;
+        }
+
+        /* Music Player Modal Styles */
+        .music-player-modal .modal-content {
+          background: transparent !important;
+          border: none !important;
+          border-radius: 0 !important;
+        }
+
+        .music-player-fullscreen {
+          background: linear-gradient(135deg, #0a0a0a 0%, #1a0d26 50%, #0a0a0a 100%);
+          min-height: 100vh;
+          width: 100%;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .music-player-fullscreen::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(196, 181, 253, 0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        .music-player-header {
+          background: linear-gradient(90deg, #1a0d26 0%, #2d1b3d 100%) !important;
+          border-bottom: 2px solid #2d1b3d !important;
+          padding: 1.5rem 2rem !important;
+          position: relative;
+          z-index: 10;
+        }
+
+        .music-player-title {
+          color: #f3f4f6 !important;
+          font-size: 1.5rem !important;
+          font-weight: 600 !important;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .headphones-icon {
+          color: #8b5cf6 !important;
+          filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+          animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+          from {
+            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+          }
+          to {
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
+          }
+        }
+
+        .music-player-close-btn {
+          background: rgba(45, 27, 61, 0.8) !important;
+          border: 1px solid #2d1b3d !important;
+          color: #f3f4f6 !important;
+          border-radius: 50% !important;
+          width: 50px !important;
+          height: 50px !important;
+          padding: 0 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          transition: all 0.3s ease !important;
+          backdrop-filter: blur(10px);
+        }
+
+        .music-player-close-btn:hover {
+          background: rgba(139, 92, 246, 0.2) !important;
+          border-color: #8b5cf6 !important;
+          color: #8b5cf6 !important;
+          transform: scale(1.1) !important;
+          box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
+        }
+
+        .music-player-close-btn:focus {
+          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
+        }
+
+        .music-player-body {
+          background: transparent !important;
+          height: calc(100vh - 100px) !important;
+          overflow-y: auto !important;
+          position: relative;
+          z-index: 5;
+        }
+
+        /* Custom scrollbar for music player */
+        .music-player-body::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .music-player-body::-webkit-scrollbar-track {
+          background: rgba(45, 27, 61, 0.3);
+        }
+
+        .music-player-body::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #8b5cf6, #a855f7);
+          border-radius: 4px;
+        }
+
+        .music-player-body::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, #a855f7, #c4b5fd);
+        }
+
+        /* Backdrop blur effect */
+        .music-player-modal .modal-backdrop {
+          background-color: rgba(10, 10, 10, 0.95) !important;
+          backdrop-filter: blur(10px);
         }
       `}</style>
     </>
