@@ -123,9 +123,7 @@ export default function RoleSelector({
       <div className="mb-4">
         {/* Row 1: Title and badge */}
         <div className="d-flex align-items-center flex-wrap gap-2 mb-3">
-          <h4 className="mb-0 flex-shrink-0" style={{ color: '#6f42c1' }}>
-            Chagua Vikundi na Nafasi
-          </h4>
+      
           <Badge bg="purple" className="flex-shrink-0" style={{ backgroundColor: '#6f42c1' }}>
             {getTotalSelected()} Imechaguliwa
           </Badge>

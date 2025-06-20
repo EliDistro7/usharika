@@ -360,9 +360,14 @@ const PledgesAndSecurityForm = ({
                      }}>
                   <i className="fas fa-users-cog text-white" style={{fontSize: '2rem'}}></i>
                 </div>
-              <h2 className="fw-bold mb-2" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: '2.5rem' }}>
-  Chagua Vikundi<br />na Nafasi
-</h2>
+                <h2 className="fw-bold mb-2" style={{
+                  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontSize: '2.5rem'
+                }}>
+                  Vikundi na Nafasi za Uongozi
+                </h2>
                 <p className="text-muted mb-4">Chagua vikundi unavyoshiriki na nafasi za kiuongozi</p>
                 
                 <div className="alert border-0 rounded-3" 
@@ -377,9 +382,9 @@ const PledgesAndSecurityForm = ({
               </div>
 
               {/* Role Selector Component */}
-              <div className="p-4 rounded-3" style={{
+              <div className="p-4 px-0 rounded-3 ms-0" style={{
                 background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
-                border: '1px solid rgba(168, 85, 247, 0.1)'
+               
               }}>
                 <RoleSelector
                   userRoles={userRoles}
