@@ -4,7 +4,7 @@ import { FaPlusCircle, FaMinusCircle, FaUsers, FaUser, FaCalendarAlt, FaHeart } 
 const DependentsForm = ({ dependents, onDependentsChange }) => {
   // Add Dependent
   const addDependent = () => {
-    const updatedDependents = [...dependents, { name: "", dob: "", relation: "" }];
+    const updatedDependents = [...dependents];
     onDependentsChange(updatedDependents);
   };
 
@@ -47,7 +47,7 @@ const DependentsForm = ({ dependents, onDependentsChange }) => {
             }}>
               Wategemezi
             </h2>
-            <p className="text-muted">Ongeza taarifa za wategemezi wako</p>
+            <p className="text-muted">Ongeza taarifa za watu wanaokutegemea usharikani</p>
           </div>
 
           {/* Dependents List */}
