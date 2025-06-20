@@ -17,7 +17,7 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
-import MusicPlayer from './MusicPlayer'; // Adjust the import path as needed
+import MusicPlayer from './audio-player/index'; // Adjust the import path as needed
 
 
 const SessionsList = ({ 
