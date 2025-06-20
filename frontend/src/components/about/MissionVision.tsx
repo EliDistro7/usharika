@@ -9,8 +9,8 @@ const MissionVision = () => (
             alt="Mchungaji Kiongozi"
             className="img-fluid rounded-circle shadow"
           />
-          <h5 className="mt-3">Rev. John Katabazi</h5>
-          <p className="text-muted">Mchungaji Kiongozi</p>
+          <h5 className="mt-3">Rev. Deogratius Katabazi</h5>
+          <p className="text-muted">Mtheolojia</p>
         </div>
   
         {/* Mission and Vision Text */}

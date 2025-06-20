@@ -398,7 +398,7 @@ const Leadership: React.FC = () => {
                     </h1>
                     <div className="d-flex align-items-center justify-content-center">
                       <Crown size={24} className="text-warning me-2" />
-                      <p className="role-subtitle h4 mb-0">Mchungaji Kiongozi</p>
+                      <p className="role-subtitle h4 mb-0">Mtheolojia</p>
                     </div>
                   </Slide>
                 </div>
