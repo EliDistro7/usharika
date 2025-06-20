@@ -258,7 +258,7 @@ const SessionsList = ({
         <div className="music-player-fullscreen">
           <Modal.Header className="music-player-header border-0 pb-0">
             <Modal.Title className="d-flex align-items-center music-player-title">
-              <Headphones size={28} className="me-3 headphones-icon" />
+              <Headphones size={28} className="me-3 headphones-icon text-white" />
               KKKT YOMBO studios
             </Modal.Title>
             <div className="d-flex align-items-center gap-2">
