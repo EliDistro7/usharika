@@ -29,8 +29,9 @@ const AboutSection = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#videoModal"
                   onClick={() =>
-                    handlePlayClick("https://www.youtube.com/embed/urWBW0MRsiw")
+                    handlePlayClick("https://www.youtube.com/embed/Fhy4gc9DKlI")
                   }
+                    
                 >
                   <span></span>
                 </button>
