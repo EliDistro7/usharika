@@ -21,7 +21,7 @@ export default function Home() {
   pauseOnHover={true}/> 
       {/* Highlights  <Series />
       Section */}
-     <LiveSeries />
+   
       <HighlightsWrapper  />
 
       {/* Pledge Section */}
