@@ -9,12 +9,14 @@ import { NewsTicker } from '@/components/NewsTicker';
 import FutureEventsCarousel from "@/components/xmass/FutureEventsCarousel";
 import Series from '@/components/admins/Series';
 import LiveSeries from '@/components/series/LiveSeries';
+//import SermonAudioPlayer from "@/components/series/audio-player/Premiere";
 
 export default function Home() {
   const dataSets = [beach,kipaimara, efm];
 
   return (
     <div className="px-0">
+      
      
      <NewsTicker  direction="left"
     className=""

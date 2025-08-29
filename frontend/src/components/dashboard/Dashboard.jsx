@@ -21,7 +21,7 @@ const PinnedAnnouncements = ({ notifications }) => {
   return (
     <div className="dropdown">
       <button
-        className="btn btn-gradient-purple dropdown-toggle shadow-sm animate__animated animate__fadeIn"
+        className="btn btn-gradient-purple dropdown-toggle shadow-sm d-flex align-items-center"
         type="button"
         id="pinnedAnnouncementsDropdown"
         data-bs-toggle="dropdown"
@@ -30,11 +30,12 @@ const PinnedAnnouncements = ({ notifications }) => {
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           border: 'none',
           borderRadius: '25px',
-          padding: '12px 24px',
+          padding: '10px 20px',
           fontWeight: '600',
           color: 'white',
           transition: 'all 0.3s ease',
-          boxShadow: '0 4px 15px rgba(111, 66, 193, 0.3)'
+          boxShadow: '0 4px 15px rgba(111, 66, 193, 0.3)',
+          minWidth: '180px'
         }}
         onMouseEnter={(e) => {
           e.target.style.transform = 'translateY(-2px)';
@@ -46,15 +47,17 @@ const PinnedAnnouncements = ({ notifications }) => {
         }}
       >
         <i className="bi bi-pin-angle-fill me-2"></i>
-        Matangazo Muhimu 
+        <span className="flex-grow-1 text-start">Matangazo</span>
         {pinned.length > 0 && (
           <span 
-            className="badge ms-2 animate__animated animate__pulse animate__infinite"
+            className="badge ms-2"
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backgroundColor: 'rgba(255, 255, 255, 0.25)',
               color: 'white',
               borderRadius: '12px',
-              padding: '4px 8px'
+              padding: '4px 8px',
+              fontSize: '0.75rem',
+              minWidth: '20px'
             }}
           >
             {pinned.length}
@@ -62,13 +65,13 @@ const PinnedAnnouncements = ({ notifications }) => {
         )}
       </button>
       <ul
-        className="dropdown-menu dropdown-menu-end shadow-lg animate__animated animate__fadeInDown"
+        className="dropdown-menu dropdown-menu-end shadow-lg"
         aria-labelledby="pinnedAnnouncementsDropdown"
         style={{
           borderRadius: '20px',
           border: 'none',
           boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
-          minWidth: '320px',
+          minWidth: '350px',
           maxHeight: '400px',
           overflowY: 'auto'
         }}
@@ -77,7 +80,7 @@ const PinnedAnnouncements = ({ notifications }) => {
           pinned.map((announcement, index) => (
             <li key={index} className="dropdown-item-wrapper">
               <div 
-                className="dropdown-item border-0 p-3 mb-2"
+                className="dropdown-item border-0 p-3 mb-1 mx-2"
                 style={{
                   borderRadius: '15px',
                   background: 'linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%)',
@@ -95,7 +98,7 @@ const PinnedAnnouncements = ({ notifications }) => {
               >
                 <div className="d-flex align-items-start">
                   <div 
-                    className="me-3 mt-1"
+                    className="me-3 mt-1 flex-shrink-0"
                     style={{
                       width: '8px',
                       height: '8px',
@@ -104,7 +107,7 @@ const PinnedAnnouncements = ({ notifications }) => {
                     }}
                   ></div>
                   <div className="flex-grow-1">
-                    <p className="mb-2 fw-500" style={{ lineHeight: '1.4' }}>
+                    <p className="mb-2 fw-500" style={{ lineHeight: '1.4', fontSize: '0.9rem' }}>
                       {announcement.message}
                     </p>
                     <small className="text-muted d-flex align-items-center">
@@ -121,10 +124,10 @@ const PinnedAnnouncements = ({ notifications }) => {
             </li>
           ))
         ) : (
-          <li className="dropdown-item text-center py-4">
+          <li className="dropdown-item text-center py-5">
             <div className="text-muted">
-              <i className="bi bi-pin" style={{ fontSize: '2rem', opacity: '0.3' }}></i>
-              <p className="mt-2 mb-0">Hakuna matangazo uliyo-pin.</p>
+              <i className="bi bi-pin" style={{ fontSize: '2.5rem', opacity: '0.3' }}></i>
+              <p className="mt-3 mb-0">Hakuna matangazo uliyo-pin.</p>
             </div>
           </li>
         )}
@@ -180,24 +183,24 @@ const Dashboard = ({ user, summary }) => {
 
   const handleLogout = () => {
     toast.info(
-      <div className="text-center p-2">
+      <div className="text-center p-3">
         <div className="mb-3">
-          <i className="bi bi-question-circle" style={{ fontSize: '2rem', color: '#6f42c1' }}></i>
+          <i className="bi bi-question-circle" style={{ fontSize: '2.5rem', color: '#6f42c1' }}></i>
         </div>
-        <p className="mb-3 fw-500">Unataka ku-log-out?</p>
-        <div className="d-flex gap-2 justify-content-center">
+        <h6 className="mb-3 fw-600">Unataka ku-log-out?</h6>
+        <div className="d-flex gap-3 justify-content-center">
           <button
-            className="btn btn-danger btn-sm px-4"
+            className="btn btn-danger btn-sm px-4 py-2"
             onClick={() => confirmLogout(true)}
-            style={{ borderRadius: '20px' }}
+            style={{ borderRadius: '20px', fontWeight: '600' }}
           >
             <i className="bi bi-check-lg me-1"></i>
             Ndio
           </button>
           <button
-            className="btn btn-secondary btn-sm px-4"
+            className="btn btn-secondary btn-sm px-4 py-2"
             onClick={() => confirmLogout(false)}
-            style={{ borderRadius: '20px' }}
+            style={{ borderRadius: '20px', fontWeight: '600' }}
           >
             <i className="bi bi-x-lg me-1"></i>
             Hapana
@@ -262,43 +265,58 @@ const Dashboard = ({ user, summary }) => {
     <>
       {/* Custom Styles */}
       <style jsx>{`
-        .container {
+        .dashboard-container {
           background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
           min-height: 100vh;
-          
-          padding-top: 20px;
+          padding: 20px 0;
         }
         
         .navbar-enhanced {
-          
-          border-radius: 25px;
-        
-          border: none;
-          margin-bottom: 2rem;
-        }
-        
-        .action-buttons-container {
           background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(10px);
           border-radius: 25px;
-          padding: 20px;
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .header-section {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-radius: 25px;
+          padding: 25px 30px;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          margin-bottom: 25px;
+        }
+        
+        .user-avatar {
+          width: 60px;
+          height: 60px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 1.8rem;
+          box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+          flex-shrink: 0;
         }
         
         .btn-logout {
           background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
           border: none;
           border-radius: 25px;
-          padding: 12px 30px;
+          padding: 10px 25px;
           color: white;
           font-weight: 600;
           transition: all 0.3s ease;
           box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+          min-width: 120px;
         }
         
         .btn-logout:hover {
-          transform: translateY(-3px);
+          transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
           color: white;
         }
@@ -308,9 +326,9 @@ const Dashboard = ({ user, summary }) => {
           backdrop-filter: blur(10px);
           border-radius: 25px;
           padding: 30px;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.2);
-          margin-bottom: 2rem;
+          margin-bottom: 25px;
         }
         
         .contributions-card {
@@ -318,14 +336,14 @@ const Dashboard = ({ user, summary }) => {
           backdrop-filter: blur(10px);
           border-radius: 25px;
           overflow: hidden;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.2);
           transition: all 0.3s ease;
         }
         
         .contributions-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+          transform: translateY(-3px);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
         }
         
         .card-header-enhanced {
@@ -358,10 +376,11 @@ const Dashboard = ({ user, summary }) => {
           border: 2px solid rgba(255, 255, 255, 0.3);
           color: white;
           border-radius: 20px;
-          padding: 8px 20px;
+          padding: 10px 25px;
           font-weight: 600;
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
+          min-width: 150px;
         }
         
         .btn-download:hover {
@@ -373,17 +392,20 @@ const Dashboard = ({ user, summary }) => {
         
         .table-enhanced {
           background: transparent;
+          margin-bottom: 0;
         }
         
         .table-enhanced thead th {
           background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
           color: #6f42c1;
           border: none;
-          padding: 20px 15px;
+          padding: 20px 20px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.5px;
           font-size: 0.85rem;
+          vertical-align: middle;
+          white-space: nowrap;
         }
         
         .table-enhanced tbody tr {
@@ -393,12 +415,12 @@ const Dashboard = ({ user, summary }) => {
         
         .table-enhanced tbody tr:hover {
           background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-          transform: scale(1.01);
+          transform: scale(1.005);
           box-shadow: 0 5px 15px rgba(111, 66, 193, 0.1);
         }
         
         .table-enhanced tbody td {
-          padding: 20px 15px;
+          padding: 20px 20px;
           border: none;
           vertical-align: middle;
           font-weight: 500;
@@ -442,9 +464,10 @@ const Dashboard = ({ user, summary }) => {
         }
         
         .amount-display {
-          font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+          font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
           font-weight: 600;
           color: #2d3748;
+          font-variant-numeric: tabular-nums;
         }
         
         .amount-paid {
@@ -456,13 +479,14 @@ const Dashboard = ({ user, summary }) => {
         }
         
         .mobile-card {
-          background: rgba(255, 255, 255, 0.9);
-          border-radius: 15px;
-          padding: 20px;
-          margin-bottom: 15px;
+          background: rgba(255, 255, 255, 0.95);
+          border-radius: 20px;
+          padding: 25px;
+          margin-bottom: 20px;
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
           border-left: 5px solid #6f42c1;
           transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .mobile-card:hover {
@@ -470,28 +494,68 @@ const Dashboard = ({ user, summary }) => {
           box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
         
+        .mobile-stats {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+          border-radius: 15px;
+          padding: 15px;
+          text-align: center;
+          transition: all 0.3s ease;
+        }
+        
+        .mobile-stats:hover {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        }
+        
         @media (max-width: 768px) {
-          .container {
-            padding-left: 15px;
-            padding-right: 15px;
+          .dashboard-container {
+            padding: 15px 10px;
           }
           
-          .action-buttons-container {
-            padding: 15px;
-            margin-bottom: 1rem;
+          .header-section {
+            padding: 20px;
+            margin-bottom: 20px;
+          }
+          
+          .user-avatar {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
           }
           
           .donations-container {
             padding: 20px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
           }
           
           .card-header-enhanced {
             padding: 20px;
           }
           
-          .contributions-card {
-            margin-bottom: 0;
+          .mobile-card {
+            padding: 20px;
+            margin-bottom: 15px;
+          }
+          
+          .btn-logout,
+          .btn-download {
+            padding: 8px 20px;
+            min-width: auto;
+            font-size: 0.9rem;
+          }
+        }
+        
+        @media (max-width: 576px) {
+          .header-section {
+            padding: 15px;
+          }
+          
+          .donations-container {
+            padding: 15px;
+          }
+          
+          .card-header-enhanced {
+            padding: 15px;
           }
         }
         
@@ -520,114 +584,175 @@ const Dashboard = ({ user, summary }) => {
         }
       `}</style>
 
-      <div className="container animate-fade-in">
-        {/* Enhanced Navbar */}
-        <div className="mb-4 animate-slide-up">
-          <div className="navbar-enhanced p-3">
+      <div className="dashboard-container">
+        <div className="container-fluid animate-fade-in">
+          {/* Enhanced Navbar */}
+          <div className="navbar-enhanced p-3 mb-4 animate-slide-up">
             <NavbarTabs roles={userRoles} notifications={notifications || []} user={user} />
           </div>
           
-          {/* Action Buttons Container */}
-          <div className="action-buttons-container animate-slide-up">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-              <div className="d-flex align-items-center">
-                <div 
-                  className="me-3"
-                  style={{
-                    width: '50px',
-                    height: '50px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '1.5rem'
-                  }}
-                >
-                  <i className="bi bi-person-circle"></i>
-                </div>
-                <div>
-                  <h5 className="mb-0" style={{ color: '#2d3748', fontWeight: '700' }}>
-                    Karibu, {user?.name || 'Msharika'}!
-                  </h5>
-                  <p className="mb-0 text-muted">Hali ya sadaka zako za kanisa</p>
+          {/* Enhanced Header Section */}
+          <div className="header-section animate-slide-up">
+            <div className="row align-items-center g-3">
+              <div className="col-lg-8">
+                <div className="d-flex align-items-center">
+                  <div className="user-avatar me-4">
+                    <i className="bi bi-person-circle"></i>
+                  </div>
+                  <div className="flex-grow-1">
+                    <h4 className="mb-1 fw-bold" style={{ color: '#2d3748' }}>
+                      Karibu, {user?.name || 'Msharika'}!
+                    </h4>
+                    <p className="mb-0 text-muted">
+                      <i className="bi bi-graph-up me-2"></i>
+                      Hali ya sadaka zako za kanisa
+                    </p>
+                  </div>
                 </div>
               </div>
               
-              <div className="d-flex gap-3">
-                <button 
-                  className="btn btn-logout"
-                  onClick={handleLogout}
-                >
-                  <i className="bi bi-box-arrow-right me-2"></i>
-                  Toka
-                </button>
-                <PinnedAnnouncements notifications={notifications} />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Donations Component */}
-        <div className="donations-container animate-slide-up">
-          <Donations />
-        </div>
-
-        {/* Enhanced Contributions Table */}
-        <div className="contributions-card animate-slide-up">
-          <div className="card-header-enhanced">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center position-relative">
-              <div className="d-flex align-items-center mb-3 mb-md-0">
-                <i className="bi bi-bar-chart-fill me-3" style={{ fontSize: '1.5rem' }}></i>
-                <div>
-                  <h4 className="mb-0">Sadaka za Kanisa</h4>
-                  <small className="opacity-75">Muhtasari wa michango yako</small>
+              <div className="col-lg-4">
+                <div className="d-flex flex-column flex-sm-row gap-3 justify-content-lg-end">
+                  <PinnedAnnouncements notifications={notifications} />
+                  <button 
+                    className="btn btn-logout d-flex align-items-center justify-content-center"
+                    onClick={handleLogout}
+                  >
+                    <i className="bi bi-box-arrow-right me-2"></i>
+                    <span>Toka</span>
+                  </button>
                 </div>
               </div>
-              <button
-                className="btn btn-download"
-                onClick={handleDownload}
-              >
-                <i className="bi bi-download me-2"></i>
-                Pakua Ripoti
-              </button>
             </div>
           </div>
           
-          <div className="card-body p-0">
-            {/* Desktop Table */}
-            <div className="d-none d-lg-block">
-              <div className="table-responsive">
-                <table className="table table-enhanced mb-0">
-                  <thead>
-                    <tr>
-                      <th>
-                        <i className="bi bi-tag me-2"></i>
-                        Aina ya Sadaka
-                      </th>
-                      <th className="text-end">
-                        <i className="bi bi-check-circle me-2"></i>
-                        Kilicholipwa
-                      </th>
-                      <th className="text-end">
-                        <i className="bi bi-target me-2"></i>
-                        Iliyoahidiwa
-                      </th>
-                      <th className="text-center">
-                        <i className="bi bi-graph-up me-2"></i>
-                        Maendeleo
-                      </th>
-                      <th className="text-end">
-                        <i className="bi bi-clock me-2"></i>
-                        Iliyobaki
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pledges.map((pledge, index) => (
-                      <tr key={index}>
-                        <td>
+          {/* Donations Component */}
+          <div className="donations-container animate-slide-up">
+            <Donations />
+          </div>
+
+          {/* Enhanced Contributions Table */}
+          <div className="contributions-card animate-slide-up">
+            <div className="card-header-enhanced">
+              <div className="row align-items-center position-relative">
+                <div className="col-lg-8">
+                  <div className="d-flex align-items-center">
+                    <div className="me-3">
+                      <i className="bi bi-bar-chart-fill" style={{ fontSize: '1.8rem' }}></i>
+                    </div>
+                    <div>
+                      <h4 className="mb-1 fw-bold">Sadaka za Kanisa</h4>
+                      <p className="mb-0 opacity-75" style={{ fontSize: '0.9rem' }}>
+                        Muhtasari wa michango yako
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-4 mt-3 mt-lg-0">
+                  <div className="d-flex justify-content-lg-end">
+                    <button
+                      className="btn btn-download d-flex align-items-center justify-content-center"
+                      onClick={handleDownload}
+                    >
+                      <i className="bi bi-download me-2"></i>
+                      <span>Pakua Ripoti</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="card-body p-0">
+              {/* Desktop Table */}
+              <div className="d-none d-xl-block">
+                <div className="table-responsive">
+                  <table className="table table-enhanced">
+                    <thead>
+                      <tr>
+                        <th style={{ minWidth: '150px' }}>
+                          <i className="bi bi-tag me-2"></i>
+                          Aina ya Sadaka
+                        </th>
+                        <th className="text-end" style={{ minWidth: '140px' }}>
+                          <i className="bi bi-check-circle me-2"></i>
+                          Kilicholipwa
+                        </th>
+                        <th className="text-end" style={{ minWidth: '140px' }}>
+                          <i className="bi bi-target me-2"></i>
+                          Iliyoahidiwa
+                        </th>
+                        <th className="text-center" style={{ minWidth: '200px' }}>
+                          <i className="bi bi-graph-up me-2"></i>
+                          Maendeleo
+                        </th>
+                        <th className="text-end" style={{ minWidth: '140px' }}>
+                          <i className="bi bi-clock me-2"></i>
+                          Iliyobaki
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pledges.map((pledge, index) => (
+                        <tr key={index}>
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <div 
+                                className="me-3 flex-shrink-0"
+                                style={{
+                                  width: '12px',
+                                  height: '12px',
+                                  borderRadius: '50%',
+                                  background: index % 2 === 0 ? '#667eea' : '#764ba2'
+                                }}
+                              ></div>
+                              <strong className="text-nowrap">{pledge.title}</strong>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <span className="amount-display amount-paid">
+                              TZS {pledge.paid.toLocaleString()}
+                            </span>
+                          </td>
+                          <td className="text-end">
+                            <span className="amount-display">
+                              TZS {pledge.total.toLocaleString()}
+                            </span>
+                          </td>
+                          <td className="text-center">
+                            <div className="progress progress-enhanced mx-2">
+                              <div
+                                className="progress-bar progress-bar-enhanced d-flex align-items-center justify-content-center"
+                                role="progressbar"
+                                style={{ width: `${Math.min((pledge.paid / pledge.total) * 100, 100)}%` }}
+                                aria-valuenow={(pledge.paid / pledge.total) * 100}
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                              >
+                                <span className="fw-bold text-white" style={{ fontSize: '0.8rem' }}>
+                                  {Math.round((pledge.paid / pledge.total) * 100)}%
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <span className="amount-display amount-remaining">
+                              TZS {(pledge.total - pledge.paid).toLocaleString()}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile/Tablet Cards */}
+              <div className="d-xl-none p-3">
+                <div className="row">
+                  {pledges.map((pledge, index) => (
+                    <div key={index} className="col-lg-6 col-12">
+                      <div className="mobile-card">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
                           <div className="d-flex align-items-center">
                             <div 
                               className="me-3"
@@ -638,90 +763,63 @@ const Dashboard = ({ user, summary }) => {
                                 background: index % 2 === 0 ? '#667eea' : '#764ba2'
                               }}
                             ></div>
-                            <strong>{pledge.title}</strong>
+                            <h6 className="mb-0 fw-bold" style={{ color: '#6f42c1' }}>
+                              {pledge.title}
+                            </h6>
                           </div>
-                        </td>
-                        <td className="text-end amount-display amount-paid">
-                          TZS {pledge.paid.toLocaleString()}
-                        </td>
-                        <td className="text-end amount-display">
-                          TZS {pledge.total.toLocaleString()}
-                        </td>
-                        <td className="text-center">
-                          <div className="progress progress-enhanced">
-                            <div
-                              className="progress-bar progress-bar-enhanced d-flex align-items-center justify-content-center"
-                              role="progressbar"
-                              style={{ width: `${Math.min((pledge.paid / pledge.total) * 100, 100)}%` }}
-                              aria-valuenow={(pledge.paid / pledge.total) * 100}
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              <span className="fw-bold text-white">
-                                {Math.round((pledge.paid / pledge.total) * 100)}%
-                              </span>
+                          <span 
+                            className="badge"
+                            style={{
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              borderRadius: '15px',
+                              padding: '8px 12px',
+                              color: 'white',
+                              fontSize: '0.85rem',
+                              fontWeight: '600'
+                            }}
+                          >
+                            {Math.round((pledge.paid / pledge.total) * 100)}%
+                          </span>
+                        </div>
+                        
+                        <div className="progress progress-enhanced mb-4">
+                          <div
+                            className="progress-bar progress-bar-enhanced"
+                            style={{ width: `${Math.min((pledge.paid / pledge.total) * 100, 100)}%` }}
+                          ></div>
+                        </div>
+                        
+                        <div className="row g-3">
+                          <div className="col-4">
+                            <div className="mobile-stats">
+                              <div className="small text-muted mb-1 fw-600">Kilicholipwa</div>
+                              <div className="fw-bold amount-paid" style={{ fontSize: '0.9rem' }}>
+                                TZS {(pledge.paid / 1000000).toFixed(1)}M
+                              </div>
                             </div>
                           </div>
-                        </td>
-                        <td className="text-end amount-display amount-remaining">
-                          TZS {(pledge.total - pledge.paid).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Mobile Cards */}
-            <div className="d-lg-none p-3">
-              {pledges.map((pledge, index) => (
-                <div key={index} className="mobile-card">
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h6 className="mb-0 fw-bold" style={{ color: '#6f42c1' }}>
-                      {pledge.title}
-                    </h6>
-                    <span 
-                      className="badge"
-                      style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        borderRadius: '15px',
-                        padding: '8px 12px'
-                      }}
-                    >
-                      {Math.round((pledge.paid / pledge.total) * 100)}%
-                    </span>
-                  </div>
-                  
-                  <div className="progress progress-enhanced mb-3">
-                    <div
-                      className="progress-bar progress-bar-enhanced"
-                      style={{ width: `${Math.min((pledge.paid / pledge.total) * 100, 100)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <div className="row text-center">
-                    <div className="col-4">
-                      <small className="text-muted d-block">Kilicholipwa</small>
-                      <strong className="amount-paid">
-                        {(pledge.paid / 1000000).toFixed(1)}M
-                      </strong>
+                          <div className="col-4">
+                            <div className="mobile-stats">
+                              <div className="small text-muted mb-1 fw-600">Lengo</div>
+                              <div className="fw-bold amount-display" style={{ fontSize: '0.9rem' }}>
+                                TZS {(pledge.total / 1000000).toFixed(1)}M
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-4">
+                            <div className="mobile-stats">
+                              <div className="small text-muted mb-1 fw-600">Imebaki</div>
+                              <div className="fw-bold amount-remaining" style={{ fontSize: '0.9rem' }}>
+                                TZS {((pledge.total - pledge.paid) / 1000000).toFixed(1)}M
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-4">
-                      <small className="text-muted d-block">Lengo</small>
-                      <strong className="amount-display">
-                        {(pledge.total / 1000000).toFixed(1)}M
-                      </strong>
-                    </div>
-                    <div className="col-4">
-                      <small className="text-muted d-block">Imebaki</small>
-                      <strong className="amount-remaining">
-                        {((pledge.total - pledge.paid) / 1000000).toFixed(1)}M
-                      </strong>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
@@ -751,10 +849,35 @@ const Dashboard = ({ user, summary }) => {
           box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
           border: 1px solid rgba(255, 255, 255, 0.2) !important;
           backdrop-filter: blur(10px) !important;
+          background: rgba(255, 255, 255, 0.95) !important;
         }
         
         .custom-toast-body {
           padding: 20px !important;
+        }
+        
+        .Toastify__toast--info {
+          background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        .table-responsive {
+          border-radius: 0 0 25px 25px;
+          overflow: hidden;
+        }
+        
+        .dropdown-menu {
+          animation: fadeInDown 0.3s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </>

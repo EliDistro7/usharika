@@ -1,13 +1,16 @@
 import { Cloudinary } from '@cloudinary/url-gen';
 import axios from 'axios';
 
+ //static const String cloudName = 'df9gkjxm8';
+  //static const String uploadPreset = 'audio_assets';
+
 // Initialize Cloudinary instance
-const cloudinary = new Cloudinary({ cloud: { cloudName: 'du5yhjfog' } }); 
+const cloudinary = new Cloudinary({ cloud: { cloudName: 'df9gkjxm8' } }); 
 
 
 // Utility function to upload a file to Cloudinary
 export const uploadToCloudinary = async (file, onProgress) => {
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/du5yhjfog/upload`;
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/df9gkjxm8/upload`;
   console.log('Uploading to Cloudinary:', cloudinaryUrl);
 
   const formData = new FormData();
