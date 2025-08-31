@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+///import Header from "@/components/Header";
+//import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
+import Header from "@/components/Header";
 
 // Metadata
 export const metadata: Metadata = {
@@ -97,9 +98,9 @@ export default function RootLayout({
 
       <body>
         <Spinner />
-        <Header />
+         <Header  />
         {children}
-        <Footer />
+  
 
         {/* JavaScript Libraries */}
         <Script

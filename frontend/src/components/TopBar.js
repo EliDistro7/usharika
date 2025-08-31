@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import SeriesNotifications from '@/components/SeriesNotifications';
 import Notifications from './Notifications';
 import { getLoggedInUserId } from '@/hooks/useUser';
+import Header from './Header';
 
 const TopBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,434 +30,407 @@ const TopBar = () => {
   }, [lastScrollY]);
 
   const handleLogin = () => {
-    // Add your login navigation logic here
     window.location.href = '/auth';
   };
 
   const handleSignup = () => {
-    // Add your signup navigation logic here
     window.location.href = '/usajili';
+  };
+
+  const handleMenuClick = () => {
+    // Menu handler to be implemented
+    console.log('Menu clicked');
   };
 
   return (
     <>
       <div
-        className={`container-fluid text-white py-4 px-3 position-relative transition-all ${
+        className={`position-fixed top-0 w-100 text-white py-3 px-3 transition-all ${
           isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
         style={{
-          background: 'linear-gradient(135deg, #6a0dad 0%, #9c27b0 35%, #e91e63 70%, #ff6b35 100%)',
-          borderRadius: '0 0 50px 50px',
-          boxShadow: '0 8px 32px rgba(106, 13, 173, 0.3)',
-          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+          background: 'linear-gradient(135deg, #4a148c 0%, #6a1b9a 25%, #7b1fa2 50%, #8e24aa 75%, #9c27b0 100%)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 4px 20px rgba(74, 20, 140, 0.25)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
-          position: 'relative',
           zIndex: 1000,
-          // REMOVED: overflow: 'hidden' - this was clipping the dropdowns
+          minHeight: '70px',
         }}
       >
-        {/* Animated Background Elements - moved to separate container with overflow hidden */}
+        {/* Subtle animated background */}
         <div 
-          className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden"
+          className="position-absolute top-0 start-0 w-100 h-100"
           style={{
-            borderRadius: '0 0 50px 50px',
-            // Overflow hidden only applies to background elements, not notification dropdowns
+            background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%)',
+            animation: 'gentle-float 8s ease-in-out infinite',
           }}
-        >
-          <div 
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
-              animation: 'float 6s ease-in-out infinite',
-            }}
-          />
-          
-          {/* Floating Particles */}
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="position-absolute rounded-circle"
-              style={{
-                width: `${Math.random() * 8 + 4}px`,
-                height: `${Math.random() * 8 + 4}px`,
-                background: 'rgba(255,255,255,0.3)',
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animation: `particle-float ${3 + Math.random() * 4}s linear infinite`,
-                animationDelay: `${Math.random() * 2}s`,
-              }}
-            />
-          ))}
-        </div>
+        />
 
-        <div className="container d-flex justify-content-between align-items-center position-relative">
-          {/* Church Logo and Name Section */}
-          <div className="d-flex align-items-center animate__animated animate__fadeInLeft">
-            <div 
-              className="position-relative me-3"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))',
-                borderRadius: '50%',
-                padding: '8px',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255,255,255,0.3)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-              }}
-            >
-              <img
-                src="/img/lutherRose.jpg"
-                alt="Church Logo"
-                className="rounded-circle"
-                style={{ 
-                  width: '60px', 
-                  height: '60px',
-                  objectFit: 'cover',
-                  border: '3px solid rgba(255,255,255,0.4)',
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.1) rotate(5deg)';
-                  e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'scale(1) rotate(0deg)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
-              
-              {/* Logo Glow Effect */}
+        <div className="container-fluid d-flex justify-content-between align-items-center position-relative h-100">
+          {/* Left Section: Menu + Logo + Title */}
+          <div className="d-flex align-items-center gap-3">
+            {/* Menu Button */}
+           <Header />
+
+            {/* Logo and Title */}
+            <div className="d-flex align-items-center gap-3">
               <div 
-                className="position-absolute top-50 start-50 translate-middle rounded-circle"
+                className="position-relative"
                 style={{
-                  width: '80px',
-                  height: '80px',
-                  background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-                  animation: 'glow-pulse 3s ease-in-out infinite',
-                  zIndex: -1,
-                }}
-              />
-            </div>
-
-            <div className="text-start">
-              <h1 
-                className="mb-1 position-relative"
-                style={{ 
-                  fontFamily: 'Georgia, serif', 
-                  fontWeight: 'bold', 
-                  color: 'white',
-                  fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
-                  textShadow: '2px 2px 8px rgba(0,0,0,0.3)',
-                  letterSpacing: '1px',
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '16px',
+                  padding: '6px',
+                  border: '1px solid rgba(255,255,255,0.2)',
                 }}
               >
-                KKKT USHARIKA WA YOMBO
-                <div 
-                  className="position-absolute bottom-0 start-0"
-                  style={{
-                    width: '100%',
-                    height: '3px',
-                    background: 'linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0.3), rgba(255,255,255,0.8))',
-                    borderRadius: '2px',
-                    animation: 'shimmer 2s ease-in-out infinite',
+                <img
+                  src="/img/lutherRose.jpg"
+                  alt="Church Logo"
+                  className="rounded-3"
+                  style={{ 
+                    width: '48px', 
+                    height: '48px',
+                    objectFit: 'cover',
+                    transition: 'all 0.3s ease',
                   }}
                 />
-              </h1>
-              <p 
-                className="mb-0 small fw-medium"
-                style={{ 
-                  color: 'rgba(255,255,255,0.9)',
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.5px',
-                  textShadow: '1px 1px 4px rgba(0,0,0,0.2)',
-                }}
-              >
-                <i className="fas fa-cross me-2"></i>
-                Tulio pamoja katika imani
-              </p>
+              </div>
+
+              <div className="d-none d-sm-block">
+                <h1 
+                  className="mb-0"
+                  style={{ 
+                    fontFamily: 'system-ui, -apple-system, sans-serif', 
+                    fontWeight: '700', 
+                    color: 'white',
+                    fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    letterSpacing: '0.5px',
+                  }}
+                >
+                  KKKT YOMBO
+                </h1>
+              </div>
             </div>
           </div>
 
-          {/* Right Side Content */}
-          <div className="d-flex align-items-center gap-3 animate__animated animate__fadeInRight">
+          {/* Right Section: Notifications or Auth Buttons */}
+          <div className="d-flex align-items-center gap-2">
             {isLoggedIn ? (
               /* Notifications for logged in users */
-              <div className="d-flex align-items-center gap-3 notification-container">
+              <div className="d-flex align-items-center gap-2">
                 <div 
-                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center notification-wrapper"
+                  className="position-relative d-flex align-items-center justify-content-center"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
+                    background: 'rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    zIndex: 1050, // Higher z-index for dropdown visibility
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '12px',
+                    width: '44px',
+                    height: '44px',
+                    transition: 'all 0.2s ease',
+                    zIndex: 1050,
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                    e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
+                    e.target.style.background = 'rgba(255,255,255,0.25)';
+                    e.target.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                    e.target.style.background = 'rgba(255,255,255,0.15)';
+                    e.target.style.transform = 'scale(1)';
                   }}
                 >
                   <SeriesNotifications />
                 </div>
                 
                 <div 
-                  className="position-relative p-3 rounded-circle d-flex align-items-center justify-content-center notification-wrapper"
+                  className="position-relative d-flex align-items-center justify-content-center"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
+                    background: 'rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    zIndex: 1050, // Higher z-index for dropdown visibility
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '12px',
+                    width: '44px',
+                    height: '44px',
+                    transition: 'all 0.2s ease',
+                    zIndex: 1050,
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                    e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
+                    e.target.style.background = 'rgba(255,255,255,0.25)';
+                    e.target.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                    e.target.style.background = 'rgba(255,255,255,0.15)';
+                    e.target.style.transform = 'scale(1)';
                   }}
                 >
                   <Notifications />
                 </div>
+
+                {/* Quick Contact Icons - Hidden on small screens when logged in */}
+                <div className="d-none d-md-flex align-items-center gap-2 ms-2">
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: '10px',
+                      width: '36px',
+                      height: '36px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                    }}
+                    title="Barua Pepe"
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.1)';
+                    }}
+                  >
+                    <i className="fas fa-envelope" style={{ fontSize: '14px' }}></i>
+                  </div>
+                  
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: '10px',
+                      width: '36px',
+                      height: '36px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                    }}
+                    title="Simu"
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.1)';
+                    }}
+                  >
+                    <i className="fas fa-phone" style={{ fontSize: '14px' }}></i>
+                  </div>
+                </div>
               </div>
             ) : (
-              /* Login/Signup buttons for non-logged in users */
-              <div className="d-flex align-items-center gap-3">
-                {/* Login Button */}
+              /* Auth buttons for non-logged in users */
+              <div className="d-flex align-items-center gap-2">
+                {/* Login Button - Compact */}
                 <Button
                   onClick={handleLogin}
-                  className="d-flex align-items-center gap-2 px-4 py-2"
+                  className="d-flex align-items-center gap-2 px-3 py-2"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15))',
+                    background: 'rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(255,255,255,0.4)',
-                    borderRadius: '25px',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    borderRadius: '12px',
                     color: 'white',
                     fontWeight: '600',
-                    fontSize: '0.9rem',
-                    letterSpacing: '0.5px',
-                    textShadow: '1px 1px 3px rgba(0,0,0,0.2)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    minWidth: '120px',
-                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                    transition: 'all 0.2s ease',
+                    minWidth: 'auto',
+                    height: '44px',
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.25))';
-                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
-                    e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
-                    e.target.style.borderColor = 'rgba(255,255,255,0.6)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15))';
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                    e.target.style.background = 'rgba(255,255,255,0.25)';
+                    e.target.style.transform = 'translateY(-1px)';
                     e.target.style.borderColor = 'rgba(255,255,255,0.4)';
                   }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.15)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.25)';
+                  }}
                 >
-                  <i className="fas fa-sign-in-alt"></i>
-                  <span>Ingia</span>
+                  <i className="fas fa-sign-in-alt" style={{ fontSize: '14px' }}></i>
+                  <span className="d-none d-sm-inline">Ingia</span>
                 </Button>
 
-                {/* Signup Button */}
+                {/* Signup Button - Compact */}
                 <Button
                   onClick={handleSignup}
-                  className="d-flex align-items-center gap-2 px-4 py-2"
+                  className="d-flex align-items-center gap-2 px-3 py-2"
                   style={{
                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                    border: '2px solid rgba(255,255,255,0.8)',
-                    borderRadius: '25px',
-                    color: '#6a0dad',
+                    border: '1px solid rgba(255,255,255,0.9)',
+                    borderRadius: '12px',
+                    color: '#4a148c',
                     fontWeight: '700',
-                    fontSize: '0.9rem',
-                    letterSpacing: '0.5px',
-                    boxShadow: '0 8px 32px rgba(255,255,255,0.2)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    minWidth: '120px',
-                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    transition: 'all 0.2s ease',
+                    minWidth: 'auto',
+                    height: '44px',
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = 'linear-gradient(135deg, #6a0dad 0%, #9c27b0 100%)';
+                    e.target.style.background = 'linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%)';
                     e.target.style.color = 'white';
-                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
-                    e.target.style.boxShadow = '0 12px 40px rgba(106, 13, 173, 0.3)';
-                    e.target.style.borderColor = '#6a0dad';
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.borderColor = '#4a148c';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)';
-                    e.target.style.color = '#6a0dad';
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 32px rgba(255,255,255,0.2)';
-                    e.target.style.borderColor = 'rgba(255,255,255,0.8)';
+                    e.target.style.color = '#4a148c';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.9)';
                   }}
                 >
-                  <i className="fas fa-user-plus"></i>
-                  <span>Jisajili</span>
+                  <i className="fas fa-user-plus" style={{ fontSize: '14px' }}></i>
+                  <span className="d-none d-sm-inline">Jisajili</span>
                 </Button>
+
+                {/* Quick Contact Icons - Only on larger screens when not logged in */}
+                <div className="d-none d-lg-flex align-items-center gap-2 ms-2">
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: '10px',
+                      width: '36px',
+                      height: '36px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                    }}
+                    title="Barua Pepe"
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.1)';
+                    }}
+                  >
+                    <i className="fas fa-envelope" style={{ fontSize: '14px' }}></i>
+                  </div>
+                  
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      borderRadius: '10px',
+                      width: '36px',
+                      height: '36px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                    }}
+                    title="Simu"
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.1)';
+                    }}
+                  >
+                    <i className="fas fa-phone" style={{ fontSize: '14px' }}></i>
+                  </div>
+                </div>
               </div>
             )}
-
-            {/* Quick Actions - Show for both logged in and out users */}
-            <div className="d-none d-lg-flex align-items-center gap-2 ms-2">
-              <div 
-                className="p-2 rounded-circle d-flex align-items-center justify-content-center"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  width: '45px',
-                  height: '45px',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                }}
-                title="Barua Pepe"
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.1)';
-                  e.target.style.background = 'rgba(255,255,255,0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                  e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))';
-                }}
-              >
-                <i className="fas fa-envelope text-white"></i>
-              </div>
-              
-              <div 
-                className="p-2 rounded-circle d-flex align-items-center justify-content-center"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  width: '45px',
-                  height: '45px',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                }}
-                title="Simu"
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.1)';
-                  e.target.style.background = 'rgba(255,255,255,0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                  e.target.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))';
-                }}
-              >
-                <i className="fas fa-phone text-white"></i>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Decorative Bottom Wave */}
+        {/* Subtle bottom accent line */}
         <div 
-          className="position-absolute bottom-0 start-0 w-100 overflow-hidden"
+          className="position-absolute bottom-0 start-0 w-100"
           style={{
-            height: '20px',
-            background: 'linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%)',
-            backgroundSize: '20px 20px',
-            animation: 'wave-move 4s linear infinite',
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
           }}
         />
       </div>
 
+      {/* Body padding to account for fixed header */}
+      <div style={{ paddingTop: '70px' }} />
+
       {/* Custom CSS Styles */}
       <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes particle-float {
-          0% { transform: translateY(0px) translateX(0px); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100px) translateX(20px); opacity: 0; }
-        }
-        
-        @keyframes glow-pulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-        }
-        
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        
-        @keyframes wave-move {
-          0% { background-position: 0 0; }
-          100% { background-position: 40px 0; }
+        @keyframes gentle-float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          33% { transform: translateY(-3px) translateX(2px); }
+          66% { transform: translateY(2px) translateX(-2px); }
         }
         
         .transition-all {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Notification dropdown positioning */
-        .notification-container {
-          position: relative;
-        }
-        
-        .notification-wrapper {
-          position: static; /* Changed from relative to ensure dropdowns can extend beyond container */
-        }
-        
         /* Ensure notification dropdowns appear above other elements */
-        .notification-wrapper .dropdown-menu,
-        .notification-wrapper [class*="dropdown"],
-        .notification-wrapper [class*="popover"],
-        .notification-wrapper [class*="tooltip"] {
-          z-index: 1060 !important; /* Bootstrap's highest default z-index + 10 */
-          position: fixed !important; /* Use fixed positioning to avoid clipping */
+        .position-relative .dropdown-menu,
+        .position-relative [class*="dropdown"],
+        .position-relative [class*="popover"],
+        .position-relative [class*="tooltip"] {
+          z-index: 1060 !important;
+          position: fixed !important;
         }
         
-        /* Enhanced button hover effects */
+        /* Enhanced button interactions */
         .btn:active {
-          transform: translateY(1px) !important;
+          transform: translateY(1px) scale(0.98) !important;
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 1199px) {
-          .d-none.d-lg-flex {
-            display: none !important;
-          }
-        }
-        
-        @media (max-width: 991px) {
-          .container {
-            flex-direction: column;
-            gap: 1.5rem;
-            text-align: center;
+        /* Mobile optimizations */
+        @media (max-width: 767px) {
+          .container-fluid {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
           }
           
-          .animate__fadeInLeft,
-          .animate__fadeInRight {
-            animation: none !important;
-          }
-        }
-        
-        @media (max-width: 576px) {
-          .d-flex.gap-3 {
+          .gap-3 {
             gap: 0.75rem !important;
           }
           
-          .btn {
-            min-width: 100px !important;
-            padding: 0.5rem 0.75rem !important;
-            font-size: 0.8rem !important;
+          .gap-2 {
+            gap: 0.5rem !important;
           }
           
-          .d-flex.align-items-center.gap-3 {
-            flex-wrap: wrap;
-            justify-content: center;
+          /* Stack elements vertically on very small screens if needed */
+          @media (max-width: 480px) {
+            .d-flex.justify-content-between {
+              flex-wrap: wrap;
+              gap: 0.5rem;
+            }
+            
+            /* Reduce logo size on very small screens */
+            img {
+              width: 40px !important;
+              height: 40px !important;
+            }
+            
+            button, .btn {
+              width: 40px !important;
+              height: 40px !important;
+              padding: 0.5rem !important;
+            }
+            
+            .btn i {
+              font-size: 12px !important;
+            }
+          }
+        }
+        
+        /* Smooth scrolling for better UX */
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        /* Focus states for accessibility */
+        button:focus,
+        .btn:focus {
+          outline: 2px solid rgba(255,255,255,0.5);
+          outline-offset: 2px;
+        }
+        
+        /* Improved touch targets for mobile */
+        @media (pointer: coarse) {
+          button,
+          .btn {
+            min-height: 44px;
+            min-width: 44px;
           }
         }
       `}</style>

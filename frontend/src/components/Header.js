@@ -2,30 +2,44 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from 'react-bootstrap';
+import SeriesNotifications from '@/components/SeriesNotifications';
+import Notifications from './Notifications';
 import { getDesanitezedCookie, getLoggedInUserId } from '@/hooks/useUser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'animate.css';
-import TopBar from './TopBar';
-
 
 export default function Header() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const userId = getLoggedInUserId();
     setIsLoggedIn(userId !== null);
 
-    // Handle scroll effect for navbar
+    // Handle scroll effects for both visibility and background
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      
+      // Set scrolled state for background blur
+      setIsScrolled(currentScrollY > 50);
+      
+      // Handle visibility (hide on scroll down, show on scroll up)
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const handleAkauntiNavigation = () => {
     const cookieValue = getDesanitezedCookie();
@@ -38,10 +52,18 @@ export default function Header() {
     }
   };
 
+  const handleLogin = () => {
+    router.push('/auth');
+  };
+
+  const handleSignup = () => {
+    router.push('/usajili');
+  };
+
   const navLinkStyle = {
-    color: '#6a0dad',
+    color: 'white',
     fontWeight: '600',
-    fontSize: '1rem',
+    fontSize: '0.95rem',
     position: 'relative',
     transition: 'all 0.3s ease',
     textDecoration: 'none',
@@ -49,60 +71,391 @@ export default function Header() {
     borderRadius: '8px',
   };
 
-  const buttonStyle = {
-    background: 'linear-gradient(135deg, #6a0dad 0%, #9c27b0 50%, #e91e63 100%)',
-    border: 'none',
-    borderRadius: '25px',
-    padding: '12px 24px',
-    fontWeight: '600',
-    fontSize: '0.95rem',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    position: 'relative',
-    overflow: 'hidden',
-    boxShadow: '0 4px 15px rgba(106, 13, 173, 0.3)',
-  };
-
-  const outlineButtonStyle = {
-    background: 'transparent',
-    border: '2px solid transparent',
-    borderImage: 'linear-gradient(135deg, #6a0dad, #9c27b0, #e91e63) 1',
-    borderRadius: '25px',
-    padding: '10px 24px',
-    fontWeight: '600',
-    fontSize: '0.95rem',
-    color: '#6a0dad',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
   return (
     <>
-      {/* Top bar */}
-      <TopBar />
-
-      {/* Main Navbar */}
+      {/* Unified Header */}
       <header 
-        className={` border-bottom animate__animated animate__fadeInDown ${
-          isScrolled ? 'bg-white bg-opacity-95 backdrop-blur' : 'bg-white'
+        className={`position-fixed top-0 w-100 animate__animated animate__fadeInDown ${
+          isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
         style={{
-          transition: 'all 0.3s ease',
-          backdropFilter: isScrolled ? 'blur(10px)' : 'none',
-          borderBottom: isScrolled ? '1px solid rgba(106, 13, 173, 0.1)' : '1px solid #e9ecef',
+          background: isScrolled 
+            ? 'linear-gradient(135deg, rgba(74, 20, 140, 0.95) 0%, rgba(106, 27, 154, 0.95) 25%, rgba(123, 31, 162, 0.95) 50%, rgba(142, 36, 170, 0.95) 75%, rgba(156, 39, 176, 0.95) 100%)'
+            : 'linear-gradient(135deg, #4a148c 0%, #6a1b9a 25%, #7b1fa2 50%, #8e24aa 75%, #9c27b0 100%)',
+          backdropFilter: isScrolled ? 'blur(20px)' : 'blur(10px)',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 4px 20px rgba(74, 20, 140, 0.25)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+          zIndex: 1050,
+          minHeight: '80px',
         }}
       >
-        <nav className="navbar navbar-expand-lg py-3">
-          <div className="container-fluid px-4">
-         
+        {/* Animated background overlay */}
+        <div 
+          className="position-absolute top-0 start-0 w-100 h-100"
+          style={{
+            background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%)',
+            animation: 'gentle-float 8s ease-in-out infinite',
+          }}
+        />
 
-            {/* Mobile Toggle Button */}
+        <nav className="navbar navbar-expand-lg py-2">
+          <div className="container-fluid px-4">
+            {/* Left Section: Logo + Title */}
+            <div className="d-flex align-items-center gap-3">
+              <div 
+                className="position-relative"
+                style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '16px',
+                  padding: '6px',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}
+              >
+                <img
+                  src="/img/lutherRose.jpg"
+                  alt="Church Logo"
+                  className="rounded-3"
+                  style={{ 
+                    width: '48px', 
+                    height: '48px',
+                    objectFit: 'cover',
+                    transition: 'all 0.3s ease',
+                  }}
+                />
+              </div>
+
+              <div className="d-none d-sm-block">
+                <h1 
+                  className="mb-0"
+                  style={{ 
+                    fontFamily: 'system-ui, -apple-system, sans-serif', 
+                    fontWeight: '700', 
+                    color: 'white',
+                    fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    letterSpacing: '0.5px',
+                  }}
+                >
+                  KKKT YOMBO
+                </h1>
+              </div>
+            </div>
+
+           
+
+            {/* Right Section: Always visible auth/notifications + Navigation on large screens */}
+              {/* Navigation Links - Only on large screens */}
+              <ul className="navbar-nav d-none d-lg-flex flex-row mb-0 gap-1 me-3">
+                <li className="nav-item">
+                  <a
+                    href="/"
+                    className="nav-link position-relative"
+                    style={navLinkStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-home me-2"></i>Nyumbani
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href="/about"
+                    className="nav-link"
+                    style={navLinkStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-info-circle me-2"></i>Fahamu Zaidi
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href="/kalenda"
+                    className="nav-link"
+                    style={navLinkStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-calendar-alt me-2"></i>Kalenda
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href="/uongozi"
+                    className="nav-link"
+                    style={navLinkStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-users me-2"></i>Uongozi
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href="/contact"
+                    className="nav-link"
+                    style={navLinkStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-envelope me-2"></i>Mawasiliano
+                  </a>
+                </li>
+              </ul>
+
+           
+
+              {/* Divider - Only on large screens */}
+              <div 
+                className="d-none d-lg-block"
+                style={{
+                  width: '1px',
+                  height: '40px',
+                  background: 'rgba(255,255,255,0.2)',
+                  marginRight: '0.5rem',
+                }}
+              />
+
+              {/* Auth/Notifications Section - Always visible */}
+              {isLoggedIn ? (
+                /* Notifications for logged in users - Compact for mobile */
+                <div className="d-flex align-items-center gap-2">
+                  {/* System Dropdown - Hidden on small screens */}
+                  <div className="dropdown d-none d-md-block">
+                    <button
+                      className="btn dropdown-toggle d-flex align-items-center gap-2"
+                      type="button"
+                      id="systemDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style={{
+                        background: 'rgba(255,255,255,0.15)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.25)',
+                        borderRadius: '12px',
+                        color: 'white',
+                        fontWeight: '600',
+                        fontSize: '0.875rem',
+                        padding: '8px 16px',
+                        height: '44px',
+                      }}
+                    >
+                      <i className="fas fa-cog"></i>
+                      <span>System</span>
+                    </button>
+                    <ul 
+                      className="dropdown-menu shadow-lg border-0"
+                      style={{
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                        boxShadow: '0 10px 30px rgba(106, 13, 173, 0.2)',
+                        border: '1px solid rgba(106, 13, 173, 0.1)',
+                      }}
+                    >
+                      <li>
+                        <a 
+                          href="/usajili" 
+                          className="dropdown-item py-2 px-3"
+                          style={{
+                            borderRadius: '8px',
+                            margin: '4px',
+                            transition: 'all 0.3s ease',
+                          }}
+                        >
+                          <i className="fas fa-user-plus me-2"></i>Kujisajili
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          className="dropdown-item py-2 px-3"
+                          style={{
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            margin: '4px',
+                            transition: 'all 0.3s ease',
+                          }}
+                          onClick={handleAkauntiNavigation}
+                        >
+                          <i className="fas fa-user-circle me-2"></i>Akaunti
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Mobile System Dropdown - Compact */}
+                  <div className="dropdown d-md-none">
+                    <button
+                      className="btn dropdown-toggle"
+                      type="button"
+                      id="systemDropdownMobile"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style={{
+                        background: 'rgba(255,255,255,0.15)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.25)',
+                        borderRadius: '12px',
+                        color: 'white',
+                        fontWeight: '600',
+                        fontSize: '0.875rem',
+                        padding: '8px 12px',
+                        height: '44px',
+                        minWidth: '44px',
+                      }}
+                    >
+                      <i className="fas fa-cog"></i>
+                    </button>
+                    <ul className="dropdown-menu shadow-lg border-0">
+                  {!isLoggedIn && ( <li>
+                        <a href="/usajili" className="dropdown-item py-2 px-3">
+                          <i className="fas fa-user-plus me-2"></i>Kujisajili
+                        </a>
+                      </li>
+                  )}
+
+                      <li>
+                        <a
+                          className="dropdown-item py-2 px-3"
+                          style={{ cursor: 'pointer' }}
+                          onClick={handleAkauntiNavigation}
+                        >
+                          <i className="fas fa-user-circle me-2"></i>Akaunti
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Notifications - Always visible when logged in */}
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '12px',
+                      width: '44px',
+                      height: '44px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <SeriesNotifications />
+                  </div>
+                  
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '12px',
+                      width: '44px',
+                      height: '44px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <Notifications />
+                  </div>
+                </div>
+              ) : (
+                /* Auth buttons - Always visible, responsive design */
+                <div className="d-flex align-items-center gap-2">
+                  {/* Login Button - Responsive text */}
+                  <Button
+                    onClick={handleLogin}
+                    className="d-flex align-items-center gap-2"
+                    style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.25)',
+                      borderRadius: '12px',
+                      color: 'white',
+                      fontWeight: '600',
+                      fontSize: '0.875rem',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                      transition: 'all 0.2s ease',
+                      height: '44px',
+                      padding: '8px 16px',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.25)';
+                      e.target.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.15)';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-sign-in-alt" style={{ fontSize: '14px' }}></i>
+                    <span className="d-none d-sm-inline">Ingia</span>
+                  </Button>
+
+                  {/* Signup Button - Responsive text */}
+                  <Button
+                    onClick={handleSignup}
+                    className="d-flex align-items-center gap-2"
+                    style={{
+                      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                      border: '1px solid rgba(255,255,255,0.9)',
+                      borderRadius: '12px',
+                      color: '#4a148c',
+                      fontWeight: '700',
+                      fontSize: '0.875rem',
+                      transition: 'all 0.2s ease',
+                      height: '44px',
+                      padding: '8px 16px',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%)';
+                      e.target.style.color = 'white';
+                      e.target.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)';
+                      e.target.style.color = '#4a148c';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <i className="fas fa-user-plus" style={{ fontSize: '14px' }}></i>
+                    <span className="d-none d-sm-inline">Jisajili</span>
+                  </Button>
+                </div>
+              )}
+
+                  {/* Mobile Toggle Button */}
             <button
-              className="navbar-toggler border-0 shadow-none"
+              className="navbar-toggler border-0 shadow-none d-lg-none"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#navbarCollapse"
@@ -112,321 +465,144 @@ export default function Header() {
               style={{
                 padding: '8px 12px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
+                background: 'rgba(255,255,255,0.15)',
+                border: '1px solid rgba(255,255,255,0.2)',
               }}
             >
               <i className="fas fa-bars text-white"></i>
             </button>
 
-            {/* Navbar Collapse */}
-            <div className="collapse navbar-collapse" id="navbarCollapse">
-              {/* Navigation Links */}
-              <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
-                <li className="nav-item mx-1">
-                  <a
-                    href="/"
-                    className="nav-link position-relative"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-home me-2"></i>Nyumbani
-                  </a>
-                </li>
-                <li className="nav-item mx-1">
-                  <a
-                    href="/about"
-                    className="nav-link"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-info-circle me-2"></i>Fahamu Zaidi
-                  </a>
-                </li>
-                <li className="nav-item mx-1">
-                  <a
-                    href="/kalenda"
-                    className="nav-link"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-calendar-alt me-2"></i>Kalenda ya Matukio
-                  </a>
-                </li>
-                <li className="nav-item mx-1">
-                  <a
-                    href="/uongozi"
-                    className="nav-link"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-users me-2"></i>Uongozi
-                  </a>
-                </li>
-                <li className="nav-item dropdown mx-1">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="systemDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-cog me-2"></i>System
-                  </a>
-                  <ul 
-                    className="dropdown-menu shadow-lg border-0 animate__animated animate__fadeIn"
-                    style={{
-                      borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                      boxShadow: '0 10px 30px rgba(106, 13, 173, 0.2)',
-                      border: '1px solid rgba(106, 13, 173, 0.1)',
-                    }}
-                  >
-                    <li>
-                      <a 
-                        href="/usajili" 
-                        className="dropdown-item py-2 px-3"
-                        style={{
-                          borderRadius: '8px',
-                          margin: '4px',
-                          transition: 'all 0.3s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = 'linear-gradient(135deg, #6a0dad, #9c27b0)';
-                          e.target.style.color = 'white';
-                          e.target.style.transform = 'scale(1.02)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'transparent';
-                          e.target.style.color = '#6a0dad';
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        <i className="fas fa-user-plus me-2"></i>Kujisajili
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="dropdown-item py-2 px-3"
-                        style={{
-                          cursor: 'pointer',
-                          borderRadius: '8px',
-                          margin: '4px',
-                          transition: 'all 0.3s ease',
-                        }}
-                        onClick={handleAkauntiNavigation}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = 'linear-gradient(135deg, #6a0dad, #9c27b0)';
-                          e.target.style.color = 'white';
-                          e.target.style.transform = 'scale(1.02)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'transparent';
-                          e.target.style.color = '#6a0dad';
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        <i className="fas fa-user-circle me-2"></i>Akaunti
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="dropdown-item py-2 px-3"
-                        style={{
-                          cursor: 'pointer',
-                          borderRadius: '8px',
-                          margin: '4px',
-                          transition: 'all 0.3s ease',
-                        }}
-                        onClick={handleAkauntiNavigation}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = 'linear-gradient(135deg, #6a0dad, #9c27b0)';
-                          e.target.style.color = 'white';
-                          e.target.style.transform = 'scale(1.02)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'transparent';
-                          e.target.style.color = '#6a0dad';
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        <i className="fas fa-sign-in-alt me-2"></i>Login
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-item mx-1">
-                  <a
-                    href="/contact"
-                    className="nav-link"
-                    style={navLinkStyle}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <i className="fas fa-envelope me-2"></i>Mawasiliano
-                  </a>
-                </li>
-              </ul>
-
-              {/* Right Side Content */}
-              <div className="d-flex align-items-center gap-3">
-              
-              
-                {/* Auth buttons for non-logged in users */}
-                {!isLoggedIn && (
-                  <div className="d-flex align-items-center gap-2 animate__animated animate__fadeInRight">
-                    <a
-                      href="/auth"
-                      className="btn position-relative"
-                      style={outlineButtonStyle}
-                      title="Log In"
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'linear-gradient(135deg, #6a0dad, #9c27b0)';
-                        e.target.style.color = 'white';
-                        e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                        e.target.style.boxShadow = '0 8px 25px rgba(106, 13, 173, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'transparent';
-                        e.target.style.color = '#6a0dad';
-                        e.target.style.transform = 'translateY(0) scale(1)';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    >
-                      <i className="fas fa-sign-in-alt me-2"></i>Ingia
-                    </a>
-                    <a
-                      href="/usajili"
-                      className="btn text-white position-relative"
-                      style={buttonStyle}
-                      title="Sign Up"
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                        e.target.style.boxShadow = '0 8px 25px rgba(106, 13, 173, 0.5)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0) scale(1)';
-                        e.target.style.boxShadow = '0 4px 15px rgba(106, 13, 173, 0.3)';
-                      }}
-                    >
-                      <i className="fas fa-user-plus me-2"></i>Jisajili
-                    </a>
-                  </div>
-                )}
-
-                {/* Contact Info */}
+              {/* Contact Info - Only on extra large screens */}
+              <div 
+                className="d-none d-xl-flex align-items-center ms-3 ps-3"
+                style={{
+                  borderLeft: '1px solid rgba(255,255,255,0.2)',
+                }}
+              >
                 <div 
-                  className="d-none d-lg-flex align-items-center ms-3 ps-3 animate__animated animate__fadeInRight"
+                  className="me-3 p-2 rounded-circle d-flex align-items-center justify-content-center"
                   style={{
-                    borderLeft: '2px solid rgba(106, 13, 173, 0.2)',
+                    background: 'rgba(255,255,255,0.2)',
+                    width: '40px',
+                    height: '40px',
+                    border: '1px solid rgba(255,255,255,0.3)',
                   }}
                 >
-                  <div 
-                    className="me-3 p-2 rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-                      width: '40px',
-                      height: '40px',
-                      boxShadow: '0 4px 15px rgba(106, 13, 173, 0.3)',
-                    }}
-                  >
-                    <i className="fas fa-phone-alt text-white"></i>
-                  </div>
-                  <div>
-                    <small className="text-muted fw-500">Wasiliana nasi</small>
-                    <p className="mb-0">
-                      <a
-                        href="tel:+255765647567"
-                        className="text-decoration-none fw-bold"
-                        style={{ 
-                          color: '#6a0dad',
-                          transition: 'all 0.3s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = '#9c27b0';
-                          e.target.style.textShadow = '0 2px 4px rgba(106, 13, 173, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = '#6a0dad';
-                          e.target.style.textShadow = 'none';
-                        }}
-                      >
-                        +255 765 647 567
-                      </a>
-                    </p>
+                  <i className="fas fa-phone-alt text-white"></i>
+                </div>
+                <div>
+
+                  <p className="mb-0">
+                    <a
+                      href="tel:+255765647567"
+                      className="text-decoration-none fw-bold text-white"
+                      style={{ 
+                        transition: 'all 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.textShadow = '0 2px 4px rgba(255,255,255,0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.textShadow = 'none';
+                      }}
+                    >
+            
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Navbar Collapse */}
+            <div className="collapse navbar-collapse" id="navbarCollapse">
+              <div className="d-lg-none mt-3">
+                {/* Mobile Navigation Links */}
+                <ul className="navbar-nav mb-3">
+                  <li className="nav-item">
+                    <a href="/" className="nav-link text-white py-2">
+                      <i className="fas fa-home me-2"></i>Nyumbani
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="/about" className="nav-link text-white py-2">
+                      <i className="fas fa-info-circle me-2"></i>Fahamu Zaidi
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="/kalenda" className="nav-link text-white py-2">
+                      <i className="fas fa-calendar-alt me-2"></i>Kalenda ya Matukio
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="/uongozi" className="nav-link text-white py-2">
+                      <i className="fas fa-users me-2"></i>Uongozi
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="/contact" className="nav-link text-white py-2">
+                      <i className="fas fa-envelope me-2"></i>Mawasiliano
+                    </a>
+                  </li>
+                </ul>
+
+
+                {/* Mobile Contact Info */}
+                <div className="mt-3 pt-3 border-top border-white-25">
+                  <div className="d-flex align-items-center gap-3">
+                    <div 
+                      className="p-2 rounded-circle d-flex align-items-center justify-content-center"
+                      style={{
+                        background: 'rgba(255,255,255,0.2)',
+                        width: '40px',
+                        height: '40px',
+                      }}
+                    >
+                      <i className="fas fa-phone-alt text-white"></i>
+                    </div>
+                    <div>
+                      <small className="text-white-50">Wasiliana nasi</small>
+                      <p className="mb-0">
+                        <a href="tel:+255765647567" className="text-white text-decoration-none fw-bold">
+                          +255 765 647 567
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+       
         </nav>
+
+        {/* Bottom accent line */}
+        <div 
+          className="position-absolute bottom-0 start-0 w-100"
+          style={{
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
+          }}
+        />
       </header>
 
-      {/* Custom CSS for additional animations */}
+      {/* Body padding to account for fixed header */}
+      <div style={{ paddingTop: '80px' }} />
+
+      {/* Custom CSS Styles */}
       <style jsx>{`
+        @keyframes gentle-float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          33% { transform: translateY(-3px) translateX(2px); }
+          66% { transform: translateY(2px) translateX(-2px); }
+        }
+        
         .navbar-nav .nav-link::after {
           content: '';
           position: absolute;
           width: 0;
-          height: 3px;
+          height: 2px;
           bottom: 0;
           left: 50%;
-          background: linear-gradient(135deg, #6a0dad, #9c27b0, #e91e63);
+          background: linear-gradient(135deg, #ffffff, rgba(255,255,255,0.8));
           transition: all 0.3s ease;
           border-radius: 2px;
         }
@@ -436,29 +612,44 @@ export default function Header() {
           left: 0;
         }
         
-        .btn::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-          left: 100%;
+        .dropdown-item:hover {
+          background: linear-gradient(135deg, #6a0dad, #9c27b0) !important;
+          color: white !important;
+          transform: scale(1.02);
         }
         
         @media (max-width: 991.98px) {
           .navbar-collapse {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: rgba(74, 20, 140, 0.95);
             border-radius: 12px;
             margin-top: 1rem;
             padding: 1rem;
-            box-shadow: 0 10px 30px rgba(106, 13, 173, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
           }
+        }
+        
+        /* Focus states for accessibility */
+        button:focus,
+        .btn:focus,
+        .nav-link:focus {
+          outline: 2px solid rgba(255,255,255,0.5);
+          outline-offset: 2px;
+        }
+        
+        /* Improved touch targets for mobile */
+        @media (pointer: coarse) {
+          button,
+          .btn,
+          .nav-link {
+            min-height: 44px;
+            min-width: 44px;
+          }
+        }
+        
+        /* Smooth transitions */
+        * {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
     </>

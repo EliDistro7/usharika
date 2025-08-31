@@ -205,76 +205,7 @@ const HighlightsWrapper = () => {
 
   return (
     <div className="container-fluid mt-4">
-      {/* Enhanced Header Section */}
-      <div 
-        className="p-4 mb-5 position-relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #6a0dad 0%, #9c27b0 35%, #e91e63 70%, #ff6b35 100%)',
-          borderRadius: '28px',
-          boxShadow: '0 20px 60px rgba(106, 13, 173, 0.2)',
-        }}
-      >
-        {/* Floating Elements */}
-        <div className="position-absolute top-0 start-0 w-100 h-100">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="position-absolute rounded-circle"
-              style={{
-                width: `${Math.random() * 60 + 20}px`,
-                height: `${Math.random() * 60 + 20}px`,
-                background: 'rgba(255,255,255,0.1)',
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animation: `float-gentle ${4 + Math.random() * 3}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 2}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="position-relative">
-          <div className="row align-items-center">
-            <div className="col-md-6">
-              <h2 
-                className="text-white mb-2"
-                style={{ 
-                  fontWeight: '700',
-                  fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
-                  textShadow: '2px 2px 8px rgba(0,0,0,0.3)',
-                }}
-              >
-                <i className="fas fa-photo-video me-3"></i>
-                YALIYOJIRI 
-              </h2>
-              <p 
-                className="text-white mb-0 opacity-90"
-                style={{ fontSize: '1.1rem', textShadow: '1px 1px 4px rgba(0,0,0,0.2)' }}
-              >
-                Tazama muhtasari wa yaliyojiri kwenye kanisa letu
-              </p>
-            </div>
-            
-            <div className="col-md-6 text-md-end mt-3 mt-md-0">
-              <div className="d-flex justify-content-md-end align-items-center gap-3">
-                <div 
-                  className="px-3 py-2 rounded-pill d-flex align-items-center"
-                  style={{
-                    background: 'rgba(255,255,255,0.2)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                  }}
-                >
-                  <i className="fas fa-images text-white me-2"></i>
-                  <span className="text-white fw-medium">
-                    {filteredData.length} Albamu
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+   
 
       {/* Enhanced Search and Filters Section */}
       <div 
@@ -430,29 +361,7 @@ const HighlightsWrapper = () => {
             </div>
           </div>
 
-          {/* Stats Badge */}
-          <div className="col-auto ms-auto">
-            <div 
-              className="px-3 py-2 rounded-pill d-flex align-items-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                border: '1px solid rgba(106, 13, 173, 0.2)',
-              }}
-            >
-              <div 
-                className="rounded-circle me-2"
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-                  animation: 'pulse-dot 2s ease-in-out infinite',
-                }}
-              />
-              <span className="fw-medium" style={{ color: '#6a0dad', fontSize: '14px' }}>
-                {filteredData.length} matokeo
-              </span>
-            </div>
-          </div>
+      
         </div>
       </div>
 

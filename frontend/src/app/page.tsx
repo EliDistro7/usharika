@@ -9,6 +9,9 @@ import { NewsTicker } from '@/components/NewsTicker';
 import FutureEventsCarousel from "@/components/xmass/FutureEventsCarousel";
 import Series from '@/components/admins/Series';
 import LiveSeries from '@/components/series/LiveSeries';
+import Footer from "@/components/Footer";
+import TopBar from "@/components/TopBar";
+import Header from "@/components/Header";
 //import SermonAudioPlayer from "@/components/series/audio-player/Premiere";
 
 export default function Home() {
@@ -30,6 +33,7 @@ export default function Home() {
       <Pledge />
        {/* Main News<MainNews /> Section */}
        <FutureEventsCarousel />
+       <Footer />
     </div>
   );
 }

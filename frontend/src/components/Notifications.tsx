@@ -132,8 +132,8 @@ export default function Notifications() {
           as="div"
           role="button"
           style={{
-            background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
-            border: '2px solid transparent',
+           
+            border: '1px solid transparent',
             backgroundClip: 'padding-box',
             color: '#6f42c1',
             padding: '0.75rem',
@@ -162,7 +162,7 @@ export default function Notifications() {
             e.currentTarget.style.boxShadow = '0 4px 16px rgba(111, 66, 193, 0.1)';
           }}
         >
-          <i className="fas fa-bell" style={{ fontSize: '1.25rem' }}></i>
+          <i className="fas fa-bell" ></i>
 
           {unreadCount > 0 && (
             <Badge
