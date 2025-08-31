@@ -1,0 +1,70 @@
+{
+  "name": "Yombo KKKT",
+  "short_name": "Yombo KKKT",
+  "description": "Connect with Yombo KKKT - sermons, events, prayer requests, and community updates",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#6b46c1",
+  "theme_color": "#6b46c1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["lifestyle", "education", "social"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Sermons",
+      "short_name": "Sermons",
+      "description": "Listen to recent sermons and teachings",
+      "url": "/sermons",
+      "icons": [{ "src": "/shortcut-sermons.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Events",
+      "short_name": "Events",
+      "description": "View upcoming church events",
+      "url": "/events",
+      "icons": [{ "src": "/shortcut-events.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Prayer",
+      "short_name": "Prayer",
+      "description": "Submit prayer requests",
+      "url": "/prayer",
+      "icons": [{ "src": "/shortcut-prayer.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Give",
+      "short_name": "Give",
+      "description": "Online giving and donations",
+      "url": "/give",
+      "icons": [{ "src": "/shortcut-give.png", "sizes": "96x96" }]
+    }
+  ],
+  "share_target": {
+    "action": "/share-prayer",
+    "method": "POST",
+    "params": {
+      "title": "title",
+      "text": "text"
+    }
+  }
+}
