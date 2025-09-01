@@ -25,18 +25,17 @@ const HighlightDetailPage = () => {
           const data = await response.json();
           setHighlight(data.data);
         } else {
-          toast.error('Failed to load highlight');
+          console.error('Failed to load highlight');
           router.push('/');
         }
       } catch (error) {
         console.error('Error fetching highlight:', error);
-        toast.error('Error loading highlight');
       } finally {
         setLoading(false);
       }
     }
     fetchHighlightData();
-  }, []);
+  }, [params.id, router]);
 
   const toggleItemExpansion = (itemId) => {
     setExpandedItems(prev => ({
@@ -68,12 +67,10 @@ const HighlightDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'}}>
+      <div className="min-h-screen flex items-center justify-center bg-primary-gradient">
         <div className="text-center px-4">
-          <div className="spinner-border text-light mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-light fs-5">Loading highlight details...</p>
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
+          <p className="text-white text-lg font-medium">Loading highlight details...</p>
         </div>
       </div>
     );
@@ -81,77 +78,65 @@ const HighlightDetailPage = () => {
 
   if (!highlight) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'}}>
+      <div className="min-h-screen flex items-center justify-center bg-primary-gradient">
         <div className="text-center px-4">
-          <h3 className="text-light">Highlight not found</h3>
+          <h3 className="text-white text-2xl font-bold">Highlight not found</h3>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-vh-100" style={{backgroundColor: '#f8fafc'}}>
-      {/* Enhanced Mobile-First Header Section */}
-      <div className="position-relative overflow-hidden" style={{background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'}}>
-        <div className="position-absolute top-0 start-0 w-100 h-100" style={{
+    <div className="min-h-screen bg-background-200">
+      {/* Enhanced Header Section */}
+      <div className="relative overflow-hidden bg-primary-gradient">
+        <div className="absolute inset-0 bg-hero-gradient opacity-20"></div>
+        <div className="absolute inset-0" style={{
           backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
         }}></div>
         
-        <div className="container py-4 py-md-5 position-relative">
-          <div className="row align-items-center">
-            <div className="col-12 col-lg-8">
-              {/* Mobile-optimized badge and meta info */}
-              <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-3 gap-3">
-                <span className="badge rounded-pill px-3 px-sm-4 py-2 fs-6" style={{
-                  background: 'rgba(255,255,255,0.2)', 
-                  color: 'white',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.3)'
-                }}>
+        <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8">
+              {/* Badge and meta info */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 gap-4">
+                <span className="glass px-4 py-2 rounded-full text-white font-medium flex items-center">
                   ✨ Highlight
                 </span>
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center text-light gap-2 gap-sm-4">
-                  <div className="d-flex align-items-center">
-                    <div className="rounded-circle p-2 me-2" style={{background: 'rgba(255,255,255,0.2)'}}>
-                      <User size={14} className="text-light" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center text-white/90 gap-4">
+                  <div className="flex items-center">
+                    <div className="glass-strong rounded-full p-2 mr-3">
+                      <User size={16} className="text-white" />
                     </div>
-                    <span className="small">{highlight.author}</span>
+                    <span className="text-sm font-medium">{highlight.author}</span>
                   </div>
-                  <div className="d-flex align-items-center">
-                    <Calendar size={14} className="me-2" />
-                    <span className="small">{formatDate(highlight.createdAt)}</span>
+                  <div className="flex items-center">
+                    <Calendar size={16} className="mr-2" />
+                    <span className="text-sm">{formatDate(highlight.createdAt)}</span>
                   </div>
                 </div>
               </div>
               
-              {/* Mobile-optimized title */}
-              <h1 className="display-5 display-md-4 fw-bold text-light mb-3 lh-base" style={{textShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>{highlight.name}</h1>
+              {/* Title */}
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4 leading-tight text-shadow">
+                {highlight.name}
+              </h1>
               
-              <div className="d-flex align-items-center text-light opacity-75">
-                <Clock size={14} className="me-2" />
-                <span className="small">Last updated: {formatDate(highlight.lastUpdated)}</span>
+              <div className="flex items-center text-white/75">
+                <Clock size={16} className="mr-2" />
+                <span className="text-sm">Last updated: {formatDate(highlight.lastUpdated)}</span>
               </div>
             </div>
             
-            {/* Mobile-optimized action buttons */}
-            <div className="col-12 col-lg-4 mt-4 mt-lg-0">
-              <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-lg-end justify-content-lg-end">
-                <button className="btn btn-light px-4 py-2 rounded-pill flex-fill flex-sm-grow-0" style={{
-                  backdropFilter: 'blur(10px)',
-                  background: 'rgba(255,255,255,0.9)',
-                  border: 'none',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-                }}>
-                  <Share2 size={16} className="me-2" />
+            {/* Action buttons */}
+            <div className="lg:col-span-4 mt-6 lg:mt-0">
+              <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 lg:items-end">
+                <button className="btn-primary px-6 py-3 rounded-2xl font-semibold text-white flex items-center justify-center shadow-primary-lg hover:shadow-primary group">
+                  <Share2 size={18} className="mr-2 group-hover:scale-110 transition-transform" />
                   Share
                 </button>
-                <button className="btn px-4 py-2 rounded-pill flex-fill flex-sm-grow-0" style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <Bookmark size={16} className="me-2" />
+                <button className="glass-strong px-6 py-3 rounded-2xl font-semibold text-white flex items-center justify-center hover:bg-white/20 transition-all">
+                  <Bookmark size={18} className="mr-2" />
                   Save
                 </button>
               </div>
@@ -160,64 +145,45 @@ const HighlightDetailPage = () => {
         </div>
       </div>
 
-      {/* Enhanced Mobile-First Stats Bar */}
-      <div className="py-3 py-md-4" style={{
-        background: 'linear-gradient(90deg, #A855F7 0%, #8B5CF6 50%, #7C3AED 100%)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-      }}>
-        <div className="container">
-          <div className="row text-center g-3">
-            <div className="col-12 col-md-4">
-              <div className="d-flex align-items-center justify-content-center">
-                <div className="rounded-circle p-2 p-md-3 me-3 shadow-sm" style={{
-                  background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
-                  color: 'white'
-                }}>
-                  <FileText size={16} className="d-md-none" />
-                  <FileText size={20} className="d-none d-md-block" />
-                </div>
-                <div className="text-start">
-                  <div className="fs-4 fs-md-3 fw-bold text-white">{highlight.content.length}</div>
-                  <small className="text-white opacity-75 fw-medium">Content Groups</small>
-                </div>
+      {/* Enhanced Stats Bar */}
+      <div className="bg-secondary-gradient py-6 shadow-medium">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div className="flex items-center justify-center">
+              <div className="bg-primary-600 rounded-2xl p-3 mr-4 shadow-primary">
+                <FileText size={24} className="text-white" />
+              </div>
+              <div className="text-left">
+                <div className="text-3xl font-bold text-white">{highlight.content.length}</div>
+                <div className="text-white/80 text-sm font-medium">Content Groups</div>
               </div>
             </div>
-            <div className="col-12 col-md-4">
-              <div className="d-flex align-items-center justify-content-center">
-                <div className="rounded-circle p-2 p-md-3 me-3 shadow-sm" style={{
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  color: 'white'
-                }}>
-                  <Image size={16} className="d-md-none" />
-                  <Image size={20} className="d-none d-md-block" />
+            
+            <div className="flex items-center justify-center">
+              <div className="bg-success-600 rounded-2xl p-3 mr-4 shadow-success">
+                <Image size={24} className="text-white" />
+              </div>
+              <div className="text-left">
+                <div className="text-3xl font-bold text-white">
+                  {highlight.content.reduce((total, tab) => 
+                    total + tab.content.reduce((tabTotal, item) => 
+                      tabTotal + (item.imageUrl ? 1 : 0), 0), 0)}
                 </div>
-                <div className="text-start">
-                  <div className="fs-4 fs-md-3 fw-bold text-white">
-                    {highlight.content.reduce((total, tab) => 
-                      total + tab.content.reduce((tabTotal, item) => 
-                        tabTotal + (item.imageUrl ? 1 : 0), 0), 0)}
-                  </div>
-                  <small className="text-white opacity-75 fw-medium">Images</small>
-                </div>
+                <div className="text-white/80 text-sm font-medium">Images</div>
               </div>
             </div>
-            <div className="col-12 col-md-4">
-              <div className="d-flex align-items-center justify-content-center">
-                <div className="rounded-circle p-2 p-md-3 me-3 shadow-sm" style={{
-                  background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                  color: 'white'
-                }}>
-                  <Video size={16} className="d-md-none" />
-                  <Video size={20} className="d-none d-md-block" />
+            
+            <div className="flex items-center justify-center">
+              <div className="bg-yellow-600 rounded-2xl p-3 mr-4 shadow-yellow">
+                <Video size={24} className="text-white" />
+              </div>
+              <div className="text-left">
+                <div className="text-3xl font-bold text-white">
+                  {highlight.content.reduce((total, tab) => 
+                    total + tab.content.reduce((tabTotal, item) => 
+                      tabTotal + (item.videoUrl ? 1 : 0), 0), 0)}
                 </div>
-                <div className="text-start">
-                  <div className="fs-4 fs-md-3 fw-bold text-white">
-                    {highlight.content.reduce((total, tab) => 
-                      total + tab.content.reduce((tabTotal, item) => 
-                        tabTotal + (item.videoUrl ? 1 : 0), 0), 0)}
-                  </div>
-                  <small className="text-white opacity-75 fw-medium">Videos</small>
-                </div>
+                <div className="text-white/80 text-sm font-medium">Videos</div>
               </div>
             </div>
           </div>
@@ -225,25 +191,17 @@ const HighlightDetailPage = () => {
       </div>
 
       {/* Mobile Navigation Toggle */}
-      <div className="d-lg-none">
-        <div className="container py-3">
+      <div className="lg:hidden">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <button 
-            className="btn w-100 d-flex align-items-center justify-content-between p-3 rounded-3" 
-            style={{
-              background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-              color: 'white',
-              border: 'none'
-            }}
+            className="w-full btn-primary p-4 rounded-2xl flex items-center justify-between shadow-primary"
             onClick={toggleSidebar}
           >
-            <div className="d-flex align-items-center">
-              <Menu size={20} className="me-3" />
-              <span className="fw-medium">Content Groups</span>
+            <div className="flex items-center">
+              <Menu size={20} className="mr-3" />
+              <span className="font-semibold">Content Groups</span>
             </div>
-            <span className="badge rounded-pill px-3 py-2" style={{
-              backgroundColor: 'rgba(255,255,255,0.25)',
-              color: 'white'
-            }}>
+            <span className="bg-white/25 rounded-full px-3 py-1 text-sm font-medium">
               {highlight.content.length}
             </span>
           </button>
@@ -251,44 +209,40 @@ const HighlightDetailPage = () => {
       </div>
 
       {/* Mobile Sidebar Overlay */}
-      <div className={`d-lg-none position-fixed top-0 start-0 w-100 h-100 ${sidebarOpen ? 'd-block' : 'd-none'}`} style={{zIndex: 1050}}>
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50" onClick={toggleSidebar}></div>
-        <div className="position-absolute top-0 start-0 h-100 bg-white shadow-lg" style={{width: '280px', zIndex: 1051}}>
-          <div className="p-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <h6 className="fw-bold text-dark mb-0">Content Groups</h6>
-              <button className="btn btn-light rounded-circle p-2" onClick={toggleSidebar}>
-                <X size={16} />
+      <div className={`lg:hidden fixed inset-0 z-50 ${sidebarOpen ? 'block' : 'hidden'}`}>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={toggleSidebar}></div>
+        <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-strong animate-slide-in">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h6 className="text-xl font-bold text-text-primary">Content Groups</h6>
+              <button 
+                className="p-2 rounded-full hover:bg-background-300 transition-colors"
+                onClick={toggleSidebar}
+              >
+                <X size={20} />
               </button>
             </div>
-            <nav className="nav flex-column">
+            <nav className="space-y-2">
               {highlight.content.map((tab, index) => (
                 <button
                   key={tab._id}
-                  className={`nav-link text-start border-0 rounded-3 mb-2 p-3 ${
+                  className={`w-full text-left p-4 rounded-2xl transition-all ${
                     activeTab === index 
-                      ? 'text-white' 
-                      : 'text-dark'
+                      ? 'btn-primary text-white shadow-primary' 
+                      : 'bg-background-300 text-text-primary hover:bg-primary-100'
                   }`}
-                  style={{
-                    background: activeTab === index 
-                      ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)' 
-                      : 'rgba(139, 92, 246, 0.05)',
-                  }}
                   onClick={() => {
                     setActiveTab(index);
                     setSidebarOpen(false);
                   }}
                 >
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="fw-medium">{tab.groupName}</span>
-                    <span className="badge rounded-pill px-2 py-1" style={{
-                      backgroundColor: activeTab === index 
-                        ? 'rgba(255,255,255,0.25)' 
-                        : '#8B5CF6',
-                      color: 'white',
-                      fontSize: '0.75rem'
-                    }}>
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">{tab.groupName}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      activeTab === index 
+                        ? 'bg-white/25 text-white' 
+                        : 'bg-primary-600 text-white'
+                    }`}>
                       {tab.content.length}
                     </span>
                   </div>
@@ -300,47 +254,35 @@ const HighlightDetailPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container py-4 py-md-5">
-        <div className="row">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Desktop Sidebar Navigation */}
-          <div className="col-lg-3 mb-4 d-none d-lg-block">
-            <div className="bg-white rounded-4 shadow-sm p-4 sticky-top" style={{
-              top: '20px',
-              border: '1px solid rgba(0,0,0,0.05)'
-            }}>
-              <h6 className="fw-bold text-dark mb-4 d-flex align-items-center">
-                <div className="rounded-circle p-2 me-2" style={{background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'}}>
-                  <FileText size={14} className="text-white" />
+          <div className="hidden lg:block">
+            <div className="bg-white rounded-2xl shadow-medium p-6 sticky top-6 border border-border-light">
+              <h6 className="text-lg font-bold text-text-primary mb-6 flex items-center">
+                <div className="btn-primary p-2 rounded-xl mr-3">
+                  <FileText size={16} className="text-white" />
                 </div>
                 Content Groups
               </h6>
-              <nav className="nav flex-column">
+              <nav className="space-y-2">
                 {highlight.content.map((tab, index) => (
                   <button
                     key={tab._id}
-                    className={`nav-link text-start border-0 rounded-3 mb-2 p-3 transition-all ${
+                    className={`w-full text-left p-4 rounded-xl transition-all ${
                       activeTab === index 
-                        ? 'text-white shadow-sm' 
-                        : 'text-dark'
+                        ? 'btn-primary text-white shadow-primary transform translate-x-1' 
+                        : 'bg-primary-50 text-text-primary hover:bg-primary-100'
                     }`}
-                    style={{
-                      background: activeTab === index 
-                        ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)' 
-                        : 'rgba(139, 92, 246, 0.05)',
-                      transition: 'all 0.3s ease',
-                      transform: activeTab === index ? 'translateX(5px)' : 'translateX(0)'
-                    }}
                     onClick={() => setActiveTab(index)}
                   >
-                    <div className="d-flex justify-content-between align-items-center">
-                      <span className="fw-medium">{tab.groupName}</span>
-                      <span className="badge rounded-pill px-2 py-1" style={{
-                        backgroundColor: activeTab === index 
-                          ? 'rgba(255,255,255,0.25)' 
-                          : '#8B5CF6',
-                        color: 'white',
-                        fontSize: '0.75rem'
-                      }}>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{tab.groupName}</span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        activeTab === index 
+                          ? 'bg-white/25 text-white' 
+                          : 'bg-primary-600 text-white'
+                      }`}>
                         {tab.content.length}
                       </span>
                     </div>
@@ -350,184 +292,146 @@ const HighlightDetailPage = () => {
             </div>
           </div>
 
-          {/* Enhanced Mobile-First Content Area */}
-          <div className="col-lg-9">
+          {/* Content Area */}
+          <div className="lg:col-span-3">
             {highlight.content.map((tab, tabIndex) => (
               <div
                 key={tab._id}
-                className={`${tabIndex === activeTab ? 'd-block' : 'd-none'}`}
+                className={`${tabIndex === activeTab ? 'block animate-fade-in' : 'hidden'}`}
               >
-                <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 mb-md-5 gap-3">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                   <div>
-                    <h2 className="fw-bold text-dark mb-2 display-6">{tab.groupName}</h2>
-                    <p className="text-muted mb-0 d-flex align-items-center small">
-                      <Clock size={14} className="me-2" />
+                    <h2 className="text-3xl font-display font-bold text-text-primary mb-2">
+                      {tab.groupName}
+                    </h2>
+                    <p className="text-text-secondary flex items-center text-sm">
+                      <Clock size={16} className="mr-2" />
                       Last updated: {formatDate(tab.lastUpdated)}
                     </p>
                   </div>
-                  <span className="badge rounded-pill px-3 px-md-4 py-2 fs-6 align-self-start" style={{
-                    background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-                    color: 'white'
-                  }}>
+                  <span className="bg-primary-gradient text-white px-4 py-2 rounded-full text-sm font-semibold shadow-primary">
                     {tab.content.length} items
                   </span>
                 </div>
 
-                <div className="row g-3 g-md-4">
+                <div className="space-y-6">
                   {tab.content.map((item, itemIndex) => (
-                    <div key={item._id} className="col-12">
-                      <div className="card border-0 shadow-sm h-100 overflow-hidden rounded-4" style={{
-                        transition: 'all 0.3s ease',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                      }}>
-                        
-                        {/* Enhanced Mobile-First Image Display */}
-                        {item.imageUrl && (
-                          <div className="position-relative">
-                            <img
-                              src={item.imageUrl}
-                              alt="Content"
-                              className="card-img-top w-100"
-                              style={{
-                                height: 'auto',
-                                maxHeight: '300px',
-                                objectFit: 'contain',
-                                backgroundColor: '#f8f9fa'
-                              }}
-                            />
-                            <div className="position-absolute top-0 end-0 m-2 m-md-3">
-                              <span className="badge rounded-pill px-2 px-md-3 py-1 py-md-2 small" style={{
-                                background: 'rgba(0,0,0,0.7)',
-                                backdropFilter: 'blur(10px)',
-                                color: 'white'
-                              }}>
-                                <Image size={12} className="me-1" />
-                                Image
-                              </span>
-                            </div>
+                    <div key={item._id} className="bg-white rounded-2xl shadow-medium border border-border-light overflow-hidden hover:shadow-primary-lg transition-all duration-300 group">
+                      
+                      {/* Image Display */}
+                      {item.imageUrl && (
+                        <div className="relative">
+                          <img
+                            src={item.imageUrl}
+                            alt="Content"
+                            className="w-full h-auto max-h-80 object-contain bg-background-100"
+                          />
+                          <div className="absolute top-4 right-4">
+                            <span className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                              <Image size={14} className="mr-1" />
+                              Image
+                            </span>
                           </div>
-                        )}
-                        
-                        {/* Enhanced Mobile-First Video Display */}
-                        {item.videoUrl && (
-                          <div className="position-relative">
-                            <video
-                              src={item.videoUrl}
-                              className="card-img-top w-100"
-                              style={{
-                                height: 'auto',
-                                maxHeight: '300px',
-                                objectFit: 'contain',
-                                backgroundColor: '#000'
-                              }}
-                              controls={playingVideos[item._id]}
-                              poster={item.imageUrl}
-                            />
-                            {!playingVideos[item._id] && (
-                              <div className="position-absolute top-50 start-50 translate-middle">
-                                <button 
-                                  className="btn btn-light rounded-circle p-2 p-md-3 shadow"
-                                  onClick={() => toggleVideo(item._id)}
-                                  style={{width: '50px', height: '50px'}}
-                                >
-                                  <Play size={20} className="text-dark ms-1" />
-                                </button>
-                              </div>
-                            )}
-                            <div className="position-absolute top-0 end-0 m-2 m-md-3">
-                              <span className="badge rounded-pill px-2 px-md-3 py-1 py-md-2 small" style={{
-                                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                                backdropFilter: 'blur(10px)',
-                                color: 'white'
-                              }}>
-                                <Video size={12} className="me-1" />
-                                Video
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                        
-                        <div className="card-body p-3 p-md-4">
-                          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3 mb-md-4 gap-3">
-                            <div className="d-flex align-items-center">
-                              <div className="rounded-circle p-2 p-md-3 me-3 shadow-sm" style={{
-                                background: 'linear-gradient(135deg, #A855F7 0%, #8B5CF6 100%)'
-                              }}>
-                                <User size={16} className="text-white" />
-                              </div>
-                              <div>
-                                <div className="fw-bold text-dark">{item.author}</div>
-                                <small className="text-muted">Content Author</small>
-                              </div>
-                            </div>
-                            
-                            <div className="d-flex gap-2 align-self-start">
-                              {!item.imageUrl && !item.videoUrl && (
-                                <span className="badge rounded-pill px-2 px-md-3 py-1 py-md-2 small" style={{
-                                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                                  color: 'white'
-                                }}>
-                                  <FileText size={12} className="me-1" />
-                                  Text
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="content-text">
-                            <p className="card-text text-dark lh-lg small" style={{lineHeight: '1.7'}}>
-                              {expandedItems[item._id] || item.description.length <= 200
-                                ? item.description
-                                : `${item.description.substring(0, 200)}...`}
-                            </p>
-                            
-                            {item.description.length > 200 && (
-                              <button
-                                className="btn btn-link p-0 text-decoration-none fw-medium small"
-                                style={{color: '#8B5CF6'}}
-                                onClick={() => toggleItemExpansion(item._id)}
-                              >
-                                {expandedItems[item._id] ? (
-                                  <>
-                                    <ChevronUp size={14} className="me-1" />
-                                    Show less
-                                  </>
-                                ) : (
-                                  <>
-                                    <ChevronDown size={14} className="me-1" />
-                                    Read more
-                                  </>
-                                )}
-                              </button>
-                            )}
-                          </div>
-
-                          {item.videoUrl && (
-                            <div className="mt-3 mt-md-4">
+                        </div>
+                      )}
+                      
+                      {/* Video Display */}
+                      {item.videoUrl && (
+                        <div className="relative">
+                          <video
+                            src={item.videoUrl}
+                            className="w-full h-auto max-h-80 object-contain bg-black"
+                            controls={playingVideos[item._id]}
+                            poster={item.imageUrl}
+                          />
+                          {!playingVideos[item._id] && (
+                            <div className="absolute inset-0 flex items-center justify-center">
                               <button 
-                                className="btn rounded-pill px-3 px-md-4 py-2 w-100 w-sm-auto"
+                                className="btn-primary rounded-full p-4 shadow-primary-lg hover:scale-110 transition-transform"
                                 onClick={() => toggleVideo(item._id)}
-                                style={{
-                                  background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                                  border: 'none',
-                                  color: 'white'
-                                }}
                               >
-                                {playingVideos[item._id] ? (
-                                  <>
-                                    <Pause size={16} className="me-2" />
-                                    Pause Video
-                                  </>
-                                ) : (
-                                  <>
-                                    <Play size={16} className="me-2" />
-                                    Play Video
-                                  </>
-                                )}
+                                <Play size={24} className="text-white ml-1" />
                               </button>
                             </div>
                           )}
+                          <div className="absolute top-4 right-4">
+                            <span className="bg-yellow-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                              <Video size={14} className="mr-1" />
+                              Video
+                            </span>
+                          </div>
                         </div>
+                      )}
+                      
+                      <div className="p-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
+                          <div className="flex items-center">
+                            <div className="bg-primary-gradient rounded-2xl p-3 mr-4 shadow-primary">
+                              <User size={20} className="text-white" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-text-primary">{item.author}</div>
+                              <div className="text-sm text-text-secondary">Content Author</div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            {!item.imageUrl && !item.videoUrl && (
+                              <span className="bg-green-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                <FileText size={14} className="mr-1" />
+                                Text
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="prose prose-lg max-w-none">
+                          <p className="text-text-primary leading-relaxed">
+                            {expandedItems[item._id] || item.description.length <= 200
+                              ? item.description
+                              : `${item.description.substring(0, 200)}...`}
+                          </p>
+                          
+                          {item.description.length > 200 && (
+                            <button
+                              className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center mt-4 transition-colors"
+                              onClick={() => toggleItemExpansion(item._id)}
+                            >
+                              {expandedItems[item._id] ? (
+                                <>
+                                  <ChevronUp size={16} className="mr-1" />
+                                  Show less
+                                </>
+                              ) : (
+                                <>
+                                  <ChevronDown size={16} className="mr-1" />
+                                  Read more
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+
+                        {item.videoUrl && (
+                          <div className="mt-6">
+                            <button 
+                              className="btn-secondary px-6 py-3 rounded-xl font-semibold text-white flex items-center shadow-yellow-lg hover:shadow-yellow group"
+                              onClick={() => toggleVideo(item._id)}
+                            >
+                              {playingVideos[item._id] ? (
+                                <>
+                                  <Pause size={18} className="mr-2 group-hover:scale-110 transition-transform" />
+                                  Pause Video
+                                </>
+                              ) : (
+                                <>
+                                  <Play size={18} className="mr-2 group-hover:scale-110 transition-transform" />
+                                  Play Video
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
