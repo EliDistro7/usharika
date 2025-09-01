@@ -1,6 +1,20 @@
 import React, { useState } from "react";
-import { FaUsers, FaBook, FaBars, FaCrown, FaChurch, FaBell, FaTimes } from "react-icons/fa";
-import { MdVolumeUp, MdDashboard } from "react-icons/md";
+import { 
+  Users, 
+  Book, 
+  Menu, 
+  Crown, 
+  Church, 
+  Bell, 
+  X, 
+  VolumeX, 
+  LayoutDashboard,
+  ChevronDown,
+  UserCheck,
+  TrendingUp,
+  Calendar,
+  Sparkles
+} from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
@@ -26,6 +40,8 @@ const RoleDropdown = ({
   showNotifications,
   isMobile = false
 }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
   const notificationCount = Array.isArray(notifications)
     ? notifications.filter((n) => n.group === role).length
     : 0;
@@ -37,34 +53,30 @@ const RoleDropdown = ({
 
   const startsWithKiongozi = (value) => value.startsWith("kiongozi");
 
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
   return (
-    <li className={`nav-item position-relative ${isMobile ? 'w-100 mb-3' : ''}`}>
+    <li className={`relative ${isMobile ? 'w-full mb-4' : ''}`}>
       {/* Role Badge with Purple Theme */}
-      <div className={`d-flex align-items-center bg-light rounded-pill px-3 py-2 shadow-sm border border-light-purple ${isMobile ? 'justify-content-between' : ''}`}>
-        <div className="d-flex align-items-center">
-          <FaChurch className="text-purple me-2" size={isMobile ? 18 : 16} />
-          <span className={`fw-semibold text-dark me-2 ${isMobile ? '' : 'small'}`}>
+      <div className={`flex items-center bg-background-100 rounded-full px-4 py-2 shadow-soft border border-primary-200/30 ${isMobile ? 'justify-between' : ''}`}>
+        <div className="flex items-center">
+          <Church className="text-primary-600 mr-2" size={isMobile ? 18 : 16} />
+          <span className={`font-semibold text-text-primary mr-2 ${isMobile ? '' : 'text-sm'}`}>
             {formatRoleName(role)}
           </span>
         </div>
         
         {/* Notification Bell */}
         {notificationCount > 0 && (
-          <div className="position-relative">
-            <FaBell 
-              className="text-purple cursor-pointer"
+          <div className="relative">
+            <Bell 
+              className="text-primary-600 cursor-pointer hover:text-primary-700 transition-colors"
               size={isMobile ? 18 : 16}
               onClick={() => toggleNotifications(role)}
-              style={{ cursor: "pointer" }}
             />
             <span
-              className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              style={{ 
-                fontSize: isMobile ? "0.65rem" : "0.6rem",
-                minWidth: isMobile ? "20px" : "18px",
-                height: isMobile ? "20px" : "18px",
-                animation: notificationCount > 0 ? "pulse 2s infinite" : "none"
-              }}
+              className="absolute -top-1 -right-1 bg-error-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center font-semibold animate-pulse-soft"
+              style={{ fontSize: isMobile ? "0.65rem" : "0.6rem" }}
             >
               {notificationCount}
             </span>
@@ -75,8 +87,7 @@ const RoleDropdown = ({
       {/* Notifications Panel */}
       {showNotifications && (
         <div 
-          className={`position-absolute mt-2 ${isMobile ? 'start-0 end-0' : 'top-100 end-0'}`} 
-          style={{ zIndex: 1050 }}
+          className={`absolute mt-2 z-[1050] ${isMobile ? 'left-0 right-0' : 'top-full right-0'}`}
         >
           <Notification notifications={notifications} group={role} />
         </div>
@@ -84,152 +95,129 @@ const RoleDropdown = ({
 
       {/* Dashboard Dropdown for Kiongozi Roles */}
       {startsWithKiongozi(role) && (
-        <div className="mt-2">
-          <div className="dropdown">
+        <div className="mt-3">
+          <div className="relative">
             <button
-              className={`btn btn-outline-purple d-flex align-items-center justify-content-center py-2 px-3 rounded-pill shadow-sm ${isMobile ? 'w-100' : 'w-100'}`}
+              className={`btn-primary rounded-full py-2 px-4 shadow-primary hover:shadow-primary-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center ${isMobile ? 'w-full' : 'w-full'}`}
               type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              style={{
-                borderColor: "#9d4edd",
-                color: "#9d4edd",
-                transition: "all 0.3s ease",
-              }}
+              onClick={toggleDropdown}
             >
-              <MdDashboard className="me-2" size={isMobile ? 20 : 18} />
-              <span className="fw-semibold">Dashibodi</span>
+              <LayoutDashboard className="mr-2" size={isMobile ? 20 : 18} />
+              <span className="font-semibold">Dashibodi</span>
+              <ChevronDown className={`ml-2 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} size={16} />
             </button>
             
-            <ul className={`dropdown-menu shadow-lg border-0 rounded-4 p-2 mt-2 ${isMobile ? 'dropdown-menu-start w-100' : 'dropdown-menu-end'}`}
-                style={{
-                  minWidth: isMobile ? "100%" : "280px",
-                  maxWidth: isMobile ? "100%" : "320px",
-                  background: "linear-gradient(135deg, #f8f9ff 0%, #e9ecff 100%)",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(157, 78, 221, 0.1) !important",
-                  zIndex: 9999
-                }}>
-              
-              <li className="mb-2">
-                <div className="text-center py-2">
-                  <h6 className="mb-0 text-purple fw-bold">
-                    <FaChurch className="me-2" />
-                    Dashboard Menu
-                  </h6>
-                  <small className="text-muted">Church Management Tools</small>
+            {isDropdownOpen && (
+              <div className={`absolute mt-2 shadow-strong border-0 rounded-3xl p-3 bg-gradient-to-br from-background-200 to-background-300 backdrop-blur-lg border border-primary-200/20 z-[9999] ${isMobile ? 'left-0 right-0' : 'right-0'}`}
+                  style={{
+                    minWidth: isMobile ? "100%" : "280px",
+                    maxWidth: isMobile ? "100%" : "320px",
+                  }}>
+                
+                <div className="mb-3">
+                  <div className="text-center py-3">
+                    <h6 className="mb-1 text-primary-700 font-bold flex items-center justify-center">
+                      <Church className="mr-2" size={18} />
+                      Dashboard Menu
+                    </h6>
+                    <p className="text-text-tertiary text-xs">Church Management Tools</p>
+                  </div>
+                  <hr className="border-primary-200/25" />
                 </div>
-                <hr className="my-2 opacity-25" />
-              </li>
 
-              {[
-                {
-                  label: "Wanakikundi",
-                  icon: <FaUsers className="me-3 text-primary" size={16} />,
-                  action: "users",
-                  description: "Manage members"
-                },
-                {
-                  label: "Unda Tangazo",
-                  icon: <MdVolumeUp className="me-3 text-success" size={16} />,
-                  action: "matangazo",
-                  description: "Create announcements"
-                },
-                {
-                  label: "Ingiza Michango",
-                  icon: <FaBook className="me-3 text-warning" size={16} />,
-                  action: "donations",
-                  description: "Record donations"
-                },
-                {
-                  label: "Ingiza Mahudhurio",
-                  icon: <FaBook className="me-3 text-info" size={16} />,
-                  action: "attendance",
-                  description: "Track attendance"
-                },
-                {
-                  label: "Wanakikundi Bora",
-                  icon: <FaCrown className="me-3 text-warning" size={16} />,
-                  action: "top-members",
-                  description: "Top members"
-                },
-                {
-                  label: "Update status",
-                  icon: <FaCrown className="me-3 text-purple" size={16} />,
-                  link: `/create-highlight/${getLoggedInUserId()}`,
-                  description: "Update your status"
-                },
-                {
-                  label: "Anzisha series",
-                  icon: <FaBook className="me-3 text-secondary" size={16} />,
-                  link: `/admins/series/${getLoggedInUserId()}`,
-                  description: "Start new series"
-                },
-              ].map((item, index) => (
-                <li key={index} className="mb-1">
-                  {item.link ? (
-                    <Link
-                      onClick={() => storeGroup(role)}
-                      href={item.link}
-                      className="dropdown-item d-flex align-items-start text-decoration-none p-3 rounded-3 border-0"
-                      style={{
-                        transition: "all 0.3s ease",
-                        background: "transparent"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(157, 78, 221, 0.1)";
-                        e.currentTarget.style.transform = "translateX(5px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      <div className="flex-shrink-0 mt-1">
-                        {item.icon}
-                      </div>
-                      <div className="flex-grow-1">
-                        <div className="fw-semibold text-dark mb-1" style={{ fontSize: "0.9rem" }}>
-                          {item.label}
-                        </div>
-                        <small className="text-muted" style={{ fontSize: "0.75rem" }}>
-                          {item.description}
-                        </small>
-                      </div>
-                    </Link>
-                  ) : (
-                    <button
-                      className="dropdown-item d-flex align-items-start w-100 text-start p-3 rounded-3 border-0"
-                      style={{
-                        transition: "all 0.3s ease",
-                        background: "transparent"
-                      }}
-                      onClick={() => handleNavigation(role, item.action)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(157, 78, 221, 0.1)";
-                        e.currentTarget.style.transform = "translateX(5px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      <div className="flex-shrink-0 mt-1">
-                        {item.icon}
-                      </div>
-                      <div className="flex-grow-1">
-                        <div className="fw-semibold text-dark mb-1" style={{ fontSize: "0.9rem" }}>
-                          {item.label}
-                        </div>
-                        <small className="text-muted" style={{ fontSize: "0.75rem" }}>
-                          {item.description}
-                        </small>
-                      </div>
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
+                <div className="space-y-1">
+                  {[
+                    {
+                      label: "Wanakikundi",
+                      icon: <Users className="mr-3 text-blue-500" size={16} />,
+                      action: "users",
+                      description: "Manage members"
+                    },
+                    {
+                      label: "Unda Tangazo",
+                      icon: <VolumeX className="mr-3 text-success-500" size={16} />,
+                      action: "matangazo",
+                      description: "Create announcements"
+                    },
+                    {
+                      label: "Ingiza Michango",
+                      icon: <Book className="mr-3 text-warning-500" size={16} />,
+                      action: "donations",
+                      description: "Record donations"
+                    },
+                    {
+                      label: "Ingiza Mahudhurio",
+                      icon: <UserCheck className="mr-3 text-blue-400" size={16} />,
+                      action: "attendance",
+                      description: "Track attendance"
+                    },
+                    {
+                      label: "Wanakikundi Bora",
+                      icon: <Crown className="mr-3 text-warning-500" size={16} />,
+                      action: "top-members",
+                      description: "Top members"
+                    },
+                    {
+                      label: "Update status",
+                      icon: <TrendingUp className="mr-3 text-primary-600" size={16} />,
+                      link: `/create-highlight/${getLoggedInUserId()}`,
+                      description: "Update your status"
+                    },
+                    {
+                      label: "Anzisha series",
+                      icon: <Sparkles className="mr-3 text-purple-500" size={16} />,
+                      link: `/admins/series/${getLoggedInUserId()}`,
+                      description: "Start new series"
+                    },
+                  ].map((item, index) => (
+                    <div key={index} className="mb-1">
+                      {item.link ? (
+                        <Link
+                          onClick={() => {
+                            storeGroup(role);
+                            setIsDropdownOpen(false);
+                          }}
+                          href={item.link}
+                          className="flex items-start p-3 rounded-2xl border-0 hover:bg-primary-100/50 hover:translate-x-1 transition-all duration-300 text-decoration-none text-text-primary"
+                        >
+                          <div className="flex-shrink-0 mt-1">
+                            {item.icon}
+                          </div>
+                          <div className="flex-grow">
+                            <div className="font-semibold text-text-primary mb-1 text-sm">
+                              {item.label}
+                            </div>
+                            <p className="text-text-tertiary text-xs mb-0">
+                              {item.description}
+                            </p>
+                          </div>
+                        </Link>
+                      ) : (
+                        <button
+                          className="flex items-start w-full text-left p-3 rounded-2xl border-0 hover:bg-primary-100/50 hover:translate-x-1 transition-all duration-300 bg-transparent"
+                          onClick={() => {
+                            handleNavigation(role, item.action);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          <div className="flex-shrink-0 mt-1">
+                            {item.icon}
+                          </div>
+                          <div className="flex-grow">
+                            <div className="font-semibold text-text-primary mb-1 text-sm">
+                              {item.label}
+                            </div>
+                            <p className="text-text-tertiary text-xs mb-0">
+                              {item.description}
+                            </p>
+                          </div>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -272,194 +260,25 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Close mobile menu when clicking outside
+  const handleOverlayClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
-      {/* Custom CSS for Purple Theme and Enhanced Responsiveness */}
-      <style jsx>{`
-        .text-purple { color: #9d4edd !important; }
-        .bg-purple { background-color: #9d4edd !important; }
-        .border-light-purple { border-color: rgba(157, 78, 221, 0.2) !important; }
-        .btn-outline-purple {
-          border-color: #9d4edd;
-          color: #9d4edd;
-        }
-        .btn-outline-purple:hover {
-          background-color: #9d4edd;
-          border-color: #9d4edd;
-          color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(157, 78, 221, 0.3);
-        }
-        .navbar-brand-custom {
-          background: linear-gradient(135deg, #9d4edd, #c77dff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .navbar-custom {
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-          backdrop-filter: blur(10px);
-          border-bottom: 1px solid rgba(157, 78, 221, 0.1);
-          transition: all 0.3s ease;
-          position: relative;
-          z-index: 1060;
-        }
-        .mobile-toggle-custom {
-          background: linear-gradient(135deg, #9d4edd, #c77dff);
-          border: none;
-          box-shadow: 0 4px 15px rgba(157, 78, 221, 0.2);
-          transition: all 0.3s ease;
-        }
-        .mobile-toggle-custom:hover {
-          transform: scale(1.05);
-          box-shadow: 0 6px 20px rgba(157, 78, 221, 0.3);
-        }
-        .mobile-toggle-custom:focus {
-          box-shadow: 0 0 0 0.2rem rgba(157, 78, 221, 0.25);
-        }
-        
-        /* Mobile Menu Overlay */
-        .mobile-menu-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(5px);
-          z-index: 1060;
-          opacity: 0;
-          visibility: hidden;
-          transition: all 0.3s ease;
-        }
-        .mobile-menu-overlay.show {
-          opacity: 1;
-          visibility: visible;
-        }
-        
-        .mobile-menu {
-          position: fixed;
-          top: 0;
-          right: -100%;
-          width: 85%;
-          max-width: 400px;
-          height: 100vh;
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-          box-shadow: -10px 0 30px rgba(157, 78, 221, 0.2);
-          z-index: 1070;
-          padding: 2rem 1.5rem;
-          overflow-y: auto;
-          transition: right 0.3s ease;
-        }
-        .mobile-menu.show {
-          right: 0;
-        }
-        
-        .mobile-menu-header {
-          display: flex;
-          justify-content: between;
-          align-items: center;
-          margin-bottom: 2rem;
-          padding-bottom: 1rem;
-          border-bottom: 2px solid rgba(157, 78, 221, 0.1);
-        }
-        
-        .close-mobile-menu {
-          background: linear-gradient(135deg, #9d4edd, #c77dff);
-          border: none;
-          color: white;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 15px rgba(157, 78, 221, 0.3);
-          transition: all 0.3s ease;
-        }
-        .close-mobile-menu:hover {
-          transform: scale(1.1);
-        }
-        
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .fade-in-up {
-          animation: fadeInUp 0.5s ease-out;
-        }
-        
-        /* Enhanced Desktop Styles */
-        @media (min-width: 992px) {
-          .navbar-nav {
-            gap: 1rem;
-          }
-          .nav-item {
-            position: relative;
-            z-index: 1061;
-          }
-          .navbar-custom {
-            padding: 1rem 2rem;
-          }
-        }
-        
-        /* Mobile Optimizations */
-        @media (max-width: 991.98px) {
-          .navbar-custom {
-            padding: 1rem;
-          }
-          .container-fluid {
-            padding: 0;
-          }
-          .mobile-brand {
-            max-width: calc(100% - 70px);
-          }
-        }
-        
-        /* Extra Small Screens */
-        @media (max-width: 576px) {
-          .mobile-menu {
-            width: 95%;
-          }
-          .navbar-custom {
-            padding: 0.75rem;
-          }
-        }
-        
-        /* Large Desktop Enhancements */
-        @media (min-width: 1400px) {
-          .navbar-custom {
-            padding: 1.5rem 3rem;
-          }
-          .navbar-nav {
-            gap: 1.5rem;
-          }
-        }
-      `}</style>
-
-      <nav className="navbar navbar-expand-lg navbar-custom shadow-sm sticky-top">
-        <div className="container-fluid">
-          <div className="d-flex justify-content-between align-items-center w-100">
+      <nav className="bg-light-gradient backdrop-blur-lg border-b border-primary-200/10 transition-all duration-300 sticky top-0 z-[1060]">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center w-full py-4">
             
             {/* Church Brand/Logo */}
-            <div className="d-flex align-items-center mobile-brand">
+            <div className="flex items-center">
               <Profile user={user} />
             </div>
 
             {/* Desktop Navigation */}
-            <div className="d-none d-lg-block">
-              <ul className="navbar-nav d-flex gap-3 fade-in-up mb-0">
+            <div className="hidden lg:block">
+              <ul className="flex gap-4 items-center animate-fade-in mb-0 list-none">
                 {roles.map((role, index) => (
                   <RoleDropdown
                     key={index}
@@ -475,34 +294,25 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
             </div>
 
             {/* Mobile Toggle Button */}
-            <div className="d-lg-none position-relative">
+            <div className="lg:hidden relative">
               <button
-                className="mobile-toggle-custom rounded-circle p-3 text-white"
+                className="bg-primary-gradient text-white rounded-full p-3 shadow-primary hover:shadow-primary-lg hover:scale-105 transition-all duration-300 flex items-center justify-center"
                 type="button"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle navigation"
                 style={{
                   width: "50px",
                   height: "50px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
                 }}
               >
-                <FaBars size={18} />
+                <Menu size={18} />
               </button>
               
               {/* Mobile Notification Badge */}
               {notificationCount > 0 && (
                 <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style={{
-                    fontSize: "0.7rem",
-                    minWidth: "20px",
-                    height: "20px",
-                    animation: "pulse 2s infinite",
-                    zIndex: 10
-                  }}
+                  className="absolute -top-1 -right-1 bg-error-500 text-white text-xs rounded-full min-w-[20px] h-[20px] flex items-center justify-center font-semibold animate-pulse-soft z-10"
+                  style={{ fontSize: "0.7rem" }}
                 >
                   {notificationCount}
                 </span>
@@ -514,28 +324,32 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`mobile-menu-overlay d-lg-none ${isMenuOpen ? 'show' : ''}`}
-        onClick={toggleMobileMenu}
+        className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[1060] transition-all duration-300 ${
+          isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        }`}
+        onClick={handleOverlayClick}
       ></div>
 
       {/* Mobile Menu */}
-      <div className={`mobile-menu d-lg-none ${isMenuOpen ? 'show' : ''}`}>
-        <div className="mobile-menu-header">
-          <h5 className="text-purple fw-bold mb-0">
-            <FaChurch className="me-2" />
+      <div className={`lg:hidden fixed top-0 right-0 w-[85%] max-w-[400px] h-full bg-light-gradient shadow-strong z-[1070] p-6 overflow-y-auto transition-transform duration-300 ${
+        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-primary-200/10">
+          <h5 className="text-primary-700 font-bold mb-0 flex items-center">
+            <Church className="mr-2" size={20} />
             Church Dashboard
           </h5>
           <button
-            className="close-mobile-menu"
+            className="bg-primary-gradient text-white border-none rounded-full w-10 h-10 flex items-center justify-center shadow-primary hover:scale-110 transition-transform duration-300"
             onClick={toggleMobileMenu}
             aria-label="Close menu"
           >
-            <FaTimes size={16} />
+            <X size={16} />
           </button>
         </div>
         
-        <div className="mobile-menu-content">
-          <ul className="list-unstyled">
+        <div>
+          <ul className="list-none space-y-0">
             {roles.map((role, index) => (
               <RoleDropdown
                 key={index}
@@ -562,11 +376,8 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
         draggable
         pauseOnHover
         theme="light"
-        toastStyle={{
-          background: "linear-gradient(135deg, #f8f9ff 0%, #e9ecff 100%)",
-          border: "1px solid rgba(157, 78, 221, 0.2)",
-          borderRadius: "12px"
-        }}
+        toastClassName="rounded-2xl shadow-strong border border-primary-200/20 backdrop-blur-lg bg-light-gradient"
+        bodyClassName="p-4"
       />
     </>
   );

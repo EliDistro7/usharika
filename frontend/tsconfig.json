@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/BootstrapProvider.js", "src/components/HeroCarousel.tsx", "src/components/about/About.js", "src/components/SlideCarousel.js", "src/components/Pledge.jsx", "src/components/Team.jsx", "src/components/usajili/Msharika.js", "src/app/akaunti/[id]/page.jsx", "src/app/admin/page.jsx", "src/app/admins/attendance/[id]/page.jsx", "src/app/highlight/[id]/page.jsx", "src/app/future-events/[id]/page.jsx", "src/components/NewsTicker.js", "src/app/profile/[id]/page.jsx", "src/app/uongozi/page.tsx", "src/components/Footer.jsx", "src/components/Header.js", "src/components/about/Leadership.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/BootstrapProvider.js", "src/components/HeroCarousel.tsx", "src/components/about/About.js", "src/components/SlideCarousel.js", "src/components/Pledge.jsx", "src/components/Team.jsx", "src/components/usajili/Msharika.js", "src/app/akaunti/[id]/page.jsx", "src/app/admin/page.jsx", "src/app/admins/attendance/[id]/page.jsx", "src/app/highlight/[id]/page.jsx", "src/app/future-events/[id]/page.jsx", "src/components/NewsTicker.js", "src/app/profile/[id]/page.jsx", "src/app/uongozi/page.tsx", "src/components/Footer.jsx", "src/components/Header.js", "src/components/about/Leadership.js", "src/components/hl/index.js"],
   "exclude": ["node_modules"]
 }

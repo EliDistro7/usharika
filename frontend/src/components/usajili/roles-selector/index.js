@@ -1,7 +1,16 @@
 'use client';
 import React, { useState } from "react";
-import { Card, Button, Badge, Row, Col } from "react-bootstrap";
-import { FaUsers, FaMusic, FaBuilding, FaCog, FaEye, FaEyeSlash, FaFilter } from "react-icons/fa";
+import { 
+  Users, 
+  Music, 
+  Building, 
+  Settings, 
+  Eye, 
+  EyeOff, 
+  Filter,
+  X,
+  CheckCircle
+} from "lucide-react";
 import { formatRoleName } from "@/actions/utils";
 import CategorySection from "./CategorySection";
 
@@ -118,84 +127,71 @@ export default function RoleSelector({
   const selectedByCategory = getSelectedByCategory();
 
   return (
-    <div className='px-0'>
+    <div className="px-0">
       {/* Header with controls */}
-      <div className="mb-4">
+      <div className="mb-6">
         {/* Row 1: Title and badge */}
-        <div className="d-flex align-items-center flex-wrap gap-2 mb-3">
-      
-          <Badge bg="purple" className="flex-shrink-0" style={{ backgroundColor: '#6f42c1' }}>
+        <div className="flex items-center flex-wrap gap-3 mb-4">
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-primary-600 text-white shadow-primary">
             {getTotalSelected()} Imechaguliwa
-          </Badge>
+          </span>
         </div>
         
         {/* Row 2: Control buttons */}
-        <div className="d-flex flex-wrap gap-2">
-          <Button
-            variant="outline-secondary"
-            size="sm"
+        <div className="flex flex-wrap gap-2">
+          <button
             onClick={() => setShowCategories({
               jumuiya: true, kwaya: true, ofisi: true, others: true
             })}
-            className="flex-shrink-0"
+            className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white text-text-secondary hover:text-primary-700 hover:bg-primary-50 border border-border-default hover:border-primary-200 transition-all duration-200 text-sm font-medium shadow-soft"
           >
-            <FaEye className="me-1" />
-            <span className="d-none d-sm-inline">Onyesha Vyote</span>
-            <span className="d-sm-none">Vyote</span>
-          </Button>
-          <Button
-            variant="outline-secondary"
-            size="sm"
+            <Eye className="w-4 h-4" />
+            <span className="hidden sm:inline">Onyesha Vyote</span>
+            <span className="sm:hidden">Vyote</span>
+          </button>
+          <button
             onClick={() => setShowCategories({
               jumuiya: false, kwaya: false, ofisi: false, others: false
             })}
-            className="flex-shrink-0"
+            className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white text-text-secondary hover:text-text-primary hover:bg-background-200 border border-border-default transition-all duration-200 text-sm font-medium shadow-soft"
           >
-            <FaEyeSlash className="me-1" />
-            <span className="d-none d-sm-inline">Ficha Vyote</span>
-            <span className="d-sm-none">Ficha</span>
-          </Button>
+            <EyeOff className="w-4 h-4" />
+            <span className="hidden sm:inline">Ficha Vyote</span>
+            <span className="sm:hidden">Ficha</span>
+          </button>
         </div>
       </div>
       
       {/* Summary section */}
-      <div className="mb-4 p-3 bg-light rounded">
-        <div className="d-flex align-items-center mb-2">
-          <FaFilter className="me-2" style={{ color: '#6f42c1' }} />
-          <small className="fw-medium">Muhtasari wa chaguzi zako:</small>
+      <div className="mb-6 p-4 bg-background-200 rounded-xl border border-border-light">
+        <div className="flex items-center space-x-3 mb-3">
+          <Filter className="w-5 h-5 text-primary-600" />
+          <span className="font-medium text-text-primary">Muhtasari wa chaguzi zako:</span>
         </div>
-        <Row>
-          <Col md={3}>
-            <small className="text-muted">Jumuiya: </small>
-            <Badge bg={selectedByCategory.jumuiya > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.jumuiya}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Kwaya: </small>
-            <Badge bg={selectedByCategory.kwaya > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.kwaya}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Ofisi: </small>
-            <Badge bg={selectedByCategory.ofisi > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.ofisi}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Nyingine: </small>
-            <Badge bg={selectedByCategory.others > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.others}
-            </Badge>
-          </Col>
-        </Row>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Jumuiya', count: selectedByCategory.jumuiya },
+            { label: 'Kwaya', count: selectedByCategory.kwaya },
+            { label: 'Ofisi', count: selectedByCategory.ofisi },
+            { label: 'Nyingine', count: selectedByCategory.others }
+          ].map(({ label, count }) => (
+            <div key={label} className="text-center">
+              <span className="text-sm text-text-secondary block mb-1">{label}:</span>
+              <span className={`
+                inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium
+                ${count > 0 ? 'bg-success-100 text-success-700' : 'bg-background-400 text-text-tertiary'}
+              `}>
+                {count}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Category Sections */}
       <CategorySection
         title="Jumuiya"
-        icon={<FaUsers />}
+        icon={<Users className="w-6 h-6" />}
         roles={roleGroups.jumuiya}
         bgColor="#6f42c1"
         category="jumuiya"
@@ -212,7 +208,7 @@ export default function RoleSelector({
       
       <CategorySection
         title="Kwaya"
-        icon={<FaMusic />}
+        icon={<Music className="w-6 h-6" />}
         roles={roleGroups.kwaya}
         bgColor="#8e44ad"
         category="kwaya"
@@ -229,7 +225,7 @@ export default function RoleSelector({
       
       <CategorySection
         title="Ofisi"
-        icon={<FaBuilding />}
+        icon={<Building className="w-6 h-6" />}
         roles={roleGroups.ofisi}
         bgColor="#9b59b6"
         category="ofisi"
@@ -246,7 +242,7 @@ export default function RoleSelector({
       
       <CategorySection
         title="Huduma Nyingine"
-        icon={<FaCog />}
+        icon={<Settings className="w-6 h-6" />}
         roles={roleGroups.others}
         bgColor="#a569bd"
         category="others"
@@ -263,34 +259,31 @@ export default function RoleSelector({
       
       {/* Selected Roles Summary */}
       {getTotalSelected() > 0 && (
-        <Card className="border-0 shadow-sm" style={{ borderLeft: '4px solid #28a745' }}>
-          <Card.Body className="p-3">
-            <h6 className="text-success mb-2">
+        <div className="p-4 bg-success-50 rounded-xl border-l-4 border-l-success-500 border border-success-200 shadow-green animate-fade-in">
+          <div className="flex items-center space-x-2 mb-3">
+            <CheckCircle className="w-5 h-5 text-success-600" />
+            <h3 className="text-lg font-semibold text-success-800">
               Nafasi Zilizochaguliwa ({getTotalSelected()}):
-            </h6>
-            <div className="d-flex flex-wrap gap-2">
-              {formData.selectedRoles.map(role => (
-                <Badge 
-                  key={role} 
-                  bg="success" 
-                  className="px-2 py-1 d-flex align-items-center"
-                  style={{ fontSize: '12px' }}
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {formData.selectedRoles.map(role => (
+              <span 
+                key={role} 
+                className="group inline-flex items-center px-3 py-1.5 rounded-lg bg-success-500 text-white text-sm font-medium shadow-soft hover:shadow-medium transition-all duration-200"
+              >
+                {formatRoleName(role)}
+                <button
+                  onClick={() => handleRoleChange(role)}
+                  className="ml-2 p-0.5 hover:bg-success-600 rounded-full transition-colors duration-200"
+                  aria-label={`Remove ${formatRoleName(role)}`}
                 >
-                  {formatRoleName(role)}
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-white p-0 ms-1 border-0"
-                    onClick={() => handleRoleChange(role)}
-                    style={{ fontSize: '10px', lineHeight: 1 }}
-                  >
-                    ×
-                  </Button>
-                </Badge>
-              ))}
-            </div>
-          </Card.Body>
-        </Card>
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

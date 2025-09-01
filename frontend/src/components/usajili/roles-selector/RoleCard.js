@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from "react";
-import { Card, Form, Button, Badge } from "react-bootstrap";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { ChevronDown, ChevronUp, CheckCircle, Crown } from "lucide-react";
 import { formatRoleName } from "@/actions/utils";
 
 export default function RoleCard({ 
@@ -29,37 +28,57 @@ export default function RoleCard({
   };
   
   return (
-    <Card 
-      className={`mb-2 border-0 shadow-sm transition-all ${isSelected ? 'border-start border-success border-3' : ''} ${isHidden ? 'opacity-75' : ''}`} 
-      style={{ 
-        borderLeft: isSelected ? '4px solid #28a745' : '4px solid #e9ecef',
-        transition: 'all 0.3s ease'
-      }}
+    <div 
+      className={`
+        group relative mb-3 rounded-xl bg-white border transition-all duration-300 ease-out hover:shadow-medium
+        ${isSelected ? 'border-l-4 border-l-success-500 border-success-200 shadow-green' : 'border-border-default hover:border-border-medium'}
+        ${isHidden ? 'opacity-75' : 'opacity-100'}
+      `}
     >
-      <Card.Body className="p-3">
+      <div className="p-4">
         {/* Row 1: Main role info */}
-        <div className="d-flex align-items-start">
-          <Form.Check
-            type="checkbox"
-            id={role}
-            checked={isSelected}
-            onChange={() => onRoleChange && onRoleChange(role)}
-            className="me-3 flex-shrink-0"
-          />
-          <div className="flex-grow-1 min-width-0">
-            <div className="d-flex flex-wrap align-items-center gap-2">
-              <span className={`fw-medium ${isSelected ? 'text-success' : ''}`}>
+        <div className="flex items-start space-x-3">
+          <div className="relative flex-shrink-0 mt-0.5">
+            <input
+              type="checkbox"
+              id={role}
+              checked={isSelected}
+              onChange={() => onRoleChange && onRoleChange(role)}
+              className={`
+                w-5 h-5 rounded border-2 transition-all duration-200 cursor-pointer
+                ${isSelected 
+                  ? 'bg-success-500 border-success-500 text-white' 
+                  : 'border-border-medium hover:border-success-400 focus:border-success-500'
+                }
+                focus:ring-2 focus:ring-success-200 focus:outline-none
+              `}
+            />
+            {isSelected && (
+              <CheckCircle className="absolute -top-0.5 -left-0.5 w-6 h-6 text-success-500 pointer-events-none" />
+            )}
+          </div>
+          
+          <div className="flex-grow min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className={`
+                font-medium transition-colors duration-200 text-sm md:text-base
+                ${isSelected ? 'text-success-700' : 'text-text-primary'}
+              `}>
                 {formatRoleName(role)}
               </span>
+              
               {isLeadership && (
-                <Badge bg="warning" text="dark" className="flex-shrink-0">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 text-warning-700 flex-shrink-0">
+                  <Crown className="w-3 h-3 mr-1" />
                   Uongozi
-                </Badge>
+                </span>
               )}
+              
               {isSelected && (
-                <Badge bg="success" className="flex-shrink-0">
-                  ✓ Imechaguliwa
-                </Badge>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-700 flex-shrink-0">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Imechaguliwa
+                </span>
               )}
             </div>
           </div>
@@ -67,42 +86,43 @@ export default function RoleCard({
         
         {/* Row 2: Leadership positions button (if applicable) */}
         {isLeadership && hasPositions && isSelected && (
-          <div className="mt-2 d-flex justify-content-end">
-            <Button
-              variant="outline-success"
-              size="sm"
+          <div className="mt-3 flex justify-end">
+            <button
               onClick={toggleExpanded}
-              className="border-0 d-flex align-items-center"
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-success-50 text-success-700 hover:bg-success-100 transition-colors duration-200 text-sm font-medium border-0"
             >
-              {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-              <span className="ms-1 d-none d-sm-inline">Nafasi ({leadershipPositions.length})</span>
-              <span className="ms-1 d-sm-none">({leadershipPositions.length})</span>
-            </Button>
+              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              <span className="hidden sm:inline">Nafasi ({leadershipPositions.length})</span>
+              <span className="sm:hidden">({leadershipPositions.length})</span>
+            </button>
           </div>
         )}
         
         {/* Leadership Positions */}
         {isLeadership && hasPositions && isSelected && isExpanded && (
-          <div className="mt-3 p-3 rounded" style={{ backgroundColor: '#f8f9fa', border: '1px solid #e9ecef' }}>
-            <small className="text-muted fw-medium">Chagua nafasi za uongozi:</small>
-            <div className="mt-2">
+          <div className="mt-4 p-4 rounded-lg bg-background-300 border border-border-light animate-slide-down">
+            <p className="text-sm font-medium text-text-secondary mb-3">
+              Chagua nafasi za uongozi:
+            </p>
+            <div className="space-y-2">
               {leadershipPositions.map((position, index) => (
-                <Form.Check
-                  key={index}
-                  type="checkbox"
-                  id={`${role}-${position}`}
-                  label={position}
-                  checked={
-                    selectedLeadershipPositions[role]?.includes(position) || false
-                  }
-                  onChange={(e) => handleLeadershipChange(position, e.target.checked)}
-                  className="mb-1"
-                />
+                <label key={index} className="flex items-center space-x-3 cursor-pointer group/position">
+                  <input
+                    type="checkbox"
+                    id={`${role}-${position}`}
+                    checked={selectedLeadershipPositions[role]?.includes(position) || false}
+                    onChange={(e) => handleLeadershipChange(position, e.target.checked)}
+                    className="w-4 h-4 rounded border-2 border-border-medium text-success-600 focus:ring-2 focus:ring-success-200 focus:outline-none transition-colors duration-200 cursor-pointer"
+                  />
+                  <span className="text-sm text-text-primary group-hover/position:text-success-700 transition-colors duration-200">
+                    {position}
+                  </span>
+                </label>
               ))}
             </div>
           </div>
         )}
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }

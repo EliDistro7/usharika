@@ -1,7 +1,19 @@
 'use client';
 import React, { useState } from "react";
-import { Card, Form, Button, Badge, Row, Col } from "react-bootstrap";
-import { FaUsers, FaMusic, FaBuilding, FaCog, FaChevronDown, FaChevronUp, FaEye, FaEyeSlash, FaFilter } from "react-icons/fa";
+import { 
+  Users, 
+  Music, 
+  Building, 
+  Settings, 
+  ChevronDown, 
+  ChevronUp, 
+  Eye, 
+  EyeOff, 
+  Filter,
+  X,
+  CheckCircle,
+  Crown
+} from "lucide-react";
 import { formatRoleName } from "@/actions/utils";
 
 export default function RoleSelector({
@@ -125,89 +137,102 @@ export default function RoleSelector({
     }
   };
 
-  const RoleCard = ({ role, isLeadership = false, isHidden = false }) => {
+  const RoleCard = ({ role, isLeadership = false }) => {
     const leadershipPositions = isLeadership ? getLeadershipPositions(role) : [];
     const hasPositions = leadershipPositions.length > 0;
     const isExpanded = expandedSections[role];
     const selected = isRoleSelected(role);
     
     return (
-      <Card 
-        className={`mb-2 border-0 shadow-sm transition-all ${selected ? 'border-start border-success border-3' : ''} ${isHidden ? 'opacity-75' : ''}`} 
-        style={{ 
-          borderLeft: selected ? '4px solid #28a745' : '4px solid #e9ecef',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <Card.Body className="p-3">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center">
-              <Form.Check
-                type="checkbox"
-                id={role}
-                checked={selected}
-                onChange={() => handleRoleChange(role)}
-                className="me-3"
-              />
-              <div>
-                <span className={`fw-medium ${selected ? 'text-success' : ''}`}>
+      <div className={`
+        group relative mb-3 rounded-xl bg-white border transition-all duration-300 ease-out hover:shadow-medium
+        ${selected ? 'border-l-4 border-l-primary-600 border-primary-200 shadow-primary' : 'border-border-default hover:border-border-medium'}
+      `}>
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  id={role}
+                  checked={selected}
+                  onChange={() => handleRoleChange(role)}
+                  className={`
+                    w-5 h-5 rounded border-2 transition-all duration-200
+                    ${selected 
+                      ? 'bg-primary-600 border-primary-600 text-white' 
+                      : 'border-border-medium hover:border-primary-400 focus:border-primary-500'
+                    }
+                    focus:ring-2 focus:ring-primary-200 focus:outline-none cursor-pointer
+                  `}
+                />
+                {selected && (
+                  <CheckCircle className="absolute -top-0.5 -left-0.5 w-6 h-6 text-primary-600 pointer-events-none" />
+                )}
+              </div>
+              <div className="flex-1">
+                <span className={`
+                  font-medium transition-colors duration-200
+                  ${selected ? 'text-primary-700' : 'text-text-primary'}
+                `}>
                   {formatRoleName(role)}
                 </span>
-                {isLeadership && (
-                  <Badge bg="warning" text="dark" className="ms-2">
-                    Uongozi
-                  </Badge>
-                )}
-                {selected && (
-                  <Badge bg="success" className="ms-2">
-                    ✓ Imechaguliwa
-                  </Badge>
-                )}
+                <div className="flex items-center space-x-2 mt-1">
+                  {isLeadership && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 text-warning-700">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Uongozi
+                    </span>
+                  )}
+                  {selected && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-700">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Imechaguliwa
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
             
             {isLeadership && hasPositions && selected && (
-              <Button
-                variant="outline-success"
-                size="sm"
+              <button
                 onClick={() => toggleSection(role)}
-                className="border-0"
+                className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors duration-200 text-sm font-medium"
               >
-                {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-                <span className="ms-1">Nafasi ({leadershipPositions.length})</span>
-              </Button>
+                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                <span>Nafasi ({leadershipPositions.length})</span>
+              </button>
             )}
           </div>
           
           {/* Leadership Positions */}
           {isLeadership && hasPositions && selected && isExpanded && (
-            <div className="mt-3 p-3 rounded" style={{ backgroundColor: '#f8f9fa', border: '1px solid #e9ecef' }}>
-              <small className="text-muted fw-medium">Chagua nafasi za uongozi:</small>
-              <div className="mt-2">
+            <div className="mt-4 p-4 rounded-lg bg-background-300 border border-border-light animate-slide-down">
+              <p className="text-sm font-medium text-text-secondary mb-3">Chagua nafasi za uongozi:</p>
+              <div className="space-y-2">
                 {leadershipPositions.map((position, index) => (
-                  <Form.Check
-                    key={index}
-                    type="checkbox"
-                    id={`${role}-${position}`}
-                    label={position}
-                    checked={
-                      selectedLeadershipPositions[role]?.includes(position) || false
-                    }
-                    onChange={(e) =>
-                      handleLeadershipPositionChange(role, position, e.target.checked)
-                    }
-                    className="mb-1"
-                  />
+                  <label key={index} className="flex items-center space-x-3 cursor-pointer group/position">
+                    <input
+                      type="checkbox"
+                      id={`${role}-${position}`}
+                      checked={selectedLeadershipPositions[role]?.includes(position) || false}
+                      onChange={(e) => handleLeadershipPositionChange(role, position, e.target.checked)}
+                      className="w-4 h-4 rounded border-2 border-border-medium text-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none transition-colors duration-200"
+                    />
+                    <span className="text-sm text-text-primary group-hover/position:text-primary-700 transition-colors duration-200">
+                      {position}
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
           )}
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
     );
   };
 
-  const CategorySection = ({ title, icon, roles, bgColor, category }) => {
+  const CategorySection = ({ title, icon: IconComponent, roles, bgColor, category }) => {
     const plainRoles = roles.filter(role => !isLeadershipRole(role));
     const leadershipRoles = roles.filter(role => isLeadershipRole(role));
     const allRoles = [...plainRoles, ...leadershipRoles];
@@ -218,79 +243,84 @@ export default function RoleSelector({
     const isVisible = showCategories[category];
     
     return (
-      <Card className="mb-4 border-0 shadow">
-        <Card.Header 
-          className="text-white border-0 d-flex align-items-center cursor-pointer"
+      <div className="mb-6 rounded-2xl overflow-hidden shadow-medium bg-white border border-border-light">
+        <div 
+          className={`px-6 py-4 text-white cursor-pointer hover:opacity-90 transition-opacity duration-200`}
           style={{ backgroundColor: bgColor }}
           onClick={() => toggleCategoryVisibility(category)}
         >
-          <div className="d-flex align-items-center flex-grow-1">
-            {icon}
-            <span className="ms-2 fw-bold">{title}</span>
-            <Badge bg="light" text="dark" className="ms-2">
-              {selectedCount > 0 ? `${selectedCount}/${allRoles.length}` : allRoles.length}
-            </Badge>
-            {selectedCount > 0 && (
-              <Badge bg="success" className="ms-2">
-                ✓ Imechagua
-              </Badge>
-            )}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <IconComponent className="w-6 h-6" />
+              <h3 className="text-lg font-bold">{title}</h3>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
+                {selectedCount > 0 ? `${selectedCount}/${allRoles.length}` : allRoles.length}
+              </span>
+              {selectedCount > 0 && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-success-500 text-white">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Imechagua
+                </span>
+              )}
+            </div>
+            <button className="p-1 hover:bg-white/10 rounded-lg transition-colors duration-200">
+              {isVisible ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
           </div>
-          <Button variant="link" className="text-white p-0 border-0">
-            {isVisible ? <FaChevronUp /> : <FaChevronDown />}
-          </Button>
-        </Card.Header>
+        </div>
         
         {isVisible && (
-          <Card.Body className="p-3">
+          <div className="p-6 animate-slide-down">
             {allRoles.length === 0 ? (
-              <p className="text-muted mb-0">Hakuna nafasi zinazopatikana</p>
+              <p className="text-text-tertiary text-center py-8">Hakuna nafasi zinazopatikana</p>
             ) : (
               <>
                 {/* Show filtered roles */}
-                {filteredRoles.map(role => (
-                  <RoleCard 
-                    key={role} 
-                    role={role} 
-                    isLeadership={isLeadershipRole(role)} 
-                  />
-                ))}
+                <div className="space-y-3">
+                  {filteredRoles.map(role => (
+                    <RoleCard 
+                      key={role} 
+                      role={role} 
+                      isLeadership={isLeadershipRole(role)} 
+                    />
+                  ))}
+                </div>
                 
                 {/* Show/Hide toggle for remaining roles */}
                 {hiddenRolesCount > 0 && (
-                  <div className="text-center mt-3">
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
+                  <div className="flex justify-center mt-6">
+                    <button
                       onClick={() => toggleShowAllRoles(category)}
-                      className="border-0"
+                      className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-background-300 text-text-secondary hover:bg-background-400 hover:text-text-primary transition-all duration-200 text-sm font-medium"
                     >
                       {showAllRoles[category] ? (
                         <>
-                          <FaEyeSlash /> Ficha nafasi {hiddenRolesCount} zaidi
+                          <EyeOff className="w-4 h-4" />
+                          <span>Ficha nafasi {hiddenRolesCount} zaidi</span>
                         </>
                       ) : (
                         <>
-                          <FaEye /> Onyesha nafasi {hiddenRolesCount} zaidi
+                          <Eye className="w-4 h-4" />
+                          <span>Onyesha nafasi {hiddenRolesCount} zaidi</span>
                         </>
                       )}
-                    </Button>
+                    </button>
                   </div>
                 )}
                 
                 {/* Quick actions for category */}
                 {selectedCount === 0 && allRoles.length > 0 && (
-                  <div className="mt-3 p-2 bg-light rounded">
-                    <small className="text-muted">
-                      💡 <strong>Kidokezo:</strong> Chagua nafasi unazotaka ili kuona maelezo zaidi
-                    </small>
+                  <div className="mt-6 p-4 bg-primary-50 rounded-xl border border-primary-100">
+                    <p className="text-sm text-primary-700">
+                      💡 <span className="font-medium">Kidokezo:</span> Chagua nafasi unazotaka ili kuona maelezo zaidi
+                    </p>
                   </div>
                 )}
               </>
             )}
-          </Card.Body>
+          </div>
         )}
-      </Card>
+      </div>
     );
   };
 
@@ -321,82 +351,81 @@ export default function RoleSelector({
   const selectedByCategory = getSelectedByCategory();
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Header with controls */}
-      <div className="d-flex align-items-center justify-content-between mb-4">
-        <div className="d-flex align-items-center">
-          <h4 className="mb-0" style={{ color: '#6f42c1' }}>Chagua Vikundi na Nafasi</h4>
-          <Badge bg="purple" className="ms-2" style={{ backgroundColor: '#6f42c1' }}>
-            {getTotalSelected()} Imechaguliwa
-          </Badge>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 bg-gradient-to-r from-primary-50 to-purple-50 rounded-2xl border border-primary-100">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-primary-600 rounded-lg">
+            <Settings className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-primary-700">Chagua Vikundi na Nafasi</h2>
+            <p className="text-primary-600 font-medium">
+              {getTotalSelected()} nafasi zimechaguliwa
+            </p>
+          </div>
         </div>
         
-        <div className="d-flex gap-2">
-          <Button
-            variant="outline-secondary"
-            size="sm"
+        <div className="flex gap-2">
+          <button
             onClick={() => setShowCategories({
               jumuiya: true, kwaya: true, ofisi: true, others: true
             })}
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white text-primary-700 hover:bg-primary-50 border border-primary-200 transition-all duration-200 text-sm font-medium shadow-soft"
           >
-            <FaEye /> Onyesha Vyote
-          </Button>
-          <Button
-            variant="outline-secondary"
-            size="sm"
+            <Eye className="w-4 h-4" />
+            <span>Onyesha Vyote</span>
+          </button>
+          <button
             onClick={() => setShowCategories({
               jumuiya: false, kwaya: false, ofisi: false, others: false
             })}
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white text-text-secondary hover:bg-background-200 border border-border-default transition-all duration-200 text-sm font-medium shadow-soft"
           >
-            <FaEyeSlash /> Ficha Vyote
-          </Button>
+            <EyeOff className="w-4 h-4" />
+            <span>Ficha Vyote</span>
+          </button>
         </div>
       </div>
       
-      <div className="mb-4 p-3 bg-light rounded">
-        <div className="d-flex align-items-center mb-2">
-          <FaFilter className="me-2" style={{ color: '#6f42c1' }} />
-          <small className="fw-medium">Muhtasari wa chaguzi zako:</small>
+      {/* Summary section */}
+      <div className="p-6 bg-background-200 rounded-2xl border border-border-light">
+        <div className="flex items-center space-x-3 mb-4">
+          <Filter className="w-5 h-5 text-primary-600" />
+          <h3 className="font-semibold text-text-primary">Muhtasari wa chaguzi zako:</h3>
         </div>
-        <Row>
-          <Col md={3}>
-            <small className="text-muted">Jumuiya: </small>
-            <Badge bg={selectedByCategory.jumuiya > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.jumuiya}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Kwaya: </small>
-            <Badge bg={selectedByCategory.kwaya > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.kwaya}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Ofisi: </small>
-            <Badge bg={selectedByCategory.ofisi > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.ofisi}
-            </Badge>
-          </Col>
-          <Col md={3}>
-            <small className="text-muted">Nyingine: </small>
-            <Badge bg={selectedByCategory.others > 0 ? 'success' : 'secondary'}>
-              {selectedByCategory.others}
-            </Badge>
-          </Col>
-        </Row>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Jumuiya', count: selectedByCategory.jumuiya },
+            { label: 'Kwaya', count: selectedByCategory.kwaya },
+            { label: 'Ofisi', count: selectedByCategory.ofisi },
+            { label: 'Nyingine', count: selectedByCategory.others }
+          ].map(({ label, count }) => (
+            <div key={label} className="text-center">
+              <p className="text-sm text-text-secondary mb-1">{label}:</p>
+              <span className={`
+                inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                ${count > 0 ? 'bg-success-100 text-success-700' : 'bg-background-400 text-text-tertiary'}
+              `}>
+                {count}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
+      {/* Category sections */}
       <CategorySection
         title="Jumuiya"
-        icon={<FaUsers />}
+        icon={Users}
         roles={roleGroups.jumuiya}
-        bgColor="#6f42c1"
+        bgColor="#6b46c1"
         category="jumuiya"
       />
       
       <CategorySection
         title="Kwaya"
-        icon={<FaMusic />}
+        icon={Music}
         roles={roleGroups.kwaya}
         bgColor="#8e44ad"
         category="kwaya"
@@ -404,7 +433,7 @@ export default function RoleSelector({
       
       <CategorySection
         title="Ofisi"
-        icon={<FaBuilding />}
+        icon={Building}
         roles={roleGroups.ofisi}
         bgColor="#9b59b6"
         category="ofisi"
@@ -412,7 +441,7 @@ export default function RoleSelector({
       
       <CategorySection
         title="Huduma Nyingine"
-        icon={<FaCog />}
+        icon={Settings}
         roles={roleGroups.others}
         bgColor="#a569bd"
         category="others"
@@ -420,34 +449,31 @@ export default function RoleSelector({
       
       {/* Selected Roles Summary */}
       {getTotalSelected() > 0 && (
-        <Card className="border-0 shadow-sm" style={{ borderLeft: '4px solid #28a745' }}>
-          <Card.Body className="p-3">
-            <h6 className="text-success mb-2">
+        <div className="p-6 bg-success-50 rounded-2xl border-l-4 border-l-success-500 border border-success-200 shadow-green animate-fade-in">
+          <div className="flex items-center space-x-3 mb-4">
+            <CheckCircle className="w-6 h-6 text-success-600" />
+            <h3 className="text-lg font-semibold text-success-800">
               Nafasi Zilizochaguliwa ({getTotalSelected()}):
-            </h6>
-            <div className="d-flex flex-wrap gap-2">
-              {formData.selectedRoles.map(role => (
-                <Badge 
-                  key={role} 
-                  bg="success" 
-                  className="px-2 py-1 d-flex align-items-center"
-                  style={{ fontSize: '12px' }}
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {formData.selectedRoles.map(role => (
+              <span 
+                key={role} 
+                className="group inline-flex items-center px-3 py-1.5 rounded-lg bg-success-500 text-white text-sm font-medium shadow-soft hover:shadow-medium transition-all duration-200"
+              >
+                {formatRoleName(role)}
+                <button
+                  onClick={() => handleRoleChange(role)}
+                  className="ml-2 p-0.5 hover:bg-success-600 rounded-full transition-colors duration-200"
+                  aria-label={`Remove ${formatRoleName(role)}`}
                 >
-                  {formatRoleName(role)}
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-white p-0 ms-1 border-0"
-                    onClick={() => handleRoleChange(role)}
-                    style={{ fontSize: '10px', lineHeight: 1 }}
-                  >
-                    ×
-                  </Button>
-                </Badge>
-              ))}
-            </div>
-          </Card.Body>
-        </Card>
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

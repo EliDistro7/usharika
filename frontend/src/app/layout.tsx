@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 ///import Header from "@/components/Header";
-//import Footer from "@/components/Footer";
+import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
 import Header from "@/components/Header";
 
@@ -100,20 +100,12 @@ export default function RootLayout({
         <Spinner />
          <Header  />
         {children}
-  
+        <Footer />
 
         {/* JavaScript Libraries */}
-        <Script
-          id="jquery-script"
-          src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"
-          strategy="lazyOnload"
-        />
+     
 
-        <Script
-          id="bootstrap-script"
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
-          strategy="lazyOnload"
-        />
+      
 
         <Script
           id="wow-script"

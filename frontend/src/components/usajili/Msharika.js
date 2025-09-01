@@ -207,7 +207,27 @@ const Msharika = () => {
           onDependentsChange={handleDependentsChange}
         />
 
-        <button type="submit" className="btn btn-success w-100">Jisajili</button>
+      <button 
+  type="submit" 
+  className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-emerald-300 focus:ring-opacity-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-base sm:text-lg"
+>
+  <span className="flex items-center justify-center gap-2">
+    Jisajili
+    <svg 
+      className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        strokeWidth={2} 
+        d="M13 7l5 5m0 0l-5 5m5-5H6" 
+      />
+    </svg>
+  </span>
+</button>
       </form>
     </div>
   );

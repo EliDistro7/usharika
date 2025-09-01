@@ -1,75 +1,35 @@
 import React, { memo } from "react";
-import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp, FaExpand } from "react-icons/fa";
+import { Play, Pause, VolumeX, Volume2, Expand } from "lucide-react";
 import ShareButton from "@/components/ShareButton";
 
 // Memoized button component for better performance
 const ControlButton = memo(({ 
   onClick, 
   icon: Icon, 
-  bgColor, 
-  textColor, 
+  variant = "primary",
   title,
-  size = 56,
+  size = 14,
   isActive = false 
 }) => {
-  const buttonStyle = {
-    width: `${size}px`,
-    height: `${size}px`,
-    borderRadius: "50%",
-    border: "none",
-    background: isActive 
-      ? `linear-gradient(135deg, ${bgColor}, ${bgColor}dd)` 
-      : bgColor,
-    color: textColor,
-    boxShadow: isActive 
-      ? `0 8px 25px rgba(0, 0, 0, 0.2), 0 0 0 3px ${bgColor}33`
-      : "0 4px 15px rgba(0, 0, 0, 0.1)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    position: "relative",
-    overflow: "hidden",
+  const baseClasses = "w-14 h-14 rounded-full border-0 flex items-center justify-center cursor-pointer transition-all duration-300 ease-out relative overflow-hidden group";
+  
+  const variantClasses = {
+    primary: isActive 
+      ? "bg-primary-gradient shadow-primary hover:shadow-primary-lg hover:-translate-y-0.5 hover:scale-105" 
+      : "bg-primary-gradient shadow-primary hover:shadow-primary-lg hover:-translate-y-0.5 hover:scale-105",
+    secondary: "bg-gradient-to-br from-text-primary to-text-secondary text-white shadow-medium hover:shadow-strong hover:-translate-y-0.5 hover:scale-105",
+    accent: "bg-secondary-gradient text-text-primary shadow-yellow hover:shadow-yellow-lg hover:-translate-y-0.5 hover:scale-105"
   };
 
   return (
     <button
       onClick={onClick}
-      style={buttonStyle}
       title={title}
-      className="control-button"
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px) scale(1.05)";
-        e.currentTarget.style.boxShadow = `0 12px 30px rgba(0, 0, 0, 0.2), 0 0 0 3px ${bgColor}33`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0) scale(1)";
-        e.currentTarget.style.boxShadow = isActive 
-          ? `0 8px 25px rgba(0, 0, 0, 0.2), 0 0 0 3px ${bgColor}33`
-          : "0 4px 15px rgba(0, 0, 0, 0.1)";
-      }}
-      onMouseDown={(e) => {
-        e.currentTarget.style.transform = "translateY(0) scale(0.98)";
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px) scale(1.05)";
-      }}
+      className={`${baseClasses} ${variantClasses[variant]} active:scale-95`}
     >
       {/* Ripple effect overlay */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${textColor}20 0%, transparent 70%)`,
-          opacity: 0,
-          transform: "scale(0)",
-          transition: "all 0.3s ease",
-        }}
-        className="ripple-effect"
-      />
-      <Icon size={18} style={{ zIndex: 1 }} />
+      <div className="absolute inset-0 rounded-full bg-gradient-radial from-white/20 to-transparent opacity-0 scale-0 group-active:opacity-100 group-active:scale-100 transition-all duration-300"></div>
+      <Icon size={size} className="relative z-10 text-white" />
     </button>
   );
 });
@@ -83,87 +43,43 @@ const ControlButtons = ({
   toggleMute,
   handleModalShow,
   title,
-  colors
+  fonts
 }) => {
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "1.5rem",
-    background: `linear-gradient(135deg, ${colors.surface}95, ${colors.background}95)`,
-    backdropFilter: "blur(10px)",
-    borderRadius: "20px",
-    border: `1px solid rgba(99, 102, 241, 0.1)`,
-    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.05)",
-  };
-
-  const groupStyle = {
-    display: "flex",
-    gap: "1rem",
-    alignItems: "center",
-  };
-
   return (
-    <div style={containerStyle} className="control-panel">
+    <div className="flex justify-between items-center p-6 glass-strong rounded-5xl border border-primary-100 shadow-soft animate-slide-up">
       {/* Left control group */}
-      <div style={groupStyle}>
+      <div className="flex gap-4 items-center">
         <ControlButton
           onClick={togglePause}
-          icon={isPaused ? FaPlay : FaPause}
-          bgColor={colors.primary}
-          textColor={colors.surface}
+          icon={isPaused ? Play : Pause}
+          variant="primary"
           title={isPaused ? "Play" : "Pause"}
           isActive={!isPaused}
         />
         
         <ControlButton
           onClick={toggleMute}
-          icon={isMuted ? FaVolumeMute : FaVolumeUp}
-          bgColor={colors.text}
-          textColor={colors.surface}
+          icon={isMuted ? VolumeX : Volume2}
+          variant="secondary"
           title={isMuted ? "Unmute" : "Mute"}
           isActive={!isMuted}
         />
       </div>
       
       {/* Right control group */}
-      <div style={groupStyle}>
+      <div className="flex gap-4 items-center">
         <ControlButton
           onClick={handleModalShow}
-          icon={FaExpand}
-          bgColor={colors.accent}
-          textColor={colors.text}
+          icon={Expand}
+          variant="accent"
           title="Fullscreen"
         />
         
         <ShareButton 
           url={typeof window !== 'undefined' ? window.location.href : ''} 
           title={title} 
-          colors={colors} 
         />
       </div>
-
-      <style jsx>{`
-        .control-button:active .ripple-effect {
-          opacity: 1;
-          transform: scale(1);
-        }
-        
-        .control-panel {
-          animation: slideUp 0.5s ease-out;
-        }
-        
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };

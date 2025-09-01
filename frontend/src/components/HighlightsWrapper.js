@@ -4,8 +4,29 @@ import React, { useEffect, useState } from "react";
 import Highlights from "./hl/index";
 import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
-import { Spinner, Placeholder, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Search, XCircle, Filter, Funnel, SortDown } from 'react-bootstrap-icons';
+
+const LoadingSpinner = () => (
+  <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+);
+
+const PlaceholderCard = () => (
+  <div className="bg-light-gradient rounded-5xl border border-border-light shadow-medium overflow-hidden animate-pulse">
+    <div className="h-64 bg-background-300"></div>
+    <div className="p-6 space-y-3">
+      <div className="h-6 bg-background-300 rounded-xl w-3/4"></div>
+      <div className="space-y-2">
+        <div className="h-4 bg-background-300 rounded-lg w-full"></div>
+        <div className="h-4 bg-background-300 rounded-lg w-2/3"></div>
+        <div className="h-4 bg-background-300 rounded-lg w-1/2"></div>
+      </div>
+      <div className="flex justify-between items-center pt-2">
+        <div className="h-4 bg-background-300 rounded-lg w-1/3"></div>
+        <div className="h-4 bg-background-300 rounded-lg w-1/4"></div>
+      </div>
+    </div>
+  </div>
+);
 
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
@@ -27,7 +48,6 @@ const HighlightsWrapper = () => {
         setLoading(true);
         const response = await getRecentHighlights();
         setDataSets(response.data || []); // Ensure default empty array
-       // console.log('data', response.data)
       } catch (err) {
         console.error("Error fetching highlights:", err);
         setError(err.message || "Tatizo la mtandao.");
@@ -53,7 +73,6 @@ const HighlightsWrapper = () => {
             content: group.content.map((innerContent) => ({
               ...innerContent,
               parentLastUpdated: item.lastUpdated,
-             
             })),
           };
         });
@@ -61,7 +80,7 @@ const HighlightsWrapper = () => {
           name: item.name,
           lastUpdated: item.lastUpdated,
           content: groupedContent,
-          _id:item._id,
+          _id: item._id,
         });
       });
       return flattened;
@@ -77,8 +96,9 @@ const HighlightsWrapper = () => {
             innerItem.author
               .toLowerCase()
               .includes(selectedAuthor.toLowerCase())
+          )
         )
-      ))
+      );
     }
 
     // Sort by most recent
@@ -124,48 +144,22 @@ const HighlightsWrapper = () => {
 
   if (loading) {
     return (
-      <div 
-        className="d-flex flex-column align-items-center justify-content-center position-relative overflow-hidden"
-        style={{ 
-          minHeight: '400px',
-          background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-          borderRadius: '24px',
-          margin: '20px',
-          boxShadow: '0 20px 60px rgba(106, 13, 173, 0.1)',
-        }}
-      >
-        {/* Animated Background */}
-       
+      <div className="flex flex-col items-center justify-center relative overflow-hidden min-h-96 bg-light-gradient rounded-5xl mx-5 my-5 shadow-primary-lg">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-primary-200 rounded-full animate-gentle-float"></div>
+          <div className="absolute top-32 right-16 w-16 h-16 bg-yellow-200 rounded-full animate-gentle-float" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-16 left-1/4 w-12 h-12 bg-green-200 rounded-full animate-gentle-float" style={{ animationDelay: '2s' }}></div>
+        </div>
         
-        <div className="position-relative">
-          <div 
-            className="p-4 rounded-circle mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-              boxShadow: '0 15px 35px rgba(106, 13, 173, 0.3)',
-              animation: 'pulse-glow 2s ease-in-out infinite',
-            }}
-          >
-            <Spinner 
-              animation="border" 
-              variant="light" 
-              role="status"
-              style={{ width: '3rem', height: '3rem' }}
-            >
-              <span className="visually-hidden">Inapakia...</span>
-            </Spinner>
+        <div className="relative z-10">
+          <div className="bg-primary-gradient p-6 rounded-full mb-6 shadow-primary-lg animate-pulse">
+            <LoadingSpinner />
           </div>
-          <h4 
-            className="text-center mb-2"
-            style={{ 
-              color: '#6a0dad',
-              fontWeight: '600',
-              letterSpacing: '0.5px',
-            }}
-          >
+          <h4 className="text-center mb-3 text-primary-700 font-semibold text-xl tracking-wide">
             Albamu zinapakia...
           </h4>
-          <p className="text-center text-muted">Subiri kidogo, tunapakia maudhui</p>
+          <p className="text-center text-text-secondary text-lg">Subiri kidogo, tunapakia maudhui</p>
         </div>
       </div>
     );
@@ -173,30 +167,18 @@ const HighlightsWrapper = () => {
 
   if (error) {
     return (
-      <div 
-        className="mx-3 my-5 p-4 position-relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%)',
-          borderRadius: '20px',
-          border: '1px solid rgba(220, 38, 38, 0.2)',
-          boxShadow: '0 10px 30px rgba(220, 38, 38, 0.1)',
-        }}
-      >
-        <div className="d-flex align-items-center">
-          <div 
-            className="me-3 p-3 rounded-circle"
-            style={{
-              background: 'linear-gradient(135deg, #dc2626, #ef4444)',
-              boxShadow: '0 8px 20px rgba(220, 38, 38, 0.3)',
-            }}
-          >
-            <i className="fas fa-exclamation-triangle text-white"></i>
+      <div className="mx-5 my-8 p-6 relative overflow-hidden bg-gradient-to-br from-error-50 to-error-100 rounded-5xl border border-error-200 shadow-medium">
+        <div className="flex items-center">
+          <div className="mr-4 p-4 rounded-full bg-gradient-to-br from-error-500 to-error-600 shadow-lg">
+            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
           </div>
           <div>
-            <h5 className="mb-1" style={{ color: '#dc2626', fontWeight: '600' }}>
+            <h5 className="mb-1 text-error-600 font-semibold text-lg">
               Tatizo limetokea
             </h5>
-            <p className="mb-0 text-muted">Tatizo kupakia albamu: {error}</p>
+            <p className="mb-0 text-text-secondary">Tatizo kupakia albamu: {error}</p>
           </div>
         </div>
       </div>
@@ -204,218 +186,152 @@ const HighlightsWrapper = () => {
   }
 
   return (
-    <div className="container-fluid mt-4">
-   
+    <div className="w-full max-w-7xl mx-auto px-4 mt-6">
+      {/* Compact Search and Filters Bar */}
+      <div className="flex items-center gap-3 p-3 mb-6 glass-strong rounded-2xl border border-border-accent shadow-primary">
+        {/* Filters Dropdown */}
+        <div className="relative">
+          <button
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all duration-200 ${
+              selectedAuthor !== "All"
+                ? 'bg-primary-gradient text-white shadow-primary'
+                : 'bg-white/60 text-primary-700 border border-primary-200 hover:bg-primary-50'
+            }`}
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+          >
+            <Filter size={16} />
+            <span className="hidden sm:inline">
+              {selectedAuthor === "All" ? "Chuja" : formatRoleName(selectedAuthor)}
+            </span>
+            <SortDown 
+              size={14} 
+              className={`transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : 'rotate-0'}`}
+            />
+          </button>
 
-      {/* Enhanced Search and Filters Section */}
-      <div 
-        className="p-4 mb-4 position-relative"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '20px',
-          border: '1px solid rgba(106, 13, 173, 0.1)',
-          boxShadow: '0 15px 40px rgba(106, 13, 173, 0.08)',
-        }}
-      >
-        <div className="row align-items-center g-3">
-          {/* Filter Toggle Button */}
-          <div className="col-auto">
-            <button
-              className="btn d-flex align-items-center gap-2"
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              style={{
-                background: isFilterOpen 
-                  ? 'linear-gradient(135deg, #6a0dad, #9c27b0)' 
-                  : 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                border: '1px solid rgba(106, 13, 173, 0.2)',
-                borderRadius: '15px',
-                padding: '12px 20px',
-                color: isFilterOpen ? 'white' : '#6a0dad',
-                fontWeight: '600',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isFilterOpen ? '0 8px 25px rgba(106, 13, 173, 0.3)' : 'none',
-              }}
-            >
-              <Funnel size={18} />
-              Chuja
-              <SortDown 
-                size={16} 
-                style={{ 
-                  transform: isFilterOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                }}
-              />
-            </button>
-          </div>
-
-          {/* Author Filter - Collapsible */}
-          <div className={`col-md-3 ${isFilterOpen ? 'd-block' : 'd-md-block d-none'}`}>
-            <div className="position-relative">
-              <select
-                value={selectedAuthor}
-                onChange={(e) => setSelectedAuthor(e.target.value)}
-                className="form-select"
-                style={{ 
-                  background: 'rgba(255,255,255,0.8)',
-                  border: '2px solid rgba(106, 13, 173, 0.2)',
-                  borderRadius: '15px',
-                  padding: '12px 16px',
-                  color: '#6a0dad',
-                  fontWeight: '500',
-                  transition: 'all 0.3s ease',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#6a0dad';
-                  e.target.style.boxShadow = '0 0 0 0.2rem rgba(106, 13, 173, 0.25)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(106, 13, 173, 0.2)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              >
-                <option value="All">📂 Vikundi Vyote</option>
+          {/* Dropdown Menu */}
+          {isFilterOpen && (
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl border border-primary-200 shadow-primary-lg z-50 overflow-hidden animate-slide-down" style={{zIndex:'200'}}>
+              <div className="p-2">
+                <div className="text-xs font-semibold text-primary-600 px-3 py-2 uppercase tracking-wide">
+                  Chagua Kikundi
+                </div>
+                <button
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-150 flex items-center gap-2 ${
+                    selectedAuthor === "All" 
+                      ? 'bg-primary-100 text-primary-700 font-medium' 
+                      : 'text-text-secondary hover:bg-background-200'
+                  }`}
+                  onClick={() => {
+                    setSelectedAuthor("All");
+                    setIsFilterOpen(false);
+                  }}
+                >
+                  📂 Vikundi Vyote
+                </button>
                 {[...new Set(dataSets.flatMap((item) =>
                   item.content.flatMap((group) =>
                     group.content.map((inner) => inner.author)
                   )
                 ))].map((author) => (
-                  <option key={author} value={author}>
-                    👥 {formatRoleName(author)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Search Input */}
-          <div className="col-md-6 col-lg-7">
-            <div className="position-relative">
-              <div 
-                className="input-group"
-                style={{
-                  background: 'rgba(255,255,255,0.8)',
-                  borderRadius: '20px',
-                  padding: '4px',
-                  border: '2px solid rgba(106, 13, 173, 0.2)',
-                  transition: 'all 0.3s ease',
-                }}
-                onFocus={() => {
-                  document.querySelector('.search-group').style.borderColor = '#6a0dad';
-                  document.querySelector('.search-group').style.boxShadow = '0 0 0 0.2rem rgba(106, 13, 173, 0.25)';
-                }}
-              >
-                <div className="input-group-text bg-transparent border-0">
-                  <Search className="text-muted" size={20} />
-                </div>
-                <input
-                  type="text"
-                  className="form-control bg-transparent border-0 shadow-none"
-                  placeholder="🔍 Tafuta albamu..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  style={{
-                    color: "#6a0dad",
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    padding: '12px 8px',
-                  }}
-                />
-                {searchQuery && (
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Futa utafutaji</Tooltip>}
+                  <button
+                    key={author}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-150 flex items-center gap-2 ${
+                      selectedAuthor === author 
+                        ? 'bg-primary-100 text-primary-700 font-medium' 
+                        : 'text-text-secondary hover:bg-background-200'
+                    }`}
+                    onClick={() => {
+                      setSelectedAuthor(author);
+                      setIsFilterOpen(false);
+                    }}
                   >
-                    <button
-                      className="btn btn-link p-2 border-0"
-                      onClick={clearSearch}
-                      style={{ color: '#6c757d' }}
-                    >
-                      <XCircle size={18} />
-                    </button>
-                  </OverlayTrigger>
-                )}
-                <button
-                  className="btn text-white"
-                  onClick={handleSearch}
-                  disabled={searchLoading || !searchQuery.trim()}
-                  style={{
-                    background: searchLoading || !searchQuery.trim() 
-                      ? 'linear-gradient(135deg, #6c757d, #adb5bd)' 
-                      : 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-                    border: 'none',
-                    borderRadius: '15px',
-                    padding: '8px 20px',
-                    marginRight: '4px',
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  {searchLoading ? (
-                    <Spinner animation="border" size="sm" role="status" />
-                  ) : (
-                    '🚀 Tafuta'
-                  )}
-                </button>
+                    👥 {formatRoleName(author)}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
-
-      
+          )}
         </div>
+
+        {/* Search Input - Flexible Width */}
+        <div className="relative w-32 sm:w-40 md:w-64 lg:w-96">
+          <div className="flex items-center bg-white/60 rounded-xl border border-primary-200 transition-all duration-200 focus-within:border-primary-500 focus-within:shadow-primary focus-within:w-48 sm:focus-within:w-56 md:focus-within:w-64 lg:focus-within:w-72">
+            <div className="pl-3 pr-2">
+              <Search className="text-text-tertiary w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              className="flex-1 bg-transparent border-0 py-2 px-2 text-primary-700 font-medium placeholder-text-tertiary focus:outline-none min-w-0"
+              placeholder="🔍 Tafuta..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            {searchQuery && (
+              <button
+                className="p-1.5 text-text-tertiary hover:text-text-secondary transition-colors duration-150 flex-shrink-0"
+                onClick={clearSearch}
+                title="Futa utafutaji"
+              >
+                <XCircle size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Search Button - Compact */}
+        <button
+          className={`btn-primary rounded-xl px-4 py-2 transition-all duration-200 flex items-center gap-2 ${
+            searchLoading || !searchQuery.trim() 
+              ? 'opacity-60 cursor-not-allowed' 
+              : 'hover:-translate-y-0.5'
+          }`}
+          onClick={handleSearch}
+          disabled={searchLoading || !searchQuery.trim()}
+        >
+          {searchLoading ? (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <>
+              <span className="hidden sm:inline">Tafuta</span>
+              <Search size={16} className="sm:hidden" />
+            </>
+          )}
+        </button>
       </div>
+
+      {/* Click outside to close filter dropdown */}
+      {isFilterOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsFilterOpen(false)}
+        ></div>
+      )}
 
       {/* Content Area */}
       {searchLoading ? (
-        <div className="row g-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="col-12 col-md-6 col-lg-4">
-              <div 
-                className="card h-100 border-0 position-relative overflow-hidden"
-                style={{
-                  borderRadius: '20px',
-                  boxShadow: '0 15px 40px rgba(106, 13, 173, 0.08)',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                }}
-              >
-                <Placeholder as="div" animation="wave" className="w-100">
-                  <Placeholder 
-                    xs={12} 
-                    style={{ 
-                      height: '250px',
-                      borderRadius: '20px 20px 0 0',
-                    }} 
-                    bg="light" 
-                  />
-                  <div className="card-body p-4">
-                    <Placeholder as="h5" animation="wave">
-                      <Placeholder xs={8} />
-                    </Placeholder>
-                    <Placeholder as="p" animation="wave">
-                      <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={6} />
-                    </Placeholder>
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <Placeholder xs={4} />
-                      <Placeholder xs={3} />
-                    </div>
-                  </div>
-                </Placeholder>
-              </div>
+            <div 
+              key={index} 
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <PlaceholderCard />
             </div>
           ))}
         </div>
       ) : (
         <>
           {/* Highlights Grid */}
-          <div className="row g-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(searchActive && searchResults.length > 0 ? searchResults : filteredData).map(
               (data, index) => (
                 <div 
                   key={index} 
-                  className="col-12 col-md-6 col-lg-4"
-                  style={{
-                    animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-                  }}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Highlights
                     data={data}
@@ -428,128 +344,45 @@ const HighlightsWrapper = () => {
           
           {/* Enhanced Empty States */}
           {searchActive && searchResults.length === 0 && (
-            <div 
-              className="text-center py-5 my-5 position-relative"
-              style={{
-                background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                borderRadius: '24px',
-                border: '2px dashed rgba(106, 13, 173, 0.2)',
-              }}
-            >
-              <div 
-                className="mx-auto mb-4 d-flex align-items-center justify-content-center"
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  background: 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                  borderRadius: '50%',
-                }}
-              >
-                <Search size={32} className="text-muted" />
+            <div className="text-center py-12 my-8 relative bg-light-gradient rounded-5xl border-2 border-dashed border-primary-200">
+              <div className="mx-auto mb-6 w-20 h-20 flex items-center justify-center bg-gradient-to-br from-primary-50 to-purple-50 rounded-full">
+                <Search size={32} className="text-text-tertiary" />
               </div>
-              <h4 className="mb-3" style={{ color: '#6a0dad', fontWeight: '600' }}>
+              <h4 className="mb-4 text-primary-700 font-semibold text-xl tracking-wide">
                 Hamna matokeo ya utafutaji
               </h4>
-              <p className="text-muted mb-4" style={{ fontSize: '1.1rem' }}>
-                Hakuna albamu zilizo na "<strong>{searchQuery}</strong>"
+              <p className="text-text-secondary mb-6 text-lg">
+                Hakuna albamu zilizo na "<strong className="text-primary-600">{searchQuery}</strong>"
               </p>
               <button
-                className="btn text-white"
+                className="btn-primary rounded-2xl px-6 py-3 font-semibold inline-flex items-center gap-2 hover:-translate-y-0.5 transition-all duration-300"
                 onClick={clearSearch}
-                style={{
-                  background: 'linear-gradient(135deg, #6a0dad, #9c27b0)',
-                  border: 'none',
-                  borderRadius: '15px',
-                  padding: '12px 24px',
-                  fontWeight: '600',
-                }}
               >
-                <i className="fas fa-redo me-2"></i>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                </svg>
                 Rudi kwenye albamu zote
               </button>
             </div>
           )}
           
           {!searchActive && filteredData.length === 0 && (
-            <div 
-              className="text-center py-5 my-5 position-relative"
-              style={{
-                background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                borderRadius: '24px',
-                border: '2px dashed rgba(106, 13, 173, 0.2)',
-              }}
-            >
-              <div 
-                className="mx-auto mb-4 d-flex align-items-center justify-content-center"
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  background: 'linear-gradient(135deg, rgba(106, 13, 173, 0.1), rgba(156, 39, 176, 0.1))',
-                  borderRadius: '50%',
-                }}
-              >
-                <i className="fas fa-photo-video" style={{ fontSize: '32px', color: '#6a0dad' }}></i>
+            <div className="text-center py-12 my-8 relative bg-light-gradient rounded-5xl border-2 border-dashed border-primary-200">
+              <div className="mx-auto mb-6 w-20 h-20 flex items-center justify-content bg-gradient-to-br from-primary-50 to-purple-50 rounded-full">
+                <svg className="w-8 h-8 text-primary-600 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                </svg>
               </div>
-              <h4 className="mb-3" style={{ color: '#6a0dad', fontWeight: '600' }}>
+              <h4 className="mb-4 text-primary-700 font-semibold text-xl tracking-wide">
                 Hamna albamu
               </h4>
-              <p className="text-muted" style={{ fontSize: '1.1rem' }}>
+              <p className="text-text-secondary text-lg">
                 Hakuna albamu zilizopatikana kwa sasa. Subiri albamu mpya ziongezwe.
               </p>
             </div>
           )}
         </>
       )}
-
-      {/* Custom Styles */}
-      <style jsx>{`
-        @keyframes gentle-float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(2deg); }
-        }
-        
-        @keyframes pulse-glow {
-          0%, 100% { transform: scale(1); box-shadow: 0 15px 35px rgba(106, 13, 173, 0.3); }
-          50% { transform: scale(1.05); box-shadow: 0 20px 45px rgba(106, 13, 173, 0.4); }
-        }
-        
-        @keyframes float-gentle {
-          0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.6; }
-          50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
-        }
-        
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(0.8); }
-        }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .search-group {
-          border: 2px solid rgba(106, 13, 173, 0.2);
-          transition: all 0.3s ease;
-        }
-        
-        .form-select:focus,
-        .form-control:focus {
-          outline: none;
-        }
-        
-        @media (max-width: 768px) {
-          .row.align-items-center {
-            text-align: center;
-          }
-        }
-      `}</style>
     </div>
   );
 };

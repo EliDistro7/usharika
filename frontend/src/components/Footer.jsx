@@ -23,144 +23,125 @@ const Footer = () => {
   const [showLocation, setShowLocation] = useState(false);
 
   return (
-    <footer className="container-fluid py-5" style={{ backgroundColor: "#F5F3FF", borderTop: "3px solid #9370DB" }}>
-      <div className="container py-4">
-        <div className="row g-4">
+    <footer className="w-full py-12 bg-background-50 border-t-4 border-primary-500">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
-          <div className="col-md-6 col-lg-4 col-xl-3">
-            <div className="mb-4">
-              <h2 className={`${cinzel.className} fw-bold mb-3`} style={{ fontSize: "2rem", color: "#6A0DAD" }}>
-                <span style={{ color: "#9370DB" }}>KKKT</span>{" "}
-                <span style={{ color: "#6A0DAD" }}>YOMBO</span>
+          <div className="space-y-4">
+            <div>
+              <h2 className={`${cinzel.className} font-bold text-3xl mb-3`}>
+                <span className="text-primary-500">KKKT</span>{" "}
+                <span className="text-primary-700">YOMBO</span>
               </h2>
-              <p className={`${cormorant.className}`} style={{ fontSize: "1.1rem" }}>
+              <p className={`${cormorant.className} text-lg text-text-secondary leading-relaxed`}>
                 Kanisa la Kilutheri Tanzania - Usharika wa Yombo.
               </p>
             </div>
           </div>
 
           {/* Quick Links Section */}
-          <div className="col-md-6 col-lg-4 col-xl-3">
-            <div className="mb-4">
-              <button
-                className={`${playfair.className} btn btn-link text-decoration-none fw-bold p-0`}
-                style={{ color: "#6A0DAD", fontSize: "1.2rem" }}
-                onClick={() => setShowQuickLinks(!showQuickLinks)}
-              >
-                Viunganishi {showQuickLinks ? "▲" : "▼"}
-              </button>
-              <div className={`collapse ${showQuickLinks ? "show" : ""}`}>
-                <ul className="list-unstyled mt-3">
-                  {[
-                    { name: "Nyumbani", path: "/" },
-                    { name: "Fahamu Zaidi", path: "/about" },
-                    { name: "Kalenda ya Matukio", path: "/kalenda" },
-                    { name: "Uongozi", path: "/uongozi" },
-                    { name: "Kujisajili", path: "/usajili" },
-                    { name: "Mawasiliano", path: "/contact" }
-                  ].map((link, index) => (
-                    <li key={index} className="mb-2">
-                      <a 
-                        href={link.path} 
-                        className={`${cormorant.className} d-flex align-items-center text-decoration-none`}
-                        style={{ color: "#6A0DAD", fontSize: "1.1rem" }}
-                      >
-                        <i className="fas fa-chevron-right me-2" style={{ color: "#9370DB", fontSize: "0.8rem" }}></i>
-                        {link.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <div className="space-y-4">
+            <FooterSection
+              title="Viunganishi"
+              isOpen={showQuickLinks}
+              onToggle={() => setShowQuickLinks(!showQuickLinks)}
+              font={playfair.className}
+            >
+              <nav className="space-y-3 mt-4">
+                {[
+                  { name: "Nyumbani", path: "/" },
+                  { name: "Fahamu Zaidi", path: "/about" },
+                  { name: "Kalenda ya Matukio", path: "/kalenda" },
+                  { name: "Uongozi", path: "/uongozi" },
+                  { name: "Kujisajili", path: "/usajili" },
+                  { name: "Mawasiliano", path: "/contact" }
+                ].map((link, index) => (
+                  <FooterLink 
+                    key={index} 
+                    href={link.path} 
+                    font={cormorant.className}
+                  >
+                    {link.name}
+                  </FooterLink>
+                ))}
+              </nav>
+            </FooterSection>
           </div>
 
           {/* Operating Hours */}
-          <div className="col-md-6 col-lg-4 col-xl-3">
-            <div className="mb-4">
-              <button
-                className={`${playfair.className} btn btn-link text-decoration-none fw-bold p-0`}
-                style={{ color: "#6A0DAD", fontSize: "1.2rem" }}
-                onClick={() => setShowOperatingHours(!showOperatingHours)}
-              >
-                Ofisi ya Mchungaji {showOperatingHours ? "▲" : "▼"}
-              </button>
-              <div className={`collapse ${showOperatingHours ? "show" : ""}`}>
-                <div className={`${cormorant.className} mt-3`} style={{ fontSize: "1.1rem" }}>
-                  {["Jumatatu", "Jumanne", "Jumatano", "Alhamis", "Ijumaa"].map((day) => (
-                    <p key={day} className="mb-2">
-                      {day}: <span style={{ color: "#9370DB" }}>8am - 5pm</span>
-                    </p>
-                  ))}
-                   <p className="mb-2">
-                      Jumamosi: <span style={{ color: "#9370DB" }}>8am - 5pm</span>
-                    </p>
-                    
+          <div className="space-y-4">
+            <FooterSection
+              title="Ofisi ya Mchungaji"
+              isOpen={showOperatingHours}
+              onToggle={() => setShowOperatingHours(!showOperatingHours)}
+              font={playfair.className}
+            >
+              <div className={`${cormorant.className} text-lg space-y-2 mt-4`}>
+                {["Jumatatu", "Jumanne", "Jumatano", "Alhamis", "Ijumaa"].map((day) => (
+                  <div key={day} className="flex justify-between items-center">
+                    <span className="text-text-primary">{day}:</span>
+                    <span className="text-primary-500 font-semibold">8am - 5pm</span>
+                  </div>
+                ))}
+                <div className="flex justify-between items-center">
+                  <span className="text-text-primary">Jumamosi:</span>
+                  <span className="text-primary-500 font-semibold">8am - 5pm</span>
                 </div>
               </div>
-            </div>
+            </FooterSection>
           </div>
 
           {/* Location Section */}
-          <div className="col-md-6 col-lg-4 col-xl-3">
-            <div className="mb-4">
-              <button
-                className={`${playfair.className} btn btn-link text-decoration-none fw-bold p-0`}
-                style={{ color: "#6A0DAD", fontSize: "1.2rem" }}
-                onClick={() => setShowLocation(!showLocation)}
-              >
-                Mahali {showLocation ? "▲" : "▼"}
-              </button>
-              <div className={`collapse ${showLocation ? "show" : ""}`}>
-                <div className={`${cormorant.className} mt-3`} style={{ fontSize: "1.1rem" }}>
-                  <p className="mb-2">
-                    <i className="fas fa-map-marker-alt me-2" style={{ color: "#9370DB" }}></i>
-                    1110 Yombo Kiwalani, Dar Es Salaam
-                  </p>
-                  <p className="mb-2">
-                    <i className="fas fa-phone-alt me-2" style={{ color: "#9370DB" }}></i>
-                    <a href="tel:+255765647567" className="text-decoration-none" style={{ color: "#6A0DAD" }}>
-                      +255 765 647 567
-                    </a>
-                  </p>
-                  <p className="mb-3">
-                    <i className="fas fa-envelope me-2" style={{ color: "#9370DB" }}></i>
-                    <a href="mailto:yombolutheran@gmail.com" className="text-decoration-none" style={{ color: "#6A0DAD" }}>
-                      info@kkktyombo.org
-                    </a>
-                  </p>
-                  <div className="d-flex">
-                    {['facebook-f', 'instagram', 'youtube'].map((platform) => (
-                      <a
-                        key={platform}
-                        href="#"
-                        className="btn btn-sm rounded-circle me-2"
-                        style={{ 
-                          backgroundColor: "#9370DB",
-                          color: "white",
-                          width: "36px",
-                          height: "36px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center"
-                        }}
-                      >
-                        <i className={`fab fa-${platform}`}></i>
-                      </a>
-                    ))}
-                  </div>
+          <div className="space-y-4">
+            <FooterSection
+              title="Mahali"
+              isOpen={showLocation}
+              onToggle={() => setShowLocation(!showLocation)}
+              font={playfair.className}
+            >
+              <div className={`${cormorant.className} text-lg space-y-3 mt-4`}>
+                <ContactItem 
+                  icon="fas fa-map-marker-alt"
+                  text="1110 Yombo Kiwalani, Dar Es Salaam"
+                />
+                <ContactItem 
+                  icon="fas fa-phone-alt"
+                  text="+255 765 647 567"
+                  href="tel:+255765647567"
+                />
+                <ContactItem 
+                  icon="fas fa-envelope"
+                  text="info@kkktyombo.org"
+                  href="mailto:yombolutheran@gmail.com"
+                />
+                
+                {/* Social Media Links */}
+                <div className="flex gap-2 mt-4">
+                  {[
+                    { platform: 'facebook-f', label: 'Facebook' },
+                    { platform: 'instagram', label: 'Instagram' },
+                    { platform: 'youtube', label: 'YouTube' }
+                  ].map(({ platform, label }) => (
+                    <SocialButton 
+                      key={platform} 
+                      platform={platform} 
+                      label={label}
+                    />
+                  ))}
                 </div>
               </div>
-            </div>
+            </FooterSection>
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="row mt-4 pt-3 border-top border-purple">
-          <div className="col-12 text-center">
-            <p className={`${cormorant.className} mb-0`} style={{ fontSize: "1rem", color: "#6A0DAD" }}>
-              KKKT Usharika wa Yombo Online 2025<br />
-              <span style={{ color: "#9370DB" }}>Haki zote zimehifadhiwa</span>
+        {/* Copyright Section */}
+        <div className="mt-8 pt-6 border-t border-border-default">
+          <div className="text-center">
+            <p className={`${cormorant.className} text-base text-text-primary mb-1`}>
+              KKKT Usharika wa Yombo Online 2025
+            </p>
+            <p className={`${cormorant.className} text-sm text-primary-500 mb-0`}>
+              Haki zote zimehifadhiwa
             </p>
           </div>
         </div>
@@ -168,5 +149,68 @@ const Footer = () => {
     </footer>
   );
 };
+
+// Footer Section Component with Accordion Behavior
+const FooterSection = ({ title, isOpen, onToggle, font, children }) => (
+  <div>
+    <button
+      className={`${font} w-full text-left font-bold text-xl text-primary-700 transition-all duration-300 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500/20 rounded-lg p-2 -m-2 group`}
+      onClick={onToggle}
+    >
+      <span className="flex items-center justify-between">
+        {title}
+        <i className={`fas fa-chevron-${isOpen ? 'up' : 'down'} text-sm text-primary-500 transition-transform duration-300 group-hover:scale-110`}></i>
+      </span>
+    </button>
+    
+    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+      isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+    }`}>
+      {children}
+    </div>
+  </div>
+);
+
+// Footer Link Component
+const FooterLink = ({ href, font, children }) => (
+  <a 
+    href={href} 
+    className={`${font} flex items-center text-lg text-primary-700 hover:text-primary-600 transition-all duration-200 hover:translate-x-1 group`}
+  >
+    <i className="fas fa-chevron-right mr-2 text-xs text-primary-500 transition-all duration-200 group-hover:text-primary-600 group-hover:translate-x-0.5"></i>
+    {children}
+  </a>
+);
+
+// Contact Item Component
+const ContactItem = ({ icon, text, href }) => {
+  const content = (
+    <div className="flex items-start gap-3 group">
+      <i className={`${icon} text-primary-500 mt-1 transition-all duration-200 group-hover:text-primary-600 group-hover:scale-110`}></i>
+      <span className="text-text-primary group-hover:text-primary-700 transition-colors duration-200">
+        {text}
+      </span>
+    </div>
+  );
+
+  return href ? (
+    <a href={href} className="block hover:no-underline">
+      {content}
+    </a>
+  ) : (
+    <div>{content}</div>
+  );
+};
+
+// Social Media Button Component
+const SocialButton = ({ platform, label }) => (
+  <a
+    href="#"
+    aria-label={label}
+    className="flex items-center justify-center w-9 h-9 bg-primary-500 hover:bg-primary-600 text-white rounded-full transition-all duration-300 hover:scale-110 hover:shadow-primary focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2"
+  >
+    <i className={`fab fa-${platform} text-sm`}></i>
+  </a>
+);
 
 export default Footer;

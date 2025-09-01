@@ -1,7 +1,6 @@
 'use client';
 import React from "react";
-import { Card, Button, Badge } from "react-bootstrap";
-import { FaChevronDown, FaChevronUp, FaEye, FaEyeSlash } from "react-icons/fa";
+import { ChevronDown, ChevronUp, Eye, EyeOff, CheckCircle } from "lucide-react";
 import RoleCard from "./RoleCard";
 
 export default function CategorySection({ 
@@ -57,83 +56,88 @@ export default function CategorySection({
   const selectedCount = allRoles.filter(role => isRoleSelected(role)).length;
   
   return (
-    <Card className="mb-4 border-0 shadow">
-      <Card.Header 
-        className="text-white border-0 d-flex align-items-center cursor-pointer"
+    <div className="mb-6 rounded-2xl overflow-hidden shadow-medium bg-white border border-border-light">
+      <div 
+        className="px-6 py-4 text-white cursor-pointer hover:opacity-90 transition-opacity duration-200"
         style={{ backgroundColor: bgColor }}
         onClick={() => onToggleCategoryVisibility && onToggleCategoryVisibility(category)}
       >
-        <div className="d-flex align-items-center flex-grow-1">
-          {icon}
-          <span className="ms-2 fw-bold">{title}</span>
-          <Badge bg="light" text="dark" className="ms-2">
-            {selectedCount > 0 ? `${selectedCount}/${allRoles.length}` : allRoles.length}
-          </Badge>
-          {selectedCount > 0 && (
-            <Badge bg="success" className="ms-2">
-              ✓ Imechagua
-            </Badge>
-          )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {icon}
+            <h3 className="text-lg font-bold">{title}</h3>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
+              {selectedCount > 0 ? `${selectedCount}/${allRoles.length}` : allRoles.length}
+            </span>
+            {selectedCount > 0 && (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-success-500 text-white">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                Imechagua
+              </span>
+            )}
+          </div>
+          <button className="p-1 hover:bg-white/10 rounded-lg transition-colors duration-200">
+            {isVisible ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </button>
         </div>
-        <Button variant="link" className="text-white p-0 border-0">
-          {isVisible ? <FaChevronUp /> : <FaChevronDown />}
-        </Button>
-      </Card.Header>
+      </div>
       
       {isVisible && (
-        <Card.Body className="p-3">
+        <div className="p-6 animate-slide-down">
           {allRoles.length === 0 ? (
-            <p className="text-muted mb-0">Hakuna nafasi zinazopatikana</p>
+            <p className="text-text-tertiary text-center py-8">Hakuna nafasi zinazopatikana</p>
           ) : (
             <>
               {/* Show filtered roles */}
-              {filteredRoles.map(role => (
-                <RoleCard 
-                  key={role} 
-                  role={role} 
-                  isLeadership={isLeadershipRole(role)}
-                  isSelected={isRoleSelected(role)}
-                  leadershipPositions={getLeadershipPositions(role)}
-                  selectedLeadershipPositions={selectedLeadershipPositions}
-                  onRoleChange={onRoleChange}
-                  onLeadershipPositionChange={onLeadershipPositionChange}
-                />
-              ))}
+              <div className="space-y-3">
+                {filteredRoles.map(role => (
+                  <RoleCard 
+                    key={role} 
+                    role={role} 
+                    isLeadership={isLeadershipRole(role)}
+                    isSelected={isRoleSelected(role)}
+                    leadershipPositions={getLeadershipPositions(role)}
+                    selectedLeadershipPositions={selectedLeadershipPositions}
+                    onRoleChange={onRoleChange}
+                    onLeadershipPositionChange={onLeadershipPositionChange}
+                  />
+                ))}
+              </div>
               
               {/* Show/Hide toggle for remaining roles */}
               {hiddenRolesCount > 0 && (
-                <div className="text-center mt-3">
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
+                <div className="flex justify-center mt-6">
+                  <button
                     onClick={() => onToggleShowAllRoles && onToggleShowAllRoles(category)}
-                    className="border-0"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-background-300 text-text-secondary hover:bg-background-400 hover:text-text-primary transition-all duration-200 text-sm font-medium"
                   >
                     {showAllRoles ? (
                       <>
-                        <FaEyeSlash /> Ficha nafasi {hiddenRolesCount} zaidi
+                        <EyeOff className="w-4 h-4" />
+                        <span>Ficha nafasi {hiddenRolesCount} zaidi</span>
                       </>
                     ) : (
                       <>
-                        <FaEye /> Onyesha nafasi {hiddenRolesCount} zaidi
+                        <Eye className="w-4 h-4" />
+                        <span>Onyesha nafasi {hiddenRolesCount} zaidi</span>
                       </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               )}
               
               {/* Quick actions for category */}
               {selectedCount === 0 && allRoles.length > 0 && (
-                <div className="mt-3 p-2 bg-light rounded">
-                  <small className="text-muted">
-                    💡 <strong>Kidokezo:</strong> Chagua nafasi unazotaka ili kuona maelezo zaidi
-                  </small>
+                <div className="mt-6 p-4 bg-primary-50 rounded-xl border border-primary-100">
+                  <p className="text-sm text-primary-700">
+                    💡 <span className="font-medium">Kidokezo:</span> Chagua nafasi unazotaka ili kuona maelezo zaidi
+                  </p>
                 </div>
               )}
             </>
           )}
-        </Card.Body>
+        </div>
       )}
-    </Card>
+    </div>
   );
 }

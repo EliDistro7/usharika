@@ -71,7 +71,7 @@ export default function Home() {
   };
 
   return (
-    <div className="p-0" style={{backgroundColor: '#f3e8ff'}}>
+    <div className="p-0" >
       <Dashboard user={user} contributions={contributions} summary={summary} />
     </div>
   );

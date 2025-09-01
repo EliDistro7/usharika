@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useRef, useMemo, useCallback } from "react";
-import CarouselItem from "./CarouselItem";
-import FadeCarousel from "./Fade";
-import Dropdown from "./Dropdown";
-import ControlButtons from "./ControlButtons";
-import FullscreenModal from "./FullscreenModal";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Cinzel, Playfair_Display, Cormorant_Garamond } from "next/font/google";
 import Link from "next/link";
+import { 
+  User,
+  Calendar
+} from "lucide-react";
 
-// Optimized font loading with display swap
+// Font configurations
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["700", "900"],
@@ -24,230 +23,207 @@ const playfair = Playfair_Display({
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
-// Enhanced color palette with better contrast and modern feel
-const colors = {
-  primary: "#6366F1",        // Modern indigo
-  secondary: "#EC4899",      // Vibrant pink
-  accent: "#F59E0B",         // Warm amber
-  background: "#FAFBFF",     // Subtle blue-white
-  surface: "#FFFFFF",        // Pure white
-  text: "#1F2937",          // Rich dark gray
-  textSecondary: "#6B7280", // Medium gray
-  overlay: "rgba(15, 23, 42, 0.8)",
-  gradient: "linear-gradient(135deg, #667EEA 0%, #764BA2 100%)",
-  shadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-  glowShadow: "0 0 0 1px rgba(99, 102, 241, 0.1), 0 4px 6px -1px rgba(99, 102, 241, 0.1)",
+// Tab Navigation Component
+const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
+  return (
+    <nav className="flex flex-wrap gap-3 mb-8 justify-center">
+      {tabs.map((tab, index) => (
+        <button
+          key={tab._id || index}
+          onClick={() => onTabChange(index)}
+          className={`
+            px-6 py-3 rounded-xl font-medium transition-all duration-300
+            ${cormorant.className} text-base
+            ${activeTab === index 
+              ? 'bg-gradient-to-r from-primary-600 to-purple-600 text-white shadow-lg scale-105' 
+              : 'bg-white text-text-primary hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 shadow-sm hover:shadow-md border border-border-light'
+            }
+            hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+          `}
+        >
+          {tab.groupName}
+        </button>
+      ))}
+    </nav>
+  );
 };
 
+// BBC-Style Story Card Component
+const BBCStoryCard = ({ item, collectionTitle, author, createdAt, collectionId, formatDate }) => {
+  const hasImage = item?.imageUrl;
+  
+  return (
+    <Link href={`/highlight/${collectionId}`} className="block group">
+      <article className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02]">
+        {hasImage ? (   
+            <div className="space-y-6">
+            {/* Image Section */}
+            <div className="overflow-hidden rounded-2xl">
+              <img
+                src={item.imageUrl}
+                alt={item.description}
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            
+            {/* Content Section Below Image */}
+            <div className="p-6 md:p-8">
+              {/* Collection Title */}
+              <h1 className={`
+                ${cinzel.className}
+                text-4xl md:text-6xl lg:text-7xl font-black
+                bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
+                bg-clip-text text-transparent
+                tracking-wide mb-6 leading-tight
+              `}>
+                {collectionTitle}
+              </h1>
+              
+              {/* Story Description */}
+              <p className={`
+                ${cormorant.className}
+                text-text-primary text-xl md:text-2xl leading-relaxed
+                max-w-4xl font-medium
+              `}>
+                {item.description}
+              </p>
+            </div>
+          </div> ):
+        
+        (<div className="bg-gradient-to-br from-primary-50 via-white to-purple-50 p-8 md:p-12 rounded-2xl">
+            <div className="max-w-4xl mx-auto space-y-6">
+              {/* Collection Title */}
+              <h1 className={`
+                ${cinzel.className}
+                text-5xl md:text-7xl font-black
+                bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
+                bg-clip-text text-transparent
+                tracking-wide text-center leading-tight
+              `}>
+                {collectionTitle}
+              </h1>
+              
+              {/* Story Description */}
+              <p className={`
+                ${cormorant.className}
+                text-2xl md:text-3xl text-text-primary leading-relaxed
+                font-medium text-center
+              `}>
+                {item.description}
+              </p>
+            </div>
+          </div>)
+              }
+          
+        
+        {/* Hover Indicator */}
+        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="w-3 h-3 rounded-full bg-white shadow-lg animate-pulse" 
+               style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.5))' }} />
+        </div>
+      </article>
+    </Link>
+  );
+};
+
+// Date formatting functions
+const getStaticDateString = (dateString) => {
+  return new Date(dateString).toLocaleDateString('sw-TZ', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+const getRelativeDateString = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 1) return 'Leo';
+  if (diffDays === 2) return 'Jana';
+  if (diffDays <= 7) return `Siku ${diffDays} zilizopita`;
+  if (diffDays <= 30) return `Wiki ${Math.ceil(diffDays / 7)} zilizopita`;
+  return getStaticDateString(dateString);
+};
+
+// Main Highlights Component
 const Highlights = ({ data, datatype = "default" }) => {
-  console.log('data ', data);
-  // Memoized initial tab to prevent unnecessary recalculations
-  const initialTab = useMemo(() => {
-    return Object.keys(data.content)[0];
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Get current tab content
+  const contentTabs = useMemo(() => {
+    return Object.keys(data.content).map(key => ({
+      groupName: key,
+      content: data.content[key].content || []
+    }));
   }, [data.content]);
 
-  const [activeTab, setActiveTab] = useState(initialTab);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-
-  const videoRefs = useRef([]);
-
-  // Optimized callback functions to prevent unnecessary re-renders
-  const togglePause = useCallback(() => setIsPaused(prev => !prev), []);
-  const toggleMute = useCallback(() => setIsMuted(prev => !prev), []);
-  const handleModalClose = useCallback(() => setShowModal(false), []);
-  const handleModalShow = useCallback(() => setShowModal(true), []);
-
-  // Memoized content to prevent unnecessary re-renders
   const currentContent = useMemo(() => {
-    return data.content[activeTab]?.content || [];
-  }, [data.content, activeTab]);
+    return contentTabs[activeTabIndex]?.content || [];
+  }, [contentTabs, activeTabIndex]);
 
-  const containerStyle = {
-   // background: `linear-gradient(135deg, ${colors.background} 0%, rgba(255, 255, 255, 0.9) 100%)`,
-   // backdropFilter: "blur(10px)",
-   // border: `1px solid rgba(99, 102, 241, 0.1)`,
-    //boxShadow: colors.shadow,
-    paddingTop: "8px",
-    borderRadius: "24px",
-    overflow: "hidden",
-    position: "relative",
-  };
+  const featuredStory = useMemo(() => {
+    return currentContent[0]; // Always show the first story
+  }, [currentContent]);
 
-  const titleStyle = {
-    background: colors.gradient,
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
-    fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
-    fontWeight: 900,
-    textTransform: "uppercase",
-    letterSpacing: "2px",
-    textAlign: "center",
-    marginBottom: "2rem",
-    textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  };
+  // Navigation handlers
+  const handleTabChange = useCallback((tabIndex) => {
+    setActiveTabIndex(tabIndex);
+  }, []);
 
-  const linkButtonStyle = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "12px 24px",
-    borderRadius: "12px",
-    background: colors.gradient,
-    color: "white",
-    textDecoration: "none",
-    fontSize: "0.9rem",
-    fontWeight: 600,
-    letterSpacing: "0.5px",
-    boxShadow: colors.glowShadow,
-    transition: "all 0.3s ease",
-    marginTop: "1rem",
-    border: "none",
-    cursor: "pointer",
-  };
+  const formatDate = useCallback((dateString) => {
+    return isClient ? getRelativeDateString(dateString) : getStaticDateString(dateString);
+  }, [isClient]);
 
   return (
-    <article 
-      className={`relative z-10 mt-6 py-4 px-0  ${playfair.className}`}
-      style={containerStyle}
-    >
-    
+    <div className="max-w-5xl mx-auto p-6 space-y-8">
+      {/* Tab Navigation */}
+      {contentTabs.length > 1 && (
+        <TabNavigation 
+          tabs={contentTabs}
+          activeTab={activeTabIndex}
+          onTabChange={handleTabChange}
+        />
+      )}
 
-      {/* Enhanced title with gradient text */}
-      <header className="text-center">
-        <h1 className={`${cinzel.className}`} style={titleStyle}>
-          {data.name}
-        </h1>
-        
-        {/* Link to full page view */}
-        <div className="flex justify-center">
-        <Link 
-  href={`/highlight/${data._id}`}
-  style={{
-    ...linkButtonStyle,
-  
-   
-  }}
-  className={`${cormorant.className} highlight-link`}
->
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15,3 21,3 21,9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Fungua Stori
-          </Link>
+      {/* Single Featured Story */}
+      {featuredStory ? (
+        <BBCStoryCard 
+          item={featuredStory}
+          collectionTitle={data.name}
+          author={data.author}
+          createdAt={data.createdAt}
+          collectionId={data._id}
+          formatDate={formatDate}
+        />
+      ) : (
+        // No stories available
+        <div className="text-center py-20 bg-gradient-to-br from-background-100 to-background-200 rounded-3xl shadow-lg">
+          <div className="space-y-4">
+            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-primary-100 to-purple-100 flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-primary-600" />
+            </div>
+            <h3 className={`${playfair.className} text-2xl font-bold text-text-primary`}>
+              Hakuna Stori
+            </h3>
+            <p className={`${cormorant.className} text-text-secondary text-lg max-w-md mx-auto`}>
+              Hakuna maudhui yaliyopatikana kwenye sehemu hii kwa sasa.
+            </p>
+          </div>
         </div>
-      </header>
-
-      {/* Dropdown for Chapters */}
-      <nav className="mb-6">
-        <Dropdown
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          content={data.content}
-          colors={colors}
-          fonts={{ cinzel, playfair, cormorant }}
-        />
-      </nav>
-
-      {/* Enhanced Carousel Content */}
-      <main 
-        className="rounded-2xl overflow-hidden"
-      
-      >
-        <FadeCarousel 
-          isPaused={isPaused} 
-          isMuted={isMuted} 
-          onToggleMute={toggleMute}
-          colors={colors}
-        >
-          {currentContent.map((item, index) => (
-            <CarouselItem
-              key={`${activeTab}-${index}`} // Better key for tab changes
-              item={item}
-              isMuted={isMuted}
-              videoRef={(el) => (videoRefs.current[index] = el)}
-              colors={colors}
-            />
-          ))}
-        </FadeCarousel>
-      </main>
-
-      {/* Enhanced Control Buttons */}
-      <footer className="mt-3">
-        <ControlButtons
-          isPaused={isPaused}
-          togglePause={togglePause}
-          isMuted={isMuted}
-          toggleMute={toggleMute}
-          handleModalShow={handleModalShow}
-          title={data.name}
-          colors={colors}
-          fonts={{ cormorant }}
-        />
-      </footer>
-
-      {/* Fullscreen Modal */}
-      <FullscreenModal
-        showModal={showModal}
-        handleModalClose={handleModalClose}
-        isPaused={isPaused}
-        isMuted={isMuted}
-        toggleMute={toggleMute}
-        activeTab={activeTab}
-        content={data.content}
-        videoRefs={videoRefs}
-        setIsPaused={setIsPaused}
-        title={data.name}
-        colors={colors}
-        fonts={{ cinzel, playfair }}
-      />
-
-      <style jsx>{`
-             .highlight-link {
-    transition: all 0.3s ease;
-  }
-  
-
-
-      
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(2deg); }
-        }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        article {
-          animation: fadeInUp 0.6s ease-out;
-        }
-      `}</style>
-    </article>
+      )}
+    </div>
   );
 };
 

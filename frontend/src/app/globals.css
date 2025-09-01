@@ -1,14 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Libraries Stylesheet */
-@import '/lib/animate/animate.min.css';
+/* Libraries Stylesheet //@import '/lib/animate/animate.min.css';
 @import '/lib/lightbox/css/lightbox.min.css';
-@import '/lib/owlcarousel/assets/owl.carousel.min.css';
+@import '/lib/owlcarousel/assets/owl.carousel.min.css' */
+;
 
 
 
 /* Customized Bootstrap Stylesheet ; */
 
-@import '/css/bootstrap.min.css';
+
+
+
 
 
 

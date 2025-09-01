@@ -1,7 +1,9 @@
+'use client';
 import React, { memo, useState, useCallback } from "react";
 import VideoComponent from "@/components/VideoComponent";
 import ImageComponent from "@/components/ImageComponent";
 import { Cormorant_Garamond } from "next/font/google";
+import * as LucideIcons from "lucide-react";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -9,69 +11,49 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const DescriptionOverlay = memo(({ description, isFullscreen, colors, isVisible }) => {
-  const overlayStyle = {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-   // background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)",
-    padding: isFullscreen ? "3rem 2rem 2rem" : "2rem 1.5rem 1.5rem",
-    zIndex: 1000,
-    transform: isVisible ? "translateY(0)" : "translateY(100%)",
-    transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-   // backdropFilter: "blur(10px)",
-  };
-
-  const textStyle = {
-    color: colors.surface,
-    fontSize: isFullscreen ? "1.6rem" : "1.2rem",
-    lineHeight: 1.6,
-    maxWidth: "90%",
-    margin: "0 auto",
-    textAlign: "center",
-    fontWeight: 500,
-    textShadow: "0 2px 8px rgba(0, 0, 0, 0.7)",
-    letterSpacing: "0.5px",
-  };
+const DescriptionOverlay = memo(({ description, isFullscreen, isVisible, icon }) => {
+  // Dynamically get the icon component
+  const IconComponent = icon && LucideIcons[icon] ? LucideIcons[icon] : null;
 
   return (
-    <div style={overlayStyle} className="description-overlay">
-      <p className={`mb-0 ${cormorant.className}`} style={textStyle}>
-        {description}
-      </p>
+    <div 
+      className={`
+        absolute bottom-0 left-0 right-0 z-[1000]
+        ${isFullscreen ? 'p-12 pb-8' : 'p-6 pb-6'}
+        transform transition-transform duration-400 ease-out
+        ${isVisible ? 'translate-y-0' : 'translate-y-full'}
+        description-overlay
+      `}
+    >
+      <div className="flex items-center justify-center gap-3 max-w-[90%] mx-auto">
+        {IconComponent && (
+          <IconComponent 
+            className={`
+              text-background-50 drop-shadow-lg
+              ${isFullscreen ? 'w-8 h-8' : 'w-6 h-6'}
+            `}
+          />
+        )}
+        <p 
+          className={`
+            ${cormorant.className} mb-0 text-center font-medium
+            text-background-50 text-shadow-lg tracking-wide
+            ${isFullscreen ? 'text-6xl' : 'text-xl'}
+            leading-relaxed
+          `}
+        >
+          {description}
+        </p>
+      </div>
     </div>
   );
 });
 
 DescriptionOverlay.displayName = "DescriptionOverlay";
 
-const LoadingSpinner = memo(({ colors }) => (
-  <div 
-    style={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 100,
-    }}
-  >
-    <div 
-      style={{
-        width: "40px",
-        height: "40px",
-        borderRadius: "50%",
-        border: `3px solid ${colors.primary}30`,
-        borderTop: `3px solid ${colors.primary}`,
-        animation: "spin 1s linear infinite",
-      }}
-    />
-    <style jsx>{`
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `}</style>
+const LoadingSpinner = memo(() => (
+  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-100">
+    <div className="w-10 h-10 rounded-full border-3 border-primary-300 border-t-primary-700 animate-spin" />
   </div>
 ));
 
@@ -82,7 +64,7 @@ const CarouselItem = ({
   isMuted,
   isFullscreen,
   videoRef,
-  colors
+  icon // New prop for icon name
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showDescription, setShowDescription] = useState(false);
@@ -109,33 +91,25 @@ const CarouselItem = ({
     }
   }, [isFullscreen]);
 
-  const containerStyle = {
-    position: "relative",
-    height: isFullscreen ? "calc(100vh - 140px)" : "60vh",
-    minHeight: isFullscreen ? "600px" : "400px",
-    overflow: "hidden",
-    borderRadius: isFullscreen ? "0" : "12px",
-   // background: `linear-gradient(135deg, ${colors.background}, ${colors.surface})`,
-    cursor: item.description ? "pointer" : "default",
-  };
-
-  const mediaStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    transition: "transform 0.3s ease",
-    //transform: isHovered ? "scale(1.02)" : "scale(1)",
-  };
-
   return (
     <div
-      style={containerStyle}
-    
-      className="carousel-item-container"
+      className={`
+        relative overflow-hidden
+        ${isFullscreen 
+          ? 'h-[calc(100vh-140px)] min-h-[600px] rounded-none' 
+          : 'h-[60vh] min-h-[400px] rounded-xl'
+        }
+        bg-gradient-to-br from-background-200 to-background-400
+        ${item.description ? 'cursor-pointer' : 'cursor-default'}
+        transition-all duration-300 ease-out
+        carousel-item-container
+        focus-within:outline-2 focus-within:outline-primary-700 focus-within:outline-offset-2
+      `}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Loading spinner 
-      {isLoading && <LoadingSpinner colors={colors} />}
-      */}
+      {/* Loading spinner */}
+      {isLoading && <LoadingSpinner />}
 
       {/* Media content */}
       {item.imageUrl ? (
@@ -143,7 +117,11 @@ const CarouselItem = ({
           imageUrl={item.imageUrl} 
           altText={item.description || "Carousel Item"} 
           isFullscreen={isFullscreen}
-          style={mediaStyle}
+          className={`
+            w-full h-full object-cover
+            transition-transform duration-300 ease-out
+            ${isHovered ? 'scale-102' : 'scale-100'}
+          `}
           onLoad={handleLoadComplete}
           onError={() => setIsLoading(false)}
         />
@@ -153,62 +131,57 @@ const CarouselItem = ({
           isMuted={isMuted}
           isFullscreen={isFullscreen}
           videoRef={videoRef}
-          style={mediaStyle}
+          className={`
+            w-full h-full object-cover
+            transition-transform duration-300 ease-out
+            ${isHovered ? 'scale-102' : 'scale-100'}
+          `}
           onLoadedData={handleLoadComplete}
           onError={() => setIsLoading(false)}
         />
       ) : (
         <div 
-          style={{
-            ...mediaStyle,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-           // background: `linear-gradient(135deg, ${colors.primary}20, ${colors.secondary}20)`,
-            color: colors.textSecondary,
-            fontSize: "1.2rem",
-          }}
+          className={`
+            w-full h-full flex items-center justify-center
+            bg-gradient-to-br from-primary-100 to-purple-100
+            text-text-secondary text-xl
+            transition-transform duration-300 ease-out
+            ${isHovered ? 'scale-102' : 'scale-100'}
+          `}
+          onLoad={handleLoadComplete}
         >
           No media content available
         </div>
       )}
 
-      {/* Enhanced description overlay 
+      {/* Description overlay */}
       {item.description && (
         <DescriptionOverlay
           description={item.description}
           isFullscreen={isFullscreen}
-          colors={colors}
           isVisible={showDescription || isFullscreen}
+          icon={icon}
         />
       )}
-        */}
 
-      {/* Gradient overlay for better text contrast 
+      {/* Gradient overlay for better text contrast */}
       {item.description && (
         <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: isHovered 
-              ? "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0.4) 100%)"
-              : "transparent",
-            transition: "background 0.3s ease",
-            pointerEvents: "none",
-            zIndex: 500,
-          }}
+          className={`
+            absolute inset-0 pointer-events-none z-[500]
+            transition-all duration-300 ease-out
+            ${isHovered 
+              ? 'bg-gradient-to-t from-black/40 via-black/10 to-transparent' 
+              : 'bg-transparent'
+            }
+          `}
         />
       )}
-*/}
+
       <style jsx>{`
         .carousel-item-container {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-      
         
         .description-overlay {
           animation: fadeInUp 0.5s ease-out;
@@ -223,12 +196,6 @@ const CarouselItem = ({
             opacity: 1;
             transform: translateY(0);
           }
-        }
-        
-        /* Enhanced focus states for accessibility */
-        .carousel-item-container:focus-within {
-          outline: 2px solid ${colors.primary};
-          outline-offset: 2px;
         }
       `}</style>
     </div>

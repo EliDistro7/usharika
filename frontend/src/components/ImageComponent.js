@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Button } from "react-bootstrap";
-import { FaExpandAlt, FaCompressAlt } from "react-icons/fa";
+'use client';
 
-const ImageComponent = ({ imageUrl, altText }) => {
+import React, { useState } from "react";
+import { Expand, Shrink } from "lucide-react";
+
+const ImageComponent = ({ imageUrl, altText, className, onLoad, onError, ...props }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const toggleFullscreen = () => {
@@ -14,39 +15,50 @@ const ImageComponent = ({ imageUrl, altText }) => {
     );
   };
 
-  // Inline styles for fullscreen and normal modes
-  const styles = {
-    container: {
-      position: "relative", // Ensure container positioning
-      transition: "all 0.3s ease-in-out",
-      width: isFullscreen ? "100vw" : "100%",
-      height: isFullscreen ? "100vh" : "auto",
-     
-      display: isFullscreen ? "flex" : "block",
-      alignItems: isFullscreen ? "center" : "initial",
-      justifyContent: isFullscreen ? "center" : "initial",
-      overflow: isFullscreen ? "hidden" : "visible",
-    },
-    button: {
-      position: "absolute",
-      top: "10px",
-      right: "10px",
-      zIndex: 1000, // Ensure the button is above other elements
-      cursor: "pointer",
-      background: "rgba(255, 255, 255, 0.8)", // Add a semi-transparent background for better visibility
-    },
-  };
-  
-
   return (
-    <div style={styles.container}>
+    <div 
+      className={`
+        relative group transition-all duration-300 ease-out
+        ${isFullscreen 
+          ? 'fixed inset-0 z-[100] bg-black/90 flex items-center justify-center overflow-hidden' 
+          : 'w-full h-auto'
+        }
+      `}
+    >
       <img
         src={imageUrl}
         alt={altText || "Image Content"}
-        style={styles.image}
+        className={`
+          ${className || ''}
+          ${isFullscreen ? 'max-w-full max-h-full object-contain' : ''}
+          transition-all duration-300 ease-out
+        `}
+        onLoad={onLoad}
+        onError={onError}
+        {...props}
       />
 
-     
+      {/* Fullscreen toggle button */}
+      <button
+        onClick={toggleFullscreen}
+        className="
+          absolute top-3 right-3 z-[1000] p-2 rounded-lg
+          bg-background-50/80 hover:bg-background-50/90
+          text-text-primary hover:text-primary-700
+          transition-all duration-200 ease-out
+          hover:scale-105 hover:shadow-primary
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+          backdrop-blur-sm border border-border-light
+          opacity-0 group-hover:opacity-100
+        "
+        aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+      >
+        {isFullscreen ? (
+          <Shrink className="w-5 h-5" />
+        ) : (
+          <Expand className="w-5 h-5" />
+        )}
+      </button>
     </div>
   );
 };
