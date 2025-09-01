@@ -114,7 +114,7 @@ export default function Header() {
                   />
                 </div>
               </div>
-              <div className="hidden sm:block">
+              <div >
                 <h1 className="text-xl font-bold text-gray-900 tracking-tight">
                   KKKT YOMBO
                 </h1>
