@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Calendar, Download, Eye, Grid, List, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { initializeCalendar } from '@/hooks/initializeCalendar';
 import { generateTimetable } from '@/hooks/generateTimetable';
 import EventModal from '@/components/EventModal';
@@ -9,10 +10,7 @@ import { CountdownDisplay } from '@/components/xmass/CountDown';
 import UserCards from "@/components/kalenda/UserCards";
 import MinimalistCalendar from '@/components/kalenda/MinimalisticCalendar';
 
-
-// Add this debugging code to your Calendar component to see what's happening
-
-const Calendar = () => {
+const Calendar2 = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [showDownload, setShowDownload] = useState(false);
@@ -20,8 +18,9 @@ const Calendar = () => {
     const [isClient, setIsClient] = useState(false);
     const [viewType, setViewType] = useState('dayGridMonth');
     const [dateRange, setDateRange] = useState('');
+    const [showDebug, setShowDebug] = useState(false);
 
-    // Add debugging useEffect
+    // Debug logging
     useEffect(() => {
         console.log('fullEvents updated:', fullEvents);
         console.log('Number of events:', fullEvents.length);
@@ -53,7 +52,6 @@ const Calendar = () => {
         }
     }, [isClient]);
 
-    // Rest of your component...
     const toggleModal = () => {
         setModalOpen(!modalOpen);
     };
@@ -79,58 +77,137 @@ const Calendar = () => {
         setDateRange(`${startDate.toDateString()} - ${endDate.toDateString()}`);
     };
 
+    const getViewIcon = (view) => {
+        switch (view) {
+            case 'dayGridMonth': return <Grid className="w-4 h-4" />;
+            case 'timeGridWeek': return <List className="w-4 h-4" />;
+            case 'timeGridDay': return <Clock className="w-4 h-4" />;
+            default: return <Grid className="w-4 h-4" />;
+        }
+    };
+
+    const getViewLabel = (view) => {
+        switch (view) {
+            case 'dayGridMonth': return 'Month';
+            case 'timeGridWeek': return 'Week';
+            case 'timeGridDay': return 'Day';
+            default: return 'Month';
+        }
+    };
+
     if (!isClient) {
-        return null;
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background-50 to-background-300">
+                <div className="animate-pulse">
+                    <Calendar className="w-12 h-12 text-primary-600 animate-gentle-float" />
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            {/* Add a debug section - remove this after fixing */}
-            <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0'}}>
-                <h6>Debug Info:</h6>
-                <p>Events loaded: {fullEvents.length}</p>
-                <p>Is client: {isClient.toString()}</p>
-                <p>View type: {viewType}</p>
-                {fullEvents.length > 0 && (
-                    <details>
-                        <summary>Show events data</summary>
-                        <pre>{JSON.stringify(fullEvents.slice(0, 2), null, 2)}</pre>
-                    </details>
-                )}
-            </div>
+        <div className="min-h-screen bg-gradient-to-br from-background-50 via-background-100 to-background-200">
+          
 
-            <section className="owl pt-0 mb-8">
-                {/* Your existing content */}
-                <div className="container text-center px-0">
-                    {/* SlideCarousel content */}
-                </div>
+            {/* Main Content */}
+            <section className="py-8 px-4">
+                <div className="max-w-7xl mx-auto">
+                    {/* Header Section */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-3 mb-6">
+                          
+                            <div>
+                                <h1 className="text-4xl md:text-5xl font-display font-bold bg-primary-gradient bg-clip-text text-transparent">
+                                   Matukio Kwenye Calendar
+                                </h1>
 
-                <div className="container text-center mt-5">
-                    <UserCards />
-                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div className="container text-center mt-5 mb-5">
-                    <h2
-                        className="text-center fw-bold mb-4"
-                        style={{
-                            fontSize: "2rem",
-                            color: "#6a0dad",
-                            textShadow: "2px 2px 4px rgba(106, 13, 173, 0.3)",
-                        }}
-                    >
-                        Ratiba za Mwezi za Usharika na Vikundi
-                    </h2>
-                    
-                    <MinimalistCalendar 
-                        events={fullEvents}
-                        onEventClick={setSelectedEvent} // Make sure this prop is passed
-                        onDownload={() => generateTimetable(fullEvents, viewType, dateRange)}
-                        viewType={viewType}
-                        dateRange={dateRange}
-                    />
+          
+
+                    {/* User Cards Section */}
+                    <div className="mb-12">
+                        <UserCards />
+                    </div>
+
+                    {/* Calendar Section */}
+                    <div className="mb-12">
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-4">
+                                <span className="bg-gradient-to-r from-primary-600 via-purple-600 to-yellow-500 bg-clip-text text-transparent">
+                                    Ratiba za Mwezi za Usharika na Vikundi
+                                </span>
+                            </h2>
+                           
+                        </div>
+
+                        {/* Calendar Controls */}
+                        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
+                            {/* View Type Selector */}
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-text-secondary">View:</span>
+                                <div className="flex items-center bg-background-200 rounded-xl p-1">
+                                    {['dayGridMonth', 'timeGridWeek', 'timeGridDay'].map((view) => (
+                                        <button
+                                            key={view}
+                                            onClick={() => setViewType(view)}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                                viewType === view
+                                                    ? 'bg-white shadow-soft text-primary-600'
+                                                    : 'text-text-secondary hover:text-text-primary hover:bg-background-100'
+                                            }`}
+                                        >
+                                            {getViewIcon(view)}
+                                            {getViewLabel(view)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Date Range Display */}
+                            <div className="flex items-center gap-4">
+                                {dateRange && (
+                                    <div className="flex items-center gap-2 text-sm text-text-secondary">
+                                        <Calendar className="w-4 h-4" />
+                                        <span>{dateRange}</span>
+                                    </div>
+                                )}
+
+                                {/* Download Button */}
+                                {showDownload && (
+                                    <button
+                                        onClick={() => generateTimetable(fullEvents, viewType, dateRange)}
+                                        className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium shadow-primary hover:shadow-primary-lg transition-all duration-300"
+                                    >
+                                        <Download className="w-4 h-4" />
+                                        Pakua
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Calendar Container */}
+                        <div className="glass-strong rounded-3xl p-6 md:p-8 shadow-medium">
+                            <MinimalistCalendar 
+                                events={fullEvents}
+                                onEventClick={(event) => {
+                                    setSelectedEvent(event);
+                                    setModalOpen(true);
+                                }}
+                                onDownload={() => generateTimetable(fullEvents, viewType, dateRange)}
+                                viewType={viewType}
+                                dateRange={dateRange}
+                            />
+                        </div>
+
+                     
+                    </div>
                 </div>
             </section>
 
+            {/* Event Modal */}
             {selectedEvent && (
                 <EventModal
                     event={selectedEvent}
@@ -142,4 +219,4 @@ const Calendar = () => {
     );
 };
 
-export default Calendar;
+export default Calendar2;

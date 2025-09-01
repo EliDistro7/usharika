@@ -1,21 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { fetchUsersBornThisMonth } from "@/actions/users";
-import { Card, Row, Col, Container, Spinner, Alert } from "react-bootstrap";
-
-// Enhanced color scheme
-const colors = {
-  primary: "#FF6B9D",      // Warm pink
-  secondary: "#FFB5C5",    // Light pink
-  accent: "#FF85A2",       // Medium pink
-  purple: "#8B5CF6",       // Modern purple
-  gold: "#FFD700",         // Gold accent
-  dark: "#2D1B3D",         // Dark purple
-  light: "#FFF8FC",        // Very light pink
-  white: "#FFFFFF",
-  gradient: "linear-gradient(135deg, #FF6B9D 0%, #FFB5C5 50%, #8B5CF6 100%)",
-  cardGradient: "linear-gradient(145deg, #FFFFFF 0%, #FFF8FC 100%)",
-  shimmer: "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)"
-};
 
 const formatDate = (dob) => {
   const date = new Date(dob);
@@ -57,84 +41,201 @@ const UserCards = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const FloatingElement = ({ emoji, index, size = "text-2xl" }) => (
+    <div
+      className={`absolute ${size} opacity-60 animate-gentle-float pointer-events-none`}
+      style={{
+        left: `${10 + index * 12}%`,
+        top: `${15 + index * 10}%`,
+        transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.01}px)`,
+        animationDelay: `${index * 0.5}s`,
+        animationDuration: `${6 + index * 1.5}s`
+      }}
+    >
+      {emoji}
+    </div>
+  );
+
+  const LoadingSpinner = () => (
+    <div className="flex justify-center items-center min-h-[200px]">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
+        <p className="text-text-primary text-lg font-medium">
+          Loading birthday celebrations... 🎉
+        </p>
+      </div>
+    </div>
+  );
+
+  const EmptyState = () => (
+    <div className="text-center p-8 bg-white rounded-3xl border border-border-light shadow-soft">
+      <div className="text-6xl mb-4">🎈</div>
+      <h4 className="text-text-primary text-xl font-bold mb-2">
+        Hakuna Birthdays kwa mwezi huu
+      </h4>
+      <p className="text-text-secondary">
+        Looks like we'll have to wait for next month's celebrations!
+      </p>
+    </div>
+  );
+
+  const ErrorState = () => (
+    <div className="text-center p-6 bg-gradient-to-br from-error-50 to-error-100 rounded-3xl border-2 border-error-200 shadow-soft">
+      <div className="text-4xl mb-2">😔</div>
+      <p className="text-error-700 font-medium">{error}</p>
+    </div>
+  );
+
+  const BirthdayCard = ({ user, index }) => (
+    <div
+      className="group"
+      style={{
+        transform: isVisible ? 'scale(1)' : 'scale(0.9)',
+        opacity: isVisible ? 1 : 0,
+        transition: `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${0.1 + index * 0.1}s`
+      }}
+    >
+      <div className="relative bg-white rounded-3xl border border-border-light shadow-soft hover:shadow-primary-lg transition-all duration-500 hover:-translate-y-2 hover:scale-105 overflow-hidden h-full backdrop-blur-sm">
+        
+        {/* Decorative background gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-purple-50/30 to-yellow-50/50 opacity-60 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary-200/20 to-transparent rounded-full -translate-y-6 translate-x-6"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-yellow-200/20 to-transparent rounded-full translate-y-6 -translate-x-6"></div>
+
+        {/* Profile Image Container */}
+        <div className="relative overflow-hidden rounded-t-3xl h-56">
+          <img
+            src={user.profilePicture || "https://via.placeholder.com/400x300?text=🎂"}
+            alt={user.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
+          />
+          
+          {/* Image overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+
+          {/* Birthday badge */}
+          <div className="absolute top-4 right-4 glass rounded-2xl px-3 py-2 backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎈</span>
+              <span className="text-primary-700 font-semibold text-sm">Birthday</span>
+            </div>
+          </div>
+
+          {/* Floating celebration elements */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {['✨', '🎊', '⭐'].map((emoji, i) => (
+              <div
+                key={i}
+                className="absolute text-xl opacity-0 group-hover:opacity-70 transition-all duration-700"
+                style={{
+                  left: `${20 + i * 25}%`,
+                  top: `${20 + i * 15}%`,
+                  transform: `translate(${Math.sin(i) * 10}px, ${Math.cos(i) * 10}px)`,
+                  animationDelay: `${i * 0.2}s`
+                }}
+              >
+                <div className="animate-bounce">{emoji}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Card Content */}
+        <div className="relative p-6 z-10">
+          {/* Name */}
+          <h3 className="text-xl font-bold text-text-primary mb-4 text-center font-display">
+            {user.name}
+          </h3>
+
+          {/* Birthday Date */}
+          <div className="flex items-center justify-center mb-4">
+            <div className="inline-flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary-50 to-purple-50 border border-primary-200 rounded-2xl">
+              <span className="text-lg">🗓️</span>
+              <span className="text-primary-700 font-semibold">
+                {formatDate(user.dob)}
+              </span>
+            </div>
+          </div>
+
+          {/* Celebration elements */}
+          <div className="flex justify-center items-center gap-3">
+            {['🎂', '🎉', '🎁'].map((emoji, i) => (
+              <div
+                key={i}
+                className="w-10 h-10 bg-gradient-to-br from-yellow-50 to-primary-50 rounded-xl border border-yellow-200 flex items-center justify-center transition-transform duration-300 hover:scale-110 hover:rotate-12"
+                style={{
+                  animation: `bounce ${1.2 + i * 0.2}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.1}s`
+                }}
+              >
+                <span className="text-lg">{emoji}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Interactive hover effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-purple-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
+        </div>
+
+        {/* Card border glow effect */}
+        <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-primary-200/50 via-purple-200/50 to-yellow-200/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+      </div>
+    </div>
+  );
+
   return (
     <div 
-      className="position-relative overflow-hidden"
+      className="relative min-h-screen overflow-hidden transition-all duration-300 ease-out pt-8 pb-16"
       style={{
         background: `
           radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-            rgba(255, 107, 157, 0.1) 0%, 
+            rgba(107, 70, 193, 0.08) 0%, 
             transparent 50%
           ),
           linear-gradient(135deg, 
-            ${colors.light} 0%, 
-            #FFE8F1 25%, 
-            #FFF0F5 50%, 
-            #FFE8F1 75%, 
-            ${colors.light} 100%
+            #fefefe 0%, 
+            #fdfdfd 25%, 
+            #fafafb 50%, 
+            #f7f8fa 75%, 
+            #f3f4f7 100%
           )
-        `,
-        minHeight: "100vh",
-        transition: "background 0.3s ease-out",
-        paddingTop: "2rem",
-        paddingBottom: "4rem"
+        `
       }}
     >
       {/* Animated Background Elements */}
-      <div className="position-absolute w-100 h-100" style={{ zIndex: 0 }}>
+      <div className="absolute inset-0 pointer-events-none">
         {/* Floating Birthday Elements */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="position-absolute"
-            style={{
-              fontSize: `${20 + i * 4}px`,
-              left: `${10 + i * 12}%`,
-              top: `${15 + i * 10}%`,
-              animation: `float-birthday-${i} ${6 + i * 1.5}s ease-in-out infinite`,
-              transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.01}px)`,
-              opacity: 0.6,
-              zIndex: 0
-            }}
-          >
-            {['🎂', '🎉', '🎈', '🎁', '🌟', '✨', '🎊', '💝'][i]}
-          </div>
+        {['🎂', '🎉', '🎈', '🎁', '🌟', '✨', '🎊', '💝'].map((emoji, i) => (
+          <FloatingElement key={i} emoji={emoji} index={i} />
         ))}
 
         {/* Decorative Circles */}
         <div 
-          className="position-absolute"
+          className="absolute top-1/5 right-[15%] w-36 h-36 opacity-30"
           style={{
-            top: "20%",
-            right: "15%",
-            width: "150px",
-            height: "150px",
-            background: `conic-gradient(from 0deg, transparent, rgba(255, 107, 157, 0.1), transparent)`,
+            background: `conic-gradient(from 0deg, transparent, rgba(107, 70, 193, 0.15), transparent)`,
             borderRadius: "50%",
-            animation: "rotate 25s linear infinite",
-            transform: `translate(${mousePosition.x * -0.01}px, ${mousePosition.y * -0.01}px)`
+            transform: `translate(${mousePosition.x * -0.01}px, ${mousePosition.y * -0.01}px)`,
+            animation: "spin 25s linear infinite"
           }}
         />
         
         <div 
-          className="position-absolute"
+          className="absolute bottom-1/5 left-[10%] w-30 h-30 opacity-20"
           style={{
-            bottom: "20%",
-            left: "10%",
-            width: "120px",
-            height: "120px",
-            background: `linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.08), transparent)`,
+            background: `linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.1), transparent)`,
             borderRadius: "40%",
-            animation: "rotate 20s linear infinite reverse",
-            transform: `translate(${mousePosition.x * 0.015}px, ${mousePosition.y * 0.01}px)`
+            transform: `translate(${mousePosition.x * 0.015}px, ${mousePosition.y * 0.01}px)`,
+            animation: "spin 20s linear infinite reverse"
           }}
         />
       </div>
 
-      <Container className="position-relative" style={{ zIndex: 1 }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Enhanced Header */}
         <div 
-          className="text-center mb-5"
+          className="text-center mb-12"
           style={{
             transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
             opacity: isVisible ? 1 : 0,
@@ -142,73 +243,28 @@ const UserCards = () => {
           }}
         >
           {/* Birthday Badge */}
-          <div 
-            className="d-inline-block px-4 py-2 rounded-pill mb-3"
-            style={{
-              background: "rgba(255, 107, 157, 0.15)",
-              border: "2px solid rgba(255, 107, 157, 0.3)",
-              backdropFilter: "blur(10px)",
-              color: colors.primary,
-              fontSize: "0.9rem",
-              fontWeight: "600",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-              boxShadow: "0 4px 15px rgba(255, 107, 157, 0.2)"
-            }}
-          >
-            🎈 Birthday Celebration
+          <div className="inline-block px-6 py-3 bg-gradient-to-r from-primary-100 to-purple-100 border-2 border-primary-200 rounded-full mb-6 glass">
+            <span className="text-primary-700 font-semibold text-sm uppercase tracking-wider">
+              🎈 Birthday Celebration
+            </span>
           </div>
 
           {/* Main Title */}
-          <h2
-            className="fw-bold mb-4 position-relative"
-            style={{
-              fontSize: "clamp(2.5rem, 4vw, 3.5rem)",
-              background: colors.gradient,
-              backgroundSize: "200% 200%",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              fontFamily: "'Inter', sans-serif",
-              letterSpacing: "-0.02em",
-              lineHeight: "1.1",
-              animation: "shimmer 4s ease-in-out infinite",
-              filter: "drop-shadow(0 4px 8px rgba(107, 157, 255, 0.3))"
-            }}
-          >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-primary-gradient bg-clip-text text-transparent font-display leading-tight">
             🎂 Birthdays Mwezi huu 🎉
             
             {/* Decorative Underline */}
-            <div 
-              className="position-absolute"
-              style={{
-                bottom: "-8px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: "40%",
-                height: "4px",
-                background: colors.gradient,
-                borderRadius: "2px",
-                opacity: 0.7,
-                animation: "shimmer-line 3s ease-in-out infinite"
-              }}
-            />
+            <div className="w-32 h-1 bg-primary-gradient rounded-full mx-auto mt-4 opacity-70"></div>
           </h2>
 
           {/* Decorative Elements */}
-          <div className="d-flex justify-content-center gap-3 mb-4">
+          <div className="flex justify-center gap-4 mb-6">
             {['🎈', '🎂', '🎉'].map((emoji, i) => (
               <div
                 key={i}
-                className="rounded-circle d-flex align-items-center justify-content-center"
+                className="w-12 h-12 bg-white rounded-2xl border-2 border-primary-200 flex items-center justify-center text-2xl shadow-soft hover:shadow-primary transition-all duration-300 hover:-translate-y-1"
                 style={{
-                  width: "50px",
-                  height: "50px",
-                  background: colors.cardGradient,
-                  border: "2px solid rgba(255, 107, 157, 0.2)",
-                  fontSize: "1.5rem",
-                  animation: `bounce ${1.5 + i * 0.3}s ease-in-out infinite`,
-                  boxShadow: "0 4px 15px rgba(255, 107, 157, 0.15)"
+                  animation: `bounce ${1.5 + i * 0.3}s ease-in-out infinite`
                 }}
               >
                 {emoji}
@@ -217,62 +273,10 @@ const UserCards = () => {
           </div>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div 
-            className="d-flex justify-content-center align-items-center"
-            style={{ minHeight: "200px" }}
-          >
-            <div className="text-center">
-              <div
-                className="spinner-border mb-3"
-                style={{
-                  width: "3rem",
-                  height: "3rem",
-                  color: colors.primary,
-                  animation: "spin 1s linear infinite"
-                }}
-              />
-              <p style={{ color: colors.dark, fontSize: "1.1rem", fontWeight: "500" }}>
-                Loading birthday celebrations... 🎉
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <Alert 
-            className="text-center border-0 rounded-4"
-            style={{
-              background: "linear-gradient(135deg, #FFE5E5 0%, #FFF0F0 100%)",
-              color: "#D32F2F",
-              border: "2px solid rgba(211, 47, 47, 0.2)",
-              boxShadow: "0 4px 15px rgba(211, 47, 47, 0.1)"
-            }}
-          >
-            <div style={{ fontSize: "1.5rem" }}>😔</div>
-            {error}
-          </Alert>
-        )}
-
-        {/* No Users State */}
-        {!loading && !error && users.length === 0 && (
-          <div 
-            className="text-center p-5 rounded-4"
-            style={{
-              background: colors.cardGradient,
-              border: "2px solid rgba(255, 107, 157, 0.2)",
-              boxShadow: "0 8px 25px rgba(255, 107, 157, 0.1)"
-            }}
-          >
-            <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🎈</div>
-            <h4 style={{ color: colors.dark, marginBottom: "0.5rem" }}>Hakuna Birthdays kwa mwezi huu</h4>
-            <p style={{ color: colors.dark, opacity: 0.7 }}>
-              Looks like we'll have to wait for next month's celebrations!
-            </p>
-          </div>
-        )}
+        {/* Content States */}
+        {loading && <LoadingSpinner />}
+        {error && <ErrorState />}
+        {!loading && !error && users.length === 0 && <EmptyState />}
 
         {/* Users Grid */}
         {!loading && !error && users.length > 0 && (
@@ -283,233 +287,52 @@ const UserCards = () => {
               transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s'
             }}
           >
-            <Row className="g-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
               {users.map((user, index) => (
-                <Col key={user._id} xl={4} lg={6} md={6} sm={12}>
-                  <div
-                    style={{
-                      transform: isVisible ? 'scale(1)' : 'scale(0.9)',
-                      opacity: isVisible ? 1 : 0,
-                      transition: `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${0.1 + index * 0.1}s`
-                    }}
-                  >
-                    <Card
-                      className="border-0 overflow-hidden position-relative"
-                      style={{
-                        background: colors.cardGradient,
-                        borderRadius: "24px",
-                        boxShadow: "0 8px 32px rgba(255, 107, 157, 0.15)",
-                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                        height: "100%"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-8px) scale(1.02)";
-                        e.currentTarget.style.boxShadow = "0 20px 40px rgba(255, 107, 157, 0.25)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "translateY(0) scale(1)";
-                        e.currentTarget.style.boxShadow = "0 8px 32px rgba(255, 107, 157, 0.15)";
-                      }}
-                    >
-                      {/* Birthday Confetti Effect */}
-                      <div 
-                        className="position-absolute top-0 start-0 w-100 h-100"
-                        style={{
-                          background: `
-                            radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 30%),
-                            radial-gradient(circle at 80% 30%, rgba(255, 107, 157, 0.1) 0%, transparent 30%),
-                            radial-gradient(circle at 30% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 30%)
-                          `,
-                          pointerEvents: 'none',
-                          zIndex: 1
-                        }}
-                      />
-
-                      {/* Profile Image Container */}
-                      <div className="position-relative overflow-hidden" style={{ height: "220px" }}>
-                        <img
-                          src={user.profilePicture || "https://via.placeholder.com/400x300?text=🎂"}
-                          alt={user.name}
-                          className="w-100 h-100"
-                          style={{
-                            objectFit: "cover",
-                            transition: "transform 0.4s ease"
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "scale(1)";
-                          }}
-                        />
-                        
-                        {/* Image Overlay */}
-                        <div 
-                          className="position-absolute bottom-0 start-0 w-100"
-                          style={{
-                            background: "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 100%)",
-                            height: "50%"
-                          }}
-                        />
-
-                        {/* Birthday Badge */}
-                        <div
-                          className="position-absolute top-0 end-0 m-3 px-3 py-1 rounded-pill d-flex align-items-center"
-                          style={{
-                            background: "rgba(255, 255, 255, 0.95)",
-                            backdropFilter: "blur(10px)",
-                            border: "1px solid rgba(255, 107, 157, 0.3)",
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: colors.primary,
-                            boxShadow: "0 4px 15px rgba(255, 107, 157, 0.2)"
-                          }}
-                        >
-                          🎈 Birthday
-                        </div>
-                      </div>
-
-                      {/* Card Content */}
-                      <Card.Body className="p-4 text-center position-relative" style={{ zIndex: 2 }}>
-                        {/* Name */}
-                        <Card.Title 
-                          className="fw-bold mb-3"
-                          style={{ 
-                            fontSize: "1.4rem", 
-                            color: colors.dark,
-                            fontFamily: "'Inter', sans-serif",
-                            letterSpacing: "-0.01em"
-                          }}
-                        >
-                          {user.name}
-                        </Card.Title>
-
-                        {/* Birthday Date */}
-                        <div
-                          className="d-inline-flex align-items-center px-3 py-2 rounded-pill"
-                          style={{
-                            background: "rgba(255, 107, 157, 0.1)",
-                            border: "1px solid rgba(255, 107, 157, 0.2)",
-                            color: colors.primary,
-                            fontSize: "0.95rem",
-                            fontWeight: "600"
-                          }}
-                        >
-                          <span className="me-2">🗓️</span>
-                          {formatDate(user.dob)}
-                        </div>
-
-                        {/* Celebration Elements */}
-                        <div className="d-flex justify-content-center gap-2 mt-3">
-                          {['🎂', '🎉', '🎁'].map((emoji, i) => (
-                            <span
-                              key={i}
-                              style={{
-                                fontSize: "1.2rem",
-                                animation: `bounce ${1.2 + i * 0.2}s ease-in-out infinite`,
-                                animationDelay: `${i * 0.1}s`
-                              }}
-                            >
-                              {emoji}
-                            </span>
-                          ))}
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                </Col>
+                <BirthdayCard key={user._id} user={user} index={index} />
               ))}
-            </Row>
+            </div>
           </div>
         )}
 
         {/* Bottom Decoration */}
         {!loading && users.length > 0 && (
           <div 
-            className="text-center mt-5 pt-4"
+            className="text-center mt-12 pt-8"
             style={{
               transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
               opacity: isVisible ? 1 : 0,
               transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1s'
             }}
           >
-            <div className="d-flex justify-content-center align-items-center gap-4 mb-3">
-              <div 
-                style={{
-                  width: "60px",
-                  height: "3px",
-                  background: colors.gradient,
-                  borderRadius: "2px",
-                  opacity: 0.7
-                }}
-              />
-              <span style={{ fontSize: "1.5rem", animation: "pulse 2s ease-in-out infinite" }}>
-                🎈
-              </span>
-              <div 
-                style={{
-                  width: "60px",
-                  height: "3px",
-                  background: colors.gradient,
-                  borderRadius: "2px",
-                  opacity: 0.7
-                }}
-              />
+            <div className="flex justify-center items-center gap-6 mb-4">
+              <div className="w-16 h-1 bg-primary-gradient rounded-full opacity-70"></div>
+              <span className="text-2xl animate-pulse">🎈</span>
+              <div className="w-16 h-1 bg-primary-gradient rounded-full opacity-70"></div>
             </div>
-            <p 
-              className="small"
-              style={{
-                color: colors.dark,
-                opacity: 0.7,
-                fontSize: "0.95rem",
-                fontWeight: "500"
-              }}
-            >
-             Usharika unamtakia kila mmoja wenu heri njema ya kumbukumbu ya siku ya kuzaliwa! 🎉
+            <p className="text-text-secondary font-medium max-w-2xl mx-auto">
+              Usharika unamtakia kila mmoja wenu heri njema ya kumbukumbu ya siku ya kuzaliwa! 🎉
             </p>
           </div>
         )}
-      </Container>
+      </div>
 
-      {/* Enhanced CSS Animations */}
+      {/* Custom CSS Animations */}
       <style jsx>{`
-        @keyframes shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes shimmer-line {
-          0%, 100% { opacity: 0.7; transform: translateX(-50%) scaleX(1); }
-          50% { opacity: 1; transform: translateX(-50%) scaleX(1.1); }
-        }
-        
-        @keyframes float-birthday-0 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(10deg); } }
-        @keyframes float-birthday-1 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(-10deg); } }
-        @keyframes float-birthday-2 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-12px) rotate(8deg); } }
-        @keyframes float-birthday-3 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-18px) rotate(-8deg); } }
-        @keyframes float-birthday-4 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-25px) rotate(12deg); } }
-        @keyframes float-birthday-5 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(-12deg); } }
-        @keyframes float-birthday-6 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-22px) rotate(6deg); } }
-        @keyframes float-birthday-7 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-16px) rotate(-6deg); } }
-        
-        @keyframes rotate {
+        @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
         
         @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 0.7; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          0%, 100% { 
+            transform: translateY(0); 
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+          }
+          50% { 
+            transform: translateY(-25%); 
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+          }
         }
       `}</style>
     </div>
