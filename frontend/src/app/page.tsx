@@ -33,7 +33,7 @@ export default function Home() {
       <Pledge />
        {/* Main News<MainNews /> Section */}
        <FutureEventsCarousel />
-       <Footer />
+    
     </div>
   );
 }
