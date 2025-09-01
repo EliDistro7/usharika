@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Clock, Image, Video, FileText, ChevronDown, ChevronUp, Share2, Bookmark, Play, Pause, Menu, X } from 'lucide-react';
+import { Calendar, User, Clock, Image, Video, FileText, ChevronDown, ChevronUp, Share2, Bookmark, Play, Pause, Menu, X, Maximize, Minimize } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 
 const HighlightDetailPage = () => {
@@ -12,6 +12,8 @@ const HighlightDetailPage = () => {
   const [playingVideos, setPlayingVideos] = useState({});
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [fullscreenItem, setFullscreenItem] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Mock data based on your schema
   useEffect(() => {
@@ -36,6 +38,61 @@ const HighlightDetailPage = () => {
     }
     fetchHighlightData();
   }, [params.id, router]);
+
+  // Fullscreen functionality
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+      if (!document.fullscreenElement) {
+        setFullscreenItem(null);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isFullscreen) {
+        exitFullscreen();
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullscreen]);
+
+  const enterFullscreen = (item) => {
+    const fullscreenElement = document.getElementById(`fullscreen-container-${item._id}`);
+    if (fullscreenElement && fullscreenElement.requestFullscreen) {
+      fullscreenElement.requestFullscreen().then(() => {
+        setFullscreenItem(item);
+        setIsFullscreen(true);
+      }).catch(err => {
+        console.error('Error attempting to enable fullscreen:', err);
+      });
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+        setFullscreenItem(null);
+      }).catch(err => {
+        console.error('Error attempting to exit fullscreen:', err);
+      });
+    }
+  };
+
+  const toggleFullscreen = (item) => {
+    if (isFullscreen && fullscreenItem?._id === item._id) {
+      exitFullscreen();
+    } else {
+      enterFullscreen(item);
+    }
+  };
 
   const toggleItemExpansion = (itemId) => {
     setExpandedItems(prev => ({
@@ -316,120 +373,213 @@ const HighlightDetailPage = () => {
 
                 <div className="space-y-6">
                   {tab.content.map((item, itemIndex) => (
-                    <div key={item._id} className="bg-white rounded-2xl shadow-medium border border-border-light overflow-hidden hover:shadow-primary-lg transition-all duration-300 group">
-                      
-                      {/* Image Display */}
-                      {item.imageUrl && (
-                        <div className="relative">
-                          <img
-                            src={item.imageUrl}
-                            alt="Content"
-                            className="w-full h-auto max-h-80 object-contain bg-background-100"
-                          />
-                          <div className="absolute top-4 right-4">
-                            <span className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                              <Image size={14} className="mr-1" />
-                              Image
-                            </span>
+                    <div key={item._id}>
+                      {/* Fullscreen Container for each item */}
+                      <div 
+                        id={`fullscreen-container-${item._id}`}
+                        className={`bg-white rounded-2xl shadow-medium border border-border-light overflow-hidden hover:shadow-primary-lg transition-all duration-300 group ${
+                          isFullscreen && fullscreenItem?._id === item._id 
+                            ? 'fixed inset-0 z-50 bg-black flex flex-col rounded-none border-none' 
+                            : ''
+                        }`}
+                      >
+                        
+                        {/* Fullscreen Header (only visible in fullscreen) */}
+                        {isFullscreen && fullscreenItem?._id === item._id && (
+                          <div className="bg-black/90 backdrop-blur-sm p-4 flex justify-between items-center">
+                            <div className="flex items-center text-white">
+                              <div className="bg-primary-gradient rounded-xl p-2 mr-3">
+                                <User size={16} className="text-white" />
+                              </div>
+                              <div>
+                                <div className="font-bold">{item.author}</div>
+                                <div className="text-sm text-white/70">Content Author</div>
+                              </div>
+                            </div>
+                            <button 
+                              className="text-white hover:bg-white/20 p-2 rounded-full transition-colors"
+                              onClick={() => exitFullscreen()}
+                            >
+                              <X size={24} />
+                            </button>
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Video Display */}
-                      {item.videoUrl && (
-                        <div className="relative">
-                          <video
-                            src={item.videoUrl}
-                            className="w-full h-auto max-h-80 object-contain bg-black"
-                            controls={playingVideos[item._id]}
-                            poster={item.imageUrl}
-                          />
-                          {!playingVideos[item._id] && (
-                            <div className="absolute inset-0 flex items-center justify-center">
+                        )}
+
+                        {/* Image Display */}
+                        {item.imageUrl && (
+                          <div className={`relative ${isFullscreen && fullscreenItem?._id === item._id ? 'flex-1 flex items-center justify-center bg-black' : ''}`}>
+                            <img
+                              src={item.imageUrl}
+                              alt="Content"
+                              className={`${
+                                isFullscreen && fullscreenItem?._id === item._id 
+                                  ? 'max-w-full max-h-full object-contain' 
+                                  : 'w-full h-auto max-h-80 object-contain bg-background-100'
+                              }`}
+                            />
+                            <div className={`absolute ${isFullscreen && fullscreenItem?._id === item._id ? 'top-6 right-6' : 'top-4 right-4'} flex gap-2`}>
+                              <span className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                <Image size={14} className="mr-1" />
+                                Image
+                              </span>
+                              <button
+                                className="bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-colors"
+                                onClick={() => toggleFullscreen(item)}
+                                title={isFullscreen && fullscreenItem?._id === item._id ? "Exit fullscreen" : "View fullscreen"}
+                              >
+                                {isFullscreen && fullscreenItem?._id === item._id ? (
+                                  <Minimize size={16} />
+                                ) : (
+                                  <Maximize size={16} />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Video Display */}
+                        {item.videoUrl && (
+                          <div className={`relative ${isFullscreen && fullscreenItem?._id === item._id ? 'flex-1 flex items-center justify-center bg-black' : ''}`}>
+                            <video
+                              src={item.videoUrl}
+                              className={`${
+                                isFullscreen && fullscreenItem?._id === item._id 
+                                  ? 'max-w-full max-h-full object-contain' 
+                                  : 'w-full h-auto max-h-80 object-contain bg-black'
+                              }`}
+                              controls={playingVideos[item._id]}
+                              poster={item.imageUrl}
+                            />
+                            {!playingVideos[item._id] && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <button 
+                                  className="btn-primary rounded-full p-4 shadow-primary-lg hover:scale-110 transition-transform"
+                                  onClick={() => toggleVideo(item._id)}
+                                >
+                                  <Play size={24} className="text-white ml-1" />
+                                </button>
+                              </div>
+                            )}
+                            <div className={`absolute ${isFullscreen && fullscreenItem?._id === item._id ? 'top-6 right-6' : 'top-4 right-4'} flex gap-2`}>
+                              <span className="bg-yellow-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                <Video size={14} className="mr-1" />
+                                Video
+                              </span>
+                              <button
+                                className="bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-colors"
+                                onClick={() => toggleFullscreen(item)}
+                                title={isFullscreen && fullscreenItem?._id === item._id ? "Exit fullscreen" : "View fullscreen"}
+                              >
+                                {isFullscreen && fullscreenItem?._id === item._id ? (
+                                  <Minimize size={16} />
+                                ) : (
+                                  <Maximize size={16} />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Content Details (hidden in fullscreen for media items, shown for text-only) */}
+                        <div className={`p-6 ${
+                          isFullscreen && fullscreenItem?._id === item._id && (item.imageUrl || item.videoUrl) 
+                            ? 'hidden' 
+                            : ''
+                        }`}>
+                          <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
+                            <div className="flex items-center">
+                              <div className="bg-primary-gradient rounded-2xl p-3 mr-4 shadow-primary">
+                                <User size={20} className="text-white" />
+                              </div>
+                              <div>
+                                <div className="font-bold text-text-primary">{item.author}</div>
+                                <div className="text-sm text-text-secondary">Content Author</div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              {!item.imageUrl && !item.videoUrl && (
+                                <>
+                                  <span className="bg-green-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                    <FileText size={14} className="mr-1" />
+                                    Text
+                                  </span>
+                                  <button
+                                    className="bg-primary-gradient text-white p-2 rounded-full hover:bg-primary-700 transition-colors"
+                                    onClick={() => toggleFullscreen(item)}
+                                    title={isFullscreen && fullscreenItem?._id === item._id ? "Exit fullscreen" : "View fullscreen"}
+                                  >
+                                    {isFullscreen && fullscreenItem?._id === item._id ? (
+                                      <Minimize size={16} />
+                                    ) : (
+                                      <Maximize size={16} />
+                                    )}
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="prose prose-lg max-w-none">
+                            <p className="text-text-primary leading-relaxed">
+                              {expandedItems[item._id] || item.description.length <= 200
+                                ? item.description
+                                : `${item.description.substring(0, 200)}...`}
+                            </p>
+                            
+                            {item.description.length > 200 && (
+                              <button
+                                className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center mt-4 transition-colors"
+                                onClick={() => toggleItemExpansion(item._id)}
+                              >
+                                {expandedItems[item._id] ? (
+                                  <>
+                                    <ChevronUp size={16} className="mr-1" />
+                                    Show less
+                                  </>
+                                ) : (
+                                  <>
+                                    <ChevronDown size={16} className="mr-1" />
+                                    Read more
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+
+                          {item.videoUrl && (
+                            <div className="mt-6">
                               <button 
-                                className="btn-primary rounded-full p-4 shadow-primary-lg hover:scale-110 transition-transform"
+                                className="btn-secondary px-6 py-3 rounded-xl font-semibold text-white flex items-center shadow-yellow-lg hover:shadow-yellow group"
                                 onClick={() => toggleVideo(item._id)}
                               >
-                                <Play size={24} className="text-white ml-1" />
+                                {playingVideos[item._id] ? (
+                                  <>
+                                    <Pause size={18} className="mr-2 group-hover:scale-110 transition-transform" />
+                                    Pause Video
+                                  </>
+                                ) : (
+                                  <>
+                                    <Play size={18} className="mr-2 group-hover:scale-110 transition-transform" />
+                                    Play Video
+                                  </>
+                                )}
                               </button>
                             </div>
                           )}
-                          <div className="absolute top-4 right-4">
-                            <span className="bg-yellow-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                              <Video size={14} className="mr-1" />
-                              Video
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="p-6">
-                        <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
-                          <div className="flex items-center">
-                            <div className="bg-primary-gradient rounded-2xl p-3 mr-4 shadow-primary">
-                              <User size={20} className="text-white" />
-                            </div>
-                            <div>
-                              <div className="font-bold text-text-primary">{item.author}</div>
-                              <div className="text-sm text-text-secondary">Content Author</div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex gap-2">
-                            {!item.imageUrl && !item.videoUrl && (
-                              <span className="bg-green-gradient text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                                <FileText size={14} className="mr-1" />
-                                Text
-                              </span>
-                            )}
-                          </div>
                         </div>
 
-                        <div className="prose prose-lg max-w-none">
-                          <p className="text-text-primary leading-relaxed">
-                            {expandedItems[item._id] || item.description.length <= 200
-                              ? item.description
-                              : `${item.description.substring(0, 200)}...`}
-                          </p>
-                          
-                          {item.description.length > 200 && (
-                            <button
-                              className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center mt-4 transition-colors"
-                              onClick={() => toggleItemExpansion(item._id)}
-                            >
-                              {expandedItems[item._id] ? (
-                                <>
-                                  <ChevronUp size={16} className="mr-1" />
-                                  Show less
-                                </>
-                              ) : (
-                                <>
-                                  <ChevronDown size={16} className="mr-1" />
-                                  Read more
-                                </>
-                              )}
-                            </button>
-                          )}
-                        </div>
-
-                        {item.videoUrl && (
-                          <div className="mt-6">
-                            <button 
-                              className="btn-secondary px-6 py-3 rounded-xl font-semibold text-white flex items-center shadow-yellow-lg hover:shadow-yellow group"
-                              onClick={() => toggleVideo(item._id)}
-                            >
-                              {playingVideos[item._id] ? (
-                                <>
-                                  <Pause size={18} className="mr-2 group-hover:scale-110 transition-transform" />
-                                  Pause Video
-                                </>
-                              ) : (
-                                <>
-                                  <Play size={18} className="mr-2 group-hover:scale-110 transition-transform" />
-                                  Play Video
-                                </>
-                              )}
-                            </button>
+                        {/* Fullscreen Text Content (only for text-only items in fullscreen) */}
+                        {isFullscreen && fullscreenItem?._id === item._id && !item.imageUrl && !item.videoUrl && (
+                          <div className="flex-1 overflow-auto p-8">
+                            <div className="max-w-4xl mx-auto">
+                              <div className="prose prose-xl max-w-none text-white">
+                                <h2 className="text-white mb-6">{item.author}'s Content</h2>
+                                <p className="text-white/90 leading-relaxed text-lg">
+                                  {item.description}
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -441,6 +591,16 @@ const HighlightDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Instructions (shown when in fullscreen) */}
+      {isFullscreen && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-60 pointer-events-none">
+          <div className="bg-black/80 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium flex items-center">
+            <Minimize size={14} className="mr-2" />
+            Press ESC or click the minimize button to exit fullscreen
+          </div>
+        </div>
+      )}
     </div>
   );
 };
