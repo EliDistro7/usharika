@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { UserCheck, Phone } from "lucide-react";
 
 const Team = ({ leaders, activeSelection }) => {
   console.log('leaders', leaders);
@@ -8,56 +9,62 @@ const Team = ({ leaders, activeSelection }) => {
   const formattedSelection = `kiongozi_${(activeSelection || "").toLowerCase().replace(/\s+/g, '_')}`;
 
   return (
-    <div className="container-fluid team py-0" style={{ backgroundColor: "#F3E5F5" }}>
-      <div className="container py-5">
+    <div className="w-full py-0" >
+      <div className="max-w-7xl mx-auto px-4 py-20">
         <div
-          className="mx-auto text-center wow fadeIn"
-          data-wow-delay="0.1s"
+          className="mx-auto text-center animate-fade-in"
           style={{ maxWidth: "600px" }}
         >
-          <h4 className="text-purple mb-3">{activeSelection || "Leadership Team"}</h4>
-          <h1 className="display-5 text-dark mb-5">USHARIKA WA YOMBO</h1>
+          <h4 className="text-primary-50 mb-3 text-lg font-semibold tracking-wide uppercase">
+            {activeSelection || "Leadership Team"}
+          </h4>
+          <h1 className="text-5xl font-display font-bold text-primary-100 mb-12">
+            USHARIKA WA YOMBO
+          </h1>
         </div>
-        <div className="row g-4 justify-content-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {leaders.map((leader, index) => {
             // Extract the positions from the leader's `leadershipPositions` field
             const leaderPositions = leader.leadershipPositions?.[formattedSelection] || [];
 
             return (
               <div
-                className="col-lg-4 col-md-6 col-sm-12 wow fadeInUp"
-                data-wow-delay={`${0.1 * index}s`}
+                className="w-full max-w-sm animate-slide-up hover:animate-scale-in"
+                style={{ animationDelay: `${0.1 * index}s` }}
                 key={leader.id || index}
               >
-                <div
-                  className="team-item text-center rounded p-4 shadow-sm position-relative"
-                  style={{
-                    backgroundColor: "#E1BEE7",
-                    color: "#4A148C",
-                    border: "1px solid #D1C4E9",
-                    transition: "transform 0.3s ease-in-out",
-                  }}
-                >
-                  <img
-                    src={leader.profilePicture || "/default-profile.png"}
-                    alt={leader.name}
-                    className="img-fluid rounded-circle mb-3"
-                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                  />
-                  <h5 className="mb-1">{leader.name}</h5>
-                  <p className="text-dark">
-                    <i className="fas fa-user-tie me-1"></i> 
-                    {leaderPositions.length > 0 ? leaderPositions.join(", ") : "Leader"}
-                  </p>
-                  <p className="mb-0">
+                <div className="text-center rounded-2xl p-6 shadow-medium relative bg-gradient-to-br from-purple-100 to-purple-200 border border-purple-300 hover:shadow-primary-lg transition-all duration-300 hover:-translate-y-2 group">
+                  <div className="mb-6">
+                    <img
+                      src={leader.profilePicture || "/default-profile.png"}
+                      alt={leader.name}
+                      className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white shadow-soft group-hover:shadow-primary transition-all duration-300"
+                    />
+                  </div>
+                  
+                  <h5 className="text-xl font-display font-bold text-text-primary mb-2">
+                    {leader.name}
+                  </h5>
+                  
+                  <div className="flex items-center justify-center text-text-secondary mb-4">
+                    <UserCheck className="w-4 h-4 mr-2 text-primary-600" />
+                    <span className="text-sm font-medium">
+                      {leaderPositions.length > 0 ? leaderPositions.join(", ") : "Leader"}
+                    </span>
+                  </div>
+                  
+                  <div className="border-t border-purple-200 pt-4">
                     <a
                       href={`tel:${leader.phone}`}
-                      className="text-purple fw-bold"
-                      style={{ textDecoration: "none", color: "#6A1B9A" }}
+                      className="inline-flex items-center text-primary-700 font-semibold hover:text-primary-800 transition-colors duration-200 group/phone"
                     >
-                      <i className="fas fa-phone-alt me-1"></i> {leader.phone}
+                      <Phone className="w-4 h-4 mr-2 group-hover/phone:animate-pulse" />
+                      <span className="group-hover/phone:underline">{leader.phone}</span>
                     </a>
-                  </p>
+                  </div>
+                  
+                  {/* Decorative element */}
+                  <div className="absolute top-4 right-4 w-2 h-2 bg-primary-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </div>
             );
