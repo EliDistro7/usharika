@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
+import { Users, Tag, Download, CheckCircle, Target, TrendingUp, Clock, ChevronRight } from "lucide-react";
 import { getUserDonations } from "@/actions/users"; // Import the helper function
 import { getLoggedInUserId } from "@/hooks/useUser";
 import { jsPDF } from "jspdf";
@@ -97,485 +98,244 @@ const Donations = () => {
 
   if (isLoading) {
     return (
-      <div className="text-center py-5">
-        <div className="d-flex flex-column align-items-center">
-          <div 
-            className="spinner-border mb-3"
-            style={{ 
-              color: '#6f42c1',
-              width: '3rem',
-              height: '3rem'
-            }}
-            role="status"
-          >
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-muted mb-0">Inapakia michango...</p>
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="relative">
+          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
         </div>
+        <p className="text-text-secondary mt-4 font-medium">Inapakia michango...</p>
       </div>
     );
   }
 
   return (
-    <>
-      {/* Custom Styles */}
-      <style jsx>{`
-        .donations-card {
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
-          border-radius: 25px;
-          overflow: hidden;
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          transition: all 0.3s ease;
-        }
-        
-        .donations-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-        }
-        
-        .card-header-donations {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 20px 25px;
-          border: none;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .card-header-donations::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
-                      linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
-                      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%), 
-                      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
-          background-size: 20px 20px;
-          background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-          opacity: 0.1;
-        }
-        
-        .btn-download-donations {
-          background: rgba(255, 255, 255, 0.2);
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          color: white;
-          border-radius: 20px;
-          padding: 8px 20px;
-          font-weight: 600;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-        }
-        
-        .btn-download-donations:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-          color: white;
-          box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-        }
-        
-        .table-donations {
-          background: transparent;
-          margin-bottom: 0;
-        }
-        
-        .table-donations thead th {
-          background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-          color: #6f42c1;
-          border: none;
-          padding: 18px 15px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          font-size: 0.8rem;
-          vertical-align: middle;
-        }
-        
-        .table-donations tbody tr {
-          transition: all 0.3s ease;
-          border: none;
-        }
-        
-        .table-donations tbody tr:hover {
-          background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-          transform: scale(1.002);
-          box-shadow: 0 3px 10px rgba(111, 66, 193, 0.1);
-        }
-        
-        .table-donations tbody td {
-          padding: 18px 15px;
-          border: none;
-          vertical-align: middle;
-          font-weight: 500;
-        }
-        
-        .progress-donations {
-          height: 22px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
-          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
-        }
-        
-        .progress-bar-donations {
-          background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-          border-radius: 12px;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
-        }
-        
-        .progress-bar-donations::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%), 
-                      linear-gradient(-45deg, rgba(255,255,255,0.2) 25%, transparent 25%), 
-                      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.2) 75%), 
-                      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.2) 75%);
-          background-size: 8px 8px;
-          background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
-          animation: progress-animation 2s linear infinite;
-        }
-        
-        @keyframes progress-animation {
-          0% { background-position: 0 0, 0 4px, 4px -4px, -4px 0px; }
-          100% { background-position: 8px 0, 8px 4px, 12px -4px, 4px 0px; }
-        }
-        
-        .amount-display {
-          font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-weight: 600;
-          color: #2d3748;
-          font-variant-numeric: tabular-nums;
-        }
-        
-        .amount-paid {
-          color: #059669;
-        }
-        
-        .amount-remaining {
-          color: #dc2626;
-        }
-        
-        .amount-total {
-          color: #6366f1;
-        }
-        
-        .mobile-donation-card {
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 18px;
-          padding: 20px;
-          margin-bottom: 15px;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-          border-left: 4px solid #6f42c1;
-          transition: all 0.3s ease;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .mobile-donation-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-        }
-        
-        .mobile-stats-donations {
-          background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-          border-radius: 12px;
-          padding: 12px;
-          text-align: center;
-          transition: all 0.3s ease;
-        }
-        
-        .mobile-stats-donations:hover {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-        }
-        
-        .empty-state {
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 20px;
-          padding: 60px 30px;
-          text-align: center;
-          border: 2px dashed rgba(111, 66, 193, 0.3);
-        }
-        
-        .empty-state-icon {
-          width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 20px;
-          color: white;
-          font-size: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-          .card-header-donations {
-            padding: 15px 20px;
-          }
-          
-          .table-donations thead th,
-          .table-donations tbody td {
-            padding: 12px 10px;
-            font-size: 0.9rem;
-          }
-          
-          .mobile-donation-card {
-            padding: 15px;
-          }
-          
-          .btn-download-donations {
-            padding: 6px 15px;
-            font-size: 0.9rem;
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fadeIn 0.6s ease-out;
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-
-      <div className="animate-fade-in">
-        <div className="donations-card">
-          <div className="card-header-donations">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center position-relative">
-              <div className="d-flex align-items-center mb-3 mb-md-0">
-                <i className="bi bi-people-fill me-3" style={{ fontSize: '1.5rem' }}></i>
-                <div>
-                  <h5 className="mb-0 fw-bold">Michango Kwenye Vikundi</h5>
-                  <small className="opacity-75">Michango yako kwenye vikundi mbalimbali</small>
-                </div>
+    <div className="animate-fade-in">
+      <div className="glass-strong rounded-5xl overflow-hidden shadow-primary-lg border border-border-light hover:shadow-primary transition-all duration-300 hover:-translate-y-1">
+        {/* Header */}
+        <div className="bg-primary-gradient text-white p-6 lg:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-primary-gradient opacity-90"></div>
+          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-2xl backdrop-blur-sm">
+                <Users className="w-6 h-6" />
               </div>
-              {donations.length > 0 && (
-                <button
-                  className="btn btn-download-donations d-flex align-items-center"
-                  onClick={downloadPDF}
-                >
-                  <i className="bi bi-download me-2"></i>
-                  Pakua PDF
-                </button>
-              )}
+              <div>
+                <h2 className="text-xl lg:text-2xl font-bold font-display mb-1">
+                  Michango Kwenye Vikundi
+                </h2>
+                <p className="text-purple-100 text-sm lg:text-base opacity-90">
+                  Michango yako kwenye vikundi mbalimbali
+                </p>
+              </div>
             </div>
-          </div>
-          
-          <div className="card-body p-0">
-            {donations.length > 0 ? (
-              <>
-                {/* Desktop Table */}
-                <div className="d-none d-lg-block">
-                  <div className="table-responsive">
-                    <table className="table table-donations">
-                      <thead>
-                        <tr>
-                          <th style={{ minWidth: '120px' }}>
-                            <i className="bi bi-tag me-2"></i>
-                            Aina
-                          </th>
-                          <th style={{ minWidth: '100px' }}>
-                            <i className="bi bi-collection me-2"></i>
-                            Kikundi
-                          </th>
-                          <th className="text-end" style={{ minWidth: '120px' }}>
-                            <i className="bi bi-check-circle me-2"></i>
-                            Kilicholipwa
-                          </th>
-                          <th className="text-end" style={{ minWidth: '120px' }}>
-                            <i className="bi bi-target me-2"></i>
-                            Iliyoahidiwa
-                          </th>
-                          <th className="text-center" style={{ minWidth: '180px' }}>
-                            <i className="bi bi-graph-up me-2"></i>
-                            Maendeleo
-                          </th>
-                          <th className="text-end" style={{ minWidth: '120px' }}>
-                            <i className="bi bi-clock me-2"></i>
-                            Iliyobaki
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {donations.map((donation, index) => (
-                          <tr key={index}>
-                            <td>
-                              <div className="d-flex align-items-center">
-                                <div 
-                                  className="me-3"
-                                  style={{
-                                    width: '10px',
-                                    height: '10px',
-                                    borderRadius: '50%',
-                                    background: index % 3 === 0 ? '#667eea' : index % 3 === 1 ? '#764ba2' : '#20c997'
-                                  }}
-                                ></div>
-                                <strong>{donation.name}</strong>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="badge" style={{ 
-                                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%)',
-                                color: '#6f42c1',
-                                border: '1px solid rgba(111, 66, 193, 0.2)',
-                                borderRadius: '12px',
-                                padding: '6px 12px'
-                              }}>
-                                {donation.group}
-                              </span>
-                            </td>
-                            <td className="text-end">
-                              <span className="amount-display amount-paid">
-                                TZS {formatAmount(donation.amountPaid)}
-                              </span>
-                            </td>
-                            <td className="text-end">
-                              <span className="amount-display amount-total">
-                                TZS {formatAmount(donation.total)}
-                              </span>
-                            </td>
-                            <td className="text-center">
-                              <div className="progress progress-donations mx-2">
-                                <div
-                                  className="progress-bar progress-bar-donations d-flex align-items-center justify-content-center"
-                                  role="progressbar"
-                                  style={{ width: `${Math.min((donation.amountPaid / donation.total) * 100, 100)}%` }}
-                                  aria-valuenow={(donation.amountPaid / donation.total) * 100}
-                                  aria-valuemin="0"
-                                  aria-valuemax="100"
-                                >
-                                  <span className="fw-bold text-white" style={{ fontSize: '0.75rem' }}>
-                                    {Math.round((donation.amountPaid / donation.total) * 100)}%
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="text-end">
-                              <span className="amount-display amount-remaining">
-                                TZS {formatAmount(donation.total - donation.amountPaid)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Mobile/Tablet Cards */}
-                <div className="d-lg-none p-3">
-                  <div className="row">
-                    {donations.map((donation, index) => (
-                      <div key={index} className="col-md-6 col-12">
-                        <div className="mobile-donation-card">
-                          <div className="d-flex justify-content-between align-items-start mb-3">
-                            <div className="flex-grow-1">
-                              <div className="d-flex align-items-center mb-2">
-                                <div 
-                                  className="me-2"
-                                  style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    background: index % 3 === 0 ? '#667eea' : index % 3 === 1 ? '#764ba2' : '#20c997'
-                                  }}
-                                ></div>
-                                <h6 className="mb-0 fw-bold" style={{ color: '#6f42c1' }}>
-                                  {donation.name}
-                                </h6>
-                              </div>
-                              <span className="badge" style={{ 
-                                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%)',
-                                color: '#6f42c1',
-                                border: '1px solid rgba(111, 66, 193, 0.2)',
-                                fontSize: '0.75rem'
-                              }}>
-                                {donation.group}
-                              </span>
-                            </div>
-                            <span 
-                              className="badge ms-2"
-                              style={{
-                                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                                borderRadius: '12px',
-                                padding: '6px 10px',
-                                color: 'white',
-                                fontSize: '0.8rem'
-                              }}
-                            >
-                              {Math.round((donation.amountPaid / donation.total) * 100)}%
-                            </span>
-                          </div>
-                          
-                          <div className="progress progress-donations mb-3">
-                            <div
-                              className="progress-bar progress-bar-donations"
-                              style={{ width: `${Math.min((donation.amountPaid / donation.total) * 100, 100)}%` }}
-                            ></div>
-                          </div>
-                          
-                          <div className="row g-2">
-                            <div className="col-4">
-                              <div className="mobile-stats-donations">
-                                <div className="small text-muted mb-1 fw-600">Kilicholipwa</div>
-                                <div className="fw-bold amount-paid" style={{ fontSize: '0.85rem' }}>
-                                  TZS {formatAmount(donation.amountPaid)}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-4">
-                              <div className="mobile-stats-donations">
-                                <div className="small text-muted mb-1 fw-600">Lengo</div>
-                                <div className="fw-bold amount-total" style={{ fontSize: '0.85rem' }}>
-                                  TZS {formatAmount(donation.total)}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-4">
-                              <div className="mobile-stats-donations">
-                                <div className="small text-muted mb-1 fw-600">Imebaki</div>
-                                <div className="fw-bold amount-remaining" style={{ fontSize: '0.85rem' }}>
-                                  TZS {formatAmount(donation.total - donation.amountPaid)}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="p-4">
-                <div className="empty-state">
-                  <div className="empty-state-icon">
-                    <i className="bi bi-people"></i>
-                  </div>
-                  <h5 className="mb-2" style={{ color: '#6f42c1' }}>Hauna Michango</h5>
-                  <p className="text-muted mb-0">
-                    Hauna mchango wowote kwenye vikundi kwa sasa. 
-                    Michango itaonekana hapa inapotoka.
-                  </p>
-                </div>
-              </div>
+            {donations.length > 0 && (
+              <button
+                onClick={downloadPDF}
+                className="flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 border-2 border-white border-opacity-30 hover:border-opacity-40 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg backdrop-blur-sm"
+              >
+                <Download className="w-4 h-4" />
+                <span>Pakua PDF</span>
+              </button>
             )}
           </div>
         </div>
+        
+        <div className="bg-white">
+          {donations.length > 0 ? (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden lg:block">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-background-300 border-b border-border-light">
+                        <th className="px-6 py-5 text-left text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center space-x-2">
+                            <Tag className="w-4 h-4" />
+                            <span>Aina</span>
+                          </div>
+                        </th>
+                        <th className="px-6 py-5 text-left text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center space-x-2">
+                            <Users className="w-4 h-4" />
+                            <span>Kikundi</span>
+                          </div>
+                        </th>
+                        <th className="px-6 py-5 text-right text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center justify-end space-x-2">
+                            <CheckCircle className="w-4 h-4" />
+                            <span>Kilicholipwa</span>
+                          </div>
+                        </th>
+                        <th className="px-6 py-5 text-right text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center justify-end space-x-2">
+                            <Target className="w-4 h-4" />
+                            <span>Iliyoahidiwa</span>
+                          </div>
+                        </th>
+                        <th className="px-6 py-5 text-center text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center justify-center space-x-2">
+                            <TrendingUp className="w-4 h-4" />
+                            <span>Maendeleo</span>
+                          </div>
+                        </th>
+                        <th className="px-6 py-5 text-right text-xs font-bold text-primary-700 uppercase tracking-wider">
+                          <div className="flex items-center justify-end space-x-2">
+                            <Clock className="w-4 h-4" />
+                            <span>Iliyobaki</span>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {donations.map((donation, index) => (
+                        <tr 
+                          key={index} 
+                          className="hover:bg-background-200 transition-all duration-300 hover:scale-[1.001] hover:shadow-soft border-b border-border-light"
+                        >
+                          <td className="px-6 py-5">
+                            <div className="flex items-center space-x-3">
+                              <div 
+                                className={`w-3 h-3 rounded-full ${
+                                  index % 3 === 0 ? 'bg-primary-600' : 
+                                  index % 3 === 1 ? 'bg-purple-600' : 'bg-green-500'
+                                }`}
+                              ></div>
+                              <span className="font-semibold text-text-primary">{donation.name}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-5">
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-medium bg-background-300 text-primary-700 border border-border-accent">
+                              {donation.group}
+                            </span>
+                          </td>
+                          <td className="px-6 py-5 text-right">
+                            <span className="font-semibold text-success-600 font-mono">
+                              TZS {formatAmount(donation.amountPaid)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-5 text-right">
+                            <span className="font-semibold text-primary-600 font-mono">
+                              TZS {formatAmount(donation.total)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-5">
+                            <div className="px-4">
+                              <div className="w-full bg-background-400 rounded-xl h-6 overflow-hidden shadow-inner">
+                                <div
+                                  className="h-full bg-accent-gradient rounded-xl transition-all duration-500 shadow-green flex items-center justify-center relative overflow-hidden"
+                                  style={{ width: `${Math.min((donation.amountPaid / donation.total) * 100, 100)}%` }}
+                                >
+                                  <span className="text-white text-xs font-bold z-10">
+                                    {Math.round((donation.amountPaid / donation.total) * 100)}%
+                                  </span>
+                                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse-soft"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-5 text-right">
+                            <span className="font-semibold text-error-600 font-mono">
+                              TZS {formatAmount(donation.total - donation.amountPaid)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile/Tablet Cards */}
+              <div className="lg:hidden p-4 space-y-4">
+                {donations.map((donation, index) => (
+                  <div 
+                    key={index} 
+                    className="glass rounded-4xl p-6 hover:shadow-primary transition-all duration-300 hover:-translate-y-1 border-l-4 border-primary-500"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div 
+                            className={`w-2 h-2 rounded-full ${
+                              index % 3 === 0 ? 'bg-primary-600' : 
+                              index % 3 === 1 ? 'bg-purple-600' : 'bg-green-500'
+                            }`}
+                          ></div>
+                          <h3 className="font-bold text-primary-700 text-lg">
+                            {donation.name}
+                          </h3>
+                        </div>
+                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-medium bg-background-300 text-primary-700 border border-border-accent">
+                          {donation.group}
+                        </span>
+                      </div>
+                      <div className="ml-4">
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-sm font-bold text-white bg-accent-gradient shadow-green">
+                          {Math.round((donation.amountPaid / donation.total) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <div className="w-full bg-background-400 rounded-xl h-6 overflow-hidden shadow-inner">
+                        <div
+                          className="h-full bg-accent-gradient rounded-xl transition-all duration-500 shadow-green relative overflow-hidden"
+                          style={{ width: `${Math.min((donation.amountPaid / donation.total) * 100, 100)}%` }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse-soft"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-background-300 hover:bg-primary-gradient hover:text-white rounded-2xl p-3 text-center transition-all duration-300 group">
+                        <div className="text-xs text-text-secondary group-hover:text-white font-semibold mb-1 uppercase tracking-wide">
+                          Kilicholipwa
+                        </div>
+                        <div className="font-bold text-success-600 group-hover:text-white text-sm font-mono">
+                          TZS {formatAmount(donation.amountPaid)}
+                        </div>
+                      </div>
+                      <div className="bg-background-300 hover:bg-primary-gradient hover:text-white rounded-2xl p-3 text-center transition-all duration-300 group">
+                        <div className="text-xs text-text-secondary group-hover:text-white font-semibold mb-1 uppercase tracking-wide">
+                          Lengo
+                        </div>
+                        <div className="font-bold text-primary-600 group-hover:text-white text-sm font-mono">
+                          TZS {formatAmount(donation.total)}
+                        </div>
+                      </div>
+                      <div className="bg-background-300 hover:bg-primary-gradient hover:text-white rounded-2xl p-3 text-center transition-all duration-300 group">
+                        <div className="text-xs text-text-secondary group-hover:text-white font-semibold mb-1 uppercase tracking-wide">
+                          Imebaki
+                        </div>
+                        <div className="font-bold text-error-600 group-hover:text-white text-sm font-mono">
+                          TZS {formatAmount(donation.total - donation.amountPaid)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="p-8">
+              <div className="bg-white border-2 border-dashed border-primary-300 rounded-5xl p-16 text-center">
+                <div className="w-20 h-20 bg-primary-gradient rounded-full flex items-center justify-center mx-auto mb-6 shadow-primary">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-primary-700 mb-3 font-display">
+                  Hauna Michango
+                </h3>
+                <p className="text-text-secondary max-w-md mx-auto">
+                  Hauna mchango wowote kwenye vikundi kwa sasa. 
+                  Michango itaonekana hapa inapotoka.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

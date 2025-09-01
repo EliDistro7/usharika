@@ -29,18 +29,7 @@ const Profile = ({ user }) => {
           {/* Mobile Layout */}
           <div className="flex md:hidden items-center">
             <div className="relative flex-shrink-0 group">
-              {user?.profilePicture ? (
-                <img
-                  src={user.profilePicture}
-                  alt={`${user?.name || 'User'} Profile`}
-                  className="w-15 h-15 rounded-full object-cover border-2 border-primary-200 shadow-primary transition-all duration-300 group-hover:border-primary-500 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-              ) : null}
-              
+             
               {/* Fallback Avatar with Initials */}
               <div 
                 className={`w-15 h-15 bg-primary-gradient rounded-full flex items-center justify-center text-white font-bold text-lg border-2 border-primary-200 shadow-primary transition-all duration-300 group-hover:border-primary-500 group-hover:scale-105 ${user?.profilePicture ? 'hidden' : 'flex'}`}

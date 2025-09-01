@@ -308,6 +308,7 @@ const NavbarTabs = ({ roles, notifications = [], user }) => {
                 <Menu size={18} />
               </button>
               
+              
               {/* Mobile Notification Badge */}
               {notificationCount > 0 && (
                 <span
