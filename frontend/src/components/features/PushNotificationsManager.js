@@ -1,4 +1,6 @@
 // components/PushNotificationManager.js
+
+'use client';
 import { useEffect, useState } from 'react';
 import { usePushNotifications } from '../../hooks/usePushNotifications';
 
