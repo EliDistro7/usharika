@@ -1295,7 +1295,7 @@ code {
 /* Mobile-specific fixes */
 @media (max-width: 768px) {
   .fixed {
-    max-width: calc(100vw - 24px);
+    max-width: calc(100vw);
   }
   
   /* Ensure notification prompts don't overflow */
