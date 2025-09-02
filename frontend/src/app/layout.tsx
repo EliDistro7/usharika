@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
-///import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
 import Header from "@/components/Header";
-import PushNotificationManager from "@/components/features/PushNotificationsManager"; // Add this import
+import PushNotificationManager from "@/components/features/PushNotificationsManager";
 
 // Metadata
 export const metadata: Metadata = {
@@ -20,6 +19,7 @@ export const metadata: Metadata = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 5,
+    userScalable: true, // Add this for better mobile experience
   },
   appleWebApp: {
     capable: true,
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
-  manifest: "/manifest.json", // PWA manifest
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -97,12 +97,20 @@ export default function RootLayout({
         />
       </head>
 
-      <body>
-        <Spinner />
-        <Header />
-        <PushNotificationManager /> {/* Add this component */}
-        {children}
-        <Footer />
+      <body className="overflow-x-hidden">
+        {/* Add overflow-x-hidden to prevent horizontal scroll */}
+        <div className="min-h-screen flex flex-col">
+          <Spinner />
+          <Header />
+          <PushNotificationManager />
+          
+          {/* Main content wrapper with proper padding */}
+          <main className="flex-1 w-full max-w-none">
+            {children}
+          </main>
+          
+          <Footer />
+        </div>
 
         {/* JavaScript Libraries */}
         <Script
@@ -139,10 +147,9 @@ export default function RootLayout({
 
         <Script id="main-script22" src="/js/main22.js" strategy="lazyOnload" />
 
-        {/* Service Worker Registration for Push Notifications */}
+        {/* Service Worker Registration */}
         <Script id="service-worker-registration" strategy="afterInteractive">
           {`
-            // Register service worker for push notifications
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js')
@@ -157,16 +164,14 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* REPLACE THIS ENTIRE SCRIPT BLOCK WITH THE ENHANCED VERSION */}
+        {/* Enhanced PWA Installation Script */}
         <Script id="pwa-install" strategy="afterInteractive">
           {`
-            // Enhanced PWA Installation Script
             let deferredPrompt;
             let installButton;
 
             console.log('PWA Install script initialized');
 
-            // Check PWA installation criteria
             function checkPWAReadiness() {
               const checks = {
                 https: location.protocol === 'https:' || location.hostname === 'localhost',
@@ -179,49 +184,56 @@ export default function RootLayout({
               return checks;
             }
 
-            // Listen for the beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
               console.log('✅ beforeinstallprompt event fired!');
               e.preventDefault();
               deferredPrompt = e;
-              
               showInstallPromotion();
             });
 
-            // Show install promotion
             function showInstallPromotion() {
               console.log('Showing install promotion...');
               
-              // Remove existing button
               const existingBtn = document.getElementById('pwa-install-btn');
               if (existingBtn) {
                 existingBtn.remove();
               }
               
-              // Create install button
               const installBtn = document.createElement('button');
               installBtn.id = 'pwa-install-btn';
               installBtn.innerHTML = '📱 Install App';
               
-              // Apply styles directly
+              // Fixed positioning with proper responsive handling
               Object.assign(installBtn.style, {
                 position: 'fixed',
                 bottom: '20px',
-                right: '20px',
+                right: '16px', // Reduced from 20px for mobile
                 zIndex: '9999',
-                padding: '12px 24px',
+                padding: '12px 20px',
                 backgroundColor: '#6b46c1',
                 color: 'white',
                 border: 'none',
                 borderRadius: '25px',
                 boxShadow: '0 4px 12px rgba(107, 70, 193, 0.3)',
                 cursor: 'pointer',
-                fontFamily: 'inherit',
+                fontFamily: 'Poppins, sans-serif',
                 fontWeight: '600',
                 fontSize: '14px',
                 transition: 'all 0.3s ease',
-                display: 'block'
+                display: 'block',
+                maxWidth: 'calc(100vw - 32px)', // Prevent overflow
+                whiteSpace: 'nowrap'
               });
+              
+              // Mobile responsive adjustments
+              if (window.innerWidth < 768) {
+                Object.assign(installBtn.style, {
+                  right: '12px',
+                  bottom: '16px',
+                  padding: '10px 16px',
+                  fontSize: '13px'
+                });
+              }
               
               installBtn.addEventListener('click', installPWA);
               document.body.appendChild(installBtn);
@@ -230,7 +242,6 @@ export default function RootLayout({
               console.log('✅ Install button added to DOM');
             }
 
-            // Install PWA function
             async function installPWA() {
               console.log('Install button clicked');
               
@@ -259,7 +270,6 @@ export default function RootLayout({
               }
             }
 
-            // Hide install button
             function hideInstallButton() {
               if (installButton) {
                 installButton.style.display = 'none';
@@ -267,17 +277,16 @@ export default function RootLayout({
               }
             }
 
-            // Show manual install instructions
             function showManualInstallInstructions() {
               const userAgent = navigator.userAgent.toLowerCase();
               let instructions = '';
               
               if (userAgent.includes('safari') && !userAgent.includes('chrome')) {
-                instructions = 'Safari: Tap the Share button (📤) → "Add to Home Screen"';
+                instructions = 'Safari: Tap the Share button → "Add to Home Screen"';
               } else if (userAgent.includes('firefox')) {
-                instructions = 'Firefox: Menu (⋮) → "Install"';
+                instructions = 'Firefox: Menu → "Install"';
               } else if (userAgent.includes('chrome') || userAgent.includes('edge')) {
-                instructions = 'Look for the install icon (📱) in your browser\\'s address bar';
+                instructions = 'Look for the install icon in your browser\\'s address bar';
               } else {
                 instructions = 'Check your browser menu for "Install" or "Add to Home Screen" option';
               }
@@ -285,17 +294,15 @@ export default function RootLayout({
               alert(\`To install Yombo KKKT app:\\n\\n\${instructions}\`);
             }
 
-            // Listen for successful installation
             window.addEventListener('appinstalled', (evt) => {
               console.log('✅ PWA installed successfully');
               hideInstallButton();
               
               if (typeof window.showToast === 'function') {
-                window.showToast('Yombo KKKT app installed successfully! 🎉', 'success');
+                window.showToast('Yombo KKKT app installed successfully!', 'success');
               }
             });
 
-            // Check if already installed
             function isAlreadyInstalled() {
               const standalone = window.matchMedia('(display-mode: standalone)').matches || 
                                window.navigator.standalone === true;
@@ -308,24 +315,19 @@ export default function RootLayout({
               return false;
             }
 
-            // Force show install button (for testing)
             function forceShowInstallButton() {
               console.log('🔧 Force showing install button for testing');
               showInstallPromotion();
             }
 
-            // Make functions available globally for testing
             window.forceShowInstallButton = forceShowInstallButton;
             window.checkPWAReadiness = checkPWAReadiness;
 
-            // Initialize when DOM is ready
             document.addEventListener('DOMContentLoaded', () => {
               console.log('🚀 PWA script initialized');
               
-              // Check readiness
               checkPWAReadiness();
               
-              // Don't show button if already installed
               if (isAlreadyInstalled()) {
                 console.log('Already installed, skipping install button');
                 return;
@@ -333,7 +335,6 @@ export default function RootLayout({
               
               console.log('Waiting for beforeinstallprompt event...');
               
-              // Fallback: Show generic instructions after delay
               setTimeout(() => {
                 if (!deferredPrompt && !installButton) {
                   console.log('⚠️ No beforeinstallprompt after 5 seconds');
@@ -341,13 +342,33 @@ export default function RootLayout({
                 }
               }, 5000);
             });
+
+            // Handle window resize for responsive button positioning
+            window.addEventListener('resize', () => {
+              if (installButton && installButton.style.display !== 'none') {
+                if (window.innerWidth < 768) {
+                  Object.assign(installButton.style, {
+                    right: '12px',
+                    bottom: '16px',
+                    padding: '10px 16px',
+                    fontSize: '13px'
+                  });
+                } else {
+                  Object.assign(installButton.style, {
+                    right: '16px',
+                    bottom: '20px',
+                    padding: '12px 20px',
+                    fontSize: '14px'
+                  });
+                }
+              }
+            });
           `}
         </Script>
 
         {/* Enhanced PWA Meta Theme Color Update */}
         <Script id="theme-color-manager" strategy="afterInteractive">
           {`
-            // Update theme color based on page or time
             function updateThemeColor(color = '#6b46c1') {
               const metaThemeColor = document.querySelector('meta[name="theme-color"]');
               if (metaThemeColor) {
@@ -355,35 +376,31 @@ export default function RootLayout({
               }
             }
 
-            // Optional: Change theme color based on page
             function setPageThemeColor() {
               const path = window.location.pathname;
-              let color = '#6b46c1'; // Default purple
+              let color = '#6b46c1';
               
               switch(path) {
                 case '/prayer':
-                  color = '#7c3aed'; // Darker purple for prayer
+                  color = '#7c3aed';
                   break;
                 case '/events':
-                  color = '#8b5cf6'; // Lighter purple for events
+                  color = '#8b5cf6';
                   break;
                 case '/sermons':
-                  color = '#6366f1'; // Blue-purple for sermons
+                  color = '#6366f1';
                   break;
                 case '/give':
-                  color = '#10b981'; // Green for giving
+                  color = '#10b981';
                   break;
                 default:
-                  color = '#6b46c1'; // Default purple
+                  color = '#6b46c1';
               }
               
               updateThemeColor(color);
             }
 
-            // Set theme color on page load
             document.addEventListener('DOMContentLoaded', setPageThemeColor);
-            
-            // Update theme color on navigation (for SPA routing)
             window.addEventListener('popstate', setPageThemeColor);
           `}
         </Script>

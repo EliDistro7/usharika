@@ -122,7 +122,7 @@ export const usePushNotifications = () => {
 
   const sendSubscriptionToBackend = async (subscription) => {
     try {
-      const response = await fetch('/api/push/subscribe', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/push/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ export const usePushNotifications = () => {
       setSubscription(null);
 
       // Notify backend to remove subscription
-      await fetch('/api/push/unsubscribe', {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/push/unsubscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export const usePushNotifications = () => {
   // Test notification function
   const sendTestNotification = async () => {
     try {
-      await fetch('/api/push/send', {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/push/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
