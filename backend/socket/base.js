@@ -4,6 +4,7 @@ const commentEvents = require('./events/commentEvents');
 const messageEvents = require('./events/messageEvents'); // Import messageEvents
 const NotificationsEvents = require('./events/notificationEvents');
 const searchEvents = require('./events/searchEvents');
+const pushNotificationEvents = require('./events/pushNotificationEvents.js')
 
 const questionsEvents = require('./events/seriesEvent.js');
 

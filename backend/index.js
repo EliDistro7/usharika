@@ -15,6 +15,8 @@ const updateRoutes = require("./routes/update-routes.js");
 const futureEventRoutes = require("./routes/futureEvents-routes.js");
 const adminRoutes = require("./routes/admin-routes.js");
 const attendanceRoutes = require("./routes/attendance-routes.js");
+const { router: pushNotificationRoutes } = require("./routes/push-notifications.js");
+
 
 //const { initializeGlobalState } = require('./controllers/global-controller.js');
 //const { getAllPosts, deletePost } = require("./controllers/post-controller.js");
@@ -64,6 +66,7 @@ app.use('/', futureEventRoutes);
 app.use('/', updateRoutes);
 app.use('/',rolesRoutes);
 app.use('/', seriesRoutes);
+app.use('/', pushNotificationRoutes);
 
 
 // Start the server

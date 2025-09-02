@@ -5,6 +5,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
 import Header from "@/components/Header";
+import PushNotificationManager from "@/components/features/PushNotificationsManager"; // Add this import
 
 // Metadata
 export const metadata: Metadata = {
@@ -98,15 +99,12 @@ export default function RootLayout({
 
       <body>
         <Spinner />
-         <Header  />
+        <Header />
+        <PushNotificationManager /> {/* Add this component */}
         {children}
         <Footer />
 
         {/* JavaScript Libraries */}
-     
-
-      
-
         <Script
           id="wow-script"
           src="/lib/wow/wow.min.js"
@@ -141,103 +139,208 @@ export default function RootLayout({
 
         <Script id="main-script22" src="/js/main22.js" strategy="lazyOnload" />
 
-        {/* PWA Installation Prompt Script - No Service Worker */}
+        {/* Service Worker Registration for Push Notifications */}
+        <Script id="service-worker-registration" strategy="afterInteractive">
+          {`
+            // Register service worker for push notifications
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                  .then(function(registration) {
+                    console.log('Service Worker registered successfully');
+                  })
+                  .catch(function(error) {
+                    console.log('Service Worker registration failed:', error);
+                  });
+              });
+            }
+          `}
+        </Script>
+
+        {/* REPLACE THIS ENTIRE SCRIPT BLOCK WITH THE ENHANCED VERSION */}
         <Script id="pwa-install" strategy="afterInteractive">
           {`
+            // Enhanced PWA Installation Script
             let deferredPrompt;
             let installButton;
 
+            console.log('PWA Install script initialized');
+
+            // Check PWA installation criteria
+            function checkPWAReadiness() {
+              const checks = {
+                https: location.protocol === 'https:' || location.hostname === 'localhost',
+                serviceWorker: 'serviceWorker' in navigator,
+                manifest: document.querySelector('link[rel="manifest"]') !== null,
+                standalone: !window.matchMedia('(display-mode: standalone)').matches
+              };
+              
+              console.log('PWA Readiness Check:', checks);
+              return checks;
+            }
+
             // Listen for the beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
-              console.log('PWA install prompt available');
+              console.log('✅ beforeinstallprompt event fired!');
               e.preventDefault();
               deferredPrompt = e;
               
-              // Show install button or banner
               showInstallPromotion();
             });
 
             // Show install promotion
             function showInstallPromotion() {
-              // Create install button if it doesn't exist
-              if (!document.getElementById('pwa-install-btn')) {
-                const installBtn = document.createElement('button');
-                installBtn.id = 'pwa-install-btn';
-                installBtn.innerHTML = '📱 Install App';
-                installBtn.className = 'btn btn-outline-light position-fixed';
-                installBtn.style.cssText = \`
-                  bottom: 20px;
-                  right: 20px;
-                  z-index: 1000;
-                  border-radius: 25px;
-                  padding: 10px 20px;
-                  background: #6b46c1;
-                  border-color: #6b46c1;
-                  box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
-                  display: none;
-                \`;
-                
-                installBtn.addEventListener('click', installPWA);
-                document.body.appendChild(installBtn);
-                installButton = installBtn;
+              console.log('Showing install promotion...');
+              
+              // Remove existing button
+              const existingBtn = document.getElementById('pwa-install-btn');
+              if (existingBtn) {
+                existingBtn.remove();
               }
               
-              // Show the button with animation
-              if (installButton) {
-                installButton.style.display = 'block';
-                setTimeout(() => {
-                  installButton.style.transform = 'translateY(0)';
-                  installButton.style.opacity = '1';
-                }, 100);
-              }
+              // Create install button
+              const installBtn = document.createElement('button');
+              installBtn.id = 'pwa-install-btn';
+              installBtn.innerHTML = '📱 Install App';
+              
+              // Apply styles directly
+              Object.assign(installBtn.style, {
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                zIndex: '9999',
+                padding: '12px 24px',
+                backgroundColor: '#6b46c1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '25px',
+                boxShadow: '0 4px 12px rgba(107, 70, 193, 0.3)',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                fontWeight: '600',
+                fontSize: '14px',
+                transition: 'all 0.3s ease',
+                display: 'block'
+              });
+              
+              installBtn.addEventListener('click', installPWA);
+              document.body.appendChild(installBtn);
+              installButton = installBtn;
+              
+              console.log('✅ Install button added to DOM');
             }
 
             // Install PWA function
             async function installPWA() {
+              console.log('Install button clicked');
+              
               if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                if (outcome === 'accepted') {
-                  console.log('User accepted the install prompt');
-                } else {
-                  console.log('User dismissed the install prompt');
+                try {
+                  await deferredPrompt.prompt();
+                  const choiceResult = await deferredPrompt.userChoice;
+                  
+                  console.log('User choice result:', choiceResult.outcome);
+                  
+                  if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ User accepted install prompt');
+                  } else {
+                    console.log('❌ User dismissed install prompt');
+                  }
+                  
+                  deferredPrompt = null;
+                  hideInstallButton();
+                  
+                } catch (error) {
+                  console.error('Error during installation:', error);
                 }
-                
-                deferredPrompt = null;
-                
-                // Hide install button
-                if (installButton) {
-                  installButton.style.display = 'none';
-                }
+              } else {
+                console.log('No deferred prompt - showing manual instructions');
+                showManualInstallInstructions();
               }
+            }
+
+            // Hide install button
+            function hideInstallButton() {
+              if (installButton) {
+                installButton.style.display = 'none';
+                console.log('Install button hidden');
+              }
+            }
+
+            // Show manual install instructions
+            function showManualInstallInstructions() {
+              const userAgent = navigator.userAgent.toLowerCase();
+              let instructions = '';
+              
+              if (userAgent.includes('safari') && !userAgent.includes('chrome')) {
+                instructions = 'Safari: Tap the Share button (📤) → "Add to Home Screen"';
+              } else if (userAgent.includes('firefox')) {
+                instructions = 'Firefox: Menu (⋮) → "Install"';
+              } else if (userAgent.includes('chrome') || userAgent.includes('edge')) {
+                instructions = 'Look for the install icon (📱) in your browser\\'s address bar';
+              } else {
+                instructions = 'Check your browser menu for "Install" or "Add to Home Screen" option';
+              }
+              
+              alert(\`To install Yombo KKKT app:\\n\\n\${instructions}\`);
             }
 
             // Listen for successful installation
             window.addEventListener('appinstalled', (evt) => {
-              console.log('PWA was installed successfully');
+              console.log('✅ PWA installed successfully');
+              hideInstallButton();
               
-              // Hide install button
-              if (installButton) {
-                installButton.style.display = 'none';
-              }
-              
-              // Optional: Show thank you message
               if (typeof window.showToast === 'function') {
                 window.showToast('Yombo KKKT app installed successfully! 🎉', 'success');
               }
             });
 
-            // Check if already installed (running in standalone mode)
-            if (window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone === true) {
-              console.log('PWA is already installed and running in standalone mode');
-              // Hide any install prompts
-              const existingBtn = document.getElementById('pwa-install-btn');
-              if (existingBtn) {
-                existingBtn.style.display = 'none';
+            // Check if already installed
+            function isAlreadyInstalled() {
+              const standalone = window.matchMedia('(display-mode: standalone)').matches || 
+                               window.navigator.standalone === true;
+              
+              if (standalone) {
+                console.log('✅ PWA is running in standalone mode (already installed)');
+                return true;
               }
+              
+              return false;
             }
+
+            // Force show install button (for testing)
+            function forceShowInstallButton() {
+              console.log('🔧 Force showing install button for testing');
+              showInstallPromotion();
+            }
+
+            // Make functions available globally for testing
+            window.forceShowInstallButton = forceShowInstallButton;
+            window.checkPWAReadiness = checkPWAReadiness;
+
+            // Initialize when DOM is ready
+            document.addEventListener('DOMContentLoaded', () => {
+              console.log('🚀 PWA script initialized');
+              
+              // Check readiness
+              checkPWAReadiness();
+              
+              // Don't show button if already installed
+              if (isAlreadyInstalled()) {
+                console.log('Already installed, skipping install button');
+                return;
+              }
+              
+              console.log('Waiting for beforeinstallprompt event...');
+              
+              // Fallback: Show generic instructions after delay
+              setTimeout(() => {
+                if (!deferredPrompt && !installButton) {
+                  console.log('⚠️ No beforeinstallprompt after 5 seconds');
+                  console.log('This is normal for Safari, Firefox, or if criteria not met');
+                }
+              }, 5000);
+            });
           `}
         </Script>
 
