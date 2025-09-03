@@ -7,6 +7,7 @@ import {
   User,
   Calendar
 } from "lucide-react";
+import ShareButton from "../ShareButton";
 
 // Font configurations
 const cinzel = Cinzel({
@@ -57,76 +58,93 @@ const BBCStoryCard = ({ item, collectionTitle, author, createdAt, collectionId, 
   const hasImage = item?.imageUrl;
   
   return (
-    <Link href={`/highlight/${collectionId}`} className="block group">
-      <article className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02]">
-        {hasImage ? (   
-            <div className="space-y-6">
-            {/* Image Section */}
-            <div className="overflow-hidden rounded-2xl">
-              <img
-                src={item.imageUrl}
-                alt={item.description}
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-            
-            {/* Content Section Below Image */}
-            <div className="p-6 md:p-8">
-              {/* Collection Title */}
-              <h1 className={`
-                ${cinzel.className}
-                text-4xl md:text-6xl lg:text-7xl font-black
-                bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
-                bg-clip-text text-transparent
-                tracking-wide mb-6 leading-tight
-              `}>
-                {collectionTitle}
-              </h1>
+    <div className="relative">
+      <Link href={`/highlight/${collectionId}`} className="block group">
+        <article className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02]">
+          {hasImage ? (   
+              <div className="space-y-6">
+              {/* Image Section - Original Size and Quality */}
+              <div className="overflow-hidden rounded-2xl">
+                <img
+                  src={item.imageUrl}
+                  alt={item.description}
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700"
+                  style={{ 
+                    maxWidth: '100%',
+                    height: 'auto',
+                    imageRendering: 'high-quality'
+                  }}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
               
-              {/* Story Description */}
-              <p className={`
-                ${cormorant.className}
-                text-text-primary text-xl md:text-2xl leading-relaxed
-                max-w-4xl font-medium
-              `}>
-                {item.description}
-              </p>
-            </div>
-          </div> ):
-        
-        (<div className="bg-gradient-to-br from-primary-50 via-white to-purple-50 p-8 md:p-12 rounded-2xl">
-            <div className="max-w-4xl mx-auto space-y-6">
-              {/* Collection Title */}
-              <h1 className={`
-                ${cinzel.className}
-                text-5xl md:text-7xl font-black
-                bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
-                bg-clip-text text-transparent
-                tracking-wide text-center leading-tight
-              `}>
-                {collectionTitle}
-              </h1>
-              
-              {/* Story Description */}
-              <p className={`
-                ${cormorant.className}
-                text-2xl md:text-3xl text-text-primary leading-relaxed
-                font-medium text-center
-              `}>
-                {item.description}
-              </p>
-            </div>
-          </div>)
-              }
+              {/* Content Section Below Image */}
+              <div className="p-6 md:p-8">
+                {/* Collection Title */}
+                <h1 className={`
+                  ${cinzel.className}
+                  text-4xl md:text-6xl lg:text-7xl font-black
+                  bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
+                  bg-clip-text text-transparent
+                  tracking-wide mb-6 leading-tight
+                `}>
+                  {collectionTitle}
+                </h1>
+                
+                {/* Story Description */}
+                <p className={`
+                  ${cormorant.className}
+                  text-text-primary text-xl md:text-2xl leading-relaxed
+                  max-w-4xl font-medium
+                `}>
+                  {item.description}
+                </p>
+              </div>
+            </div> ):
           
-        
-        {/* Hover Indicator */}
-        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-3 h-3 rounded-full bg-white shadow-lg animate-pulse" 
-               style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.5))' }} />
-        </div>
-      </article>
-    </Link>
+          (<div className="bg-gradient-to-br from-primary-50 via-white to-purple-50 p-8 md:p-12 rounded-2xl">
+              <div className="max-w-4xl mx-auto space-y-6">
+                {/* Collection Title */}
+                <h1 className={`
+                  ${cinzel.className}
+                  text-5xl md:text-7xl font-black
+                  bg-gradient-to-r from-primary-800 via-purple-700 to-primary-600
+                  bg-clip-text text-transparent
+                  tracking-wide text-center leading-tight
+                `}>
+                  {collectionTitle}
+                </h1>
+                
+                {/* Story Description */}
+                <p className={`
+                  ${cormorant.className}
+                  text-2xl md:text-3xl text-text-primary leading-relaxed
+                  font-medium text-center
+                `}>
+                  {item.description}
+                </p>
+              </div>
+            </div>)
+                }
+            
+          
+          {/* Hover Indicator */}
+          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="w-3 h-3 rounded-full bg-white shadow-lg animate-pulse" 
+                 style={{ filter: 'drop-shadow(1px 1px 3px rgba(0,0,0,0.5))' }} />
+          </div>
+        </article>
+      </Link>
+      
+      {/* Share Button - Positioned outside the Link */}
+      <div className="absolute top-4 left-4 z-10">
+        <ShareButton 
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/highlight/${collectionId}`}
+          title={collectionTitle}
+        />
+      </div>
+    </div>
   );
 };
 
