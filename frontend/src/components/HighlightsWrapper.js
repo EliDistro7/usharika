@@ -186,11 +186,11 @@ const HighlightsWrapper = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 mt-6">
+    <div className="w-full max-w-7xl mx-auto px-0 mt-6">
       {/* Compact Search and Filters Bar */}
       <div className="flex items-center gap-3 p-3 mb-6 glass-strong rounded-2xl border border-border-accent shadow-primary">
         {/* Filters Dropdown */}
-        <div className="relative">
+        <div className="relative z-50">
           <button
             className={`flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all duration-200 ${
               selectedAuthor !== "All"

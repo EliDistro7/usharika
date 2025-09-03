@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
 import Header from "@/components/Header";
 import PushNotificationManager from "@/components/features/PushNotificationsManager";
+import NotificationDisplay from "@/components/push/NotificationDisplay";
 
 // Metadata
 export const metadata: Metadata = {
@@ -103,6 +104,7 @@ export default function RootLayout({
           <Spinner />
           <Header />
           <PushNotificationManager />
+          <NotificationDisplay />
           
           {/* Main content wrapper with proper padding */}
           <main className="flex-1 w-full max-w-none">
