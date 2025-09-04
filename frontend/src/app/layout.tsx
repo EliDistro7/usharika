@@ -87,15 +87,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
 
-        {/* Icon Font Stylesheet */}
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        />
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-          rel="stylesheet"
-        />
+     
+       
       </head>
 
       <body className="overflow-x-hidden">
@@ -114,40 +107,10 @@ export default function RootLayout({
           <Footer />
         </div>
 
-        {/* JavaScript Libraries */}
-        <Script
-          id="wow-script"
-          src="/lib/wow/wow.min.js"
-          strategy="lazyOnload"
-        />
-        <Script
-          id="easing-script"
-          src="/lib/easing/easing.min.js"
-          strategy="lazyOnload"
-        />
-        <Script
-          id="waypoints-script"
-          src="/lib/waypoints/waypoints.min.js"
-          strategy="lazyOnload"
-        />
-        <Script
-          id="lightbox-script"
-          src="/lib/lightbox/js/lightbox.min.js"
-          strategy="lazyOnload"
-        />
-        <Script
-          id="owlcarousel-script"
-          src="/lib/owlcarousel/owl.carousel.min.js"
-          strategy="lazyOnload"
-        />
+     
+       
 
-        <Script
-          id="calendar-script"
-          src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js"
-          strategy="beforeInteractive"
-        />
-
-        <Script id="main-script22" src="/js/main22.js" strategy="lazyOnload" />
+      
 
         {/* Service Worker Registration */}
         <Script id="service-worker-registration" strategy="afterInteractive">

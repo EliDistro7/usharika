@@ -11,11 +11,9 @@ import {
   Phone, 
   LogIn, 
   UserPlus, 
-  Settings, 
   UserCircle, 
   Menu,
-  X,
-  ChevronDown
+  X
 } from 'lucide-react';
 import SeriesNotifications from '@/components/SeriesNotifications';
 import Notifications from './Notifications';
@@ -30,7 +28,6 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSystemDropdownOpen, setIsSystemDropdownOpen] = useState(false);
 
   useEffect(() => {
     const userId = getLoggedInUserId();
@@ -56,16 +53,15 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  const handleAkauntiNavigation = () => {
+  const handleProfileNavigation = () => {
     const cookieValue = getDesanitezedCookie();
     if (cookieValue) {
-      router.push(`/akaunti/${cookieValue}`);
-      toast.success('Umefanikiwa kuingia kwenye akaunti yako!');
+      router.push(`/profile/${cookieValue}`);
+      toast.success('Umefanikiwa kuingia kwenye profaili yako!');
     } else {
       router.push('/auth');
       toast.warning('Tafadhali, ingia kwenye akaunti yako!');
     }
-    setIsSystemDropdownOpen(false);
   };
 
   const handleLogin = () => {
@@ -92,13 +88,14 @@ export default function Header() {
     <>
       {/* Header */}
       <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 transition-all duration-300 ${
           isVisible ? 'translate-y-0' : '-translate-y-full'
         } ${
           isScrolled 
             ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
             : 'bg-white shadow-sm border-b border-gray-100'
         }`}
+        style={{ zIndex: 40 }}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -114,7 +111,7 @@ export default function Header() {
                   />
                 </div>
               </div>
-              <div >
+              <div>
                 <h1 className="text-xl font-bold text-gray-900 tracking-tight">
                   KKKT YOMBO
                 </h1>
@@ -161,44 +158,17 @@ export default function Header() {
               {isLoggedIn ? (
                 <div className="flex items-center space-x-2">
                   {/* Notifications */}
-                  <div className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
-                    <SeriesNotifications />
-                  </div>
-                  
-                  <div className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
-                    <Notifications />
-                  </div>
+                  <SeriesNotifications />
+                  <Notifications />
 
-                  {/* System Dropdown */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setIsSystemDropdownOpen(!isSystemDropdownOpen)}
-                      className="flex items-center space-x-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium"
-                    >
-                      <Settings size={16} />
-                      <span className="hidden md:inline">System</span>
-                      <ChevronDown size={14} className={`transition-transform duration-200 ${isSystemDropdownOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    {isSystemDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50">
-                        <a 
-                          href="/usajili" 
-                          className="flex items-center space-x-3 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200"
-                        >
-                          <UserPlus size={16} />
-                          <span>Kujisajili</span>
-                        </a>
-                        <button
-                          onClick={handleAkauntiNavigation}
-                          className="w-full flex items-center space-x-3 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200"
-                        >
-                          <UserCircle size={16} />
-                          <span>Akaunti</span>
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  {/* Profile Button */}
+                  <button
+                    onClick={handleProfileNavigation}
+                    className="flex items-center justify-center w-10 h-10 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                    title="View Profile"
+                  >
+                    <UserCircle size={20} />
+                  </button>
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
@@ -253,8 +223,22 @@ export default function Header() {
                 })}
               </div>
 
-              {/* Mobile Auth Section */}
-              {!isLoggedIn && (
+              {/* Mobile Logged In Section */}
+              {isLoggedIn ? (
+                <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      handleProfileNavigation();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200"
+                  >
+                    <UserCircle size={16} />
+                    <span>Profaili</span>
+                  </button>
+                </div>
+              ) : (
+                /* Mobile Auth Section for non-logged in users */
                 <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => {
@@ -304,14 +288,12 @@ export default function Header() {
       {/* Spacer for fixed header */}
       <div className="h-16" />
 
-      {/* Click outside to close dropdowns */}
-      {(isSystemDropdownOpen || isMobileMenuOpen) && (
+      {/* Click outside to close mobile menu */}
+      {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => {
-            setIsSystemDropdownOpen(false);
-            setIsMobileMenuOpen(false);
-          }}
+          className="fixed inset-0"
+          style={{ zIndex: 35 }}
+          onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
     </>

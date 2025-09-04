@@ -190,7 +190,7 @@ const HighlightsWrapper = () => {
       {/* Compact Search and Filters Bar */}
       <div className="flex items-center gap-3 p-3 mb-6 glass-strong rounded-2xl border border-border-accent shadow-primary">
         {/* Filters Dropdown */}
-        <div className="relative z-50">
+        <div className="relative z-30">
           <button
             className={`flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all duration-200 ${
               selectedAuthor !== "All"
@@ -211,7 +211,7 @@ const HighlightsWrapper = () => {
 
           {/* Dropdown Menu */}
           {isFilterOpen && (
-            <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl border border-primary-200 shadow-primary-lg z-50 overflow-hidden animate-slide-down" style={{zIndex:'200'}}>
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl border border-primary-200 shadow-primary-lg z-40 overflow-hidden animate-slide-down">
               <div className="p-2">
                 <div className="text-xs font-semibold text-primary-600 px-3 py-2 uppercase tracking-wide">
                   Chagua Kikundi
@@ -304,7 +304,7 @@ const HighlightsWrapper = () => {
       {/* Click outside to close filter dropdown */}
       {isFilterOpen && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-20" 
           onClick={() => setIsFilterOpen(false)}
         ></div>
       )}
