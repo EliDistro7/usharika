@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { markNotificationAsRead, removeNotification, pinNotification } from '@/actions/users';
 import { 
   BsBell, 
@@ -25,38 +26,58 @@ import {
 } from 'react-icons/fa';
 import { MdNotifications, MdNotificationsActive } from 'react-icons/md';
 import { getLoggedInUserId } from '@/hooks/useUser';
+import { Bell, X } from 'lucide-react';
 import axios from 'axios';
 
 const Notification = ({ notifications, group, userId }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [notificationList, setNotificationList] = useState(notifications);
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted (for Next.js SSR)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
 
   // Get notification icon based on type/content
   const getNotificationIcon = (message, group) => {
     const lowerMessage = message.toLowerCase();
     
     if (lowerMessage.includes('pray') || lowerMessage.includes('sala')) {
-      return <FaPray className="text-info" size={18} />;
+      return <FaPray className="text-blue-500" size={18} />;
     }
     if (lowerMessage.includes('donation') || lowerMessage.includes('michango')) {
-      return <FaDonate className="text-success" size={18} />;
+      return <FaDonate className="text-green-500" size={18} />;
     }
     if (lowerMessage.includes('meeting') || lowerMessage.includes('mkutano')) {
-      return <FaUsers className="text-primary" size={18} />;
+      return <FaUsers className="text-primary-600" size={18} />;
     }
     if (lowerMessage.includes('announce') || lowerMessage.includes('tangazo')) {
-      return <FaBullhorn className="text-warning" size={18} />;
+      return <FaBullhorn className="text-yellow-500" size={18} />;
     }
     if (lowerMessage.includes('event') || lowerMessage.includes('hafla')) {
-      return <FaCalendarAlt className="text-purple" size={18} />;
+      return <FaCalendarAlt className="text-purple-500" size={18} />;
     }
     
-    return <FaChurch className="text-purple" size={18} />;
+    return <FaChurch className="text-purple-600" size={18} />;
   };
 
   // Format time ago
@@ -77,14 +98,14 @@ const Notification = ({ notifications, group, userId }) => {
     return notificationDate.toLocaleDateString('sw-TZ');
   };
 
-  // Get priority class based on notification content
-  const getPriorityClass = (message) => {
+  // Get priority styles based on notification content
+  const getPriorityStyles = (message) => {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('urgent') || lowerMessage.includes('haraka')) {
-      return 'border-danger bg-danger-subtle';
+      return 'border-l-4 border-l-error-500 bg-error-50';
     }
     if (lowerMessage.includes('important') || lowerMessage.includes('muhimu')) {
-      return 'border-warning bg-warning-subtle';
+      return 'border-l-4 border-l-warning-500 bg-warning-50';
     }
     return '';
   };
@@ -169,7 +190,6 @@ const Notification = ({ notifications, group, userId }) => {
   const filteredNotifications = notificationList
     .filter(notification => notification.group === group)
     .sort((a, b) => {
-      // Pinned notifications first, then by date
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       if (a.status === 'unread' && b.status === 'read') return -1;
@@ -177,302 +197,244 @@ const Notification = ({ notifications, group, userId }) => {
       return new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date);
     });
 
-  return (
-    <>
-      {/* Custom CSS for Notification Component */}
-      <style jsx>{`
-        .notification-panel {
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-          border: 1px solid rgba(157, 78, 221, 0.1);
-     
-          box-shadow: 0 10px 40px rgba(157, 78, 221, 0.15);
-          max-height: 400px;
-          overflow-y: auto;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(157, 78, 221, 0.3) transparent;
-        }
-        
-        .notification-panel::-webkit-scrollbar {
-          width: 6px;
-        }
-        
-        .notification-panel::-webkit-scrollbar-track {
-          background: rgba(157, 78, 221, 0.1);
-          border-radius: 3px;
-        }
-        
-        .notification-panel::-webkit-scrollbar-thumb {
-          background: rgba(157, 78, 221, 0.3);
-          border-radius: 3px;
-        }
-        
-        .notification-item {
-          transition: all 0.3s ease;
-          border-left: 4px solid transparent;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .notification-item:hover {
-          transform: translateX(5px);
-          box-shadow: 0 5px 20px rgba(157, 78, 221, 0.15);
-          border-left-color: #9d4edd;
-        }
-        
-        .notification-item.unread {
-          border-left-color: #9d4edd;
-          background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-        }
-        
-        .notification-item.pinned {
-          background: linear-gradient(135deg, #fff3cd 0%, #fefefe 100%);
-          border-left-color: #ffd700;
-        }
-        
-        .notification-item.priority-high {
-          border-left-color: #dc3545;
-          background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
-        }
-        
-        .notification-item.priority-medium {
-          border-left-color: #ffc107;
-          background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
-        }
-        
-        .status-indicator {
-          animation: pulse 2s infinite;
-        }
-        
-        .pinned-indicator {
-          color: #ffd700;
-          animation: bounce 1s infinite;
-        }
-        
-        .notification-badge {
-          background: linear-gradient(135deg, #9d4edd, #c77dff);
-          font-size: 0.7rem;
-          padding: 2px 8px;
-        }
-        
-        .action-btn {
-          transition: all 0.2s ease;
-          border: 1px solid rgba(157, 78, 221, 0.2);
-        }
-        
-        .action-btn:hover {
-          background: rgba(157, 78, 221, 0.1);
-          border-color: #9d4edd;
-          transform: scale(1.05);
-        }
-        
-        .text-purple { color: #9d4edd !important; }
-        
-        .empty-state {
-          padding: 40px 20px;
-          text-align: center;
-          color: #6c757d;
-        }
-        
-        .notification-title {
-          background: linear-gradient(135deg, #9d4edd, #c77dff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.5; }
-          100% { opacity: 1; }
-        }
-        
-        @keyframes bounce {
-          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-          40% { transform: translateY(-5px); }
-          60% { transform: translateY(-3px); }
-        }
-        
-        .loading-spinner {
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+  const unreadCount = filteredNotifications.filter(n => n.status === 'unread').length;
 
-      <div className="notification-panel rounded-4 border-0 p-0" style={{ minWidth: "350px", maxWidth: "400px" }}>
+  // Modal component
+  const Modal = () => (
+    <div className="fixed inset-0 z-[9999]">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+        onClick={() => setShowModal(false)}
+      />
+      
+      {/* Modal Content - Full Screen */}
+      <div className="relative w-full h-full bg-light-gradient overflow-hidden animate-slide-up">
         {/* Header */}
-        <div className="p-3 border-bottom border-light">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center">
-              <MdNotificationsActive className="text-purple me-2" size={20} />
-              <h6 className="notification-title fw-bold mb-0">
-                Taarifa za {group}
-              </h6>
+        <div className="bg-primary-gradient text-white p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
+                <Bell className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="font-bold text-xl">
+                  Taarifa za {group}
+                </h2>
+                <p className="text-white text-opacity-80 text-sm mt-1">
+                  Fuata taarifa muhimu za kanisa
+                </p>
+              </div>
             </div>
-            <div className="d-flex align-items-center">
-              <span className="notification-badge text-white rounded-pill">
-                {filteredNotifications.filter(n => n.status === 'unread').length}
-              </span>
+            <div className="flex items-center space-x-3">
+              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-3 py-1">
+                <span className="text-white text-sm font-medium">
+                  {unreadCount} mpya
+                </span>
+              </div>
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-white bg-opacity-20 hover:bg-opacity-30 border border-white border-opacity-30 hover:border-opacity-40 rounded-lg p-2 transition-all duration-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Notifications List */}
-        <div className="p-2">
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto" style={{ height: 'calc(100vh - 120px)' }}>
           {filteredNotifications.length > 0 ? (
-            <div className="list-group list-group-flush">
-              {filteredNotifications.map((notification) => (
-                <div
-                  key={notification._id}
-                  className={`notification-item list-group-item border-0 rounded-3 mb-2 p-3 ${
-                    notification.status === 'unread' ? 'unread' : ''
-                  } ${notification.pinned ? 'pinned' : ''} ${getPriorityClass(notification.message)}`}
-                >
-                  <div className="d-flex align-items-start">
-                    {/* Notification Icon & Status */}
-                    <div className="flex-shrink-0 me-3">
-                      <div className="position-relative">
-                        {getNotificationIcon(notification.message, notification.group)}
-                        {notification.status === 'unread' && (
-                          <span
-                            className="position-absolute top-0 start-100 translate-middle status-indicator rounded-circle bg-purple"
-                            style={{ width: "8px", height: "8px" }}
-                          ></span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Notification Content */}
-                    <div className="flex-grow-1 min-w-0">
-                      <div className="d-flex align-items-start justify-content-between mb-1">
-                        <h6
-                          className="notification-message fw-semibold text-dark mb-1 cursor-pointer"
-                          onClick={() => handleNotificationClick(notification._id)}
-                          style={{ fontSize: "0.9rem", lineHeight: "1.4" }}
-                        >
-                          {notification.message}
-                          {notification.pinned && (
-                            <BsPinFill className="pinned-indicator ms-2" size={12} />
-                          )}
-                        </h6>
-                      </div>
-
-                      <div className="d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <span className="badge bg-light text-dark me-2" style={{ fontSize: "0.65rem" }}>
-                            {notification.group}
-                          </span>
-                          <small className="text-muted d-flex align-items-center">
-                            <BsClock className="me-1" size={12} />
-                            {getTimeAgo(notification.createdAt || notification.date)}
-                          </small>
+            <div className="p-6">
+              <div className="max-w-4xl mx-auto space-y-4">
+                {filteredNotifications.map((notification) => (
+                  <div
+                    key={notification._id}
+                    className={`group bg-white rounded-xl transition-all duration-300 border hover:border-primary-300 hover:shadow-primary cursor-pointer ${
+                      notification.status === 'unread' ? 'border-l-4 border-l-primary-600 bg-primary-50' : ''
+                    } ${notification.pinned ? 'border-l-4 border-l-yellow-500 bg-yellow-50' : ''} ${getPriorityStyles(notification.message)}`}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start space-x-4">
+                        {/* Notification Icon & Status */}
+                        <div className="flex-shrink-0">
+                          <div className="relative">
+                            {getNotificationIcon(notification.message, notification.group)}
+                            {notification.status === 'unread' && (
+                              <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary-600 rounded-full animate-pulse-soft"></span>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Action Dropdown */}
-                        <div className="dropdown">
-                          <button
-                            className="btn btn-sm action-btn rounded-circle p-2"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={{ width: "32px", height: "32px" }}
-                          >
-                            <BsThreeDotsVertical size={12} />
-                          </button>
-                          
-                          <ul className="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-1">
-                            {notification.status === 'unread' && (
-                              <li>
-                                <button
-                                  className="dropdown-item d-flex align-items-center py-2 px-3 rounded-2"
-                                  onClick={() => handleMarkAsRead(notification._id)}
-                                >
-                                  <BsEye className="me-2 text-success" size={14} />
-                                  <span style={{ fontSize: "0.85rem" }}>Weka Nimesoma</span>
-                                </button>
-                              </li>
-                            )}
-                            
-                            <li>
+                        {/* Notification Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-2">
+                            <h3
+                              className="font-semibold text-text-primary text-lg leading-6 group-hover:text-primary-600 transition-colors duration-200 cursor-pointer"
+                              onClick={() => handleNotificationClick(notification._id)}
+                            >
+                              {notification.message}
+                              {notification.pinned && (
+                                <BsPinFill className="inline ml-2 text-yellow-500 animate-gentle-float" size={14} />
+                              )}
+                            </h3>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <span className="px-2 py-1 bg-background-300 text-text-secondary rounded-lg text-xs font-medium">
+                                {notification.group}
+                              </span>
+                              <div className="flex items-center text-text-tertiary text-sm">
+                                <BsClock className="mr-1" size={12} />
+                                {getTimeAgo(notification.createdAt || notification.date)}
+                              </div>
+                            </div>
+
+                            {/* Action Dropdown */}
+                            <div className="relative">
                               <button
-                                className="dropdown-item d-flex align-items-center py-2 px-3 rounded-2"
-                                onClick={() => handlePinNotification(notification._id)}
+                                className="flex items-center justify-center w-8 h-8 text-text-tertiary hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowDropdown(showDropdown === notification._id ? null : notification._id);
+                                }}
                               >
-                                {notification.pinned ? (
-                                  <>
-                                    <BsPin className="me-2 text-warning" size={14} />
-                                    <span style={{ fontSize: "0.85rem" }}>Ondoa Pini</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <BsPinFill className="me-2 text-warning" size={14} />
-                                    <span style={{ fontSize: "0.85rem" }}>Pini</span>
-                                  </>
-                                )}
+                                <BsThreeDotsVertical size={14} />
                               </button>
-                            </li>
-                            
-                            <li><hr className="dropdown-divider my-1" /></li>
-                            
-                            <li>
-                              <button
-                                className="dropdown-item d-flex align-items-center py-2 px-3 rounded-2 text-danger"
-                                onClick={() => handleRemoveNotification(notification._id)}
-                              >
-                                <BsTrash className="me-2" size={14} />
-                                <span style={{ fontSize: "0.85rem" }}>Futa</span>
-                              </button>
-                            </li>
-                          </ul>
+                              
+                              {showDropdown === notification._id && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-strong border border-border-light z-10">
+                                  <div className="p-1">
+                                    {notification.status === 'unread' && (
+                                      <button
+                                        className="flex items-center w-full px-3 py-2 text-sm text-text-secondary hover:text-success-600 hover:bg-success-50 rounded-lg transition-colors duration-200"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleMarkAsRead(notification._id);
+                                          setShowDropdown(null);
+                                        }}
+                                      >
+                                        <BsEye className="mr-2" size={14} />
+                                        Weka Nimesoma
+                                      </button>
+                                    )}
+                                    
+                                    <button
+                                      className="flex items-center w-full px-3 py-2 text-sm text-text-secondary hover:text-warning-600 hover:bg-warning-50 rounded-lg transition-colors duration-200"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePinNotification(notification._id);
+                                        setShowDropdown(null);
+                                      }}
+                                    >
+                                      {notification.pinned ? (
+                                        <>
+                                          <BsPin className="mr-2" size={14} />
+                                          Ondoa Pini
+                                        </>
+                                      ) : (
+                                        <>
+                                          <BsPinFill className="mr-2" size={14} />
+                                          Pini
+                                        </>
+                                      )}
+                                    </button>
+                                    
+                                    <div className="my-1 h-px bg-border-light"></div>
+                                    
+                                    <button
+                                      className="flex items-center w-full px-3 py-2 text-sm text-error-600 hover:bg-error-50 rounded-lg transition-colors duration-200"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveNotification(notification._id);
+                                        setShowDropdown(null);
+                                      }}
+                                    >
+                                      <BsTrash className="mr-2" size={14} />
+                                      Futa
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           ) : (
-            <div className="empty-state">
-              <FaChurch className="text-muted mb-3" size={40} />
-              <p className="mb-2 fw-medium">Hakuna taarifa</p>
-              <small className="text-muted">
-                Taarifa mpya zitaonekana hapa
-              </small>
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-background-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FaChurch className="w-10 h-10 text-text-tertiary" />
+                </div>
+                <h3 className="font-semibold text-text-primary mb-2 text-xl">
+                  Hakuna taarifa
+                </h3>
+                <p className="text-text-secondary text-lg">
+                  Taarifa mpya zitaonekana hapa
+                </p>
+              </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
         {filteredNotifications.length > 0 && (
-          <div className="p-3 border-top border-light text-center">
-            <small className="text-muted d-flex align-items-center justify-content-center">
-              <FaHeart className="text-danger me-1" size={12} />
-              Church Management System
-            </small>
+          <div className="p-4 border-t border-border-light bg-white">
+            <div className="text-center">
+              <div className="flex items-center justify-center text-text-tertiary text-sm">
+                <FaHeart className="text-error-500 mr-1" size={12} />
+                Church Management System
+              </div>
+            </div>
           </div>
         )}
       </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Notification Toggle Button */}
+      <button
+        onClick={() => setShowModal(true)}
+        className="relative flex items-center justify-center w-10 h-10 bg-background-200 hover:bg-primary-50 rounded-lg transition-all duration-300 group"
+      >
+        <MdNotificationsActive className="w-5 h-5 text-text-secondary group-hover:text-primary-600 transition-colors duration-300" />
+
+        {unreadCount > 0 && (
+          <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-primary-600 text-white text-xs font-semibold rounded-full flex items-center justify-center border-2 border-white shadow-lg animate-pulse-soft">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </div>
+        )}
+      </button>
+
+      {/* Portal Modal - Renders outside the Header */}
+      {mounted && showModal && createPortal(<Modal />, document.body)}
 
       {/* Loading Indicator */}
       {isLoading && (
-        <div className="position-fixed top-50 start-50 translate-middle">
-          <div className="bg-white rounded-3 p-3 shadow">
-            <div className="d-flex align-items-center">
-              <div className="loading-spinner me-2" style={{ 
-                width: "20px", 
-                height: "20px", 
-                border: "2px solid #f3f3f3", 
-                borderTop: "2px solid #9d4edd", 
-                borderRadius: "50%" 
-              }}></div>
-              <span>Inapakia...</span>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[10000]">
+          <div className="bg-white rounded-xl p-4 shadow-strong border border-border-light">
+            <div className="flex items-center space-x-3">
+              <div className="w-5 h-5 border-2 border-background-300 border-t-primary-600 rounded-full animate-spin"></div>
+              <span className="text-text-primary font-medium">Inapakia...</span>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Click outside to close dropdown */}
+      {showDropdown && (
+        <div 
+          className="fixed inset-0 z-[1]"
+          onClick={() => setShowDropdown(null)}
+        />
       )}
     </>
   );
