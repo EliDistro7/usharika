@@ -15,8 +15,11 @@ export const createSeries = async ({ name, description, startDate, endDate, auth
       author,
     });
 
+    console.log('Series created successfully:', response);
+
     // Send push notification on successful series creation
-    if (response.data && response.status === 200) {
+    if (response.data && response.status === 201) {
+      console.log('Preparing to send series creation notification');
       const notificationPayload = {
         title: `Series mpya imeongezwa: ${name}`,
         body: description || `Series mpya ${name} imeongezwa na ${formatRoleName2(author)}`,
@@ -32,6 +35,7 @@ export const createSeries = async ({ name, description, startDate, endDate, auth
 
       try {
         await sendPushNotification(notificationPayload);
+        console.log('Series creation notification sent successfully');
       } catch (error) {
         console.error('Error sending series creation notification:', error);
       }

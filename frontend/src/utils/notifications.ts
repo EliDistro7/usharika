@@ -12,6 +12,7 @@ export const sendPushNotification = async (payload: NotificationPayload): Promis
 }> => {
   try {
     // Add timestamp if not provided
+    console
     const notificationPayload = {
       ...payload,
       data: {
@@ -28,9 +29,14 @@ export const sendPushNotification = async (payload: NotificationPayload): Promis
       body: JSON.stringify(notificationPayload),
     });
 
+    console.log('Notification send response status:', response.status);
+
     if (response.ok) {
+       
+      console.log('Notification sent successfully');
       return { success: true, message: 'Notification sent successfully!' };
     } else {
+      console.log('Failed to send notification:', response.statusText);
       const errorText = await response.text();
       return { success: false, error: `Failed to send notification: ${errorText}` };
     }

@@ -50,7 +50,7 @@ const SeriesManagementPage = () => {
     try {
       newSeries.author = Cookies.get('role');
       await createSeries(newSeries);
-      alert('Series created successfully!');
+    
       setNewSeries({
         name: '',
         description: '',
