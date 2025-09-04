@@ -184,7 +184,7 @@ const Notification = ({ notifications, group, userId }) => {
         .notification-panel {
           background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
           border: 1px solid rgba(157, 78, 221, 0.1);
-          backdrop-filter: blur(10px);
+     
           box-shadow: 0 10px 40px rgba(157, 78, 221, 0.15);
           max-height: 400px;
           overflow-y: auto;

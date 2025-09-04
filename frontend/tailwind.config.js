@@ -229,12 +229,12 @@ module.exports = {
       const newUtilities = {
         // Glass morphism utilities
         '.glass': {
-          'backdrop-filter': 'blur(16px)',
+     
           'background': 'rgba(255, 255, 255, 0.1)',
           'border': '1px solid rgba(255, 255, 255, 0.2)',
         },
         '.glass-strong': {
-          'backdrop-filter': 'blur(24px)',
+        
           'background': 'rgba(255, 255, 255, 0.15)',
           'border': '1px solid rgba(255, 255, 255, 0.3)',
         },

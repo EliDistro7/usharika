@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { getAudioBySeries } from '@/actions/series'; // adjust import path as needed
-import { Container, Row, Col, Card, Button, ListGroup, Image, Collapse } from 'react-bootstrap';
+import { Play, Pause, SkipBack, SkipForward, List, X } from 'lucide-react';
 
 const MusicPlayer = ({ seriesId }) => {
- // console.log('series Id', seriesId);
+  // console.log('series Id', seriesId);
   const [audioSessions, setAudioSessions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -169,96 +169,100 @@ const MusicPlayer = ({ seriesId }) => {
 
   if (loading) {
     return (
-      <Container className="my-5">
-        <p>Loading audio sessions...</p>
-      </Container>
+      <div className="container mx-auto px-4 py-12">
+        <p className="text-text-primary">Loading audio sessions...</p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container className="my-5">
-        <p className="text-danger">Error: {error}</p>
-      </Container>
+      <div className="container mx-auto px-4 py-12">
+        <p className="text-error-500">Error: {error}</p>
+      </div>
     );
   }
 
   if (!currentSession) {
     return (
-      <Container className="my-5">
-        <p>No audio sessions available for this series.</p>
-      </Container>
+      <div className="container mx-auto px-4 py-12">
+        <p className="text-text-primary">No audio sessions available for this series.</p>
+      </div>
     );
   }
 
   return (
-    <Container className="my-5">
-      <Row className="justify-content-center">
-        <Col md={10}>
-          <Card className="mb-4 shadow-sm border-0" style={{ backgroundColor: '#1a1a1a', color: '#ffd700' }}>
-            <Card.Body className="p-4">
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <div className="flex justify-center">
+        <div className="w-full md:w-5/6">
+          <div className="bg-gray-900 text-yellow-400 rounded-2xl shadow-strong border-0 mb-6">
+            <div className="p-6">
               {/* Toggle Playlist Button */}
-              <div className="d-flex justify-content-end mb-3">
-                <Button
-                  style={{ backgroundColor: '#ffd700', color: '#1a1a1a', border: 'none' }}
+              <div className="flex justify-end mb-4">
+                <button
+                  className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-500 transition-colors duration-200 flex items-center gap-2"
                   onClick={() => setShowPlaylist(!showPlaylist)}
                 >
-                  {showPlaylist ? 'Ficha Playlist' : 'Onyesha Playlist'}
-                </Button>
+                  {showPlaylist ? (
+                    <>
+                      <X className="w-4 h-4" />
+                      Ficha Playlist
+                    </>
+                  ) : (
+                    <>
+                      <List className="w-4 h-4" />
+                      Onyesha Playlist
+                    </>
+                  )}
+                </button>
               </div>
   
               {/* Toggleable Playlist */}
-              <Collapse in={showPlaylist}>
-                <div>
-                  <Card className="mb-4">
-                    <Card.Header style={{ backgroundColor: '#6a0dad', color: '#fff' }}>
-                      <h5 className="mb-0 text-white">Playlist</h5>
-                    </Card.Header>
-                    <ListGroup variant="flush" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <div className={`transition-all duration-300 ease-in-out overflow-hidden ${showPlaylist ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="mb-6">
+                  <div className="bg-white rounded-lg shadow-medium overflow-hidden">
+                    <div className="bg-purple-600 text-white px-4 py-3">
+                      <h5 className="text-lg font-semibold mb-0">Playlist</h5>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
                       {audioSessions.map((session, index) => (
-                        <ListGroup.Item
+                        <div
                           key={session._id}
-                          action
-                          active={index === currentIndex}
+                          className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-b border-gray-200 last:border-b-0 ${
+                            index === currentIndex 
+                              ? 'bg-yellow-400 text-gray-900' 
+                              : 'bg-gray-800 text-yellow-400 hover:bg-gray-700'
+                          }`}
                           onClick={() => handleSelectTrack(index)}
-                          style={{
-                            backgroundColor: index === currentIndex ? '#ffd700' : '#333',
-                            color: index === currentIndex ? '#1a1a1a' : '#ffd700',
-                            border: 'none',
-                          }}
-                          className="d-flex align-items-center"
                         >
-                          <Image
-                            src={'/img/lutherRose.jpg'}
+                          <img
+                            src="/img/lutherRose.jpg"
                             alt="Track Art"
-                            roundedCircle
-                            className="me-3"
-                            style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                            className="w-12 h-12 rounded-full object-cover mr-4"
                           />
-                          <div>
-                            <strong>{session.title}</strong>
-                            <br />
-                            <small style={{ color: '#bfbfbf' }}>{formatTime(session.duration || 0)}</small>
+                          <div className="flex-1">
+                            <div className="font-semibold">{session.title}</div>
+                            <div className={`text-sm ${index === currentIndex ? 'text-gray-600' : 'text-gray-400'}`}>
+                              {formatTime(session.duration || 0)}
+                            </div>
                           </div>
-                        </ListGroup.Item>
+                        </div>
                       ))}
-                    </ListGroup>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
-              </Collapse>
+              </div>
   
               {/* Main Player Section */}
-              <div className="d-flex align-items-center mb-4">
-                <Image
-                  src={'/img/lutherRose.jpg'}
+              <div className="flex items-center mb-6">
+                <img
+                  src="/img/lutherRose.jpg"
                   alt="Album Art"
-                  roundedCircle
-                  className="me-3"
-                  style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                  className="w-20 h-20 rounded-full object-cover mr-4"
                 />
-                <div>
-                  <h2 className="mb-0 fw-bold" style={{ color: '#ffd700' }}>{currentSession.title}</h2>
-                  <p className="mb-0" style={{ color: '#bfbfbf' }}>{currentSession.content}</p>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-yellow-400 mb-1">{currentSession.title}</h2>
+                  <p className="text-gray-400 mb-0">{currentSession.content}</p>
                 </div>
               </div>
   
@@ -266,63 +270,67 @@ const MusicPlayer = ({ seriesId }) => {
               <audio
                 ref={audioRef}
                 src={currentSession.audio.link}
-                className="w-100 mb-3"
+                className="w-full mb-4 hidden"
                 onEnded={handleAudioEnd}
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
               />
   
               {/* Custom audio control buttons */}
-              <div className="d-flex justify-content-center mb-3">
-                <Button
-                  style={{ backgroundColor: '#6a0dad', color: '#fff', border: 'none' }}
-                  className="mx-2"
+              <div className="flex justify-center items-center gap-4 mb-6">
+                <button
+                  className={`p-3 rounded-full transition-all duration-200 ${
+                    currentIndex === 0 
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                      : 'bg-purple-600 text-white hover:bg-purple-700 hover:scale-105'
+                  }`}
                   onClick={handlePrev}
                   disabled={currentIndex === 0}
                 >
-                  <i className="fas fa-backward"></i>
-                </Button>
-                <Button
-                  style={{ backgroundColor: '#ffd700', color: '#1a1a1a', border: 'none' }}
-                  className="mx-2"
+                  <SkipBack className="w-5 h-5" />
+                </button>
+                <button
+                  className="bg-yellow-400 text-gray-900 p-4 rounded-full hover:bg-yellow-500 hover:scale-105 transition-all duration-200 shadow-yellow"
                   onClick={togglePlayPause}
                 >
-                  {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
-                </Button>
-                <Button
-                  style={{ backgroundColor: '#6a0dad', color: '#fff', border: 'none' }}
-                  className="mx-2"
+                  {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                </button>
+                <button
+                  className={`p-3 rounded-full transition-all duration-200 ${
+                    currentIndex >= audioSessions.length - 1 
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                      : 'bg-purple-600 text-white hover:bg-purple-700 hover:scale-105'
+                  }`}
                   onClick={handleNext}
                   disabled={currentIndex >= audioSessions.length - 1}
                 >
-                  <i className="fas fa-forward"></i>
-                </Button>
+                  <SkipForward className="w-5 h-5" />
+                </button>
               </div>
   
               {/* Custom progress bar */}
-              <div className="mt-3" ref={progressBarRef} onClick={handleProgressBarClick} style={{ cursor: 'pointer' }}>
-                <div className="progress" style={{ height: '5px', backgroundColor: '#333' }}>
+              <div className="mt-4">
+                <div 
+                  ref={progressBarRef} 
+                  onClick={handleProgressBarClick} 
+                  className="w-full h-2 bg-gray-700 rounded-full cursor-pointer mb-3 relative overflow-hidden"
+                >
                   <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: `${progressPercentage}%`, backgroundColor: '#ffd700' }}
-                    aria-valuenow={progressPercentage}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
+                    className="h-full bg-yellow-400 rounded-full transition-all duration-150 ease-out"
+                    style={{ width: `${progressPercentage}%` }}
+                  />
                 </div>
-                <div className="d-flex justify-content-between mt-2">
-                  <span style={{ color: '#bfbfbf' }}>{formatTime(currentTime)}</span>
-                  <span style={{ color: '#bfbfbf' }}>{formatTime(duration)}</span>
+                <div className="flex justify-between text-sm text-gray-400">
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
                 </div>
               </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-  
 };
 
 export default MusicPlayer;
