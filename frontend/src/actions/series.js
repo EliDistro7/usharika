@@ -15,7 +15,7 @@ export const createSeries = async ({ name, description, startDate, endDate, auth
       author,
     });
 
-    console.log('Series created successfully:', response);
+   // console.log('Series created successfully:', response);
 
     // Send push notification on successful series creation
     if (response.data && response.status === 201) {

@@ -221,12 +221,12 @@ const Dashboard = ({ user, summary }) => {
     <div className="min-h-screen bg-light-gradient py-5">
       <div className="container mx-auto px-4 animate-fade-in">
         {/* Enhanced Navbar */}
-        <div className="glass-strong rounded-4xl p-4 mb-6 animate-slide-up">
+        <div className=" rounded-4xl p-4 mb-6 animate-slide-up">
           <NavbarTabs roles={userRoles} notifications={notifications || []} user={user} />
         </div>
         
         {/* Enhanced Header Section */}
-        <div className="glass-strong rounded-4xl p-6 lg:p-8 mb-6 animate-slide-up">
+        <div className=" rounded-4xl p-6 lg:p-8 mb-6 animate-slide-up">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex items-center">
               <div className="w-15 h-15 bg-primary-gradient rounded-full flex items-center justify-center text-white text-2xl shadow-primary flex-shrink-0 mr-4">
@@ -255,12 +255,12 @@ const Dashboard = ({ user, summary }) => {
         </div>
         
         {/* Donations Component */}
-        <div className="glass-strong rounded-4xl p-6 lg:p-8 mb-6 animate-slide-up">
+        <div className=" rounded-4xl p-6 lg:p-8 mb-6 animate-slide-up">
           <Donations />
         </div>
 
         {/* Enhanced Contributions Table */}
-        <div className="glass-strong rounded-4xl overflow-hidden shadow-medium hover:shadow-strong hover:-translate-y-1 transition-all duration-300 animate-slide-up">
+        <div className=" rounded-4xl overflow-hidden shadow-medium hover:shadow-strong hover:-translate-y-1 transition-all duration-300 animate-slide-up">
           <div className="bg-primary-gradient text-white p-6 lg:p-8 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-50"></div>
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between relative z-10">

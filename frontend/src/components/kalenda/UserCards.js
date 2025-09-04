@@ -95,7 +95,7 @@ const UserCards = () => {
         transition: `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${0.1 + index * 0.1}s`
       }}
     >
-      <div className="relative bg-white rounded-3xl border border-border-light shadow-soft hover:shadow-primary-lg transition-all duration-500 hover:-translate-y-2 hover:scale-105 overflow-hidden h-full backdrop-blur-sm">
+      <div className="relative bg-white rounded-3xl border border-border-light shadow-soft hover:shadow-primary-lg transition-all duration-500 hover:-translate-y-2 hover:scale-105 overflow-hidden h-full ">
         
         {/* Decorative background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-purple-50/30 to-yellow-50/50 opacity-60 pointer-events-none"></div>

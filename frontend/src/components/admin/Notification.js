@@ -43,7 +43,7 @@ const Notification = () => {
     },
     dropdown: {
       background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(20px)',
+    
       borderRadius: '16px',
       border: '1px solid rgba(102, 126, 234, 0.2)',
       boxShadow: '0 20px 40px rgba(102, 126, 234, 0.15)',

@@ -139,7 +139,7 @@ export default function Notifications() {
         {/* Notification Toggle Button */}
         <button
           onClick={() => setIsOpen(true)}
-          className="glass relative w-12 h-12 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary group"
+          className=" relative w-12 h-12 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary group"
         >
           <Bell size={20} className="text-primary-700 group-hover:text-primary-800 transition-colors duration-300" />
           
