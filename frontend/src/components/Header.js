@@ -74,7 +74,7 @@ export default function Header() {
   const handleSadakaNavigation = () => {
     const username = getLoggedInUsername();
     if (username) {
-      router.push(`/akaunt/${username}`);
+      router.push(`/akaunti/${username}`);
     } else {
       router.push('/auth');
       toast.warning('Tafadhali, ingia kwenye akaunti yako!');
