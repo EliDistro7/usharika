@@ -83,95 +83,128 @@ const UserCard = ({ user }) => {
   };
 
   return (
-    <div className="card shadow-sm mb-4 mx-auto" style={{ maxWidth: '600px' }}>
+    <div className="bg-white rounded-2xl shadow-medium mb-6 mx-auto max-w-2xl overflow-hidden">
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="card-header text-center">
-        <h2 className="card-title">{user.name}</h2>
-        <p className="mb-0">{user.role}</p>
+      
+      {/* Header */}
+      <div className="bg-primary-gradient text-white text-center py-6 px-6">
+        <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>
+        <p className="text-primary-100 text-lg">{user.role}</p>
       </div>
-      <div className="card-body">
-        <div className="text-center mb-3">
+
+      <div className="p-6">
+        {/* Profile Picture */}
+        <div className="text-center mb-6">
           <img
             src={user.profilePicture}
             alt={`${user.name}'s profile`}
-            className="rounded-circle img-thumbnail"
-            style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+            className="w-36 h-36 rounded-full border-4 border-primary-200 object-cover mx-auto shadow-primary"
           />
         </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item"><strong>Simu:</strong> {user.phone}</li>
-          <li className="list-group-item"><strong>Kazi:</strong> {user.occupation}</li>
-          <li className="list-group-item"><strong>Jinsia:</strong> {user.gender}</li>
-          <li className="list-group-item"><strong>Jumuiya:</strong> {user.jumuiya}</li>
-          <li className="list-group-item"><strong>Ndoa:</strong> {user.maritalStatus}</li>
-        </ul>
-        <div className="table-responsive my-3">
-          <table className="table table-striped table-hover">
+
+        {/* User Details */}
+        <div className="space-y-1 mb-6">
+          <div className="flex justify-between py-3 px-4 bg-background-200 rounded-lg border border-border-light">
+            <span className="font-semibold text-text-secondary">Simu:</span>
+            <span className="text-text-primary">{user.phone}</span>
+          </div>
+          <div className="flex justify-between py-3 px-4 hover:bg-background-200 rounded-lg transition-colors duration-200">
+            <span className="font-semibold text-text-secondary">Kazi:</span>
+            <span className="text-text-primary">{user.occupation}</span>
+          </div>
+          <div className="flex justify-between py-3 px-4 bg-background-200 rounded-lg border border-border-light">
+            <span className="font-semibold text-text-secondary">Jinsia:</span>
+            <span className="text-text-primary">{user.gender}</span>
+          </div>
+          <div className="flex justify-between py-3 px-4 hover:bg-background-200 rounded-lg transition-colors duration-200">
+            <span className="font-semibold text-text-secondary">Jumuiya:</span>
+            <span className="text-text-primary">{user.jumuiya}</span>
+          </div>
+          <div className="flex justify-between py-3 px-4 bg-background-200 rounded-lg border border-border-light">
+            <span className="font-semibold text-text-secondary">Ndoa:</span>
+            <span className="text-text-primary">{user.maritalStatus}</span>
+          </div>
+        </div>
+
+        {/* Pledges Table */}
+        <div className="overflow-x-auto my-6">
+          <table className="w-full">
             <thead>
-              <tr>
-                <th className="fw-bold">Aina</th>
-                <th className="fw-bold text-end d-none d-lg-table-cell">Kilicholipwa</th>
-                <th className="fw-bold text-end d-none d-lg-table-cell">Iliyoahidiwa</th>
-                <th className="fw-bold text-center d-none d-md-table-cell">Maendeleo</th>
-                <th className="fw-bold text-end">Iliyobaki</th>
+              <tr className="border-b-2 border-primary-200">
+                <th className="text-left py-3 px-2 font-bold text-text-primary">Aina</th>
+                <th className="text-right py-3 px-2 font-bold text-text-primary hidden lg:table-cell">Kilicholipwa</th>
+                <th className="text-right py-3 px-2 font-bold text-text-primary hidden lg:table-cell">Iliyoahidiwa</th>
+                <th className="text-center py-3 px-2 font-bold text-text-primary hidden md:table-cell">Maendeleo</th>
+                <th className="text-right py-3 px-2 font-bold text-text-primary">Iliyobaki</th>
               </tr>
             </thead>
             <tbody>
               {pledges.map((pledge, index) => (
-                <tr key={index}>
-                  <td>{pledge.title}</td>
-                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.paid.toLocaleString()}</td>
-                  <td className="text-end d-none d-lg-table-cell">TZS {pledge.total.toLocaleString()}</td>
-                  <td className="text-center d-none d-md-table-cell">
-                    <div className="progress" style={{ height: "20px" }}>
+                <tr key={index} className={`border-b border-border-light hover:bg-background-100 transition-colors duration-200 ${index % 2 === 0 ? 'bg-background-50' : 'bg-white'}`}>
+                  <td className="py-3 px-2 font-medium text-text-primary">{pledge.title}</td>
+                  <td className="text-right py-3 px-2 text-text-secondary hidden lg:table-cell">TZS {pledge.paid.toLocaleString()}</td>
+                  <td className="text-right py-3 px-2 text-text-secondary hidden lg:table-cell">TZS {pledge.total.toLocaleString()}</td>
+                  <td className="text-center py-3 px-2 hidden md:table-cell">
+                    <div className="w-full bg-background-300 rounded-full h-5 overflow-hidden">
                       <div
-                        className="progress-bar bg-success"
-                        role="progressbar"
+                        className="h-full bg-success-500 rounded-full transition-all duration-300 flex items-center justify-center"
                         style={{ width: `${(pledge.paid / pledge.total) * 100}%` }}
-                        aria-valuenow={(pledge.paid / pledge.total) * 100}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
                       >
-                        {Math.round((pledge.paid / pledge.total) * 100)}%
+                        <span className="text-xs font-semibold text-white">
+                          {Math.round((pledge.paid / pledge.total) * 100)}%
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="text-end">TZS {(pledge.total - pledge.paid).toLocaleString()}</td>
+                  <td className="text-right py-3 px-2 font-semibold text-warning-600">TZS {(pledge.total - pledge.paid).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="mt-4">
-          <h5>Vikundi ninavyoshiriki:</h5>
-          <ul>
+
+        <div className="mt-6">
+          {/* Current Groups */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold text-text-primary mb-3">Vikundi ninavyoshiriki:</h5>
             {updatedSelectedRoles && updatedSelectedRoles.length > 0 ? (
-              updatedSelectedRoles.map((role, index) => (
-                <li key={index}>{formatRoleName(role)}</li>
-              ))
+              <ul className="space-y-2">
+                {updatedSelectedRoles.map((role, index) => (
+                  <li key={index} className="flex items-center py-2 px-3 bg-primary-50 rounded-lg border border-primary-200">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
+                    <span className="text-text-primary">{formatRoleName(role)}</span>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <p>Hakuna vikundi vilivyochaguliwa.</p>
+              <p className="text-text-tertiary italic">Hakuna vikundi vilivyochaguliwa.</p>
             )}
-          </ul>
+          </div>
           
-          {/* Display leadership positions if the user is a leader */}
+          {/* Leadership Positions */}
           {user.isLeader && user.leadershipPositions && Object.keys(user.leadershipPositions).length > 0 && (
-            <div className="mt-4">
-              <h6 className="mb-3">Nafasi za Uongozi kwenye vikundi</h6>
-              <div className="table-responsive">
-                <table className="table table-bordered" style={{ backgroundColor: "#E6E6FA" }}>
-                  <thead>
+            <div className="mb-6">
+              <h6 className="text-lg font-semibold text-text-primary mb-3">Nafasi za Uongozi kwenye vikundi</h6>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-purple-50 rounded-lg overflow-hidden border border-purple-200">
+                  <thead className="bg-purple-100">
                     <tr>
-                      <th className="text-center">Kikundi</th>
-                      <th className="text-center">Nafasi</th>
+                      <th className="text-center py-3 px-4 font-semibold text-purple-800">Kikundi</th>
+                      <th className="text-center py-3 px-4 font-semibold text-purple-800">Nafasi</th>
                     </tr>
                   </thead>
                   <tbody>
                     {Object.entries(user.leadershipPositions).map(([groupKey, positions], index) => (
-                      <tr key={index}>
-                        <td className="text-center fw-bold">{formatRoleName(groupKey.replace("kiongozi_", ""))}</td>
-                        <td className="text-center">
-                          {positions.length > 0 ? positions.join(", ") : <span className="text-danger">Hakuna Nafasi</span>}
+                      <tr key={index} className="border-t border-purple-200">
+                        <td className="text-center py-3 px-4 font-semibold text-purple-700">
+                          {formatRoleName(groupKey.replace("kiongozi_", ""))}
+                        </td>
+                        <td className="text-center py-3 px-4">
+                          {positions.length > 0 ? (
+                            <span className="text-purple-700">{positions.join(", ")}</span>
+                          ) : (
+                            <span className="text-error-500 font-medium">Hakuna Nafasi</span>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -181,8 +214,8 @@ const UserCard = ({ user }) => {
             </div>
           )}
 
-          {/* Role selection component */}
-          <div className="mt-3">
+          {/* Role Selection */}
+          <div className="mb-6">
             <RoleSelector 
               userRoles={availableRoles}
               selectedRoles={updatedSelectedRoles}
@@ -191,9 +224,12 @@ const UserCard = ({ user }) => {
             />
           </div>
 
-          {/* Save Changes button */}
-          <div className="mt-3">
-            <button className="btn btn-primary" onClick={handleSaveRoles}>
+          {/* Save Changes Button */}
+          <div className="flex justify-center">
+            <button 
+              className="btn-primary px-8 py-3 rounded-xl font-semibold text-white hover:scale-105 transition-all duration-300 shadow-primary"
+              onClick={handleSaveRoles}
+            >
               Tuma
             </button>
           </div>

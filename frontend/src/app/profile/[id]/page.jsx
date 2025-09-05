@@ -47,8 +47,8 @@ const UserPage = ( ) => {
     );
 
   return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Profile</h1>
+    <div className="container">
+    
       {user ? <UserCard user={user} /> : <p className="text-center">hakuna mtumiaji</p>}
     </div>
   );
