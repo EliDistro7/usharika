@@ -15,7 +15,7 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
-import MusicPlayer from './audio-player/index';
+import MusicPlayer from './MusicPlayer';
 import ShareButton from '@/components/ShareButton';
 
 const SessionsList = ({ 
