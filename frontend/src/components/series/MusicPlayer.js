@@ -192,11 +192,11 @@ const MusicPlayer = ({ seriesId }) => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+    <div className="container mx-auto py-12 max-w-4xl ">
       <div className="flex justify-center">
         <div className="w-full md:w-5/6">
           <div className="bg-gray-900 text-yellow-400 rounded-2xl shadow-strong border-0 mb-6">
-            <div className="p-6">
+            <div className="p-6 ">
               {/* Toggle Playlist Button */}
               <div className="flex justify-end mb-4">
                 <button
