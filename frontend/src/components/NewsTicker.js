@@ -31,7 +31,7 @@ export const NewsTicker = ({
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-yellow-300 hover:text-yellow-100 underline decoration-2 underline-offset-4 font-bold transition-all duration-300 hover:decoration-yellow-300 hover:scale-105 hover:drop-shadow-lg relative z-20 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 px-1 py-0.5 rounded backdrop-blur-sm"
+            className="text-yellow-900 hover:text-yellow-900 underline decoration-2 underline-offset-4 font-bold transition-all duration-300 hover:decoration-yellow-300 hover:scale-105 hover:drop-shadow-lg relative z-20 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 px-1 py-0.5 rounded backdrop-blur-sm"
             onClick={(e) => {
               e.stopPropagation();
             }}
