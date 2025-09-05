@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Row, Col, Card, Badge, Button, Dropdown, Modal } from 'react-bootstrap';
 import { 
   Calendar, 
   Clock, 
@@ -10,37 +9,32 @@ import {
   Edit3, 
   Plus, 
   MoreVertical,
-  Download,
   Video,
   BookOpen,
   Lock,
   CheckCircle,
-  X,
-  Share2
+  X
 } from 'lucide-react';
-import MusicPlayer from './audio-player/index'; // Adjust the import path as needed
-import ShareButton from '@/components/ShareButton'; // Adjust the import path as needed
-
+import MusicPlayer from './audio-player/index';
+import ShareButton from '@/components/ShareButton';
 
 const SessionsList = ({ 
   sessions, 
   isCreator, 
   user, 
-  playingAudio, 
   onAddSession, 
-  onPlayAudio,
   totalSessions,
-  seriesId, // Add seriesId prop to pass to MusicPlayer
-  seriesTitle // Add seriesTitle prop for sharing
+  seriesId,
+  seriesTitle
 }) => {
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -53,443 +47,222 @@ const SessionsList = ({
     return 'upcoming';
   };
 
-  const handleOpenMusicPlayer = () => {
-    setShowMusicPlayer(true);
-  };
-
-  const handleCloseMusicPlayer = () => {
-    setShowMusicPlayer(false);
-  };
-
-  // Check if there are any audio sessions available
-  const hasAudioSessions = sessions && sessions.some(session => 
-    session.audio && session.audio.link && (session.audio.isFree || user)
+  const hasAudioSessions = sessions?.some(session => 
+    session.audio?.link && (session.audio.isFree || user)
   );
 
-  // Generate share URL for the series
-  const shareUrl = `${window.location.origin}/series/${seriesId}`;
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/series/${seriesId}`;
   const shareTitle = `${seriesTitle} - KKKT YOMBO Series`;
+
+  const colors = {
+    primary: '#6f42c1',
+    surface: 'white',
+    text: '#333',
+    accent: '#b8860b',
+    background: '#f8f9fa'
+  };
 
   return (
     <>
-      <Card className="shadow-sm border-0 mb-4">
-        <Card.Header 
-          className="bg-white border-0 py-3"
-          style={{ borderBottom: '2px solid #6f42c1' }}
-        >
-          <div className="d-flex justify-content-between align-items-center">
-            <h4 className="mb-0 d-flex align-items-center">
-              <Calendar size={24} className="me-2" style={{ color: '#6f42c1' }} />
+      {/* Sessions Card */}
+      <div className="bg-white rounded-xl shadow-soft border border-border-light mb-6 overflow-hidden">
+        <div className="bg-white border-b-2 border-primary-500 px-6 py-4">
+          <div className="flex justify-between items-center">
+            <h4 className="flex items-center text-xl font-semibold text-text-primary">
+              <Calendar size={24} className="mr-3 text-primary-600" />
               Sessions ({totalSessions})
             </h4>
-            <div className="d-flex gap-2">
-              {/* Music Player Button */}
+            <div className="flex gap-3">
               {hasAudioSessions && (
-                <Button
-                  variant="outline-success"
-                  size="sm"
-                  onClick={handleOpenMusicPlayer}
+                <button
+                  onClick={() => setShowMusicPlayer(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-success-600 border border-success-300 rounded-lg hover:bg-success-50 transition-colors duration-200"
                 >
-                  <Headphones size={16} className="me-1" />
+                  <Headphones size={16} />
                   Audio Player
-                </Button>
+                </button>
               )}
               {isCreator && (
-                <Button
-                  variant="outline-primary"
-                  size="sm"
+                <button
                   onClick={onAddSession}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 border border-primary-300 rounded-lg hover:bg-primary-50 transition-colors duration-200"
                 >
-                  <Plus size={16} className="me-1" />
+                  <Plus size={16} />
                   Add Session
-                </Button>
+                </button>
               )}
             </div>
           </div>
-        </Card.Header>
-        <Card.Body className="p-0">
-          {sessions && sessions.length > 0 ? (
+        </div>
+
+        <div className="divide-y divide-border-light">
+          {sessions?.length > 0 ? (
             sessions
               .sort((a, b) => new Date(a.date) - new Date(b.date))
               .map((session, index) => {
                 const status = getSessionStatus(session.date);
+                const statusColors = {
+                  completed: 'border-success-500 bg-success-50',
+                  today: 'border-primary-500 bg-primary-50',
+                  upcoming: 'border-border-light bg-white'
+                };
+
                 return (
                   <div
                     key={session._id}
-                    className={`p-4 border-bottom ${index === 0 ? '' : 'border-top-0'}`}
-                    style={{
-                      backgroundColor: status === 'today' ? '#f8f9ff' : 'white',
-                      borderLeft: status === 'completed' ? '4px solid #28a745' : 
-                                 status === 'today' ? '4px solid #6f42c1' : '4px solid #e9ecef'
-                    }}
+                    className={`p-6 border-l-4 ${statusColors[status]} hover:bg-background-100 transition-colors duration-200`}
                   >
-                    <Row className="align-items-center">
-                      <Col md={8}>
-                        <div className="d-flex align-items-start justify-content-between">
-                          <div className="flex-grow-1">
-                            <div className="d-flex align-items-center mb-2">
-                              <h5 className="mb-0 me-3">{session.title}</h5>
-                              {status === 'completed' && (
-                                <CheckCircle size={18} className="text-success" />
-                              )}
-                              {status === 'today' && (
-                                <Badge bg="primary" className="pulse">Today</Badge>
-                              )}
-                              {status === 'upcoming' && (
-                                <Badge bg="secondary">Upcoming</Badge>
-                              )}
-                            </div>
-                            
-                            <div className="text-muted mb-2 d-flex align-items-center">
-                              <Clock size={16} className="me-2" />
-                              {formatDate(session.date)}
-                            </div>
-                            
-                            <p className="text-muted mb-3">{session.content}</p>
-                            
-                            {session.attendanceCount > 0 && (
-                              <div className="d-flex align-items-center text-muted">
-                                <Users size={16} className="me-2" />
-                                <span>{session.attendanceCount} attended</span>
-                              </div>
-                            )}
-                          </div>
-                          
-                          {isCreator && (
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="link"
-                                className="text-muted p-1"
-                                style={{ border: 'none', background: 'none' }}
-                              >
-                                <MoreVertical size={16} />
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu>
-                                <Dropdown.Item>
-                                  <Edit3 size={14} className="me-2" />
-                                  Edit Session
-                                </Dropdown.Item>
-                                <Dropdown.Item className="text-danger">
-                                  Delete Session
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h5 className="text-lg font-semibold text-text-primary">{session.title}</h5>
+                          {status === 'completed' && (
+                            <CheckCircle size={18} className="text-success-500" />
+                          )}
+                          {status === 'today' && (
+                            <span className="px-3 py-1 bg-primary-500 text-white text-sm font-medium rounded-full animate-pulse-soft">
+                              Today
+                            </span>
+                          )}
+                          {status === 'upcoming' && (
+                            <span className="px-3 py-1 bg-text-tertiary text-white text-sm font-medium rounded-full">
+                              Upcoming
+                            </span>
                           )}
                         </div>
-                      </Col>
+                        
+                        <div className="flex items-center text-text-secondary mb-3">
+                          <Clock size={16} className="mr-2" />
+                          {formatDate(session.date)}
+                        </div>
+                        
+                        <p className="text-text-secondary mb-3 text-sm">{session.content}</p>
+                        
+                        {session.attendanceCount > 0 && (
+                          <div className="flex items-center text-text-tertiary text-sm">
+                            <Users size={16} className="mr-2" />
+                            {session.attendanceCount} attended
+                          </div>
+                        )}
+                      </div>
                       
-                      <Col md={4}>
-                        <div className="d-flex flex-column gap-2">
-                          {/* Audio Controls */}
-                          {session.audio && session.audio.link && (
-                            <Button
-                              variant={session.audio.isFree ? "outline-success" : "outline-warning"}
-                              size="sm"
-                              className="d-flex align-items-center justify-content-center gap-2"
-                              onClick={handleOpenMusicPlayer}
+                      <div className="flex items-center gap-3">
+                        {/* Media Controls */}
+                        <div className="flex gap-2">
+                          {session.audio?.link && (
+                            <button
+                              onClick={() => setShowMusicPlayer(true)}
                               disabled={!session.audio.isFree && !user}
+                              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                                session.audio.isFree 
+                                  ? 'text-success-600 border border-success-300 hover:bg-success-50' 
+                                  : 'text-warning-600 border border-warning-300 hover:bg-warning-50'
+                              } ${!session.audio.isFree && !user ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                               <Headphones size={16} />
-                              Play Audio
+                              Audio
                               {!session.audio.isFree && <Lock size={12} />}
-                            </Button>
+                            </button>
                           )}
                           
-                          {/* Video Controls */}
-                          {session.video && session.video.link && (
-                            <Button
-                              variant={session.video.isFree ? "outline-info" : "outline-warning"}
-                              size="sm"
-                              className="d-flex align-items-center justify-content-center gap-2"
+                          {session.video?.link && (
+                            <button
                               disabled={!session.video.isFree && !user}
+                              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                                session.video.isFree 
+                                  ? 'text-blue-600 border border-blue-300 hover:bg-blue-50' 
+                                  : 'text-warning-600 border border-warning-300 hover:bg-warning-50'
+                              } ${!session.video.isFree && !user ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                               <Video size={16} />
                               Video
                               {!session.video.isFree && <Lock size={12} />}
-                            </Button>
+                            </button>
                           )}
-                          
-                          {/* Download Button     {(session.audio?.link || session.video?.link) && (
-                            <Button
-                              variant="outline-secondary"
-                              size="sm"
-                              className="d-flex align-items-center justify-content-center gap-2"
-                            >
-                              <Download size={16} />
-                              Download
-                            </Button>
-                          )}*/}
-                      
                         </div>
-                      </Col>
-                    </Row>
+
+                        {/* Dropdown Menu */}
+                        {isCreator && (
+                          <div className="relative">
+                            <button
+                              onClick={() => setDropdownOpen(dropdownOpen === session._id ? null : session._id)}
+                              className="p-2 text-text-tertiary hover:text-text-primary hover:bg-background-200 rounded-lg transition-colors duration-200"
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+                            {dropdownOpen === session._id && (
+                              <div className="absolute right-0 mt-2 w-48 bg-white border border-border-light rounded-lg shadow-medium z-20">
+                                <button className="w-full px-4 py-2 text-left text-sm hover:bg-background-100 flex items-center gap-2">
+                                  <Edit3 size={14} />
+                                  Edit Session
+                                </button>
+                                <button className="w-full px-4 py-2 text-left text-sm text-error-600 hover:bg-error-50 flex items-center gap-2">
+                                  Delete Session
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 );
               })
           ) : (
-            <div className="text-center py-5">
-              <BookOpen size={48} className="text-muted mb-3" />
-              <h5 className="text-muted">No sessions yet</h5>
-              <p className="text-muted">Sessions will appear here as they are added.</p>
+            <div className="text-center py-12">
+              <BookOpen size={48} className="text-text-muted mx-auto mb-4" />
+              <h5 className="text-text-secondary mb-2">No sessions yet</h5>
+              <p className="text-text-tertiary mb-4">Sessions will appear here as they are added.</p>
               {isCreator && (
-                <Button
-                  variant="primary"
+                <button
                   onClick={onAddSession}
-                  className="mt-3"
+                  className="btn-primary px-6 py-3 rounded-lg font-semibold text-white hover:scale-105 transition-all duration-300 shadow-primary"
                 >
-                  <Plus size={16} className="me-2" />
+                  <Plus size={16} className="mr-2" />
                   Add First Session
-                </Button>
+                </button>
               )}
             </div>
           )}
-        </Card.Body>
-      </Card>
-
-      {/* Full-Screen Music Player Modal */}
-      <Modal 
-        show={showMusicPlayer} 
-        onHide={handleCloseMusicPlayer} 
-        fullscreen={true}
-        backdrop="static"
-        keyboard={false}
-        className="music-player-modal"
-      >
-        <div className="music-player-fullscreen">
-          <Modal.Header className="music-player-header border-0 pb-0">
-            <Modal.Title className="d-flex align-items-center music-player-title">
-              <Headphones size={28} className="me-3 headphones-icon text-white" />
-              KKKT YOMBO studios
-            </Modal.Title>
-            <div className="d-flex align-items-center gap-2">
-              {/* Share Button */}
-              <ShareButton 
-                url={shareUrl} 
-                title={shareTitle}
-              />
-              
-              {/* Close Button */}
-              <Button
-                variant="outline-light"
-                size="lg"
-                onClick={handleCloseMusicPlayer}
-                className="music-player-close-btn"
-              >
-                <X size={24} />
-              </Button>
-            </div>
-          </Modal.Header>
-          
-          <Modal.Body className="music-player-body p-0">
-            <div className="music-player-content">
-              {showMusicPlayer && seriesId && (
-                <MusicPlayer seriesId={seriesId} />
-              )}
-            </div>
-          </Modal.Body>
         </div>
-      </Modal>
+      </div>
 
-      <style jsx>{`
-        .pulse {
-          animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.05);
-          }
-          100% {
-            transform: scale(1);
-          }
-        }
-        
-        .card {
-          transition: transform 0.2s ease-in-out;
-        }
-        
-        .card:hover {
-          transform: translateY(-2px);
-        }
-        
-        .btn {
-          transition: all 0.3s ease;
-        }
+      {/* Music Player Modal */}
+      {showMusicPlayer && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-sm">
+          <div className="h-full flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-800 to-purple-900 border-b-2 border-purple-700 px-6 py-4 flex justify-between items-center">
+              <div className="flex items-center">
+                <Headphones size={28} className="mr-3 text-purple-400 animate-gentle-float" />
+                <h2 className="text-xl font-semibold text-white">KKKT YOMBO Studios</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <ShareButton url={shareUrl} title={shareTitle} colors={colors} />
+                <button
+                  onClick={() => setShowMusicPlayer(false)}
+                  className="w-12 h-12 bg-purple-800 hover:bg-purple-600 border border-purple-600 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
 
-        /* Music Player Modal Styles */
-        .music-player-modal .modal-content {
-          background: transparent !important;
-          border: none !important;
-          border-radius: 0 !important;
-        }
+            {/* Player Content */}
+            <div className="flex-1 overflow-hidden p-4">
+              {seriesId && <MusicPlayer seriesId={seriesId} />}
+            </div>
+          </div>
+        </div>
+      )}
 
-        .music-player-fullscreen {
-          background: linear-gradient(135deg, #0a0a0a 0%, #1a0d26 50%, #0a0a0a 100%);
-          min-height: 100vh;
-          width: 100%;
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .music-player-fullscreen::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: 
-            radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 60%, rgba(196, 181, 253, 0.05) 0%, transparent 50%);
-          pointer-events: none;
-        }
-
-        .music-player-header {
-          background: linear-gradient(90deg, #1a0d26 0%, #2d1b3d 100%) !important;
-          border-bottom: 2px solid #2d1b3d !important;
-          padding: 1.5rem 2rem !important;
-          position: relative;
-          z-index: 10;
-          flex-shrink: 0;
-        }
-
-        .music-player-title {
-          color: #f3f4f6 !important;
-          font-size: 1.5rem !important;
-          font-weight: 600 !important;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .headphones-icon {
-          color: #8b5cf6 !important;
-          filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
-          animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-          from {
-            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
-          }
-          to {
-            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
-          }
-        }
-
-        .music-player-close-btn {
-          background: rgba(45, 27, 61, 0.8) !important;
-          border: 1px solid #2d1b3d !important;
-          color: #f3f4f6 !important;
-          border-radius: 50% !important;
-          width: 50px !important;
-          height: 50px !important;
-          padding: 0 !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          transition: all 0.3s ease !important;
-          backdrop-filter: blur(10px);
-        }
-
-        .music-player-close-btn:hover {
-          background: rgba(139, 92, 246, 0.2) !important;
-          border-color: #8b5cf6 !important;
-          color: #8b5cf6 !important;
-          transform: scale(1.1) !important;
-          box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
-        }
-
-        .music-player-close-btn:focus {
-          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
-        }
-
-        .music-player-body {
-          background: transparent !important;
-          flex: 1 !important;
-          overflow: hidden !important;
-          position: relative;
-          z-index: 5;
-          padding: 0 !important;
-        }
-
-        .music-player-content {
-          height: 100% !important;
-          overflow-y: auto !important;
-          overflow-x: hidden !important;
-          max-height: calc(100vh - 120px) !important;
-          padding: 1rem !important;
-          scroll-behavior: smooth !important;
-        }
-
-        /* Custom scrollbar for music player */
-        .music-player-content::-webkit-scrollbar {
-          width: 12px;
-        }
-
-        .music-player-content::-webkit-scrollbar-track {
-          background: rgba(45, 27, 61, 0.3);
-          border-radius: 6px;
-        }
-
-        .music-player-content::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, #8b5cf6, #a855f7);
-          border-radius: 6px;
-          transition: all 0.3s ease;
-        }
-
-        .music-player-content::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(180deg, #a855f7, #c4b5fd);
-          box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
-        }
-
-        /* Firefox scrollbar */
-        .music-player-content {
-          scrollbar-width: thin;
-          scrollbar-color: #8b5cf6 rgba(45, 27, 61, 0.3);
-        }
-
-        /* Backdrop blur effect */
-        .music-player-modal .modal-backdrop {
-          background-color: rgba(10, 10, 10, 0.95) !important;
-          backdrop-filter: blur(10px);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .music-player-header {
-            padding: 1rem !important;
-          }
-          
-          .music-player-title {
-            font-size: 1.25rem !important;
-          }
-          
-          .headphones-icon {
-            display: none;
-          }
-          
-          .music-player-content {
-            padding: 0.5rem !important;
-            max-height: calc(100vh - 100px) !important;
-          }
-        }
-
-        /* Ensure modal takes full viewport */
-        .music-player-modal .modal-dialog {
-          margin: 0 !important;
-          max-width: 100% !important;
-          height: 100vh !important;
-        }
-
-        .music-player-modal .modal-content {
-          height: 100vh !important;
-        }
-      `}</style>
+      {/* Click outside to close dropdown */}
+      {dropdownOpen && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setDropdownOpen(null)}
+        />
+      )}
     </>
   );
 };

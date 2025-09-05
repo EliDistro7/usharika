@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Container, Row, Col, Badge, Button, ProgressBar } from 'react-bootstrap';
 import { 
   Calendar, 
   Users, 
@@ -22,22 +21,17 @@ const SeriesHero = ({
   progressPercentage,
   onAddSession,
   onEditSeries,
-
 }) => {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric'
     });
   };
 
-  // Generate share URL and title if not provided
   const defaultShareUrl = `https://kkktyombo.org/series/${series._id}`;
   const defaultShareTitle = `${series.name} - ${series.author}`;
 
-  // Define colors to match the ControlButtons approach
   const colors = {
     primary: '#6f42c1',
     surface: 'white',
@@ -47,134 +41,83 @@ const SeriesHero = ({
   };
 
   return (
-    <>
-      <div 
-        className="hero-section py-5 mb-4"
-        style={{
-          background: 'linear-gradient(135deg, #6f42c1 0%, #495057 50%, #b8860b 100%)',
-          color: 'white'
-        }}
-      >
-        <Container>
-          <Row className="align-items-center">
-            <Col lg={8}>
-              <div className="d-flex align-items-center mb-3">
-                <BookOpen size={32} className="me-3" />
-                <div>
-                  <Badge 
-                    bg="light" 
-                    text="dark" 
-                    className="mb-2"
-                    style={{ fontSize: '0.8rem' }}
-                  >
-                    {series.group}
-                  </Badge>
-                  <h1 className="display-4 fw-bold mb-0 text-white">{series.name}</h1>
-                </div>
+    <div className="bg-hero-gradient text-white py-12 mb-8 relative overflow-hidden">
+      {/* Background overlay */}
+    
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-20">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-8">
+          {/* Content */}
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-4">
+              <BookOpen size={28} />
+              <div>
+                <span className="inline-block bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  {series.group}
+                </span>
+                <h1 className="text-4xl lg:text-5xl font-bold text-white">{series.name}</h1>
               </div>
-              
-              <div className="d-flex align-items-center mb-3 flex-wrap gap-3">
-                <div className="d-flex align-items-center">
-                  <User size={18} className="me-2" />
-                {/*  <span>by {series.author}</span> */}
-                  {isCreator && <Crown size={16} className="ms-2 text-warning" />}
-                </div>
-                <div className="d-flex align-items-center">
-                  <Calendar size={18} className="me-2" />
-                  <span>{formatDate(series.startDate)} - {formatDate(series.endDate)}</span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <Users size={18} className="me-2" />
-                 <span>400 total attendance</span> 
-                </div>
-              </div>
-              
-              <p className="lead mb-4">{series.description}</p>
-              
-              <div className="progress-section mb-3">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <span>Progress</span>
-                  <span>{completedSessions}/{totalSessions} sessions completed</span>
-                </div>
-                <ProgressBar 
-                  now={progressPercentage} 
-                  style={{ height: '8px' }}
-                  className="bg-light"
-                />
-              </div>
-            </Col>
+            </div>
             
-            <Col lg={4} className="text-lg-end">
-              <div 
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  alignItems: "center",
-                  position: "relative",
-                  zIndex: 10
-                }}
-              >
-                {isCreator && (
-                  <>
-                    <Button
-                      variant="light"
-                      size="lg"
-                      onClick={onAddSession}
-                      className="d-flex align-items-center justify-content-center gap-2"
-                    >
-                      <Plus size={20} />
-                      Add Session
-                    </Button>
-                    <Button
-                      variant="outline-light"
-                      onClick={onEditSeries}
-                      className="d-flex align-items-center justify-content-center gap-2"
-                    >
-                      <Edit3 size={18} />
-                      Edit Series
-                    </Button>
-                  </>
-                )}
-                {/* Use the same approach as ControlButtons */}
-                <ShareButton 
-                  url={defaultShareUrl}
-                  title={defaultShareTitle}
-                  colors={colors}
+            <div className="flex items-center gap-6 mb-4 text-sm opacity-90">
+              <div className="flex items-center gap-2">
+                <User size={16} />
+                <span>by {series.author}</span>
+                {isCreator && <Crown size={14} className="text-yellow-300" />}
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar size={16} />
+                <span>{formatDate(series.startDate)} - {formatDate(series.endDate)}</span>
+              </div>
+             
+            </div>
+            
+            <p className="text-lg opacity-95 mb-6 max-w-2xl">{series.description}</p>
+            
+            {/* Progress */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2 text-sm">
+                <span className="font-medium">Progress</span>
+                <span>{completedSessions}/{totalSessions} completed</span>
+              </div>
+              <div className="w-full bg-white bg-opacity-20 rounded-full h-2 overflow-hidden">
+                <div 
+                  className="h-full bg-secondary-gradient transition-all duration-500"
+                  style={{ width: `${progressPercentage}%` }}
                 />
               </div>
-            </Col>
-          </Row>
-        </Container>
+            </div>
+          </div>
+          
+          {/* Actions */}
+          <div className="flex flex-col gap-3 lg:items-end">
+            {isCreator && (
+              <>
+                <button
+                  onClick={onAddSession}
+                  className="flex items-center justify-center gap-2 bg-white text-primary-700 px-6 py-3 rounded-xl font-semibold hover:bg-opacity-90 hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  <Plus size={18} />
+                  Add Session
+                </button>
+                <button
+                  onClick={onEditSeries}
+                  className="flex items-center justify-center gap-2 bg-transparent border-2 border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-primary-700 transition-all duration-300"
+                >
+                  <Edit3 size={16} />
+                  Edit
+                </button>
+              </>
+            )}
+            <ShareButton 
+              url={defaultShareUrl}
+              title={defaultShareTitle}
+              colors={colors}
+            />
+          </div>
+        </div>
       </div>
-
-      <style jsx>{`
-        .hero-section {
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .hero-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.1);
-          z-index: 1;
-        }
-        
-        .hero-section > * {
-          position: relative;
-          z-index: 2;
-        }
-        
-        .progress-bar {
-          background: linear-gradient(90deg, #6f42c1, #b8860b);
-        }
-      `}</style>
-    </>
+    </div>
   );
 };
 
