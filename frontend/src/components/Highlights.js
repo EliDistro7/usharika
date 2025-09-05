@@ -11,8 +11,8 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaExpand,
+  FaTimes,
 } from "react-icons/fa";
-import { Modal, Button } from "react-bootstrap";
 import ShareButton from "./ShareButton";
 import { Cinzel, Playfair_Display, Cormorant_Garamond } from "next/font/google";
 
@@ -32,17 +32,7 @@ const cormorant = Cormorant_Garamond({
   weight: ["500", "700"],
 });
 
-// Color scheme
-const colors = {
-  black: "#1a1a1a",         // Bold black
-  purple: "#9370DB",        // Lighter purple
-  yellow: "#FFD700",        // Gold yellow
-  lightPurple: "#E6E6FA",   // Very light purple
-  white: "#ffffff",         // Pure white
-  gray: "#666666"           // Medium gray
-};
-
-const Highlights = ({ data, datatype='default' }) => {
+const Highlights = ({ data, datatype = 'default' }) => {
   const getActiveTab = () => {
     return datatype === "default" ? Object.keys(data.content)[0] : Object.keys(data.content)[0];
   };
@@ -77,161 +67,155 @@ const Highlights = ({ data, datatype='default' }) => {
   };
 
   return (
-    <div className={`position-relative z-10 mt-4 p-4 rounded-3 shadow-lg ${playfair.className}`} 
-         style={{ backgroundColor: colors.white }}>
+    <div className={`relative z-10 mt-6 p-6 rounded-3xl shadow-strong bg-background-50 ${playfair.className}`}>
       {/* Title */}
-      <h1 className={`mb-4 ${cinzel.className}`} style={{
-        fontSize: "2rem",
-        color: colors.black,
-        fontWeight: 700,
-        textTransform: "uppercase"
-      }}>
+      <h1 className={`mb-6 text-4xl font-black text-text-primary uppercase tracking-wide ${cinzel.className}`}>
         {data.name}
       </h1>
-  
+
       {/* Dropdown for Chapters */}
-      <div className="mb-4">
+      <div className="mb-6">
         <button
-          className={`btn w-100 text-start d-flex justify-content-between align-items-center py-3 rounded-3 ${cormorant.className}`}
+          className={`w-full text-left flex justify-between items-center py-4 px-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] shadow-primary ${cormorant.className}`}
           style={{
-            backgroundColor: colors.purple,
-            color: colors.white,
-            fontSize: "1.2rem",
-            border: "none"
+            background: 'linear-gradient(135deg, #9333ea 0%, #a855f7 100%)',
+            color: '#ffffff',
+            fontSize: '1.25rem',
+            border: 'none'
           }}
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <span>{data.content[activeTab].groupName}</span>
-          {dropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
+          <span className="font-semibold">{data.content[activeTab].groupName}</span>
+          <div className="transition-transform duration-300" style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            <FaChevronDown />
+          </div>
         </button>
-  
-        {dropdownOpen && (
-          <div className="mt-2">
+
+        {/* Dropdown Menu */}
+        <div className={`mt-3 transition-all duration-300 overflow-hidden ${dropdownOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className="space-y-2">
             {Object.keys(data.content).map((tab) => (
               <button
                 key={tab}
-                className={`btn w-100 text-start mb-2 py-2 rounded-3 ${cormorant.className}`}
-                style={{
-                  backgroundColor: activeTab === tab ? colors.purple : colors.lightPurple,
-                  color: activeTab === tab ? colors.white : colors.black,
-                  fontSize: "1.1rem",
-                  border: `2px solid ${activeTab === tab ? colors.purple : colors.black}`
-                }}
+                className={`w-full text-left py-3 px-5 rounded-xl transition-all duration-200 hover:scale-[1.01] ${cormorant.className} ${
+                  activeTab === tab 
+                    ? 'bg-primary-gradient text-white shadow-primary border-2 border-primary-600' 
+                    : 'bg-background-200 text-text-primary border-2 border-border-default hover:border-primary-300 hover:bg-background-300'
+                }`}
+                style={{ fontSize: '1.1rem' }}
                 onClick={() => {
                   setActiveTab(tab);
                   setDropdownOpen(false);
                 }}
               >
-                {data.content[tab].groupName}
+                <span className="font-medium">{data.content[tab].groupName}</span>
               </button>
             ))}
           </div>
-        )}
+        </div>
       </div>
-  
+
       {/* Carousel Content */}
-      <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
-        {data.content[activeTab].content.map((item, index) => (
-          <CarouselItem
-            key={index}
-            item={item}
-            isMuted={isMuted}
-            videoRef={(el) => (videoRefs.current[index] = el)}
-            onPauseCarousel={() => setIsPaused(true)}
-          />
-        ))}
-      </FadeCarousel>
-  
+      <div className="mb-6 rounded-2xl overflow-hidden shadow-medium">
+        <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
+          {data.content[activeTab].content.map((item, index) => (
+            <CarouselItem
+              key={index}
+              item={item}
+              isMuted={isMuted}
+              videoRef={(el) => (videoRefs.current[index] = el)}
+              onPauseCarousel={() => setIsPaused(true)}
+            />
+          ))}
+        </FadeCarousel>
+      </div>
+
       {/* Control Buttons */}
-      <div className="d-flex justify-content-between align-items-center mt-4">
-        <div className="d-flex gap-3">
+      <div className="flex justify-between items-center mt-6">
+        <div className="flex gap-4">
+          {/* Play/Pause Button */}
           <button
             onClick={togglePause}
-            className="rounded-circle shadow-sm p-3 d-flex align-items-center justify-content-center"
-            style={{
-              backgroundColor: colors.purple,
-              color: colors.white,
-              border: "none",
-              width: "50px",
-              height: "50px"
-            }}
+            className="w-14 h-14 rounded-full shadow-primary flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-primary-lg bg-primary-gradient"
           >
-            {isPaused ? <FaPlay size={18} /> : <FaPause size={18} />}
+            {isPaused ? <FaPlay size={18} className="text-white ml-0.5" /> : <FaPause size={18} className="text-white" />}
           </button>
+          
+          {/* Mute Button */}
           <button
             onClick={toggleMute}
-            className="rounded-circle shadow-sm p-3 d-flex align-items-center justify-content-center"
-            style={{
-              backgroundColor: colors.black,
-              color: colors.white,
-              border: "none",
-              width: "50px",
-              height: "50px"
-            }}
+            className="w-14 h-14 rounded-full shadow-strong flex items-center justify-content-center transition-all duration-300 hover:scale-110 bg-text-primary"
           >
-            {isMuted ? <FaVolumeMute size={18} /> : <FaVolumeUp size={18} />}
+            {isMuted ? <FaVolumeMute size={18} className="text-white" /> : <FaVolumeUp size={18} className="text-white" />}
           </button>
         </div>
-        <div className="d-flex gap-3">
+        
+        <div className="flex gap-4">
+          {/* Fullscreen Button */}
           <button
             onClick={handleModalShow}
-            className="rounded-circle shadow-sm p-3 d-flex align-items-center justify-content-center"
-            style={{
-              backgroundColor: colors.yellow,
-              color: colors.black,
-              border: "none",
-              width: "50px",
-              height: "50px"
-            }}
+            className="w-14 h-14 rounded-full shadow-yellow flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-yellow-lg bg-yellow-500"
             title="Fullscreen"
           >
-            <FaExpand size={18} />
+            <FaExpand size={18} className="text-text-primary" />
           </button>
-          <ShareButton url={window.location.href} title={data.name} />
+          
+          <ShareButton url={typeof window !== 'undefined' ? window.location.href : ''} title={data.name} />
         </div>
       </div>
-  
+
       {/* Fullscreen Modal */}
-      <Modal
-        show={showModal}
-        onHide={handleModalClose}
-        size="lg"
-        centered
-        backdrop={false}
-        className="custom-modal"
-      >
-        <Modal.Header closeButton style={{ backgroundColor: colors.purple }}>
-          <Modal.Title className={`text-white ${cinzel.className}`} style={{ fontSize: "1.5rem" }}>
-            {data.name}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0">
-          <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
-            {data.content[activeTab].content.map((item, index) => (
-              <CarouselItem
-                key={index}
-                item={item}
-                isMuted={isMuted}
-                videoRef={(el) => (videoRefs.current[index] = el)}
-                onPauseCarousel={() => setIsPaused(true)}
-              />
-            ))}
-          </FadeCarousel>
-        </Modal.Body>
-        <Modal.Footer style={{ backgroundColor: colors.lightPurple }}>
-          <Button 
+      {showModal && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
             onClick={handleModalClose}
-            style={{
-              backgroundColor: colors.purple,
-              border: "none",
-              padding: "8px 20px",
-              fontSize: "1.1rem"
-            }}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          />
+          
+          {/* Modal Content */}
+          <div className="relative z-10 w-full max-w-6xl h-full max-h-[90vh] bg-background-50 rounded-2xl shadow-strong overflow-hidden animate-scale-in">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 bg-primary-gradient">
+              <h2 className={`text-2xl font-bold text-white ${cinzel.className}`}>
+                {data.name}
+              </h2>
+              <button
+                onClick={handleModalClose}
+                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-105"
+              >
+                <FaTimes size={16} className="text-white" />
+              </button>
+            </div>
+            
+            {/* Modal Body */}
+            <div className="p-0 h-[calc(90vh-140px)] overflow-hidden">
+              <FadeCarousel isPaused={isPaused} isMuted={isMuted} onToggleMute={toggleMute}>
+                {data.content[activeTab].content.map((item, index) => (
+                  <CarouselItem
+                    key={index}
+                    item={item}
+                    isMuted={isMuted}
+                    videoRef={(el) => (videoRefs.current[index] = el)}
+                    onPauseCarousel={() => setIsPaused(true)}
+                  />
+                ))}
+              </FadeCarousel>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="flex justify-end p-4 bg-primary-50 border-t border-primary-200">
+              <button 
+                onClick={handleModalClose}
+                className="px-6 py-3 bg-primary-gradient text-white rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-primary"
+                style={{ fontSize: '1.1rem' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );  
 };
