@@ -228,22 +228,13 @@ const FadeCarousel = ({
       {!isPaused && totalSlides > 1 && (
         <div className="absolute bottom-0 left-0 w-full h-1 bg-black/20 z-30">
           <div 
-            className="h-full bg-primary-gradient transition-all ease-linear"
+            className="h-full bg-primary-gradient transition-all duration-[6000ms] ease-linear"
             style={{
               width: `${((currentIndex + 1) / totalSlides) * 100}%`,
-              animation: `carousel-progress 6000ms linear infinite`,
             }}
           />
         </div>
       )}
-
-      {/* Custom CSS for progress animation */}
-      <style jsx>{`
-        @keyframes carousel-progress {
-          0% { transform: scaleX(0); transform-origin: left; }
-          100% { transform: scaleX(1); transform-origin: left; }
-        }
-      `}</style>
     </div>
   );
 };
