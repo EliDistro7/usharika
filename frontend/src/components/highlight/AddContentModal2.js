@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, ProgressBar } from "react-bootstrap";
 import { uploadToCloudinary } from "@/actions/uploadToCloudinary";
-import { Upload, Image, Video, FileText, Sparkles } from "lucide-react";
+import { Upload, Image, Video, FileText, Sparkles, X } from "lucide-react";
 
 const AddContentModal = ({
   show,
@@ -29,361 +28,251 @@ const AddContentModal = ({
     }
   };
 
-  const customStyles = {
-    modal: {
-      background: 'linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%)',
-      borderRadius: '20px',
-      border: 'none',
-      boxShadow: '0 20px 40px rgba(124, 58, 237, 0.15)',
-    },
-    header: {
-      background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-      color: 'white',
-      borderRadius: '20px 20px 0 0',
-      border: 'none',
-      padding: '20px 30px',
-    },
-    body: {
-      padding: '30px',
-      background: 'transparent',
-    },
-    footer: {
-      background: 'rgba(248, 249, 255, 0.8)',
-      borderTop: '1px solid rgba(124, 58, 237, 0.1)',
-      borderRadius: '0 0 20px 20px',
-      padding: '20px 30px',
-    },
-    formGroup: {
-      marginBottom: '25px',
-    },
-    label: {
-      color: '#4c1d95',
-      fontWeight: '600',
-      fontSize: '14px',
-      marginBottom: '8px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-    },
-    input: {
-      borderRadius: '12px',
-      border: '2px solid #e0e7ff',
-      padding: '12px 16px',
-      fontSize: '14px',
-      transition: 'all 0.3s ease',
-      background: 'rgba(255, 255, 255, 0.8)',
-      ':focus': {
-        borderColor: '#7c3aed',
-        boxShadow: '0 0 0 3px rgba(124, 58, 237, 0.1)',
-        background: 'white',
-      }
-    },
-    radioGroup: {
-      display: 'flex',
-      gap: '20px',
-      marginTop: '10px',
-    },
-    radioOption: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '12px 20px',
-      borderRadius: '12px',
-      border: '2px solid #e0e7ff',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      background: 'rgba(255, 255, 255, 0.6)',
-      flex: 1,
-    },
-    radioActive: {
-      borderColor: '#7c3aed',
-      background: 'rgba(124, 58, 237, 0.1)',
-      color: '#4c1d95',
-    },
-    uploadArea: {
-      border: '2px dashed #a855f7',
-      borderRadius: '12px',
-      padding: '20px',
-      textAlign: 'center',
-      background: 'rgba(168, 85, 247, 0.05)',
-      transition: 'all 0.3s ease',
-      cursor: 'pointer',
-    },
-    button: {
-      borderRadius: '12px',
-      padding: '12px 24px',
-      fontWeight: '600',
-      fontSize: '14px',
-      transition: 'all 0.3s ease',
-      border: 'none',
-    },
-    primaryButton: {
-      background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-      color: 'white',
-      boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
-    },
-    secondaryButton: {
-      background: 'rgba(124, 58, 237, 0.1)',
-      color: '#7c3aed',
-      border: '2px solid #e0e7ff',
-    },
-    errorAlert: {
-      background: 'rgba(239, 68, 68, 0.1)',
-      border: '1px solid rgba(239, 68, 68, 0.3)',
-      borderRadius: '12px',
-      padding: '15px',
-      color: '#dc2626',
-      marginBottom: '20px',
-    },
-    progressBar: {
-      background: 'rgba(124, 58, 237, 0.1)',
-      borderRadius: '10px',
-      height: '8px',
-      overflow: 'hidden',
-    }
-  };
+  if (!show) return null;
 
   return (
-    <Modal 
-      show={show} 
-      onHide={onClose}
-      centered
-      size="lg"
-      contentClassName="border-0"
-    >
-      <div style={customStyles.modal}>
-        <Modal.Header closeButton style={customStyles.header}>
-          <Modal.Title style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Sparkles size={24} />
-            Add New Content
-          </Modal.Title>
-        </Modal.Header>
-        
-        <Modal.Body style={customStyles.body}>
-          {error && (
-            <div style={customStyles.errorAlert}>
-              {error}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        {/* Modal Container */}
+        <div className="bg-gradient-to-br from-background-50 to-background-300 rounded-4xl border-0 shadow-primary-lg animate-scale-in">
+          
+          {/* Header */}
+          <div className="bg-primary-gradient text-white rounded-t-4xl px-8 py-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Sparkles size={24} />
+              <h2 className="text-xl font-display font-semibold">Add New Content</h2>
             </div>
-          )}
-
-          {/* Dropdown for selecting a highlight */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <FileText size={16} />
-              Select Highlight
-            </Form.Label>
-            <Form.Control
-              as="select"
-              value={newContent.highlightId || ""}
-              onChange={(e) => onContentChange("highlightId", e.target.value)}
-              style={customStyles.input}
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/20 rounded-xl transition-colors"
             >
-              <option value="">Chagua alabamu</option>
-              {highlights.map((highlight) => (
-                <option key={highlight._id} value={highlight._id}>
-                  {highlight.name || `Highlight ${highlight._id}`}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-
-          {/* Dropdown for selecting a tab within the selected highlight */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <FileText size={16} />
-              Jina la Chapter (Tab)
-            </Form.Label>
-            <Form.Control
-              as="select"
-              value={newContent.groupName}
-              onChange={(e) => onContentChange("groupName", e.target.value)}
-              disabled={!newContent.highlightId}
-              style={customStyles.input}
-            >
-              <option value="">Au Chagua kutoka chapater zilizopo</option>
-              {highlights
-                .filter((h) => h._id === newContent.highlightId)
-                .flatMap((highlight) =>
-                  highlight.content.map((tab) => (
-                    <option key={tab._id} value={tab.groupName}>
-                      {tab.groupName}
-                    </option>
-                  ))
-                )}
-            </Form.Control>
-          </Form.Group>
-
-          {/* Input for typing a new group name */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <Sparkles size={16} />
-              Jina la Chapter Mpya
-            </Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter a new group name"
-              value={newContent.newGroupName || ""}
-              onChange={(e) => onContentChange("newGroupName", e.target.value)}
-              style={customStyles.input}
-            />
-          </Form.Group>
-
-          {/* Description */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <FileText size={16} />
-              Maelezo
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={newContent.description}
-              onChange={(e) => onContentChange("description", e.target.value)}
-              style={customStyles.input}
-              placeholder="Andika maelezo hapa..."
-            />
-          </Form.Group>
-
-          {/* Media Type Selection */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <Image size={16} />
-              Aina ya Media
-            </Form.Label>
-            <div style={customStyles.radioGroup}>
-              <div 
-                style={{
-                  ...customStyles.radioOption,
-                  ...(newContent.mediaType === "image" ? customStyles.radioActive : {})
-                }}
-                onClick={() => onContentChange("mediaType", "image")}
-              >
-                <Image size={18} />
-                <span>Image</span>
-                <Form.Check
-                  type="radio"
-                  name="mediaType"
-                  checked={newContent.mediaType === "image"}
-                  onChange={() => onContentChange("mediaType", "image")}
-                  style={{ marginLeft: 'auto' }}
-                />
+              <X size={20} />
+            </button>
+          </div>
+          
+          {/* Body */}
+          <div className="px-8 py-8 space-y-6">
+            {/* Error Alert */}
+            {error && (
+              <div className="bg-error-50 border border-error-200 rounded-2xl p-4 text-error-700">
+                {error}
               </div>
-              <div 
-                style={{
-                  ...customStyles.radioOption,
-                  ...(newContent.mediaType === "video" ? customStyles.radioActive : {})
-                }}
-                onClick={() => onContentChange("mediaType", "video")}
+            )}
+
+            {/* Select Highlight */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <FileText size={16} />
+                Select Highlight
+              </label>
+              <select
+                value={newContent.highlightId || ""}
+                onChange={(e) => onContentChange("highlightId", e.target.value)}
+                className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10"
               >
-                <Video size={18} />
-                <span>Video</span>
-                <Form.Check
-                  type="radio"
-                  name="mediaType"
-                  checked={newContent.mediaType === "video"}
-                  onChange={() => onContentChange("mediaType", "video")}
-                  style={{ marginLeft: 'auto' }}
-                />
-              </div>
+                <option value="">Chagua alabamu</option>
+                {highlights.map((highlight) => (
+                  <option key={highlight._id} value={highlight._id}>
+                    {highlight.name || `Highlight ${highlight._id}`}
+                  </option>
+                ))}
+              </select>
             </div>
-          </Form.Group>
 
-          {/* File Upload Section */}
-          <Form.Group style={customStyles.formGroup}>
-            <Form.Label style={customStyles.label}>
-              <Upload size={16} />
-              Upload Media
-            </Form.Label>
-            <div style={customStyles.uploadArea}>
-              <Upload size={24} color="#a855f7" style={{ marginBottom: '10px' }} />
-              <div style={{ color: '#7c3aed', marginBottom: '10px' }}>
-                Click to upload or drag and drop
-              </div>
-              <Form.Control 
-                type="file" 
-                onChange={handleFileUpload}
-                style={{ opacity: 0, position: 'absolute', width: '100%', height: '100%', cursor: 'pointer' }}
+            {/* Select Tab */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <FileText size={16} />
+                Jina la Chapter (Tab)
+              </label>
+              <select
+                value={newContent.groupName}
+                onChange={(e) => onContentChange("groupName", e.target.value)}
+                disabled={!newContent.highlightId}
+                className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Au Chagua kutoka chapater zilizopo</option>
+                {highlights
+                  .filter((h) => h._id === newContent.highlightId)
+                  .flatMap((highlight) =>
+                    highlight.content.map((tab) => (
+                      <option key={tab._id} value={tab.groupName}>
+                        {tab.groupName}
+                      </option>
+                    ))
+                  )}
+              </select>
+            </div>
+
+            {/* New Group Name */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <Sparkles size={16} />
+                Jina la Chapter Mpya
+              </label>
+              <input
+                type="text"
+                placeholder="Enter a new group name"
+                value={newContent.newGroupName || ""}
+                onChange={(e) => onContentChange("newGroupName", e.target.value)}
+                className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10"
               />
             </div>
-            {uploadProgress > 0 && (
-              <div style={{ marginTop: '15px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                  <span style={{ fontSize: '12px', color: '#7c3aed' }}>Uploading...</span>
-                  <span style={{ fontSize: '12px', color: '#7c3aed' }}>{uploadProgress}%</span>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <FileText size={16} />
+                Maelezo
+              </label>
+              <textarea
+                rows={3}
+                value={newContent.description}
+                onChange={(e) => onContentChange("description", e.target.value)}
+                placeholder="Andika maelezo hapa..."
+                className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10 resize-none"
+              />
+            </div>
+
+            {/* Media Type Selection */}
+            <div className="space-y-3">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <Image size={16} />
+                Aina ya Media
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div
+                  onClick={() => onContentChange("mediaType", "image")}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                    newContent.mediaType === "image"
+                      ? "border-primary-600 bg-primary-50 text-primary-700"
+                      : "border-border-default bg-white/60 text-text-secondary hover:border-primary-300 hover:bg-primary-50/50"
+                  }`}
+                >
+                  <Image size={18} />
+                  <span className="font-medium">Image</span>
+                  <input
+                    type="radio"
+                    name="mediaType"
+                    checked={newContent.mediaType === "image"}
+                    onChange={() => onContentChange("mediaType", "image")}
+                    className="ml-auto accent-primary-600"
+                  />
                 </div>
-                <div style={customStyles.progressBar}>
-                  <div 
-                    style={{
-                      width: `${uploadProgress}%`,
-                      height: '100%',
-                      background: 'linear-gradient(90deg, #7c3aed 0%, #a855f7 100%)',
-                      transition: 'width 0.3s ease',
-                      borderRadius: '10px'
-                    }}
+                <div
+                  onClick={() => onContentChange("mediaType", "video")}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                    newContent.mediaType === "video"
+                      ? "border-primary-600 bg-primary-50 text-primary-700"
+                      : "border-border-default bg-white/60 text-text-secondary hover:border-primary-300 hover:bg-primary-50/50"
+                  }`}
+                >
+                  <Video size={18} />
+                  <span className="font-medium">Video</span>
+                  <input
+                    type="radio"
+                    name="mediaType"
+                    checked={newContent.mediaType === "video"}
+                    onChange={() => onContentChange("mediaType", "video")}
+                    className="ml-auto accent-primary-600"
                   />
                 </div>
               </div>
-            )}
-          </Form.Group>
+            </div>
 
-          {/* Display the uploaded media URL */}
-          {newContent.mediaType === "image" && (
-            <Form.Group style={customStyles.formGroup}>
-              <Form.Label style={customStyles.label}>
-                <Image size={16} />
-                URL ya picha
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={newContent.imageUrl}
-                onChange={(e) => onContentChange("imageUrl", e.target.value)}
-                style={customStyles.input}
-                placeholder="https://example.com/image.jpg"
-              />
-            </Form.Group>
-          )}
-          {newContent.mediaType === "video" && (
-            <Form.Group style={customStyles.formGroup}>
-              <Form.Label style={customStyles.label}>
-                <Video size={16} />
-                URL ya video
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={newContent.videoUrl}
-                onChange={(e) => onContentChange("videoUrl", e.target.value)}
-                style={customStyles.input}
-                placeholder="https://example.com/video.mp4"
-              />
-            </Form.Group>
-          )}
-        </Modal.Body>
-        
-        <Modal.Footer style={customStyles.footer}>
-          <Button 
-            variant="secondary" 
-            onClick={onClose}
-            style={{...customStyles.button, ...customStyles.secondaryButton}}
-          >
-            Ondoa
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={onAdd}
-            style={{...customStyles.button, ...customStyles.primaryButton}}
-          >
-            Ongeza kwenye Chapter
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={onAddNewTab}
-            style={{...customStyles.button, ...customStyles.primaryButton, marginLeft: '10px'}}
-          >
-            Ongeza chapter mpya
-          </Button>
-        </Modal.Footer>
+            {/* File Upload */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                <Upload size={16} />
+                Upload Media
+              </label>
+              <div className="relative border-2 border-dashed border-purple-400 rounded-xl p-6 bg-purple-50/50 text-center transition-all duration-300 hover:border-purple-500 hover:bg-purple-50 cursor-pointer">
+                <Upload size={24} className="mx-auto mb-3 text-purple-500" />
+                <div className="text-primary-700 mb-2 font-medium">
+                  Click to upload or drag and drop
+                </div>
+                <input
+                  type="file"
+                  onChange={handleFileUpload}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+              
+              {/* Upload Progress */}
+              {uploadProgress > 0 && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-primary-700">
+                    <span>Uploading...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-primary-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="h-full bg-primary-gradient transition-all duration-300 rounded-full"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Media URL Inputs */}
+            {newContent.mediaType === "image" && (
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                  <Image size={16} />
+                  URL ya picha
+                </label>
+                <input
+                  type="text"
+                  value={newContent.imageUrl || ""}
+                  onChange={(e) => onContentChange("imageUrl", e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10"
+                />
+              </div>
+            )}
+            
+            {newContent.mediaType === "video" && (
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-text-primary font-semibold text-sm">
+                  <Video size={16} />
+                  URL ya video
+                </label>
+                <input
+                  type="text"
+                  value={newContent.videoUrl || ""}
+                  onChange={(e) => onContentChange("videoUrl", e.target.value)}
+                  placeholder="https://example.com/video.mp4"
+                  className="w-full rounded-xl border-2 border-border-default bg-white/80 px-4 py-3 text-sm transition-all duration-300 focus:border-primary-600 focus:bg-white focus:outline-none focus:ring-3 focus:ring-primary-600/10"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="bg-background-200/80 border-t border-border-light rounded-b-4xl px-8 py-6 flex flex-wrap gap-3 justify-end">
+            <button
+              onClick={onClose}
+              className="px-6 py-3 rounded-xl border-2 border-border-medium bg-white/60 text-text-secondary font-semibold text-sm transition-all duration-300 hover:bg-white hover:border-border-dark hover:text-text-primary"
+            >
+              Ondoa
+            </button>
+            <button
+              onClick={onAdd}
+              className="btn-primary px-6 py-3 rounded-xl text-sm font-semibold"
+            >
+              Ongeza kwenye Chapter
+            </button>
+            <button
+              onClick={onAddNewTab}
+              className="btn-primary px-6 py-3 rounded-xl text-sm font-semibold"
+            >
+              Ongeza chapter mpya
+            </button>
+          </div>
+        </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
