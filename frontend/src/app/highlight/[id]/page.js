@@ -16,7 +16,7 @@ const HighlightDetailPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [fullscreenItem, setFullscreenItem] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewMode, setViewMode] = useState('masonry'); // 'masonry' or 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'masonry' or 'list'
   const [masonryColumns, setMasonryColumns] = useState(3);
   const containerRef = useRef(null);
 
@@ -276,7 +276,7 @@ const HighlightDetailPage = () => {
               {highlight.content.map((tab, index) => (
                 <button
                   key={tab._id}
-                  className={`w-full text-left p-4 rounded-xl transition-all ${
+                  className={`w-full text-left p-4 transition-all ${
                     activeTab === index 
                       ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-primary' 
                       : 'bg-background-300 text-text-primary hover:bg-background-400'
@@ -304,7 +304,7 @@ const HighlightDetailPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-0 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Desktop Sidebar Navigation */}
           <div className="hidden lg:block">
@@ -349,7 +349,7 @@ const HighlightDetailPage = () => {
                 key={tab._id}
                 className={`${tabIndex === activeTab ? 'block' : 'hidden'}`}
               >
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div className="flex flex-col md:flex-row  px-4 justify-between items-start md:items-center mb-8 gap-4">
                   <div>
                     <h2 className="text-3xl font-bold text-text-primary mb-2">
                       {tab.groupName}
@@ -359,35 +359,7 @@ const HighlightDetailPage = () => {
                       Mara ya mwisho kusasishwa: {formatDate(tab.lastUpdated)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="bg-gradient-to-r from-orange-500 to-orange-400 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-orange">
-                      {tab.content.length} items
-                    </span>
-                    <div className="flex bg-white/80 backdrop-blur-sm rounded-xl border border-border-light shadow-soft">
-                      <button
-                        className={`p-2 rounded-l-xl transition-all ${
-                          viewMode === 'masonry' 
-                            ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white' 
-                            : 'text-text-secondary hover:text-text-primary'
-                        }`}
-                        onClick={() => setViewMode('masonry')}
-                        title="Masonry view"
-                      >
-                        <Grid size={18} />
-                      </button>
-                      <button
-                        className={`p-2 rounded-r-xl transition-all ${
-                          viewMode === 'list' 
-                            ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white' 
-                            : 'text-text-secondary hover:text-text-primary'
-                        }`}
-                        onClick={() => setViewMode('list')}
-                        title="List view"
-                      >
-                        <List size={18} />
-                      </button>
-                    </div>
-                  </div>
+                 
                 </div>
 
                 {/* Masonry Grid Layout */}
@@ -556,16 +528,11 @@ const MasonryCard = ({
           : ''
       }`}>
         <div className="flex items-center mb-4">
-          <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-xl p-2 mr-3 shadow-primary">
-            <User size={16} className="text-white" />
-          </div>
+        
         
           {!item.imageUrl && !item.videoUrl && (
             <div className="ml-auto flex gap-2">
-              <span className="bg-gradient-to-r from-blue-400 to-primary-400 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                <FileText size={14} className="mr-1" />
-                Text
-              </span>
+             
               <button
                 className="bg-gradient-to-r from-primary-500 to-primary-400 text-white p-2 rounded-full hover:shadow-primary transition-all"
                 onClick={() => toggleFullscreen(item)}
