@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, User, Clock, Image, Video, FileText, ChevronDown, ChevronUp, Share2, Bookmark, Play, Pause, Menu, X, Maximize, Minimize, Grid, List } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import ShareButton from '@/components/ShareButton';
+import { formatRoleName2 } from '@/actions/utils';
 
 const HighlightDetailPage = () => {
   const params = useParams();
@@ -355,7 +356,7 @@ const HighlightDetailPage = () => {
                     </h2>
                     <p className="text-text-secondary flex items-center text-sm">
                       <Clock size={16} className="mr-2" />
-                      Last updated: {formatDate(tab.lastUpdated)}
+                      Mara ya mwisho kusasishwa: {formatDate(tab.lastUpdated)}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
@@ -483,8 +484,8 @@ const MasonryCard = ({
               <User size={16} className="text-white" />
             </div>
             <div>
-              <div className="font-bold">{item.author}</div>
-              <div className="text-sm text-white/70">Content Author</div>
+              <div className="font-bold">{formatRoleName2(item.author)}</div>
+              <div className="text-sm text-white/70">Author</div>
             </div>
           </div>
           <button 
@@ -533,13 +534,7 @@ const MasonryCard = ({
             </div>
           )}
           <div className={`absolute ${isFullscreen && fullscreenItem?._id === item._id ? 'top-6 right-6' : 'top-4 right-4'} flex gap-2`}>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center shadow-lg ${
-              item.imageUrl ? 'bg-gradient-to-r from-green-500 to-green-400 text-white' : 
-              'bg-gradient-to-r from-orange-500 to-orange-400 text-white'
-            }`}>
-              {item.imageUrl ? <Image size={14} className="mr-1" /> : <Video size={14} className="mr-1" />}
-              {item.imageUrl ? 'Image' : 'Video'}
-            </span>
+         
             <button
               className="bg-black/70 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/90 transition-colors shadow-lg"
               onClick={() => toggleFullscreen(item)}
@@ -564,10 +559,7 @@ const MasonryCard = ({
           <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-xl p-2 mr-3 shadow-primary">
             <User size={16} className="text-white" />
           </div>
-          <div>
-            <div className="font-bold text-text-primary">{item.author}</div>
-            <div className="text-sm text-text-secondary">Content Author</div>
-          </div>
+        
           {!item.imageUrl && !item.videoUrl && (
             <div className="ml-auto flex gap-2">
               <span className="bg-gradient-to-r from-blue-400 to-primary-400 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
