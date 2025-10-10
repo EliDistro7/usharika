@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, User, Clock, Image, Video, FileText, ChevronDown, ChevronUp, Share2, Bookmark, Play, Pause, Menu, X, Maximize, Minimize, Grid, List } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import ShareButton from '@/components/ShareButton';
 
 const HighlightDetailPage = () => {
   const params = useParams();
@@ -167,7 +168,7 @@ const HighlightDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary-gradient">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600">
         <div className="text-center px-4">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
           <p className="text-white text-lg font-medium">Loading highlight details...</p>
@@ -178,7 +179,7 @@ const HighlightDetailPage = () => {
 
   if (!highlight) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary-gradient">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600">
         <div className="text-center px-4">
           <h3 className="text-white text-2xl font-bold">Highlight not found</h3>
         </div>
@@ -190,22 +191,18 @@ const HighlightDetailPage = () => {
   const masonryColumns1 = viewMode === 'masonry' ? distributeMasonryItems(currentTab.content, masonryColumns) : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Enhanced Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
-        }}></div>
+    <div cl
+    assName="min-h-screen bg-gradient-to-br from-background-200 via-background-300 to-primary-50">
+      {/* Enhanced Header Section - Teal Theme */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-primary-500 via-primary-400 to-blue-400">
+        <div className="absolute inset-0 bg-black/10"></div>
         
         <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 relative">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8">
               {/* Badge and meta info */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 gap-4">
-                <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white font-medium flex items-center border border-white/20">
-                  ✨ Highlight
-                </span>
+                {/* Uncomment if needed
                 <div className="flex flex-col sm:flex-row items-start sm:items-center text-white/90 gap-4">
                   <div className="flex items-center">
                     <div className="bg-white/20 backdrop-blur-sm rounded-full p-2 mr-3 border border-white/20">
@@ -218,6 +215,7 @@ const HighlightDetailPage = () => {
                     <span className="text-sm">{formatDate(highlight.createdAt)}</span>
                   </div>
                 </div>
+                */}
               </div>
               
               {/* Title */}
@@ -227,66 +225,14 @@ const HighlightDetailPage = () => {
               
               <div className="flex items-center text-white/75">
                 <Clock size={16} className="mr-2" />
-                <span className="text-sm">Last updated: {formatDate(highlight.lastUpdated)}</span>
+                <span className="text-sm">Kusasishwa mara ya mwisho: {formatDate(highlight.lastUpdated)}</span>
               </div>
             </div>
             
             {/* Action buttons */}
             <div className="lg:col-span-4 mt-6 lg:mt-0">
               <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 lg:items-end">
-                <button className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center border border-white/30 hover:bg-white/30 transition-all shadow-lg">
-                  <Share2 size={18} className="mr-2" />
-                  Share
-                </button>
-                <button className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center border border-white/20 hover:bg-white/20 transition-all">
-                  <Bookmark size={18} className="mr-2" />
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Stats Bar */}
-      <div className="bg-white/80 backdrop-blur-sm py-6 shadow-lg border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="flex items-center justify-center">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl p-3 mr-4 shadow-lg">
-                <FileText size={24} className="text-white" />
-              </div>
-              <div className="text-left">
-                <div className="text-3xl font-bold text-gray-800">{highlight.content.length}</div>
-                <div className="text-gray-600 text-sm font-medium">Content Groups</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-center">
-              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-3 mr-4 shadow-lg">
-                <Image size={24} className="text-white" />
-              </div>
-              <div className="text-left">
-                <div className="text-3xl font-bold text-gray-800">
-                  {highlight.content.reduce((total, tab) => 
-                    total + tab.content.reduce((tabTotal, item) => 
-                      tabTotal + (item.imageUrl ? 1 : 0), 0), 0)}
-                </div>
-                <div className="text-gray-600 text-sm font-medium">Images</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-center">
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-3 mr-4 shadow-lg">
-                <Video size={24} className="text-white" />
-              </div>
-              <div className="text-left">
-                <div className="text-3xl font-bold text-gray-800">
-                  {highlight.content.reduce((total, tab) => 
-                    total + tab.content.reduce((tabTotal, item) => 
-                      tabTotal + (item.videoUrl ? 1 : 0), 0), 0)}
-                </div>
-                <div className="text-gray-600 text-sm font-medium">Videos</div>
+                <ShareButton url={window.location.href} title={highlight.name}/>
               </div>
             </div>
           </div>
@@ -297,12 +243,12 @@ const HighlightDetailPage = () => {
       <div className="lg:hidden">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <button 
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4 rounded-xl flex items-center justify-between shadow-lg"
+            className="w-full bg-gradient-to-r from-primary-500 to-primary-400 text-white p-4 rounded-xl flex items-center justify-between shadow-lg hover:shadow-primary transition-all"
             onClick={toggleSidebar}
           >
             <div className="flex items-center">
               <Menu size={20} className="mr-3" />
-              <span className="font-semibold">Content Groups</span>
+              <span className="font-semibold">Maudhui</span>
             </div>
             <span className="bg-white/25 rounded-full px-3 py-1 text-sm font-medium">
               {highlight.content.length}
@@ -317,9 +263,9 @@ const HighlightDetailPage = () => {
         <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-2xl">
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <h6 className="text-xl font-bold text-gray-800">Content Groups</h6>
+              <h6 className="text-xl font-bold text-text-primary">Maudhui</h6>
               <button 
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-full hover:bg-background-300 transition-colors"
                 onClick={toggleSidebar}
               >
                 <X size={20} />
@@ -331,8 +277,8 @@ const HighlightDetailPage = () => {
                   key={tab._id}
                   className={`w-full text-left p-4 rounded-xl transition-all ${
                     activeTab === index 
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' 
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-primary' 
+                      : 'bg-background-300 text-text-primary hover:bg-background-400'
                   }`}
                   onClick={() => {
                     setActiveTab(index);
@@ -344,7 +290,7 @@ const HighlightDetailPage = () => {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       activeTab === index 
                         ? 'bg-white/25 text-white' 
-                        : 'bg-indigo-500 text-white'
+                        : 'bg-primary-500 text-white'
                     }`}>
                       {tab.content.length}
                     </span>
@@ -361,12 +307,12 @@ const HighlightDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Desktop Sidebar Navigation */}
           <div className="hidden lg:block">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-6 border border-white/20">
-              <h6 className="text-lg font-bold text-gray-800 mb-6 flex items-center">
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-2 rounded-xl mr-3 shadow-lg">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft p-6 sticky top-6 border border-border-light">
+              <h6 className="text-lg font-bold text-text-primary mb-6 flex items-center">
+                <div className="bg-gradient-to-r from-primary-500 to-primary-400 p-2 rounded-xl mr-3 shadow-primary">
                   <FileText size={16} className="text-white" />
                 </div>
-                Content Groups
+               Maudhui
               </h6>
               <nav className="space-y-2">
                 {highlight.content.map((tab, index) => (
@@ -374,8 +320,8 @@ const HighlightDetailPage = () => {
                     key={tab._id}
                     className={`w-full text-left p-4 rounded-xl transition-all ${
                       activeTab === index 
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg transform scale-105' 
-                        : 'bg-indigo-50 text-gray-700 hover:bg-indigo-100'
+                        ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-primary transform scale-105' 
+                        : 'bg-primary-50 text-text-primary hover:bg-primary-100'
                     }`}
                     onClick={() => setActiveTab(index)}
                   >
@@ -384,7 +330,7 @@ const HighlightDetailPage = () => {
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         activeTab === index 
                           ? 'bg-white/25 text-white' 
-                          : 'bg-indigo-500 text-white'
+                          : 'bg-primary-500 text-white'
                       }`}>
                         {tab.content.length}
                       </span>
@@ -404,24 +350,24 @@ const HighlightDetailPage = () => {
               >
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                   <div>
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                    <h2 className="text-3xl font-bold text-text-primary mb-2">
                       {tab.groupName}
                     </h2>
-                    <p className="text-gray-600 flex items-center text-sm">
+                    <p className="text-text-secondary flex items-center text-sm">
                       <Clock size={16} className="mr-2" />
                       Last updated: {formatDate(tab.lastUpdated)}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    <span className="bg-gradient-to-r from-orange-500 to-orange-400 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-orange">
                       {tab.content.length} items
                     </span>
-                    <div className="flex bg-white/80 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg">
+                    <div className="flex bg-white/80 backdrop-blur-sm rounded-xl border border-border-light shadow-soft">
                       <button
                         className={`p-2 rounded-l-xl transition-all ${
                           viewMode === 'masonry' 
-                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white' 
-                            : 'text-gray-600 hover:text-gray-800'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white' 
+                            : 'text-text-secondary hover:text-text-primary'
                         }`}
                         onClick={() => setViewMode('masonry')}
                         title="Masonry view"
@@ -431,8 +377,8 @@ const HighlightDetailPage = () => {
                       <button
                         className={`p-2 rounded-r-xl transition-all ${
                           viewMode === 'list' 
-                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white' 
-                            : 'text-gray-600 hover:text-gray-800'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white' 
+                            : 'text-text-secondary hover:text-text-primary'
                         }`}
                         onClick={() => setViewMode('list')}
                         title="List view"
@@ -522,7 +468,7 @@ const MasonryCard = ({
   return (
     <div 
       id={`fullscreen-container-${item._id}`}
-      className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-300 ${
+      className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-border-light overflow-hidden hover:shadow-medium hover:scale-105 transition-all duration-300 ${
         isFullscreen && fullscreenItem?._id === item._id 
           ? 'fixed inset-0 z-50 bg-black flex flex-col rounded-none border-none scale-100' 
           : ''
@@ -533,7 +479,7 @@ const MasonryCard = ({
       {isFullscreen && fullscreenItem?._id === item._id && (
         <div className="bg-black/90 backdrop-blur-sm p-4 flex justify-between items-center">
           <div className="flex items-center text-white">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-2 mr-3">
+            <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-xl p-2 mr-3">
               <User size={16} className="text-white" />
             </div>
             <div>
@@ -579,7 +525,7 @@ const MasonryCard = ({
           {item.videoUrl && !playingVideos[item._id] && (
             <div className="absolute inset-0 flex items-center justify-center">
               <button 
-                className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full p-4 shadow-xl hover:scale-110 transition-transform"
+                className="bg-gradient-to-r from-orange-500 to-orange-400 rounded-full p-4 shadow-orange-lg hover:scale-110 transition-transform"
                 onClick={() => toggleVideo(item._id)}
               >
                 <Play size={24} className="text-white ml-1" />
@@ -588,8 +534,8 @@ const MasonryCard = ({
           )}
           <div className={`absolute ${isFullscreen && fullscreenItem?._id === item._id ? 'top-6 right-6' : 'top-4 right-4'} flex gap-2`}>
             <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center shadow-lg ${
-              item.imageUrl ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white' : 
-              'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+              item.imageUrl ? 'bg-gradient-to-r from-green-500 to-green-400 text-white' : 
+              'bg-gradient-to-r from-orange-500 to-orange-400 text-white'
             }`}>
               {item.imageUrl ? <Image size={14} className="mr-1" /> : <Video size={14} className="mr-1" />}
               {item.imageUrl ? 'Image' : 'Video'}
@@ -615,21 +561,21 @@ const MasonryCard = ({
           : ''
       }`}>
         <div className="flex items-center mb-4">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-2 mr-3 shadow-lg">
+          <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-xl p-2 mr-3 shadow-primary">
             <User size={16} className="text-white" />
           </div>
           <div>
-            <div className="font-bold text-gray-800">{item.author}</div>
-            <div className="text-sm text-gray-600">Content Author</div>
+            <div className="font-bold text-text-primary">{item.author}</div>
+            <div className="text-sm text-text-secondary">Content Author</div>
           </div>
           {!item.imageUrl && !item.videoUrl && (
             <div className="ml-auto flex gap-2">
-              <span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+              <span className="bg-gradient-to-r from-blue-400 to-primary-400 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
                 <FileText size={14} className="mr-1" />
                 Text
               </span>
               <button
-                className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-2 rounded-full hover:bg-gray-700 transition-colors"
+                className="bg-gradient-to-r from-primary-500 to-primary-400 text-white p-2 rounded-full hover:shadow-primary transition-all"
                 onClick={() => toggleFullscreen(item)}
               >
                 {isFullscreen && fullscreenItem?._id === item._id ? (
@@ -643,7 +589,7 @@ const MasonryCard = ({
         </div>
 
         <div className="prose max-w-none">
-          <p className="text-gray-700 leading-relaxed">
+          <p className="text-text-primary leading-relaxed">
             {expandedItems[item._id] || item.description.length <= 200
               ? item.description
               : `${item.description.substring(0, 200)}...`}
@@ -651,7 +597,7 @@ const MasonryCard = ({
           
           {item.description.length > 200 && (
             <button
-              className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center mt-4 transition-colors"
+              className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center mt-4 transition-colors"
               onClick={() => toggleItemExpansion(item._id)}
             >
               {expandedItems[item._id] ? (
@@ -672,7 +618,7 @@ const MasonryCard = ({
         {item.videoUrl && (
           <div className="mt-4">
             <button 
-              className="bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 rounded-xl font-semibold text-white flex items-center shadow-lg hover:shadow-xl transition-all"
+              className="bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-2 rounded-xl font-semibold text-white flex items-center shadow-orange hover:shadow-orange-lg transition-all"
               onClick={() => toggleVideo(item._id)}
             >
               {playingVideos[item._id] ? (

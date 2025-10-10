@@ -6,144 +6,146 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'media', // Respects system preference
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
-        // Primary brand colors
+        // Primary brand colors - Soft Teal/Cyan
         primary: {
-          50: '#f3f1ff',
-          100: '#ebe5ff', 
-          200: '#d9ceff',
-          300: '#bea6ff',
-          400: '#9f75ff',
-          500: '#843dff',
-          600: '#7c1aff',
-          700: '#6b46c1', // Light theme color
-          800: '#553c9a', // Dark theme color
-          900: '#4c1d95',
-          950: '#2e1065',
+          50: '#E8F6FC',
+          100: '#D1EDF9',
+          200: '#A3DBF3',
+          300: '#75C9ED',
+          400: '#5DADE2',
+          500: '#3B8BC7',
+          600: '#2E7AB5',
+          700: '#25648F',
+          800: '#1F5A85',
+          900: '#1A4A6D',
+          950: '#0F2A3D',
         },
         
-        // Secondary purple shades
-        purple: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7c2d92',
-          800: '#6b1b73',
-          900: '#581c87',
-          950: '#3b0764',
+        // Secondary - Warm Orange/Amber
+        orange: {
+          50: '#FFF7ED',
+          100: '#FFEDD5',
+          200: '#FED7AA',
+          300: '#FDBA74',
+          400: '#FFB84D',
+          500: '#F59E0B',
+          600: '#EF8E00',
+          700: '#D97706',
+          800: '#B45309',
+          900: '#92400E',
+          950: '#78350F',
         },
 
-        // Yellow accent colors
-        yellow: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#fde047',
-          400: '#facc15',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
-          800: '#854d0e',
-          900: '#713f12',
-          950: '#422006',
+        // Soft Blue accents
+        blue: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+          950: '#172554',
         },
 
-        // Green accent colors
+        // Green accent colors - softer than before
         green: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+          50: '#F0FDF4',
+          100: '#DCFCE7',
+          200: '#BBF7D0',
+          300: '#86EFAC',
+          400: '#4ADE80',
+          500: '#22C55E',
+          600: '#16A34A',
+          700: '#15803D',
           800: '#166534',
-          900: '#14532d',
-          950: '#052e16',
+          900: '#14532D',
+          950: '#052E16',
         },
 
-        // Light backgrounds with subtle tints
+        // Light backgrounds with blue tint
         background: {
-          50: '#fefefe',     // Pure white
-          100: '#fdfdfd',    // Off-white
-          200: '#fafafb',    // Very light gray
-          300: '#f7f8fa',    // Light gray with purple hint
-          400: '#f3f4f7',    // Medium light gray
-          500: '#eef0f4',    // Neutral gray
+          50: '#FFFFFF',     // Pure white
+          100: '#F8FCFE',    // Very light blue tint
+          200: '#F0F8FC',    // Light blue-gray
+          300: '#E8F4F8',    // Soft blue
+          400: '#D4E9F2',    // Medium blue-gray
+          500: '#C0DEE8',    // Deeper blue-gray
         },
 
-        // Text colors optimized for light backgrounds
+        // Text colors optimized for teal theme
         text: {
-          primary: '#1f2937',    // Dark gray for main text
-          secondary: '#6b7280',  // Medium gray for secondary text
-          tertiary: '#9ca3af',   // Light gray for tertiary text
-          accent: '#6b46c1',     // Purple for accents
-          muted: '#d1d5db',      // Very light for disabled text
+          primary: '#1E3A5F',    // Dark blue-gray for main text
+          secondary: '#4A6B85',  // Medium blue-gray for secondary text
+          tertiary: '#7A93A8',   // Light blue-gray for tertiary text
+          accent: '#2E7AB5',     // Teal for accents
+          muted: '#B8C9D6',      // Very light for disabled text
         },
 
         // Border colors for light theme
         border: {
-          light: '#f3f4f6',      // Very light borders
-          default: '#e5e7eb',    // Default borders
-          medium: '#d1d5db',     // Medium borders
-          dark: '#9ca3af',       // Darker borders
-          accent: '#c084fc',     // Purple accent borders
+          light: '#E8F4F8',      // Very light borders
+          default: '#D4E9F2',    // Default borders
+          medium: '#B8C9D6',     // Medium borders
+          dark: '#7A93A8',       // Darker borders
+          accent: '#5DADE2',     // Teal accent borders
         },
 
         // Success, warning, error states
         success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+          50: '#F0FDF4',
+          100: '#DCFCE7',
+          500: '#22C55E',
+          600: '#16A34A',
+          700: '#15803D',
         },
         
         warning: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
+          50: '#FFF7ED',
+          100: '#FFEDD5',
+          500: '#F59E0B',
+          600: '#EF8E00',
+          700: '#D97706',
         },
         
         error: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
+          50: '#FEF2F2',
+          100: '#FEE2E2',
+          500: '#EF4444',
+          600: '#DC2626',
+          700: '#B91C1C',
         },
       },
 
       // Custom gradients
       backgroundImage: {
-        'primary-gradient': 'linear-gradient(135deg, #6b46c1 0%, #9333ea 50%, #a855f7 100%)',
-        'secondary-gradient': 'linear-gradient(135deg, #eab308 0%, #f59e0b 50%, #f97316 100%)',
-        'accent-gradient': 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)',
-        'light-gradient': 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
-        'hero-gradient': 'linear-gradient(135deg, #6b46c1 0%, #9333ea 25%, #a855f7 50%, #eab308 75%, #22c55e 100%)',
+        'primary-gradient': 'linear-gradient(135deg, #3B8BC7 0%, #2E7AB5 50%, #5DADE2 100%)',
+        'secondary-gradient': 'linear-gradient(135deg, #FFB84D 0%, #F59E0B 50%, #EF8E00 100%)',
+        'accent-gradient': 'linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)',
+        'light-gradient': 'linear-gradient(135deg, #FFFFFF 0%, #F0F8FC 50%, #E8F4F8 100%)',
+        'hero-gradient': 'linear-gradient(135deg, #3B8BC7 0%, #5DADE2 25%, #FFB84D 75%, #F59E0B 100%)',
+        'soft-blue': 'linear-gradient(180deg, #E8F6FC 0%, #F0F8FC 100%)',
       },
 
       // Custom shadows with brand colors
       boxShadow: {
-        'primary': '0 4px 20px rgba(107, 70, 193, 0.15)',
-        'primary-lg': '0 10px 30px rgba(107, 70, 193, 0.2)',
-        'yellow': '0 4px 20px rgba(234, 179, 8, 0.15)',
-        'yellow-lg': '0 10px 30px rgba(234, 179, 8, 0.2)',
+        'primary': '0 4px 20px rgba(59, 139, 199, 0.15)',
+        'primary-lg': '0 10px 30px rgba(59, 139, 199, 0.25)',
+        'orange': '0 4px 20px rgba(245, 158, 11, 0.2)',
+        'orange-lg': '0 10px 30px rgba(245, 158, 11, 0.3)',
         'green': '0 4px 20px rgba(34, 197, 94, 0.15)',
-        'green-lg': '0 10px 30px rgba(34, 197, 94, 0.2)',
-        'soft': '0 2px 10px rgba(0, 0, 0, 0.05)',
-        'medium': '0 4px 20px rgba(0, 0, 0, 0.08)',
-        'strong': '0 8px 30px rgba(0, 0, 0, 0.12)',
+        'green-lg': '0 10px 30px rgba(34, 197, 94, 0.25)',
+        'soft': '0 2px 10px rgba(59, 139, 199, 0.08)',
+        'medium': '0 4px 20px rgba(59, 139, 199, 0.12)',
+        'strong': '0 8px 30px rgba(59, 139, 199, 0.18)',
+        'soft-sm': '0 1px 3px rgba(0, 0, 0, 0.05)',
       },
 
       // Typography
@@ -225,16 +227,16 @@ module.exports = {
   },
   plugins: [
     // Plugin for custom utilities
-    function({ addUtilities, theme }) {
+    function({ addUtilities }) {
       const newUtilities = {
         // Glass morphism utilities
         '.glass': {
-     
+          'backdrop-filter': 'blur(10px)',
           'background': 'rgba(255, 255, 255, 0.1)',
           'border': '1px solid rgba(255, 255, 255, 0.2)',
         },
         '.glass-strong': {
-        
+          'backdrop-filter': 'blur(16px)',
           'background': 'rgba(255, 255, 255, 0.15)',
           'border': '1px solid rgba(255, 255, 255, 0.3)',
         },
@@ -252,38 +254,74 @@ module.exports = {
 
         // Custom button styles
         '.btn-primary': {
-          'background': 'linear-gradient(135deg, #6b46c1 0%, #9333ea 50%, #a855f7 100%)',
+          'background': 'linear-gradient(135deg, #3B8BC7 0%, #2E7AB5 50%, #5DADE2 100%)',
           'border': 'none',
           'color': 'white',
           'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
             'transform': 'translateY(-2px)',
-            'box-shadow': '0 8px 25px rgba(107, 70, 193, 0.3)',
+            'box-shadow': '0 8px 25px rgba(59, 139, 199, 0.3)',
           },
         },
         
         '.btn-secondary': {
-          'background': 'linear-gradient(135deg, #eab308 0%, #f59e0b 50%, #f97316 100%)',
+          'background': 'linear-gradient(135deg, #FFB84D 0%, #F59E0B 50%, #EF8E00 100%)',
           'border': 'none',
           'color': 'white',
           'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
             'transform': 'translateY(-2px)',
-            'box-shadow': '0 8px 25px rgba(234, 179, 8, 0.3)',
+            'box-shadow': '0 8px 25px rgba(245, 158, 11, 0.35)',
           },
         },
 
         '.btn-success': {
-          'background': 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)',
+          'background': 'linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)',
           'border': 'none',
           'color': 'white',
           'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
             'transform': 'translateY(-2px)',
             'box-shadow': '0 8px 25px rgba(34, 197, 94, 0.3)',
+          },
+        },
+
+        '.btn-outline-primary': {
+          'background': 'transparent',
+          'border': '2px solid #3B8BC7',
+          'color': '#2E7AB5',
+          'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
+          'transition': 'all 0.3s ease',
+          '&:hover': {
+            'background': '#3B8BC7',
+            'color': 'white',
+            'transform': 'translateY(-2px)',
+          },
+        },
+
+        '.btn-outline-secondary': {
+          'background': 'transparent',
+          'border': '2px solid #F59E0B',
+          'color': '#EF8E00',
+          'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
+          'transition': 'all 0.3s ease',
+          '&:hover': {
+            'background': '#F59E0B',
+            'color': 'white',
+            'transform': 'translateY(-2px)',
           },
         },
       }
