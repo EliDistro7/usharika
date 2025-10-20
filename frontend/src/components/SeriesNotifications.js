@@ -14,19 +14,16 @@ const SeriesNotifications = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Ensure component is mounted (for Next.js SSR)
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Fetch notifications from the user object
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
         const user = await getUser();
-        console.log("user from notifications", user);
-        if (user && user.series && user.series.notifications) {
+        if (user?.series?.notifications) {
           setNotifications(user.series.notifications);
         }
       } catch (error) {
@@ -40,7 +37,6 @@ const SeriesNotifications = () => {
     fetchNotifications();
   }, []);
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -48,28 +44,24 @@ const SeriesNotifications = () => {
       document.body.style.overflow = 'unset';
     }
 
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
-  // Function to mark notification as read
   const markAsRead = async (notificationId) => {
     try {
       setMarkingAsRead(prev => new Set(prev).add(notificationId));
       
-      // API call to mark notification as read
       if(true){
-        // Remove notification from list when marked as read
         setNotifications(prev => prev.filter(notif => notif._id !== notificationId));
-        toast.success('Notification marked as read');
+        toast.success('Marked as read');
       } else {
         throw new Error('Failed to mark as read');
       }
     } catch (error) {
       console.error('Error marking notification as read:', error);
-      toast.error('Failed to mark notification as read');
+      toast.error('Failed to mark as read');
     } finally {
       setMarkingAsRead(prev => {
         const newSet = new Set(prev);
@@ -79,155 +71,128 @@ const SeriesNotifications = () => {
     }
   };
 
-  // Function to handle notification click
   const handleNotificationClick = (notificationId) => {
     markAsRead(notificationId);
-    setIsOpen(false); // Close modal when navigating
+    setIsOpen(false);
   };
 
-  // Function to mark all as read
   const markAllAsRead = async () => {
     try {
       if (true) {
         setNotifications([]);
-        toast.success('All notifications marked as read');
+        toast.success('All marked as read');
       } else {
         throw new Error('Failed to mark all as read');
       }
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
-      toast.error('Failed to mark all notifications as read');
+      toast.error('Failed to mark all as read');
     }
   };
 
   const unreadCount = notifications.length;
 
-  // Modal component
   const Modal = () => (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pb-12">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
-        onClick={() => setIsOpen(false)}
-      />
-      
-      {/* Modal Content */}
-      <div className="relative w-full max-w-4xl h-full max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-in slide-in-from-bottom duration-300">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 text-white p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-white bg-opacity-20 p-3 rounded-xl backdrop-blur-sm">
-                <Bell className="w-6 h-6" />
-              </div>
-              <div>
-                <h2 className="font-bold text-xl">
-                  Series Notifications
-                </h2>
-                <p className="text-white text-opacity-80 text-sm mt-1">
-                  Stay updated with your favorite series
-                </p>
-              </div>
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-gradient-to-br from-purple-50 to-white">
+      {/* Compact Header */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+              <Bell className="w-5 h-5 text-purple-600" />
             </div>
-            <div className="flex items-center space-x-3">
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  className="bg-white bg-opacity-20 hover:bg-opacity-30 border border-white border-opacity-30 hover:border-opacity-40 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200"
-                >
-                  Mark all read
-                </button>
-              )}
-              <button
-                onClick={() => setIsOpen(false)}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 border border-white border-opacity-30 hover:border-opacity-40 rounded-lg p-2 transition-all duration-200"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            <div>
+              <h2 className="font-semibold text-gray-900">Notifications</h2>
+              <p className="text-xs text-gray-500">{unreadCount} unread</p>
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllAsRead}
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium px-3 py-1.5 hover:bg-purple-50 rounded-lg transition-colors"
+              >
+                Clear all
+              </button>
+            )}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
         </div>
+      </div>
 
-        {/* Content - Full Height */}
-        <div className="flex-1 overflow-y-auto" style={{ height: 'calc(100vh - 120px)' }}>
+      {/* Content Area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-6 py-6">
           {loading ? (
-            <div className="flex items-center justify-center h-64 text-gray-600">
-              <div className="text-center">
-                <div className="w-8 h-8 border-4 border-gray-300 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
-                <span className="font-medium text-lg">Loading notifications...</span>
-              </div>
+            <div className="flex items-center justify-center h-96">
+              <div className="w-8 h-8 border-3 border-gray-200 border-t-purple-600 rounded-full animate-spin"></div>
             </div>
           ) : notifications.length > 0 ? (
-            <div className="p-6">
-              <div className="space-y-4">
-                {notifications.map((notif, index) => (
-                  <div key={notif._id} className="relative group bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 border border-gray-200 hover:border-purple-300 hover:shadow-md">
-                    <Link 
-                      href={`/series/${notif.seriesId}`}
-                      onClick={() => handleNotificationClick(notif._id)}
-                      className="block p-6"
-                    >
-                      <div className="flex items-start space-x-4">
-                        {/* Unread indicator */}
-                        <div className="flex-shrink-0 w-3 h-3 bg-purple-600 rounded-full mt-2"></div>
+            <div className="space-y-2">
+              {notifications.map((notif) => (
+                <div key={notif._id} className="group bg-white hover:bg-purple-50 rounded-xl transition-all border border-gray-100 hover:border-purple-200 hover:shadow-sm">
+                  <Link 
+                    href={`/series/${notif.seriesId}`}
+                    onClick={() => handleNotificationClick(notif._id)}
+                    className="block p-4"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-gray-900 mb-1.5 group-hover:text-purple-600 transition-colors">
+                          {notif.title}
+                        </h3>
                         
-                        <div className="flex-1 min-w-0">
-                          {/* Title */}
-                          <h3 className="font-semibold text-gray-900 text-lg leading-6 mb-2 group-hover:text-purple-600 transition-colors duration-200">
-                            {notif.title}
-                          </h3>
-                          
-                          {/* Author */}
-                          <div className="flex items-center space-x-2 text-gray-600 text-sm mb-3">
-                            <User className="w-4 h-4 flex-shrink-0" />
-                            <span>by {notif.author}</span>
-                          </div>
-                          
-                          {/* Timestamp */}
-                          <div className="flex items-center space-x-2 text-gray-500 text-sm">
-                            <Clock className="w-4 h-4 flex-shrink-0" />
-                            <span>{new Date(notif.createdAt).toLocaleString()}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Action buttons */}
-                        <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                          {/* Loading state for individual notification */}
-                          {markingAsRead.has(notif._id) ? (
-                            <div className="w-5 h-5 border-2 border-gray-300 border-t-purple-600 rounded-full animate-spin"></div>
-                          ) : (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                markAsRead(notif._id);
-                              }}
-                              disabled={markingAsRead.has(notif._id)}
-                              className="bg-purple-100 hover:bg-purple-200 text-purple-600 hover:text-purple-700 rounded-lg p-2 transition-all duration-200"
-                              title="Mark as read"
-                            >
-                              <Check className="w-4 h-4" />
-                            </button>
-                          )}
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <span className="flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5" />
+                            {notif.author}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5" />
+                            {new Date(notif.createdAt).toLocaleString()}
+                          </span>
                         </div>
                       </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+                      
+                      <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {markingAsRead.has(notif._id) ? (
+                          <div className="w-8 h-8 flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-gray-300 border-t-purple-600 rounded-full animate-spin"></div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              markAsRead(notif._id);
+                            }}
+                            className="w-8 h-8 flex items-center justify-center bg-purple-100 hover:bg-purple-200 text-purple-600 rounded-lg transition-colors"
+                            title="Mark as read"
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64">
+            <div className="flex items-center justify-center h-96">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <BookOpen className="w-10 h-10 text-gray-500" />
+                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="font-semibold text-gray-700 mb-2 text-xl">
-                  No notifications
-                </h3>
-                <p className="text-gray-500 text-lg">
-                  You're all caught up with your series!
-                </p>
+                <h3 className="font-semibold text-gray-900 mb-1">All caught up</h3>
+                <p className="text-sm text-gray-500">No new notifications</p>
               </div>
             </div>
           )}
@@ -238,12 +203,11 @@ const SeriesNotifications = () => {
 
   return (
     <>
-      {/* Notification Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 group"
+        className="relative flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all group"
       >
-        <BookOpen className="w-5 h-5 text-gray-600 group-hover:text-purple-600 transition-colors duration-300" strokeWidth={2} />
+        <BookOpen className="w-5 h-5 text-gray-600 group-hover:text-purple-600 transition-colors" strokeWidth={2} />
 
         {unreadCount > 0 && (
           <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-semibold rounded-full flex items-center justify-center border-2 border-white shadow-lg">
@@ -252,7 +216,6 @@ const SeriesNotifications = () => {
         )}
       </button>
 
-      {/* Portal Modal - Renders outside the Header */}
       {mounted && isOpen && createPortal(<Modal />, document.body)}
     </>
   );
