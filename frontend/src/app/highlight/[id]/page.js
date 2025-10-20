@@ -441,7 +441,7 @@ const MasonryCard = ({
   return (
     <div 
       id={`fullscreen-container-${item._id}`}
-      className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-border-light overflow-hidden hover:shadow-medium hover:scale-105 transition-all duration-300 ${
+      className={` backdrop-blur-sm rounded-2xl shadow-soft border border-border-light overflow-hidden hover:shadow-medium hover:scale-105 transition-all duration-300 ${
         isFullscreen && fullscreenItem?._id === item._id 
           ? 'fixed inset-0 z-50 bg-black flex flex-col rounded-none border-none scale-100' 
           : ''
