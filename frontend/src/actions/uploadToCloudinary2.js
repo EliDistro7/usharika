@@ -16,7 +16,7 @@ export const uploadToCloudinary = async (file, onProgress) => {
   const formData = new FormData();
   formData.append('file', file);
   // formData.append('folder', 'profile'); // Specify the folder here
-  formData.append('upload_preset', 'audio_assets') 
+  formData.append('upload_preset', 'audio_assets');
 
   try {
     const response = await axios.post(cloudinaryUrl, formData, {
