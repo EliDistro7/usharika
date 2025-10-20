@@ -16,6 +16,7 @@ const futureEventRoutes = require("./routes/futureEvents-routes.js");
 const adminRoutes = require("./routes/admin-routes.js");
 const attendanceRoutes = require("./routes/attendance-routes.js");
 const { router: pushNotificationRoutes } = require("./routes/push-notifications.js");
+const pdfRoutes = require("./routes/pdf-routes.js");
 
 
 //const { initializeGlobalState } = require('./controllers/global-controller.js');
