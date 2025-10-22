@@ -134,7 +134,7 @@ const NotificationSender: React.FC<NotificationSenderProps> = ({
       
       {!isSupported && (
         <div className="mt-2 text-sm text-red-600">
-          Push notifications are not supported on this device
+          Push notifications are not supported 
         </div>
       )}
     </div>
