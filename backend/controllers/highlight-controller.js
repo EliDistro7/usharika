@@ -259,16 +259,16 @@ const getRecentHighlights = async (req, res) => {
   try {
     // Calculate the date for 3 days ago
     const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 100);
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 200);
 
     // Query highlights created within the last 3 days
     const recentHighlights = await Highlight.find({
       createdAt: { $gte: threeDaysAgo },
     }).sort({ createdAt: -1 }); // Sort by most recent
 
-    console.log('highlight data',recentHighlights )
+   // console.log('highlight data',recentHighlights )
      
-    console.log('recent highlights', recentHighlights)
+  //  console.log('recent highlights', recentHighlights)
     return res.status(200).json({
       message: "Recent highlights fetched successfully",
       data: recentHighlights,

@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Highlights from "./hl/index";
 import { getRecentHighlights, searchHighlights } from "@/actions/highlight";
 import { formatRoleName } from "@/actions/utils";
-import { Search, XCircle, Funnel } from 'react-bootstrap-icons';
+import { Search, XCircle, Funnel, X, Calendar, Person, Image, ChevronLeft, ChevronRight } from 'react-bootstrap-icons';
 
 const LoadingSpinner = () => (
   <div className="w-16 h-16 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
@@ -12,7 +11,7 @@ const LoadingSpinner = () => (
 
 const PlaceholderCard = () => (
   <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-border-light shadow-soft overflow-hidden animate-pulse">
-    <div className="h-56 bg-background-300"></div>
+    <div className="w-full" style={{ paddingBottom: '75%', backgroundColor: '#F7F3FA' }}></div>
     <div className="p-6 space-y-4">
       <div className="h-7 bg-background-300 rounded w-3/4"></div>
       <div className="space-y-2">
@@ -27,6 +26,259 @@ const PlaceholderCard = () => (
   </div>
 );
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('sw-TZ', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
+
+// Quick View Modal Component
+const QuickViewModal = ({ highlight, onClose }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  if (!highlight) return null;
+  
+  // Flatten all images from all groups - handle object structure
+  const allImages = Object.values(highlight.content).flatMap(group => 
+    group.content
+      .filter(item => item.imageUrl)
+      .map(item => ({
+        imageUrl: item.imageUrl,
+        videoUrl: item.videoUrl,
+        description: item.description,
+        author: item.author,
+        groupName: group.groupName
+      }))
+  );
+  
+  const currentImage = allImages[currentImageIndex];
+  const totalImages = allImages.length;
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-text-primary/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+      <div className="relative w-full h-full bg-white overflow-hidden" onClick={e => e.stopPropagation()}>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
+        >
+          <X size={24} className="text-text-primary" />
+        </button>
+
+        <div className="flex flex-col md:flex-row h-full">
+          {/* Image Section - Full Height */}
+          <div className="relative flex-1 bg-background-300 flex items-center justify-center overflow-auto">
+            {currentImage?.imageUrl ? (
+              <>
+                <img
+                  src={currentImage.imageUrl}
+                  alt={highlight.name}
+                  className="max-w-full max-h-full w-auto h-auto object-contain"
+                />
+                
+                {/* Image Navigation */}
+                {totalImages > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
+                    >
+                      <ChevronLeft size={24} className="text-text-primary" />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
+                    >
+                      <ChevronRight size={24} className="text-text-primary" />
+                    </button>
+                    
+                    {/* Image Counter */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-text-primary/80 backdrop-blur-sm rounded-full text-white text-sm font-semibold">
+                      {currentImageIndex + 1} / {totalImages}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-8 text-text-tertiary">
+                <Image size={48} />
+                <p className="mt-2">Hakuna picha</p>
+              </div>
+            )}
+          </div>
+
+          {/* Content Section - Fixed Width Sidebar */}
+          <div className="w-full md:w-96 p-6 overflow-y-auto bg-white border-l border-border-light">
+            <h2 className="text-2xl font-display font-bold text-text-primary mb-4">
+              {highlight.name}
+            </h2>
+
+            {/* Metadata */}
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <Calendar size={16} className="text-primary-600" />
+                <span>{formatDate(highlight.lastUpdated)}</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <Person size={16} className="text-primary-600" />
+                <span>{formatRoleName(highlight.author || Object.values(highlight.content)[0]?.content[0]?.author)}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <Image size={16} className="text-primary-600" />
+                <span>{totalImages} {totalImages === 1 ? 'picha' : 'picha'}</span>
+              </div>
+            </div>
+
+            {/* Current Image Description */}
+            {currentImage && (
+              <div className="bg-lavender-50 rounded-xl p-4 mb-4">
+                <div className="text-xs font-semibold text-primary-700 uppercase tracking-wider mb-2">
+                  {currentImage.groupName}
+                </div>
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {currentImage.description}
+                </p>
+              </div>
+            )}
+
+            {/* Thumbnail Strip */}
+            {totalImages > 1 && (
+              <div className="mt-6">
+                <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3">
+                  Picha Zote
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {allImages.slice(0, 9).map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                        idx === currentImageIndex
+                          ? 'border-primary-600 shadow-primary'
+                          : 'border-border-light hover:border-primary-300'
+                      }`}
+                    >
+                      <img
+                        src={img.imageUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+                {totalImages > 9 && (
+                  <p className="text-xs text-text-tertiary mt-2 text-center">
+                    +{totalImages - 9} zaidi
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Highlight Card
+const EnhancedHighlightCard = ({ highlight, onClick }) => {
+  // Get first image and description - handle object structure
+  const firstGroup = Object.values(highlight.content)[0];
+  const firstContent = firstGroup?.content[0];
+  const coverImage = firstContent?.imageUrl;
+  const description = firstContent?.description || '';
+  const truncatedDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
+  
+  // Count total images
+  const totalImages = Object.values(highlight.content).reduce((sum, group) => 
+    sum + group.content.filter(item => item.imageUrl).length, 0
+  );
+
+  // Get author - prioritize highlight author, fallback to first content author
+  const author = highlight.author || firstContent?.author || '';
+
+  return (
+    <div
+      onClick={onClick}
+      className="group bg-white/80 backdrop-blur-sm rounded-2xl border border-border-light shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+    >
+      {/* Cover Image - Original Aspect Ratio */}
+      <div className="relative bg-background-300 overflow-hidden">
+        {coverImage ? (
+          <>
+            <img
+              src={coverImage}
+              alt={highlight.name}
+              className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </>
+        ) : (
+          <div className="w-full flex items-center justify-center text-text-tertiary" style={{ paddingBottom: '75%' }}>
+            <Image size={48} className="absolute" />
+          </div>
+        )}
+        
+        {/* Image Count Badge */}
+        {totalImages > 0 && (
+          <div className="absolute top-4 right-4 px-3 py-1.5 bg-text-primary/80 backdrop-blur-sm rounded-full flex items-center gap-2 text-white text-sm font-semibold">
+            <Image size={14} />
+            <span>{totalImages}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="text-xl font-display font-bold text-text-primary mb-3 group-hover:text-primary-600 transition-colors">
+          {highlight.name}
+        </h3>
+
+        {/* Description Preview */}
+        {truncatedDesc && (
+          <p className="text-sm text-text-secondary leading-relaxed mb-4">
+            {truncatedDesc}
+          </p>
+        )}
+
+        {/* Metadata */}
+        <div className="flex items-center justify-between pt-3 border-t border-border-light">
+          <div className="flex items-center gap-2 text-sm text-text-tertiary">
+            <Person size={14} className="text-primary-600" />
+            <span>{formatRoleName(author)}</span>
+          </div>
+          
+          <div className="flex items-center gap-2 text-sm text-text-tertiary">
+            <Calendar size={14} className="text-primary-600" />
+            <span>{formatDate(highlight.lastUpdated)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Hover Action Indicator */}
+      <div className="px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="text-center text-sm font-semibold text-primary-600">
+          Bonyeza kuona zaidi →
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main Component
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -35,10 +287,10 @@ const HighlightsWrapper = () => {
   const [selectedAuthor, setSelectedAuthor] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchActive, setSearchActive] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedHighlight, setSelectedHighlight] = useState(null);
 
   // Fetch highlights
   useEffect(() => {
@@ -80,6 +332,7 @@ const HighlightsWrapper = () => {
           lastUpdated: item.lastUpdated,
           content: groupedContent,
           _id: item._id,
+          author: item.author,
         });
       });
       return flattened;
@@ -120,11 +373,17 @@ const HighlightsWrapper = () => {
     }
   };
 
-  const clearSearch = () => {
+  const clearSearch = async () => {
     setSearchQuery("");
     setSearchActive(false);
-    setSearchResults([]);
     setIsSearchOpen(false);
+    // Refresh data
+    try {
+      const response = await getRecentHighlights();
+      setDataSets(response.data || []);
+    } catch (err) {
+      console.error("Error fetching highlights:", err);
+    }
   };
 
   const uniqueAuthors = [...new Set(dataSets.flatMap((item) =>
@@ -165,9 +424,9 @@ const HighlightsWrapper = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      {/* Minimal Controls - Top Right Corner */}
-      <div className="flex items-center justify-end gap-2 mb-6">
-        {/* Search Toggle & Expandable Bar */}
+      {/* Compact Controls */}
+      <div className="flex items-center justify-end gap-2 mb-4">
+        {/* Search */}
         <div className="flex items-center gap-2">
           {isSearchOpen && (
             <div className="animate-slide-down flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-xl border-2 border-border-light shadow-soft px-3 py-2">
@@ -202,7 +461,6 @@ const HighlightsWrapper = () => {
             </div>
           )}
           
-          {/* Search Icon Button */}
           <button
             className={`p-3 rounded-xl transition-all ${
               isSearchOpen
@@ -216,10 +474,10 @@ const HighlightsWrapper = () => {
           </button>
         </div>
 
-        {/* Filter Button */}
+        {/* Filter */}
         <div className="relative">
           <button
-            className={`p-3 rounded-xl transition-all flex items-center gap-2 ${
+            className={`p-3 rounded-xl transition-all ${
               selectedAuthor !== "All"
                 ? 'bg-primary-600 text-white'
                 : 'bg-white/80 backdrop-blur-sm border-2 border-border-light text-text-primary hover:border-primary-300'
@@ -230,13 +488,9 @@ const HighlightsWrapper = () => {
             <Funnel size={18} />
           </button>
 
-          {/* Filter Dropdown */}
           {isFilterOpen && (
             <>
-              <div 
-                className="fixed inset-0 z-40" 
-                onClick={() => setIsFilterOpen(false)}
-              ></div>
+              <div className="fixed inset-0 z-40" onClick={() => setIsFilterOpen(false)} />
               <div className="absolute top-full right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-xl border-2 border-border-light shadow-primary-lg z-50 overflow-hidden animate-slide-down">
                 <div className="p-2">
                   <div className="px-3 py-2 text-xs font-bold text-primary-700 uppercase tracking-wider">
@@ -293,7 +547,7 @@ const HighlightsWrapper = () => {
         </div>
       )}
 
-      {/* Content Area */}
+      {/* Content */}
       {searchLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, index) => (
@@ -302,7 +556,6 @@ const HighlightsWrapper = () => {
         </div>
       ) : (
         <>
-          {/* Highlights Grid */}
           {filteredData.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredData.map((data, index) => (
@@ -311,15 +564,14 @@ const HighlightsWrapper = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <Highlights
-                    data={data}
-                    datatype="default"
+                  <EnhancedHighlightCard
+                    highlight={data}
+                    onClick={() => setSelectedHighlight(data)}
                   />
                 </div>
               ))}
             </div>
           ) : (
-            /* Empty State - Simple & Elegant */
             <div className="text-center py-20 max-w-md mx-auto">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-background-200 flex items-center justify-center">
                 {searchActive ? (
@@ -356,6 +608,14 @@ const HighlightsWrapper = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Quick View Modal */}
+      {selectedHighlight && (
+        <QuickViewModal
+          highlight={selectedHighlight}
+          onClose={() => setSelectedHighlight(null)}
+        />
       )}
     </div>
   );
