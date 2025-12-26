@@ -24,7 +24,7 @@
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.511.0",
     "mdb-react-ui-kit": "^9.0.0",
-    "next": "15.0.3",
+    "next": "15.0.7",
     "pdfmake": "^0.1.72",
     "postcss-nesting": "^13.0.2",
     "react": "^18.3.1",
