@@ -44,7 +44,7 @@ const ShareButton = ({ url, title }) => {
   const instagramShareUrl = `https://www.instagram.com/?url=${encodeURIComponent(url)}`;
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <div className="relative inline-block z-50" ref={dropdownRef}>
       {/* Dropdown Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -71,7 +71,7 @@ const ShareButton = ({ url, title }) => {
       {/* Dropdown Menu */}
       {isOpen && (
         <div className="
-          absolute top-full left-0 mt-2 z-90
+          absolute top-full left-0 mt-2 z-[100]
           min-w-[200px] 
           glass-strong rounded-2xl
           border border-white/30

@@ -1,60 +1,34 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import Footer from "@/components/Footer";
-import Spinner from "@/components/Spinner";
 import Header from "@/components/Header";
 import PushNotificationManager from "@/components/features/PushNotificationsManager";
 import NotificationDisplay from "@/components/push/NotificationDisplay";
-
-// Metadata
-export const metadata: Metadata = {
-  title: "KKKT-Usharika wa Yombo",
-  description: "Connect with Yombo KKKT - sermons, events, prayer requests, and community updates",
-  keywords: "KKKT, Yombo, church, sermons, events, prayer, community, tanzania",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#6b46c1" },
-    { media: "(prefers-color-scheme: dark)", color: "#553c9a" }
-  ],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true, // Add this for better mobile experience
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Yombo KKKT",
-  },
-  other: {
-    "msapplication-TileColor": "#6b46c1",
-    "msapplication-navbutton-color": "#6b46c1",
-    "apple-mobile-web-app-status-bar-style": "black-translucent",
-    "mobile-web-app-capable": "yes",
-    "application-name": "Yombo KKKT",
-    "format-detection": "telephone=no",
-    "msapplication-tap-highlight": "no",
-  },
-  icons: {
-    icon: [
-      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
-      { url: "/icon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-16x16.png", sizes: "16x16", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
-  manifest: "/manifest.json",
-};
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+
+  // Mouse tracking for interactive background
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -86,15 +60,78 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
           rel="stylesheet"
         />
-
-     
-       
       </head>
 
-      <body className="overflow-x-hidden">
-        {/* Add overflow-x-hidden to prevent horizontal scroll */}
-        <div className="min-h-screen flex flex-col">
-          <Spinner />
+      <body 
+        className="overflow-x-hidden relative"
+        style={{
+          background: `
+            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(107, 70, 193, 0.08) 0%, 
+              transparent 50%
+            ),
+            linear-gradient(135deg, 
+              #fefefe 0%, 
+              #f7f8fa 25%, 
+              #f3f4f7 50%, 
+              #f7f8fa 75%, 
+              #fefefe 100%
+            )
+          `,
+          transition: "background 0.3s ease-out"
+        }}
+      >
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          {/* Floating Orbs */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full animate-gentle-float"
+              style={{
+                width: `${40 + i * 15}px`,
+                height: `${40 + i * 15}px`,
+                background: `radial-gradient(circle, rgba(168, 85, 247, ${0.08 - i * 0.01}) 0%, transparent 70%)`,
+                left: `${10 + i * 12}%`,
+                top: `${8 + i * 11}%`,
+                animationDelay: `${i * 0.5}s`,
+                transform: `translate(${mousePosition.x * (0.02 + i * 0.002)}px, ${mousePosition.y * (0.01 + i * 0.001)}px)`
+              }}
+            />
+          ))}
+
+          {/* Geometric Shapes */}
+          <div 
+            className="absolute"
+            style={{
+              top: "15%",
+              right: "12%",
+              width: "180px",
+              height: "180px",
+              background: `conic-gradient(from 0deg, transparent, rgba(234, 179, 8, 0.06), transparent)`,
+              borderRadius: "50%",
+              animation: "spin 25s linear infinite",
+              transform: `translate(${mousePosition.x * -0.008}px, ${mousePosition.y * -0.008}px)`
+            }}
+          />
+          
+          <div 
+            className="absolute animate-pulse"
+            style={{
+              bottom: "20%",
+              left: "8%",
+              width: "120px",
+              height: "120px",
+              background: `linear-gradient(45deg, transparent, rgba(34, 197, 94, 0.05), transparent)`,
+              borderRadius: "25%",
+              animationDuration: "4s",
+              transform: `translate(${mousePosition.x * 0.012}px, ${mousePosition.y * 0.008}px)`
+            }}
+          />
+        </div>
+
+        {/* Main content wrapper */}
+        <div className="min-h-screen flex flex-col relative">
           <Header />
           <PushNotificationManager />
           <NotificationDisplay />
@@ -106,11 +143,6 @@ export default function RootLayout({
           
           <Footer />
         </div>
-
-     
-       
-
-      
 
         {/* Service Worker Registration */}
         <Script id="service-worker-registration" strategy="afterInteractive">
@@ -172,7 +204,7 @@ export default function RootLayout({
               Object.assign(installBtn.style, {
                 position: 'fixed',
                 bottom: '20px',
-                right: '16px', // Reduced from 20px for mobile
+                right: '16px',
                 zIndex: '9999',
                 padding: '12px 20px',
                 backgroundColor: '#6b46c1',
@@ -186,11 +218,10 @@ export default function RootLayout({
                 fontSize: '14px',
                 transition: 'all 0.3s ease',
                 display: 'block',
-                maxWidth: 'calc(100vw - 32px)', // Prevent overflow
+                maxWidth: 'calc(100vw - 32px)',
                 whiteSpace: 'nowrap'
               });
               
-              // Mobile responsive adjustments
               if (window.innerWidth < 768) {
                 Object.assign(installBtn.style, {
                   right: '12px',
@@ -308,7 +339,6 @@ export default function RootLayout({
               }, 5000);
             });
 
-            // Handle window resize for responsive button positioning
             window.addEventListener('resize', () => {
               if (installButton && installButton.style.display !== 'none') {
                 if (window.innerWidth < 768) {
@@ -369,6 +399,14 @@ export default function RootLayout({
             window.addEventListener('popstate', setPageThemeColor);
           `}
         </Script>
+
+        {/* Custom Animations */}
+        <style jsx global>{`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
       </body>
     </html>
   );

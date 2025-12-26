@@ -129,24 +129,16 @@ export const NewsTicker = ({
   return (
     <div
       className={`relative overflow-hidden h-20 md:h-24 rounded-2xl shadow-2xl ${className}`}
-      style={{
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 0 40px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-      }}
+     
     >
   
-      {/* Subtle animated mesh background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-gentle-float"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl animate-gentle-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-gentle-float" style={{animationDelay: '4s'}}></div>
-      </div>
+    
 
       {/* Enhanced "LIVE" Indicator */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center px-4 py-2 ml-4 bg-gradient-to-r from-red-600 via-red-500 to-pink-500 rounded-xl shadow-2xl z-20 border border-red-400/50">
         <div className="relative">
-          <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
-          <div className="absolute inset-0 w-3 h-3 bg-white rounded-full animate-ping opacity-75" />
+          <div className="w-3 h-3rounded-full animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3  rounded-full animate-ping opacity-75" />
         </div>
       
       </div>
@@ -163,7 +155,7 @@ export const NewsTicker = ({
               <div className="absolute inset-0 w-8 h-8 border-4 border-pink-400 border-b-transparent rounded-full animate-spin" style={{animationDirection: 'reverse'}} />
             </div>
             <span className="text-white font-bold text-lg drop-shadow-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Loading latest updates...
+              updates...
             </span>
           </div>
         ) : (
@@ -184,10 +176,8 @@ export const NewsTicker = ({
               return (
                 <li
                   key={`${idx}-${update.group}`}
-                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 bg-gradient-to-br from-white/95 via-white/90 to-gray-50/95 hover:from-white hover:to-gray-50 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-white/50 hover:border-purple-300/70 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
-                  style={{
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-                  }}
+                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 hover:from-white hover:to-gray-50 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-white/50 hover:border-purple-300/70 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
+               
                 >
                   {/* Enhanced Group Badge */}
                   <div className={`flex items-center justify-center px-4 py-2 ml-4 mr-4 ${groupStyle.bg} ${groupStyle.text} rounded-xl shadow-lg ${groupStyle.glow} border border-white/20 transform group-hover:scale-105 transition-all duration-300`}>

@@ -14,9 +14,10 @@ import {
   UserCircle, 
   Menu,
   X,
-  DollarSign,
   ChevronDown,
-  Bell
+  BookOpen,
+  Bell as BellIcon,
+  Heart
 } from 'lucide-react';
 import SeriesNotifications from '@/components/SeriesNotifications';
 import Notifications from './Notifications';
@@ -39,14 +40,10 @@ export default function Header() {
     const userId = getLoggedInUserId();
     setIsLoggedIn(userId !== null);
 
-    // Handle scroll effects for both visibility and background
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
-      // Set scrolled state for background blur
       setIsScrolled(currentScrollY > 50);
       
-      // Handle visibility (hide on scroll down, show on scroll up)
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       } else {
@@ -100,9 +97,12 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', icon: Home, text: 'Nyumbani' },
-    { href: '/about', icon: Info, text: 'Fahamu Zaidi' },
+    { href: '/about', icon: Info, text: 'Kuhusu' },
+    { href: '/mahubiri', icon: BookOpen, text: 'Mahubiri' },
+    { href: '/matangazo', icon: BellIcon, text: 'Matangazo' },
     { href: '/kalenda', icon: Calendar, text: 'Kalenda' },
     { href: '/uongozi', icon: Users, text: 'Uongozi' },
+    { href: '/sadaka', icon: Heart, text: 'Sadaka' },
     { href: '/contact', icon: Mail, text: 'Mawasiliano' },
   ];
 
@@ -114,8 +114,8 @@ export default function Header() {
           isVisible ? 'translate-y-0' : '-translate-y-full'
         } ${
           isScrolled 
-            ? 'bg-purple-600/95 backdrop-blur-md shadow-xl' 
-            : 'bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg'
+            ? 'bg-primary-600/95 backdrop-blur-lg shadow-primary' 
+            : 'bg-primary-gradient shadow-primary-lg'
         }`}
         style={{ zIndex: 40 }}
       >
@@ -127,16 +127,16 @@ export default function Header() {
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-md border border-white/30">
+                <div className="w-10 h-10 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-soft border border-white/20">
                   <img
                     src="/img/lutherRose.jpg"
                     alt="Church Logo"
-                    className="w-8 h-8 object-cover rounded-md"
+                    className="w-8 h-8 object-cover rounded-lg"
                   />
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white tracking-tight">
+                <h1 className="text-xl font-display font-bold text-white tracking-tight">
                   KKKT YOMBO
                 </h1>
               </div>
@@ -150,24 +150,13 @@ export default function Header() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className="group flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                    className="group flex items-center space-x-2 px-3 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
                   >
                     <IconComponent size={16} className="group-hover:scale-110 transition-transform duration-200" />
                     <span>{link.text}</span>
                   </a>
                 );
               })}
-              
-              {/* Sadaka na Michango - Only visible when logged in */}
-              {isLoggedIn && (
-                <button
-                  onClick={handleSadakaNavigation}
-                  className="group flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-                >
-                  <Cash size={16} className="group-hover:scale-110 transition-transform duration-200" />
-                  <span>Sadaka na Michango</span>
-                </button>
-              )}
             </div>
 
             {/* Right Section */}
@@ -175,7 +164,7 @@ export default function Header() {
               
               {/* Contact Info - Desktop */}
               <div className="hidden xl:flex items-center space-x-2 text-sm text-white/80">
-                <div className="flex items-center justify-center w-8 h-8 bg-white/20 rounded-full">
+                <div className="flex items-center justify-center w-8 h-8 bg-white/15 rounded-full">
                   <Phone size={14} className="text-white" />
                 </div>
                 <a 
@@ -187,7 +176,7 @@ export default function Header() {
               </div>
 
               {/* Divider */}
-              <div className="hidden xl:block w-px h-6 bg-white/30" />
+              <div className="hidden xl:block w-px h-6 bg-white/20" />
 
               {/* Auth Section */}
               {isLoggedIn ? (
@@ -201,31 +190,31 @@ export default function Header() {
                   </div>
 
                   {/* Profile Dropdown */}
-                  <div className="relative">
+                  <div className="relative z-50">
                     <button
                       onClick={toggleProfileDropdown}
-                      className="flex items-center space-x-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all duration-200 shadow-sm backdrop-blur-sm border border-white/30"
+                      className="flex items-center space-x-2 px-4 py-2 bg-white/15 hover:bg-white/25 text-white rounded-xl transition-all duration-200 shadow-soft backdrop-blur-sm border border-white/20"
                     >
                       <UserCircle size={20} />
-                      <span className="text-sm font-medium">Profaili</span>
+                      <span className="text-sm font-semibold">Profaili</span>
                       <ChevronDown size={16} className={`transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
 
                     {/* Dropdown Menu */}
                     {isProfileDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                      <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-primary-lg border-2 border-border-light py-2 z-[100]">
                         <button
                           onClick={handleProfileNavigation}
-                          className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-200"
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-text-primary hover:text-primary-700 hover:bg-primary-50 transition-all duration-200 rounded-lg mx-2"
                         >
-                          <UserCircle size={16} />
+                          <UserCircle size={18} />
                           <span>Profaili Yangu</span>
                         </button>
                         <button
                           onClick={handleSadakaNavigation}
-                          className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-200"
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-text-primary hover:text-primary-700 hover:bg-primary-50 transition-all duration-200 rounded-lg mx-2"
                         >
-                          <FaPray size={16} />
+                          <Heart size={18} />
                           <span>Sadaka na Michango</span>
                         </button>
                       </div>
@@ -236,7 +225,7 @@ export default function Header() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handleLogin}
-                    className="flex items-center space-x-2 px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm font-medium"
+                    className="flex items-center space-x-2 px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm font-semibold"
                   >
                     <LogIn size={16} />
                     <span>Ingia</span>
@@ -244,7 +233,7 @@ export default function Header() {
 
                   <button
                     onClick={handleSignup}
-                    className="flex items-center space-x-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all duration-200 text-sm font-medium shadow-sm backdrop-blur-sm border border-white/30"
+                    className="flex items-center space-x-2 px-4 py-2 bg-white/15 hover:bg-white/25 text-white rounded-xl transition-all duration-200 text-sm font-semibold shadow-soft backdrop-blur-sm border border-white/20"
                   >
                     <UserPlus size={16} />
                     <span>Jisajili</span>
@@ -254,23 +243,23 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Layout - Two Lines with Purple Background */}
+          {/* Mobile Layout */}
           <div className="lg:hidden">
             
             {/* First Line: Logo, Brand Name, Menu Button */}
-            <div className="flex items-center justify-between h-14 border-b border-white/20">
+            <div className="flex items-center justify-between h-14 border-b border-white/15">
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
-                  <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-md border border-white/30">
+                  <div className="w-9 h-9 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-soft border border-white/20">
                     <img
                       src="/img/lutherRose.jpg"
                       alt="Church Logo"
-                      className="w-7 h-7 object-cover rounded-md"
+                      className="w-7 h-7 object-cover rounded-lg"
                     />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-white tracking-tight">
+                  <h1 className="text-lg font-display font-bold text-white tracking-tight">
                     KKKT YOMBO
                   </h1>
                 </div>
@@ -279,13 +268,13 @@ export default function Header() {
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMobileMenu}
-                className="flex items-center justify-center w-10 h-10 text-white bg-white/20 hover:bg-white/30 rounded-lg transition-colors duration-200 backdrop-blur-sm border border-white/30"
+                className="flex items-center justify-center w-10 h-10 text-white bg-white/15 hover:bg-white/25 rounded-xl transition-colors duration-200 backdrop-blur-sm border border-white/20"
               >
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
-            {/* Second Line: Navigation and Actions */}
+            {/* Second Line: Quick Navigation */}
             <div className="h-12 flex items-center justify-between">
               
               {/* Mobile Navigation Icons */}
@@ -296,7 +285,7 @@ export default function Header() {
                     <a
                       key={link.href}
                       href={link.href}
-                      className="flex items-center justify-center w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                      className="flex items-center justify-center w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
                       title={link.text}
                     >
                       <IconComponent size={18} />
@@ -310,26 +299,17 @@ export default function Header() {
                 {isLoggedIn ? (
                   <>
                     {/* Mobile Notifications */}
-                    <div className="text-white opacity-80">
+                    <div className="text-white opacity-90">
                       <SeriesNotifications />
                     </div>
-                    <div className="text-white opacity-80">
+                    <div className="text-white opacity-90">
                       <Notifications />
                     </div>
-                    
-                    {/* Mobile Sadaka Button */}
-                    <button
-                      onClick={handleSadakaNavigation}
-                      className="flex items-center justify-center w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-                      title="Sadaka na Michango"
-                    >
-                      <Cash size={18} />
-                    </button>
 
                     {/* Mobile Profile Button */}
                     <button
                       onClick={handleProfileNavigation}
-                      className="flex items-center justify-center w-10 h-10 bg-white/20 text-white hover:bg-white/30 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white/30"
+                      className="flex items-center justify-center w-10 h-10 bg-white/15 text-white hover:bg-white/25 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20"
                       title="Profaili"
                     >
                       <UserCircle size={18} />
@@ -339,7 +319,7 @@ export default function Header() {
                   <>
                     <button
                       onClick={handleLogin}
-                      className="flex items-center space-x-1 px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm font-medium"
+                      className="flex items-center space-x-1 px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm font-semibold"
                     >
                       <LogIn size={16} />
                       <span>Ingia</span>
@@ -347,7 +327,7 @@ export default function Header() {
 
                     <button
                       onClick={handleSignup}
-                      className="flex items-center space-x-1 px-3 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all duration-200 text-sm font-medium backdrop-blur-sm border border-white/30"
+                      className="flex items-center space-x-1 px-3 py-2 bg-white/15 hover:bg-white/25 text-white rounded-xl transition-all duration-200 text-sm font-semibold backdrop-blur-sm border border-white/20"
                     >
                       <UserPlus size={16} />
                       <span>Jisajili</span>
@@ -360,9 +340,9 @@ export default function Header() {
 
           {/* Mobile Dropdown Menu */}
           <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
-            isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
           }`}>
-            <div className="pt-3 pb-4 border-t border-white/20">
+            <div className="pt-3 pb-4 border-t border-white/15">
               
               {/* All Navigation Links */}
               <div className="space-y-1 mb-4">
@@ -372,11 +352,11 @@ export default function Header() {
                     <a
                       key={link.href}
                       href={link.href}
-                      className="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+                      className="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-colors duration-200 font-medium"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <IconComponent size={20} />
-                      <span className="font-medium">{link.text}</span>
+                      <span>{link.text}</span>
                     </a>
                   );
                 })}
@@ -388,25 +368,25 @@ export default function Header() {
                       handleSadakaNavigation();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="flex items-center space-x-3 w-full px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+                    className="flex items-center space-x-3 w-full px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-colors duration-200 font-medium"
                   >
-                    <Cash size={20} />
-                    <span className="font-medium">Sadaka na Michango</span>
+                    <Heart size={20} />
+                    <span>Sadaka na Michango</span>
                   </button>
                 )}
               </div>
 
               {/* Contact Info */}
-              <div className="pt-3 border-t border-white/20">
+              <div className="pt-3 border-t border-white/15">
                 <div className="flex items-center space-x-3 px-4 py-3">
-                  <div className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full backdrop-blur-sm border border-white/30">
+                  <div className="flex items-center justify-center w-10 h-10 bg-white/15 rounded-full backdrop-blur-sm border border-white/20">
                     <Phone size={18} className="text-white" />
                   </div>
                   <div>
                     <p className="text-sm text-white/70 mb-1">Wasiliana nasi</p>
                     <a 
                       href="tel:+255765647567" 
-                      className="text-base font-medium text-white hover:text-white/80 transition-colors duration-200"
+                      className="text-base font-semibold text-white hover:text-white/80 transition-colors duration-200"
                     >
                       +255 765 647 567
                     </a>

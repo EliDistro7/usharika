@@ -177,7 +177,7 @@ const Pledge = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-gradient py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12 animate-fade-in">
@@ -197,7 +197,7 @@ const Pledge = () => {
         {/* Auth Notice */}
         {!username && (
           <div className="text-center mb-12">
-            <div className="bg-white/80 glass border border-border-light rounded-3xl p-8 max-w-lg mx-auto shadow-soft">
+            <div className=" glass border border-border-light rounded-3xl p-8 max-w-lg mx-auto shadow-soft">
               <div className="mb-4">
                 <CheckCircle size={40} className="text-primary-600 mx-auto" />
               </div>

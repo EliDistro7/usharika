@@ -10,38 +10,68 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary brand colors - Soft Teal/Cyan
+        // Primary Liturgical Purple - Calm and reverent
         primary: {
-          50: '#E8F6FC',
-          100: '#D1EDF9',
-          200: '#A3DBF3',
-          300: '#75C9ED',
-          400: '#5DADE2',
-          500: '#3B8BC7',
-          600: '#2E7AB5',
-          700: '#25648F',
-          800: '#1F5A85',
-          900: '#1A4A6D',
-          950: '#0F2A3D',
+          50: '#FAF5FF',
+          100: '#F3E8FF',
+          200: '#E9D5FF',
+          300: '#D8B4FE',
+          400: '#C084FC',
+          500: '#A855F7',
+          600: '#9333EA',
+          700: '#7E22CE',
+          800: '#6B21A8',
+          900: '#581C87',
+          950: '#3B0764',
         },
         
-        // Secondary - Warm Orange/Amber
-        orange: {
-          50: '#FFF7ED',
-          100: '#FFEDD5',
-          200: '#FED7AA',
-          300: '#FDBA74',
-          400: '#FFB84D',
-          500: '#F59E0B',
-          600: '#EF8E00',
-          700: '#D97706',
-          800: '#B45309',
-          900: '#92400E',
-          950: '#78350F',
+        // Soft Lavender accents - gentle and peaceful
+        lavender: {
+          50: '#FAF5FF',
+          100: '#F3E8FF',
+          200: '#E9D5FF',
+          300: '#D8B4FE',
+          400: '#C4B5FD',
+          500: '#A78BFA',
+          600: '#8B5CF6',
+          700: '#7C3AED',
+          800: '#6D28D9',
+          900: '#5B21B6',
+          950: '#4C1D95',
         },
 
-        // Soft Blue accents
-        blue: {
+        // Sacred Gold - for festive occasions (Christmas, Easter)
+        gold: {
+          50: '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FDE68A',
+          300: '#FCD34D',
+          400: '#FBBF24',
+          500: '#F59E0B',
+          600: '#D97706',
+          700: '#B45309',
+          800: '#92400E',
+          900: '#78350F',
+          950: '#451A03',
+        },
+
+        // Soft Rose - for special occasions
+        rose: {
+          50: '#FFF1F2',
+          100: '#FFE4E6',
+          200: '#FECDD3',
+          300: '#FDA4AF',
+          400: '#FB7185',
+          500: '#F43F5E',
+          600: '#E11D48',
+          700: '#BE123C',
+          800: '#9F1239',
+          900: '#881337',
+          950: '#4C0519',
+        },
+
+        // Peaceful Blue - for hope and Advent
+        peaceful: {
           50: '#EFF6FF',
           100: '#DBEAFE',
           200: '#BFDBFE',
@@ -55,50 +85,45 @@ module.exports = {
           950: '#172554',
         },
 
-        // Green accent colors - softer than before
-        green: {
-          50: '#F0FDF4',
-          100: '#DCFCE7',
-          200: '#BBF7D0',
-          300: '#86EFAC',
-          400: '#4ADE80',
-          500: '#22C55E',
-          600: '#16A34A',
-          700: '#15803D',
-          800: '#166534',
-          900: '#14532D',
-          950: '#052E16',
+        // Sacred White - purity and light
+        sacred: {
+          50: '#FFFFFF',
+          100: '#FEFEFE',
+          200: '#FCFCFC',
+          300: '#F9F9F9',
+          400: '#F5F5F5',
+          500: '#F0F0F0',
         },
 
-        // Light backgrounds with blue tint
+        // Gentle backgrounds with lavender tint
         background: {
           50: '#FFFFFF',     // Pure white
-          100: '#F8FCFE',    // Very light blue tint
-          200: '#F0F8FC',    // Light blue-gray
-          300: '#E8F4F8',    // Soft blue
-          400: '#D4E9F2',    // Medium blue-gray
-          500: '#C0DEE8',    // Deeper blue-gray
+          100: '#FDFCFE',    // Very light lavender tint
+          200: '#FAF8FC',    // Light purple-gray
+          300: '#F7F3FA',    // Soft lavender
+          400: '#F0EBF5',    // Medium lavender-gray
+          500: '#E8E0F0',    // Deeper lavender-gray
         },
 
-        // Text colors optimized for teal theme
+        // Text colors optimized for purple theme
         text: {
-          primary: '#1E3A5F',    // Dark blue-gray for main text
-          secondary: '#4A6B85',  // Medium blue-gray for secondary text
-          tertiary: '#7A93A8',   // Light blue-gray for tertiary text
-          accent: '#2E7AB5',     // Teal for accents
-          muted: '#B8C9D6',      // Very light for disabled text
+          primary: '#2D1B4E',    // Deep purple for main text
+          secondary: '#4A3764',  // Medium purple for secondary text
+          tertiary: '#6B5580',   // Light purple for tertiary text
+          accent: '#7E22CE',     // Purple for accents
+          muted: '#A89BB3',      // Very light for disabled text
         },
 
         // Border colors for light theme
         border: {
-          light: '#E8F4F8',      // Very light borders
-          default: '#D4E9F2',    // Default borders
-          medium: '#B8C9D6',     // Medium borders
-          dark: '#7A93A8',       // Darker borders
-          accent: '#5DADE2',     // Teal accent borders
+          light: '#F7F3FA',      // Very light borders
+          default: '#F0EBF5',    // Default borders
+          medium: '#E8E0F0',     // Medium borders
+          dark: '#C4B5D0',       // Darker borders
+          accent: '#C084FC',     // Purple accent borders
         },
 
-        // Success, warning, error states
+        // Success, warning, error states - softened
         success: {
           50: '#F0FDF4',
           100: '#DCFCE7',
@@ -108,11 +133,11 @@ module.exports = {
         },
         
         warning: {
-          50: '#FFF7ED',
-          100: '#FFEDD5',
+          50: '#FFFBEB',
+          100: '#FEF3C7',
           500: '#F59E0B',
-          600: '#EF8E00',
-          700: '#D97706',
+          600: '#D97706',
+          700: '#B45309',
         },
         
         error: {
@@ -124,34 +149,36 @@ module.exports = {
         },
       },
 
-      // Custom gradients
+      // Custom gradients - gentle and reverent
       backgroundImage: {
-        'primary-gradient': 'linear-gradient(135deg, #3B8BC7 0%, #2E7AB5 50%, #5DADE2 100%)',
-        'secondary-gradient': 'linear-gradient(135deg, #FFB84D 0%, #F59E0B 50%, #EF8E00 100%)',
-        'accent-gradient': 'linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)',
-        'light-gradient': 'linear-gradient(135deg, #FFFFFF 0%, #F0F8FC 50%, #E8F4F8 100%)',
-        'hero-gradient': 'linear-gradient(135deg, #3B8BC7 0%, #5DADE2 25%, #FFB84D 75%, #F59E0B 100%)',
-        'soft-blue': 'linear-gradient(180deg, #E8F6FC 0%, #F0F8FC 100%)',
+        'primary-gradient': 'linear-gradient(135deg, #A855F7 0%, #9333EA 50%, #7E22CE 100%)',
+        'lavender-gradient': 'linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 50%, #D8B4FE 100%)',
+        'sacred-gradient': 'linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #E9D5FF 100%)',
+        'gold-gradient': 'linear-gradient(135deg, #FDE68A 0%, #FCD34D 50%, #FBBF24 100%)',
+        'peaceful-gradient': 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 50%, #93C5FD 100%)',
+        'reverent-gradient': 'linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 50%, #E9D5FF 100%)',
+        'heavenly-gradient': 'linear-gradient(135deg, #A855F7 0%, #C084FC 25%, #E9D5FF 75%, #FFFFFF 100%)',
       },
 
-      // Custom shadows with brand colors
+      // Custom shadows with purple tones - very soft
       boxShadow: {
-        'primary': '0 4px 20px rgba(59, 139, 199, 0.15)',
-        'primary-lg': '0 10px 30px rgba(59, 139, 199, 0.25)',
-        'orange': '0 4px 20px rgba(245, 158, 11, 0.2)',
-        'orange-lg': '0 10px 30px rgba(245, 158, 11, 0.3)',
-        'green': '0 4px 20px rgba(34, 197, 94, 0.15)',
-        'green-lg': '0 10px 30px rgba(34, 197, 94, 0.25)',
-        'soft': '0 2px 10px rgba(59, 139, 199, 0.08)',
-        'medium': '0 4px 20px rgba(59, 139, 199, 0.12)',
-        'strong': '0 8px 30px rgba(59, 139, 199, 0.18)',
-        'soft-sm': '0 1px 3px rgba(0, 0, 0, 0.05)',
+        'primary': '0 4px 20px rgba(168, 85, 247, 0.12)',
+        'primary-lg': '0 10px 30px rgba(168, 85, 247, 0.18)',
+        'lavender': '0 4px 20px rgba(192, 132, 252, 0.15)',
+        'lavender-lg': '0 10px 30px rgba(192, 132, 252, 0.22)',
+        'gold': '0 4px 20px rgba(251, 191, 36, 0.15)',
+        'gold-lg': '0 10px 30px rgba(251, 191, 36, 0.22)',
+        'soft': '0 2px 10px rgba(168, 85, 247, 0.06)',
+        'medium': '0 4px 20px rgba(168, 85, 247, 0.09)',
+        'strong': '0 8px 30px rgba(168, 85, 247, 0.12)',
+        'gentle': '0 1px 3px rgba(168, 85, 247, 0.08)',
       },
 
-      // Typography
+      // Typography - elegant and readable
       fontFamily: {
         'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        'display': ['Poppins', 'system-ui', 'sans-serif'],
+        'display': ['Merriweather', 'Georgia', 'serif'],
+        'serif': ['Crimson Text', 'Georgia', 'serif'],
         'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
 
@@ -164,42 +191,53 @@ module.exports = {
         '128': '32rem',
       },
 
-      // Animation extensions
+      // Gentle animations
       animation: {
-        'gentle-float': 'gentle-float 8s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'slide-down': 'slideDown 0.3s ease-out',
-        'scale-in': 'scaleIn 0.2s ease-out',
-        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+        'gentle-float': 'gentle-float 10s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.6s ease-in-out',
+        'slide-up': 'slideUp 0.4s ease-out',
+        'slide-down': 'slideDown 0.4s ease-out',
+        'scale-in': 'scaleIn 0.3s ease-out',
+        'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
+        'glow-soft': 'glow-soft 4s ease-in-out infinite',
       },
 
-      // Custom keyframes
+      // Custom keyframes - peaceful movements
       keyframes: {
         'gentle-float': {
           '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
-          '33%': { transform: 'translateY(-3px) translateX(2px)' },
-          '66%': { transform: 'translateY(2px) translateX(-2px)' },
+          '33%': { transform: 'translateY(-2px) translateX(1px)' },
+          '66%': { transform: 'translateY(1px) translateX(-1px)' },
         },
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '0%': { transform: 'translateY(15px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         slideDown: {
-          '0%': { transform: 'translateY(-20px)', opacity: '0' },
+          '0%': { transform: 'translateY(-15px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         scaleIn: {
-          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '0%': { transform: 'scale(0.97)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
         'pulse-soft': {
           '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.8' },
+          '50%': { opacity: '0.85' },
+        },
+        'glow-soft': {
+          '0%, 100%': { 
+            boxShadow: '0 0 20px rgba(168, 85, 247, 0.1)',
+            transform: 'scale(1)'
+          },
+          '50%': { 
+            boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)',
+            transform: 'scale(1.01)'
+          },
         },
       },
 
@@ -229,32 +267,32 @@ module.exports = {
     // Plugin for custom utilities
     function({ addUtilities }) {
       const newUtilities = {
-        // Glass morphism utilities
+        // Glass morphism utilities - softer for church
         '.glass': {
-          'backdrop-filter': 'blur(10px)',
-          'background': 'rgba(255, 255, 255, 0.1)',
-          'border': '1px solid rgba(255, 255, 255, 0.2)',
+          'backdrop-filter': 'blur(12px)',
+          'background': 'rgba(250, 245, 255, 0.7)',
+          'border': '1px solid rgba(168, 85, 247, 0.15)',
         },
         '.glass-strong': {
           'backdrop-filter': 'blur(16px)',
-          'background': 'rgba(255, 255, 255, 0.15)',
-          'border': '1px solid rgba(255, 255, 255, 0.3)',
+          'background': 'rgba(250, 245, 255, 0.85)',
+          'border': '1px solid rgba(168, 85, 247, 0.2)',
         },
         
-        // Text shadow utilities
+        // Text shadow utilities - very subtle
         '.text-shadow-sm': {
-          'text-shadow': '0 1px 2px rgba(0, 0, 0, 0.1)',
+          'text-shadow': '0 1px 2px rgba(45, 27, 78, 0.08)',
         },
         '.text-shadow': {
-          'text-shadow': '0 2px 4px rgba(0, 0, 0, 0.2)',
+          'text-shadow': '0 2px 4px rgba(45, 27, 78, 0.12)',
         },
         '.text-shadow-lg': {
-          'text-shadow': '0 4px 8px rgba(0, 0, 0, 0.3)',
+          'text-shadow': '0 4px 8px rgba(45, 27, 78, 0.15)',
         },
 
-        // Custom button styles
+        // Custom button styles - reverent and gentle
         '.btn-primary': {
-          'background': 'linear-gradient(135deg, #3B8BC7 0%, #2E7AB5 50%, #5DADE2 100%)',
+          'background': 'linear-gradient(135deg, #A855F7 0%, #9333EA 50%, #7E22CE 100%)',
           'border': 'none',
           'color': 'white',
           'font-weight': '600',
@@ -262,67 +300,89 @@ module.exports = {
           'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
-            'transform': 'translateY(-2px)',
-            'box-shadow': '0 8px 25px rgba(59, 139, 199, 0.3)',
+            'transform': 'translateY(-1px)',
+            'box-shadow': '0 8px 25px rgba(168, 85, 247, 0.25)',
           },
         },
         
-        '.btn-secondary': {
-          'background': 'linear-gradient(135deg, #FFB84D 0%, #F59E0B 50%, #EF8E00 100%)',
+        '.btn-lavender': {
+          'background': 'linear-gradient(135deg, #E9D5FF 0%, #D8B4FE 50%, #C084FC 100%)',
           'border': 'none',
-          'color': 'white',
+          'color': '#4A3764',
           'font-weight': '600',
           'padding': '0.75rem 1.5rem',
           'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
-            'transform': 'translateY(-2px)',
-            'box-shadow': '0 8px 25px rgba(245, 158, 11, 0.35)',
+            'transform': 'translateY(-1px)',
+            'box-shadow': '0 8px 25px rgba(192, 132, 252, 0.3)',
           },
         },
 
-        '.btn-success': {
-          'background': 'linear-gradient(135deg, #22C55E 0%, #16A34A 50%, #15803D 100%)',
+        '.btn-gold': {
+          'background': 'linear-gradient(135deg, #FDE68A 0%, #FCD34D 50%, #FBBF24 100%)',
           'border': 'none',
-          'color': 'white',
+          'color': '#78350F',
           'font-weight': '600',
           'padding': '0.75rem 1.5rem',
           'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
-            'transform': 'translateY(-2px)',
-            'box-shadow': '0 8px 25px rgba(34, 197, 94, 0.3)',
+            'transform': 'translateY(-1px)',
+            'box-shadow': '0 8px 25px rgba(251, 191, 36, 0.3)',
           },
         },
 
         '.btn-outline-primary': {
           'background': 'transparent',
-          'border': '2px solid #3B8BC7',
-          'color': '#2E7AB5',
+          'border': '2px solid #A855F7',
+          'color': '#7E22CE',
           'font-weight': '600',
           'padding': '0.75rem 1.5rem',
           'border-radius': '0.5rem',
           'transition': 'all 0.3s ease',
           '&:hover': {
-            'background': '#3B8BC7',
-            'color': 'white',
+            'background': '#FAF5FF',
+            'border-color': '#7E22CE',
+            'color': '#6B21A8',
+            'transform': 'translateY(-1px)',
+          },
+        },
+
+        '.btn-outline-lavender': {
+          'background': 'transparent',
+          'border': '2px solid #C084FC',
+          'color': '#7E22CE',
+          'font-weight': '600',
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.5rem',
+          'transition': 'all 0.3s ease',
+          '&:hover': {
+            'background': '#FAF5FF',
+            'border-color': '#A855F7',
+            'color': '#6B21A8',
+            'transform': 'translateY(-1px)',
+          },
+        },
+
+        // Sacred card style
+        '.card-sacred': {
+          'background': 'linear-gradient(135deg, #FFFFFF 0%, #FAF5FF 100%)',
+          'border': '1px solid rgba(168, 85, 247, 0.1)',
+          'border-radius': '1rem',
+          'padding': '1.5rem',
+          'box-shadow': '0 4px 20px rgba(168, 85, 247, 0.08)',
+          'transition': 'all 0.3s ease',
+          '&:hover': {
+            'box-shadow': '0 8px 30px rgba(168, 85, 247, 0.12)',
             'transform': 'translateY(-2px)',
           },
         },
 
-        '.btn-outline-secondary': {
-          'background': 'transparent',
-          'border': '2px solid #F59E0B',
-          'color': '#EF8E00',
-          'font-weight': '600',
-          'padding': '0.75rem 1.5rem',
-          'border-radius': '0.5rem',
-          'transition': 'all 0.3s ease',
-          '&:hover': {
-            'background': '#F59E0B',
-            'color': 'white',
-            'transform': 'translateY(-2px)',
-          },
+        // Peaceful overlay
+        '.overlay-peaceful': {
+          'background': 'linear-gradient(180deg, rgba(250, 245, 255, 0.9) 0%, rgba(243, 232, 255, 0.95) 100%)',
+          'backdrop-filter': 'blur(8px)',
         },
       }
       
