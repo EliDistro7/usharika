@@ -239,7 +239,8 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
 // Enhanced Highlight Card
 const EnhancedHighlightCard = ({ highlight, onClick }) => {
-  const [imageLoading, setImageLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   // Get first image and description - handle object structure
   const firstGroup = Object.values(highlight.content)[0];
@@ -262,12 +263,12 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
       className="group bg-white/80 backdrop-blur-sm rounded-2xl border border-border-light shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
     >
       {/* Cover Image - Original Aspect Ratio */}
-      <div className="relative bg-background-300 overflow-hidden">
-        {coverImage ? (
+      <div className="relative bg-background-300 overflow-hidden min-h-[200px]">
+        {coverImage && !imageError ? (
           <>
-            {/* Loading Spinner */}
-            {imageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10" style={{ minHeight: '200px' }}>
+            {/* Loading Spinner - only show while loading */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
                 <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
               </div>
             )}
@@ -276,15 +277,22 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
               src={coverImage}
               alt={highlight.name}
               className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
-              onLoad={() => setImageLoading(false)}
-              onError={() => setImageLoading(false)}
-              style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => {
+                setImageLoaded(true);
+                setImageError(true);
+              }}
+              style={{ 
+                display: imageLoaded ? 'block' : 'none'
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {imageLoaded && !imageError && (
+              <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            )}
           </>
         ) : (
-          <div className="w-full flex items-center justify-center text-text-tertiary" style={{ paddingBottom: '75%' }}>
-            <Image size={48} className="absolute" />
+          <div className="w-full h-full flex items-center justify-center text-text-tertiary min-h-[200px]">
+            <Image size={48} />
           </div>
         )}
         
