@@ -35,6 +35,7 @@ export default function Header() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const userId = getLoggedInUserId();
@@ -95,16 +96,21 @@ export default function Header() {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const navLinks = [
+  const primaryNavLinks = [
     { href: '/', icon: Home, text: 'Nyumbani' },
     { href: '/about', icon: Info, text: 'Kuhusu' },
     { href: '/mahubiri', icon: BookOpen, text: 'Mahubiri' },
     { href: '/matangazo', icon: BellIcon, text: 'Matangazo' },
+  ];
+
+  const moreNavLinks = [
     { href: '/kalenda', icon: Calendar, text: 'Kalenda' },
     { href: '/uongozi', icon: Users, text: 'Uongozi' },
     { href: '/sadaka', icon: Heart, text: 'Sadaka' },
     { href: '/contact', icon: Mail, text: 'Mawasiliano' },
   ];
+
+  const allNavLinks = [...primaryNavLinks, ...moreNavLinks];
 
   return (
     <>
@@ -144,7 +150,7 @@ export default function Header() {
 
             {/* Desktop Navigation */}
             <div className="flex items-center space-x-1">
-              {navLinks.map((link) => {
+              {primaryNavLinks.map((link) => {
                 const IconComponent = link.icon;
                 return (
                   <a
@@ -157,6 +163,37 @@ export default function Header() {
                   </a>
                 );
               })}
+              
+              {/* More Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setActiveDropdown(activeDropdown === 'more' ? null : 'more')}
+                  className="group flex items-center space-x-2 px-3 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  <Menu size={16} className="group-hover:scale-110 transition-transform duration-200" />
+                  <span>Zaidi</span>
+                  <ChevronDown size={14} className={`transition-transform duration-200 ${activeDropdown === 'more' ? 'rotate-180' : ''}`} />
+                </button>
+
+                {activeDropdown === 'more' && (
+                  <div className="absolute left-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-primary-lg border-2 border-border-light py-2 z-[100]">
+                    {moreNavLinks.map((link) => {
+                      const IconComponent = link.icon;
+                      return (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setActiveDropdown(null)}
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-text-primary hover:text-primary-700 hover:bg-primary-50 transition-all duration-200 rounded-lg mx-2"
+                        >
+                          <IconComponent size={18} />
+                          <span>{link.text}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right Section */}
@@ -279,7 +316,7 @@ export default function Header() {
               
               {/* Mobile Navigation Icons */}
               <div className="flex items-center space-x-1">
-                {navLinks.slice(0, 4).map((link) => {
+                {primaryNavLinks.slice(0, 4).map((link) => {
                   const IconComponent = link.icon;
                   return (
                     <a
@@ -346,7 +383,7 @@ export default function Header() {
               
               {/* All Navigation Links */}
               <div className="space-y-1 mb-4">
-                {navLinks.map((link) => {
+                {allNavLinks.map((link) => {
                   const IconComponent = link.icon;
                   return (
                     <a
@@ -402,13 +439,14 @@ export default function Header() {
       <div className="h-16 lg:h-16" />
 
       {/* Click outside to close mobile menu and dropdown */}
-      {(isMobileMenuOpen || isProfileDropdownOpen) && (
+      {(isMobileMenuOpen || isProfileDropdownOpen || activeDropdown) && (
         <div 
           className="fixed inset-0"
           style={{ zIndex: 35 }}
           onClick={() => {
             setIsMobileMenuOpen(false);
             setIsProfileDropdownOpen(false);
+            setActiveDropdown(null);
           }}
         />
       )}
