@@ -77,7 +77,7 @@ export default function Home() {
   };
 
   return (
-    <div className="px-0">
+    <div className="px-0 mx-0">
       <NewsTicker 
         direction="left"
         className=""
