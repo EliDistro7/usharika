@@ -38,6 +38,7 @@ const formatDate = (dateString) => {
 // Quick View Modal Component
 const QuickViewModal = ({ highlight, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageLoading, setImageLoading] = useState(true);
   
   if (!highlight) return null;
   
@@ -57,12 +58,41 @@ const QuickViewModal = ({ highlight, onClose }) => {
   const currentImage = allImages[currentImageIndex];
   const totalImages = allImages.length;
 
+  // Reset loading state when image changes
+  React.useEffect(() => {
+    setImageLoading(true);
+  }, [currentImageIndex]);
+
+  // Keyboard navigation
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+      } else if (e.key === 'ArrowRight') {
+        setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [totalImages, onClose]);
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % totalImages);
   };
 
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+
+  const handleImageError = () => {
+    setImageLoading(false);
   };
 
   return (
@@ -78,13 +108,26 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
         <div className="flex flex-col md:flex-row h-full">
           {/* Image Section - Full Height */}
-          <div className="relative flex-1 bg-background-300 flex items-center justify-center overflow-auto">
+          <div className="relative flex-1 bg-background-300 flex items-center justify-center overflow-auto min-h-[50vh] md:min-h-full">
             {currentImage?.imageUrl ? (
               <>
+                {/* Loading Spinner */}
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-12 h-12 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
+                      <p className="text-text-secondary text-sm">Inapakia picha...</p>
+                    </div>
+                  </div>
+                )}
+                
                 <img
                   src={currentImage.imageUrl}
                   alt={highlight.name}
                   className="max-w-full max-h-full w-auto h-auto object-contain"
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                  style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
                 />
                 
                 {/* Image Navigation */}
@@ -92,19 +135,19 @@ const QuickViewModal = ({ highlight, onClose }) => {
                   <>
                     <button
                       onClick={prevImage}
-                      className="absolute left-4 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
+                      className="absolute left-2 md:left-4 p-2 md:p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
                     >
-                      <ChevronLeft size={24} className="text-text-primary" />
+                      <ChevronLeft size={20} className="text-text-primary md:w-6 md:h-6" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-4 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
+                      className="absolute right-2 md:right-4 p-2 md:p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
                     >
-                      <ChevronRight size={24} className="text-text-primary" />
+                      <ChevronRight size={20} className="text-text-primary md:w-6 md:h-6" />
                     </button>
                     
                     {/* Image Counter */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-text-primary/80 backdrop-blur-sm rounded-full text-white text-sm font-semibold">
+                    <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-text-primary/80 backdrop-blur-sm rounded-full text-white text-xs md:text-sm font-semibold">
                       {currentImageIndex + 1} / {totalImages}
                     </div>
                   </>
@@ -119,7 +162,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
           </div>
 
           {/* Content Section - Fixed Width Sidebar */}
-          <div className="w-full md:w-96 p-6 overflow-y-auto bg-white border-l border-border-light">
+          <div className="w-full md:w-96 p-4 md:p-6 overflow-y-auto bg-white md:border-l border-t md:border-t-0 border-border-light max-h-[50vh] md:max-h-full">
             <h2 className="text-2xl font-display font-bold text-text-primary mb-4">
               {highlight.name}
             </h2>
@@ -165,7 +208,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
                     <button
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
-                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all relative ${
                         idx === currentImageIndex
                           ? 'border-primary-600 shadow-primary'
                           : 'border-border-light hover:border-primary-300'
@@ -175,6 +218,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
                         src={img.imageUrl}
                         alt=""
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     </button>
                   ))}
@@ -195,6 +239,8 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
 // Enhanced Highlight Card
 const EnhancedHighlightCard = ({ highlight, onClick }) => {
+  const [imageLoading, setImageLoading] = useState(true);
+  
   // Get first image and description - handle object structure
   const firstGroup = Object.values(highlight.content)[0];
   const firstContent = firstGroup?.content[0];
@@ -219,10 +265,20 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
       <div className="relative bg-background-300 overflow-hidden">
         {coverImage ? (
           <>
+            {/* Loading Spinner */}
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10" style={{ minHeight: '200px' }}>
+                <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
+              </div>
+            )}
+            
             <img
               src={coverImage}
               alt={highlight.name}
               className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+              onLoad={() => setImageLoading(false)}
+              onError={() => setImageLoading(false)}
+              style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </>
