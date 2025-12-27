@@ -114,11 +114,12 @@ const Notification = () => {
   const unreadCount = notifications.filter(n => n.status === 'unread').length;
 
   return (
-    <div className="relative notification-wrapper" style={{zIndex: 2000}}>
+    <div className="relative notification-wrapper" style={{zIndex: 9999}}>
       {/* Enhanced Bell Button */}
       <button
         onClick={toggleDropdown}
-        className="relative bg-primary-gradient rounded-xl p-3 shadow-primary transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary-lg border-none z-[10000]"
+        className="relative bg-primary-gradient rounded-xl p-3 shadow-primary transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary-lg border-none"
+        style={{zIndex: 9999}}
       >
         <Bell size={20} className="text-white" />
         {unreadCount > 0 && (
@@ -132,7 +133,7 @@ const Notification = () => {
       {showDropdown && (
         <div
           className="absolute mt-3 right-0 w-96 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-md rounded-2xl border border-primary-200 shadow-primary-lg max-h-[500px] overflow-y-auto animate-slide-down"
-          style={{zIndex: 1000}}
+          style={{zIndex: 9999}}
         >
           {/* Header */}
           <div className="bg-primary-gradient rounded-t-2xl px-5 py-4 flex justify-between items-center">

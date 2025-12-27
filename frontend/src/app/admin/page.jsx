@@ -193,14 +193,14 @@ const AdminDashboard = () => {
         )}
 
         {/* Enhanced Controls Section */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-primary-100 shadow-soft mb-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-primary-100 shadow-soft mb-6" style={{position: 'relative', zIndex: 1}}>
           <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
               {/* Left side - Filters and controls */}
               <div className="lg:col-span-8">
                 <div className="flex flex-wrap gap-3 items-center">
                   {/* Category Filter */}
-                  <div className="relative">
+                  <div className="relative" style={{zIndex: 100}}>
                     <button
                       onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                       className="flex items-center px-5 py-2.5 bg-primary-gradient text-white rounded-xl shadow-primary hover:shadow-primary-lg transition-all duration-300 font-medium"
@@ -270,7 +270,7 @@ const AdminDashboard = () => {
               </div>
 
               {/* Right side - Search and Notification */}
-              <div className="lg:col-span-4 relative z-[1000]">
+              <div className="lg:col-span-4" style={{position: 'relative', zIndex: 10000}}>
                 <div className="flex gap-3 items-center justify-end">
                   {/* Search Input */}
                   <div className="flex items-center flex-1 max-w-sm">
@@ -370,9 +370,9 @@ const AdminDashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className=" backdrop-blur-md rounded-2xl shadow-soft border border-primary-100 overflow-hidden">
+              <div className="backdrop-blur-md rounded-2xl shadow-soft border border-primary-100 overflow-hidden" style={{position: 'relative', zIndex: 0}}>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full" style={{position: 'relative', zIndex: 0}}>
                     <thead className="bg-primary-gradient">
                       <tr>
                         <th className="text-white border-0 py-4 px-4 text-left font-semibold">
