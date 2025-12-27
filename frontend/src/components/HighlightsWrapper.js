@@ -45,13 +45,14 @@ const QuickViewModal = ({ highlight, onClose }) => {
   // Flatten all images from all groups - handle object structure
   const allImages = Object.values(highlight.content).flatMap(group => 
     group.content
-      .filter(item => item.imageUrl)
+      .filter(item => item.imageUrl || item.videoUrl)
       .map(item => ({
         imageUrl: item.imageUrl,
         videoUrl: item.videoUrl,
         description: item.description,
         author: item.author,
-        groupName: group.groupName
+        groupName: group.groupName,
+        isVideo: !item.imageUrl && item.videoUrl
       }))
   );
   
@@ -109,26 +110,38 @@ const QuickViewModal = ({ highlight, onClose }) => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Image Section - Full Height */}
           <div className="relative flex-1 bg-background-300 flex items-center justify-center overflow-auto min-h-[50vh] md:min-h-full">
-            {currentImage?.imageUrl ? (
+            {currentImage ? (
               <>
                 {/* Loading Spinner */}
                 {imageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
                     <div className="flex flex-col items-center gap-4">
                       <div className="w-12 h-12 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
-                      <p className="text-text-secondary text-sm">Inapakia picha...</p>
+                      <p className="text-text-secondary text-sm">Inapakia {currentImage.isVideo ? 'video' : 'picha'}...</p>
                     </div>
                   </div>
                 )}
                 
-                <img
-                  src={currentImage.imageUrl}
-                  alt={highlight.name}
-                  className="max-w-full max-h-full w-auto h-auto object-contain"
-                  onLoad={handleImageLoad}
-                  onError={handleImageError}
-                  style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
-                />
+                {/* Show image or video based on content type */}
+                {currentImage.imageUrl ? (
+                  <img
+                    src={currentImage.imageUrl}
+                    alt={highlight.name}
+                    className="max-w-full max-h-full w-auto h-auto object-contain"
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                    style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+                  />
+                ) : currentImage.videoUrl ? (
+                  <video
+                    src={currentImage.videoUrl}
+                    className="max-w-full max-h-full w-auto h-auto object-contain"
+                    controls
+                    onLoadedData={handleImageLoad}
+                    onError={handleImageError}
+                    style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+                  />
+                ) : null}
                 
                 {/* Image Navigation */}
                 {totalImages > 1 && (
@@ -156,7 +169,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
             ) : (
               <div className="flex flex-col items-center justify-center p-8 text-text-tertiary">
                 <Image size={48} />
-                <p className="mt-2">Hakuna picha</p>
+                <p className="mt-2">Hakuna picha au video</p>
               </div>
             )}
           </div>
@@ -181,7 +194,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
               <div className="flex items-center gap-2 text-sm text-text-secondary">
                 <Image size={16} className="text-primary-600" />
-                <span>{totalImages} {totalImages === 1 ? 'picha' : 'picha'}</span>
+                <span>{totalImages} {totalImages === 1 ? 'faili' : 'faili'}</span>
               </div>
             </div>
 
@@ -201,7 +214,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
             {totalImages > 1 && (
               <div className="mt-6">
                 <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3">
-                  Picha Zote
+                  Picha na Video
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   {allImages.slice(0, 9).map((img, idx) => (
@@ -214,12 +227,29 @@ const QuickViewModal = ({ highlight, onClose }) => {
                           : 'border-border-light hover:border-primary-300'
                       }`}
                     >
-                      <img
-                        src={img.imageUrl}
-                        alt=""
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
+                      {img.imageUrl ? (
+                        <img
+                          src={img.imageUrl}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : img.videoUrl ? (
+                        <div className="w-full h-full bg-background-400 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        </div>
+                      ) : null}
+                      
+                      {/* Video indicator */}
+                      {img.isVideo && (
+                        <div className="absolute bottom-1 right-1 w-5 h-5 bg-text-primary/80 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -239,22 +269,57 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
 // Enhanced Highlight Card
 const EnhancedHighlightCard = ({ highlight, onClick }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [mediaLoaded, setMediaLoaded] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
   
-  // Get first image and description - handle object structure
-  const firstGroup = Object.values(highlight.content)[0];
-  const firstContent = firstGroup?.content[0];
-  const coverImage = firstContent?.imageUrl;
-  const description = firstContent?.description || '';
+  // Smart algorithm to find first available image or video from anywhere in content
+  const findFirstMedia = () => {
+    const allGroups = Object.values(highlight.content);
+    
+    for (const group of allGroups) {
+      for (const item of group.content) {
+        // Prioritize images first, then videos
+        if (item.imageUrl) {
+          return {
+            url: item.imageUrl,
+            type: 'image',
+            description: item.description
+          };
+        }
+      }
+    }
+    
+    // If no images found, look for videos
+    for (const group of allGroups) {
+      for (const item of group.content) {
+        if (item.videoUrl) {
+          return {
+            url: item.videoUrl,
+            type: 'video',
+            description: item.description
+          };
+        }
+      }
+    }
+    
+    return null;
+  };
+  
+  const firstMedia = findFirstMedia();
+  const coverImage = firstMedia?.type === 'image' ? firstMedia.url : null;
+  const coverVideo = firstMedia?.type === 'video' ? firstMedia.url : null;
+  const hasMedia = !!firstMedia;
+  const description = firstMedia?.description || '';
   const truncatedDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
   
-  // Count total images
+  // Count total media items
   const totalImages = Object.values(highlight.content).reduce((sum, group) => 
-    sum + group.content.filter(item => item.imageUrl).length, 0
+    sum + group.content.filter(item => item.imageUrl || item.videoUrl).length, 0
   );
 
   // Get author - prioritize highlight author, fallback to first content author
+  const firstGroup = Object.values(highlight.content)[0];
+  const firstContent = firstGroup?.content[0];
   const author = highlight.author || firstContent?.author || '';
 
   return (
@@ -262,41 +327,76 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
       onClick={onClick}
       className="group bg-white/80 backdrop-blur-sm rounded-2xl border border-border-light shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
     >
-      {/* Cover Image - Original Aspect Ratio */}
+      {/* Cover Media - Original Aspect Ratio */}
       <div className="relative bg-background-300 overflow-hidden min-h-[200px]">
-        {coverImage && !imageError ? (
+        {hasMedia && !mediaError ? (
           <>
             {/* Loading Spinner - only show while loading */}
-            {!imageLoaded && (
+            {!mediaLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
                 <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
               </div>
             )}
             
-            <img
-              src={coverImage}
-              alt={highlight.name}
-              className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => {
-                setImageLoaded(true);
-                setImageError(true);
-              }}
-              style={{ 
-                display: imageLoaded ? 'block' : 'none'
-              }}
-            />
-            {imageLoaded && !imageError && (
+            {/* Show image if available */}
+            {coverImage ? (
+              <>
+                <img
+                  src={coverImage}
+                  alt={highlight.name}
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  onLoad={() => setMediaLoaded(true)}
+                  onError={() => {
+                    setMediaLoaded(true);
+                    setMediaError(true);
+                  }}
+                  style={{ 
+                    display: mediaLoaded ? 'block' : 'none'
+                  }}
+                />
+              </>
+            ) : coverVideo ? (
+              /* Show video if no image but video exists */
+              <>
+                <video
+                  src={coverVideo}
+                  className="w-full h-auto object-contain"
+                  onLoadedData={() => setMediaLoaded(true)}
+                  onError={() => {
+                    setMediaLoaded(true);
+                    setMediaError(true);
+                  }}
+                  style={{ 
+                    display: mediaLoaded ? 'block' : 'none'
+                  }}
+                  muted
+                  playsInline
+                />
+                {/* Video play icon overlay */}
+                {mediaLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                      <svg className="w-8 h-8 text-primary-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : null}
+            
+            {mediaLoaded && !mediaError && (
               <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             )}
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-tertiary min-h-[200px]">
+          <div className="w-full h-full flex flex-col gap-2 items-center justify-center text-text-tertiary min-h-[200px]">
             <Image size={48} />
+            <p className="text-xs">Hakuna media</p>
           </div>
         )}
         
-        {/* Image Count Badge */}
+        {/* Media Count Badge */}
         {totalImages > 0 && (
           <div className="absolute top-4 right-4 px-3 py-1.5 bg-text-primary/80 backdrop-blur-sm rounded-full flex items-center gap-2 text-white text-sm font-semibold">
             <Image size={14} />
