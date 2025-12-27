@@ -7,9 +7,6 @@ const UserTableRows = ({
   calculatePledgeTotals,
   handleUserClick,
 }) => {
-
- 
-
   return (
     <>
       {users.map((user, index) => {
@@ -29,100 +26,53 @@ const UserTableRows = ({
           <tr
             key={user._id}
             onClick={() => handleUserClick(user)}
-            className="align-middle"
-            style={{
-              cursor: "pointer",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-              borderBottom: "1px solid rgba(139, 69, 193, 0.08)",
-              background: index % 2 === 0 
-                ? "linear-gradient(135deg, #ffffff 0%, #fefeff 100%)" 
-                : "linear-gradient(135deg, #fafafa 0%, #f8f6ff 100%)",
-            }}
-        
-      
+            className={`
+              cursor-pointer transition-all duration-300 ease-in-out
+              border-b border-border-light hover:bg-primary-50/50
+              ${index % 2 === 0 
+                ? 'bg-gradient-to-r from-white to-background-100' 
+                : 'bg-gradient-to-r from-background-50 to-background-100'
+              }
+            `}
           >
             {/* Enhanced Profile Picture */}
-            <td className="text-center" style={{ padding: "16px 12px" }}>
-              <div style={{ position: "relative", display: "inline-block" }}>
+            <td className="text-center py-4 px-3">
+              <div className="relative inline-block">
                 <img
                   src={user.profilePicture || "/img/default-profile.png"}
                   alt={user.name}
-                  className="rounded-circle"
-                  width="48"
-                  height="48"
-                  style={{ 
-                    border: "3px solid #8b45c1",
-                    objectFit: "cover",
-                    boxShadow: "0 4px 12px rgba(139, 69, 193, 0.2)",
-                  }}
+                  className="w-12 h-12 rounded-full object-cover border-3 border-primary-500 shadow-primary"
                 />
                 {/* Verification indicator */}
                 {user.verified && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "-2px",
-                      right: "-2px",
-                      background: "#10b981",
-                      borderRadius: "50%",
-                      width: "16px",
-                      height: "16px",
-                      border: "2px solid white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <div style={{
-                      width: "6px",
-                      height: "6px",
-                      background: "white",
-                      borderRadius: "50%",
-                    }}></div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-success-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                   </div>
                 )}
               </div>
             </td>
   
             {/* Enhanced User Name with Kiongozi Badge */}
-            <td style={{ padding: "16px 12px" }}>
-              <div className="d-flex align-items-center">
+            <td className="py-4 px-3">
+              <div className="flex items-center">
                 <div>
-                  <div className="d-flex align-items-center mb-1">
-                    <span 
-                      className="fw-bold" 
-                      style={{ 
-                        color: "#8b45c1",
-                        fontSize: "1.05rem",
-                        marginRight: "8px",
-                      }}
-                    >
+                  <div className="flex items-center mb-1">
+                    <span className="font-bold text-primary-700 text-base mr-2">
                       {user.name}
                     </span>
                     {hasKiongoziRole && (
-                      <span
-                        className="badge d-flex align-items-center"
-                        style={{
-                          background: "linear-gradient(135deg, #8b45c1 0%, #9b59b6 100%)",
-                          color: "white",
-                          fontSize: "0.7rem",
-                          padding: "4px 8px",
-                          borderRadius: "12px",
-                          fontWeight: "500",
-                          boxShadow: "0 2px 8px rgba(139, 69, 193, 0.3)",
-                        }}
-                      >
-                        <Crown size={12} style={{ marginRight: "4px" }} />
+                      <span className="inline-flex items-center bg-primary-gradient text-white text-xs font-medium px-2 py-1 rounded-xl shadow-primary">
+                        <Crown size={12} className="mr-1" />
                         Kiongozi
                       </span>
                     )}
                   </div>
                   {/* Show phone on mobile as subtitle */}
-                  <div className="d-md-none">
-                    <small style={{ color: "#64748b", fontSize: "0.8rem" }}>
-                      <Phone size={12} style={{ marginRight: "4px" }} />
+                  <div className="md:hidden">
+                    <div className="flex items-center text-text-tertiary text-xs">
+                      <Phone size={12} className="mr-1" />
                       {user.phone}
-                    </small>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -132,31 +82,27 @@ const UserTableRows = ({
             {sortBy === "none" ? (
               <>
                 {/* Enhanced Phone column - hidden on small screens */}
-                <td className="d-none d-md-table-cell" style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center">
-                    <Phone size={16} style={{ color: "#9b59b6", marginRight: "8px" }} />
-                    <span style={{ color: "#64748b", fontWeight: "500" }}>
+                <td className="hidden md:table-cell py-4 px-3">
+                  <div className="flex items-center">
+                    <Phone size={16} className="text-primary-500 mr-2" />
+                    <span className="text-text-secondary font-medium">
                       {user.phone}
                     </span>
                   </div>
                 </td>
   
                 {/* Enhanced Gender column - hidden on extra small screens */}
-                <td className="d-none d-sm-table-cell" style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center">
-                    <User size={16} style={{ color: "#9b59b6", marginRight: "8px" }} />
+                <td className="hidden sm:table-cell py-4 px-3">
+                  <div className="flex items-center">
+                    <User size={16} className="text-primary-500 mr-2" />
                     <span 
-                      className="badge"
-                      style={{
-                        background: user.gender === "me" 
-                          ? "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)"
-                          : "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
-                        color: "white",
-                        fontSize: "0.75rem",
-                        padding: "6px 12px",
-                        borderRadius: "12px",
-                        fontWeight: "500",
-                      }}
+                      className={`
+                        inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-medium
+                        ${user.gender === "me" 
+                          ? 'bg-peaceful-gradient text-peaceful-900'
+                          : 'bg-gradient-to-r from-rose-400 to-rose-600 text-white'
+                        }
+                      `}
                     >
                       {user.gender === "me" ? "Mume" : "Mke"}
                     </span>
@@ -164,21 +110,11 @@ const UserTableRows = ({
                 </td>
   
                 {/* Enhanced Jumuiya column - hidden on small screens */}
-                <td
-                  className="d-none d-lg-table-cell"
-                  style={{ padding: "16px 12px" }}
-                >
-                  <div className="d-flex align-items-center">
-                    <MapPin size={16} style={{ color: "#9b59b6", marginRight: "8px" }} />
+                <td className="hidden lg:table-cell py-4 px-3">
+                  <div className="flex items-center">
+                    <MapPin size={16} className="text-primary-500 mr-2 flex-shrink-0" />
                     <span
-                      style={{
-                        maxWidth: "180px",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        color: "#8b45c1",
-                        fontWeight: "500",
-                      }}
+                      className="max-w-[180px] overflow-hidden whitespace-nowrap text-ellipsis text-primary-700 font-medium"
                       title={user.jumuiya}
                     >
                       {user.jumuiya}
@@ -187,18 +123,11 @@ const UserTableRows = ({
                 </td>
   
                 {/* Enhanced Occupation column */}
-                <td style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center">
-                    <Briefcase size={16} style={{ color: "#9b59b6", marginRight: "8px" }} />
+                <td className="py-4 px-3">
+                  <div className="flex items-center">
+                    <Briefcase size={16} className="text-primary-500 mr-2 flex-shrink-0" />
                     <span 
-                      style={{ 
-                        color: "#64748b",
-                        fontWeight: "500",
-                        maxWidth: "150px",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      }}
+                      className="text-text-secondary font-medium max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis"
                       title={user.occupation}
                     >
                       {user.occupation}
@@ -209,43 +138,43 @@ const UserTableRows = ({
             ) : (
               <>
                 {/* Enhanced Pledge Totals */}
-                <td style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center">
-                    <TrendingUp size={16} style={{ color: "#10b981", marginRight: "8px" }} />
+                <td className="py-4 px-3">
+                  <div className="flex items-center">
+                    <TrendingUp size={16} className="text-success-500 mr-2" />
                     <div>
-                      <div style={{ color: "#10b981", fontWeight: "700", fontSize: "1.1rem" }}>
+                      <div className="text-success-600 font-bold text-lg">
                         {totalPledged?.toLocaleString() || '0'}
                       </div>
-                      <small style={{ color: "#64748b", fontSize: "0.75rem" }}>
+                      <small className="text-text-tertiary text-xs">
                         Ahadi
                       </small>
                     </div>
                   </div>
                 </td>
                 
-                <td style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center">
-                    <DollarSign size={16} style={{ color: "#3b82f6", marginRight: "8px" }} />
+                <td className="py-4 px-3">
+                  <div className="flex items-center">
+                    <DollarSign size={16} className="text-peaceful-500 mr-2" />
                     <div>
-                      <div style={{ color: "#3b82f6", fontWeight: "700", fontSize: "1.1rem" }}>
+                      <div className="text-peaceful-600 font-bold text-lg">
                         {totalPaid?.toLocaleString() || '0'}
                       </div>
-                      <small style={{ color: "#64748b", fontSize: "0.75rem" }}>
+                      <small className="text-text-tertiary text-xs">
                         Iliyolipwa
                       </small>
                     </div>
                   </div>
                 </td>
                 
-                <td style={{ padding: "16px 12px" }}>
-                  <div className="d-flex align-items-center justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <AlertCircle size={16} style={{ color: "#ef4444", marginRight: "8px" }} />
+                <td className="py-4 px-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <AlertCircle size={16} className="text-error-500 mr-2" />
                       <div>
-                        <div style={{ color: "#ef4444", fontWeight: "700", fontSize: "1.1rem" }}>
+                        <div className="text-error-600 font-bold text-lg">
                           {totalRemaining?.toLocaleString() || '0'}
                         </div>
-                        <small style={{ color: "#64748b", fontSize: "0.75rem" }}>
+                        <small className="text-text-tertiary text-xs">
                           Baki
                         </small>
                       </div>
@@ -253,39 +182,22 @@ const UserTableRows = ({
                     
                     {/* Progress indicator */}
                     {sortBy !== "none" && totalPledged > 0 && (
-                      <div className="ms-3">
-                        <div
-                          style={{
-                            width: "60px",
-                            height: "8px",
-                            background: "rgba(139, 69, 193, 0.1)",
-                            borderRadius: "4px",
-                            overflow: "hidden",
-                          }}
-                        >
+                      <div className="ml-3">
+                        <div className="w-15 h-2 bg-primary-100 rounded overflow-hidden">
                           <div
-                            style={{
-                              width: `${Math.min(completionPercentage, 100)}%`,
-                              height: "100%",
-                              background: completionPercentage >= 100 
-                                ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                            className={`
+                              h-full rounded transition-all duration-300
+                              ${completionPercentage >= 100 
+                                ? 'bg-gradient-to-r from-success-500 to-success-600'
                                 : completionPercentage >= 50
-                                ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
-                                : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                              borderRadius: "4px",
-                              transition: "width 0.3s ease",
-                            }}
+                                ? 'bg-gradient-to-r from-warning-500 to-warning-600'
+                                : 'bg-gradient-to-r from-error-500 to-error-600'
+                              }
+                            `}
+                            style={{ width: `${Math.min(completionPercentage, 100)}%` }}
                           />
                         </div>
-                        <small 
-                          style={{ 
-                            color: "#64748b", 
-                            fontSize: "0.7rem",
-                            display: "block",
-                            textAlign: "center",
-                            marginTop: "2px",
-                          }}
-                        >
+                        <small className="block text-center text-text-tertiary text-[0.7rem] mt-0.5">
                           {completionPercentage}%
                         </small>
                       </div>

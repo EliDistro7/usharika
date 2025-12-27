@@ -1,9 +1,8 @@
 import { verifyUser } from "@/actions/admin";
 import { formatRoleName } from "@/actions/utils";
 import React from "react";
-import { Toast } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
-import { User, Phone, Users, Calendar, Briefcase, Award, Gift, Heart } from "lucide-react";
+import { User, Phone, Users, Calendar, Briefcase, Award, Gift, Heart, X } from "lucide-react";
 
 const FullUserModal = ({ user, onClose, notification }) => {
   if (!user) return null;
@@ -26,18 +25,7 @@ const FullUserModal = ({ user, onClose, notification }) => {
 
   return (
     <div
-      className="modal-overlay d-flex align-items-center justify-content-center"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(135deg, rgba(139, 69, 193, 0.1) 0%, rgba(155, 89, 182, 0.2) 100%)",
-        backdropFilter: "blur(10px)",
-        zIndex: 1050,
-        animation: "fadeIn 0.3s ease-out",
-      }}
+      className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-primary-100/10 to-lavender-200/20 backdrop-blur-md z-50 animate-fade-in"
     >
       <ToastContainer 
         autoClose={4000}
@@ -53,49 +41,21 @@ const FullUserModal = ({ user, onClose, notification }) => {
       />
       
       <div
-        className="modal-content"
-        style={{
-          background: "linear-gradient(145deg, #ffffff 0%, #f8f6ff 100%)",
-          borderRadius: "24px",
-          maxWidth: "800px",
-          width: "95%",
-          maxHeight: "95vh",
-          boxShadow: "0 25px 50px rgba(139, 69, 193, 0.15), 0 15px 35px rgba(155, 89, 182, 0.1)",
-          border: "1px solid rgba(139, 69, 193, 0.1)",
-          overflow: "hidden",
-          animation: "slideUp 0.4s ease-out",
-        }}
+        className="bg-gradient-to-br from-white to-background-100 rounded-3xl max-w-3xl w-[95%] max-h-[95vh] shadow-primary-lg border border-primary-100 overflow-hidden animate-slide-up"
       >
         {/* Header with gradient */}
-        <div
-          style={{
-            background: "linear-gradient(135deg, #8b45c1 0%, #9b59b6 100%)",
-            padding: "24px 32px",
-            color: "white",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <div style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "200px",
-            height: "200px",
-            background: "rgba(255, 255, 255, 0.1)",
-            borderRadius: "50%",
-            transform: "translate(50%, -50%)",
-          }}></div>
+        <div className="bg-primary-gradient px-8 py-6 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
           
-          <div className="d-flex justify-content-between align-items-center position-relative">
+          <div className="flex justify-between items-center relative">
             <div>
-              <h4 className="mb-2" style={{ fontWeight: "700", fontSize: "1.5rem" }}>
+              <h4 className="text-2xl font-bold mb-2">
                 {notification.type === "registeringNotification"
                   ? "Maombi ya Usajili"
-                  : `Kujiunga na Kikundi`}
+                  : "Kujiunga na Kikundi"}
               </h4>
               {notification.type !== "registeringNotification" && (
-                <p className="mb-0 opacity-75" style={{ fontSize: "0.9rem" }}>
+                <p className="mb-0 opacity-75 text-sm">
                   {formatRoleName(notification.selectedRole)}
                 </p>
               )}
@@ -103,110 +63,52 @@ const FullUserModal = ({ user, onClose, notification }) => {
             <button
               type="button"
               onClick={onClose}
-              style={{
-                background: "rgba(255, 255, 255, 0.2)",
-                border: "none",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "24px",
-                cursor: "pointer",
-                color: "white",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "rgba(255, 255, 255, 0.3)";
-                e.target.style.transform = "scale(1.1)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "rgba(255, 255, 255, 0.2)";
-                e.target.style.transform = "scale(1)";
-              }}
+              className="bg-white/20 hover:bg-white/30 border-none rounded-full w-10 h-10 flex items-center justify-center text-2xl cursor-pointer text-white transition-all duration-300 hover:scale-110"
             >
-              ×
+              <X size={24} />
             </button>
           </div>
         </div>
 
         {/* Scrollable Body */}
-        <div
-          className="overflow-auto"
-          style={{ 
-            maxHeight: "calc(95vh - 180px)",
-            padding: "32px",
-          }}
-        >
+        <div className="overflow-auto max-h-[calc(95vh-180px)] px-8 py-8">
+          
           {/* User Profile Card */}
-          <div 
-            className="mb-4"
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f3f0ff 100%)",
-              borderRadius: "20px",
-              padding: "24px",
-              border: "1px solid rgba(139, 69, 193, 0.1)",
-              boxShadow: "0 8px 25px rgba(139, 69, 193, 0.08)",
-            }}
-          >
-            <div className="d-flex align-items-center">
-              <div style={{ position: "relative" }}>
+          <div className="mb-6 bg-gradient-to-br from-white to-primary-50 rounded-2xl p-6 border border-primary-100 shadow-soft">
+            <div className="flex items-center">
+              <div className="relative mr-6">
                 <img
                   src={user.profilePicture || "/img/default-profile.png"}
                   alt={`${user.name}'s profile`}
-                  className="rounded-circle"
-                  style={{
-                    width: "120px",
-                    height: "120px",
-                    objectFit: "cover",
-                    marginRight: "24px",
-                    border: "4px solid #8b45c1",
-                    boxShadow: "0 8px 25px rgba(139, 69, 193, 0.2)",
-                  }}
+                  className="w-28 h-28 rounded-full object-cover border-4 border-primary-500 shadow-primary"
                 />
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "8px",
-                    right: "24px",
-                    background: user.verified ? "#10b981" : "#f59e0b",
-                    borderRadius: "50%",
-                    width: "24px",
-                    height: "24px",
-                    border: "3px solid white",
-                  }}
-                ></div>
+                <div className={`absolute bottom-2 right-0 w-6 h-6 rounded-full border-3 border-white ${user.verified ? 'bg-success-500' : 'bg-warning-500'}`}></div>
               </div>
-              <div style={{ flex: 1 }}>
-                <h3 className="mb-3" style={{ 
-                  fontWeight: "700", 
-                  color: "#8b45c1",
-                  fontSize: "1.8rem"
-                }}>
+              <div className="flex-1">
+                <h3 className="text-3xl font-bold text-primary-700 mb-3">
                   {user.name}
                 </h3>
-                <div className="row g-3">
-                  <div className="col-md-6">
-                    <div className="d-flex align-items-center mb-2">
-                      <Phone size={18} style={{ color: "#9b59b6", marginRight: "8px" }} />
-                      <span style={{ color: "#64748b" }}>{user.phone}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <Phone size={18} className="text-primary-500 mr-2" />
+                      <span className="text-text-secondary">{user.phone}</span>
                     </div>
-                    <div className="d-flex align-items-center mb-2">
-                      <Users size={18} style={{ color: "#9b59b6", marginRight: "8px" }} />
-                      <span style={{ color: "#64748b" }}>{user.jumuiya}</span>
+                    <div className="flex items-center mb-2">
+                      <Users size={18} className="text-primary-500 mr-2" />
+                      <span className="text-text-secondary">{user.jumuiya}</span>
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="d-flex align-items-center mb-2">
-                      <User size={18} style={{ color: "#9b59b6", marginRight: "8px" }} />
-                      <span style={{ color: "#64748b" }}>
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <User size={18} className="text-primary-500 mr-2" />
+                      <span className="text-text-secondary">
                         {user.gender === "me" ? "Mwanaume" : "Mwanamke"}
                       </span>
                     </div>
-                    <div className="d-flex align-items-center">
-                      <Calendar size={18} style={{ color: "#9b59b6", marginRight: "8px" }} />
-                      <span style={{ color: "#64748b" }}>
+                    <div className="flex items-center">
+                      <Calendar size={18} className="text-primary-500 mr-2" />
+                      <span className="text-text-secondary">
                         {new Date().getFullYear() - new Date(user.dob).getFullYear()} miaka
                       </span>
                     </div>
@@ -217,52 +119,44 @@ const FullUserModal = ({ user, onClose, notification }) => {
           </div>
 
           {/* Personal Details Card */}
-          <div 
-            className="mb-4"
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)",
-              borderRadius: "16px",
-              padding: "24px",
-              border: "1px solid rgba(139, 69, 193, 0.1)",
-            }}
-          >
-            <div className="d-flex align-items-center mb-3">
-              <User size={20} style={{ color: "#8b45c1", marginRight: "8px" }} />
-              <h5 style={{ fontWeight: "600", color: "#8b45c1", margin: 0 }}>
+          <div className="mb-6 bg-gradient-to-br from-white to-peaceful-50 rounded-2xl p-6 border border-primary-100">
+            <div className="flex items-center mb-4">
+              <User size={20} className="text-primary-600 mr-2" />
+              <h5 className="text-lg font-semibold text-primary-700 m-0">
                 Taarifa binafsi
               </h5>
             </div>
-            <div className="row g-3">
-              <div className="col-md-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
                 <div className="mb-3">
-                  <small style={{ color: "#64748b", fontWeight: "500" }}>Hali ya Ndoa</small>
-                  <p style={{ color: "#334155", marginBottom: "0", fontWeight: "500" }}>
+                  <small className="text-text-tertiary font-medium block mb-1">Hali ya Ndoa</small>
+                  <p className="text-text-primary font-medium mb-0">
                     {user.maritalStatus} ({user.marriageType})
                   </p>
                 </div>
                 <div className="mb-3">
-                  <small style={{ color: "#64748b", fontWeight: "500" }}>Ubatizo</small>
-                  <p style={{ color: "#334155", marginBottom: "0", fontWeight: "500" }}>
-                    <span className={`badge ${user.ubatizo ? 'bg-success' : 'bg-warning'}`}>
+                  <small className="text-text-tertiary font-medium block mb-1">Ubatizo</small>
+                  <p className="mb-0">
+                    <span className={`inline-block px-3 py-1 rounded-xl text-xs font-semibold ${user.ubatizo ? 'bg-success-500 text-white' : 'bg-warning-500 text-white'}`}>
                       {user.ubatizo ? "Ndiyo" : "Hapana"}
                     </span>
                   </p>
                 </div>
               </div>
-              <div className="col-md-6">
+              <div>
                 <div className="mb-3">
-                  <small style={{ color: "#64748b", fontWeight: "500" }}>Kipaimara</small>
-                  <p style={{ color: "#334155", marginBottom: "0", fontWeight: "500" }}>
-                    <span className={`badge ${user.kipaimara ? 'bg-success' : 'bg-warning'}`}>
+                  <small className="text-text-tertiary font-medium block mb-1">Kipaimara</small>
+                  <p className="mb-0">
+                    <span className={`inline-block px-3 py-1 rounded-xl text-xs font-semibold ${user.kipaimara ? 'bg-success-500 text-white' : 'bg-warning-500 text-white'}`}>
                       {user.kipaimara ? "Ndiyo" : "Hapana"}
                     </span>
                   </p>
                 </div>
                 <div className="mb-3">
-                  <small style={{ color: "#64748b", fontWeight: "500" }}>Kazi</small>
-                  <div className="d-flex align-items-center">
-                    <Briefcase size={16} style={{ color: "#9b59b6", marginRight: "6px" }} />
-                    <span style={{ color: "#334155", fontWeight: "500" }}>{user.occupation}</span>
+                  <small className="text-text-tertiary font-medium block mb-1">Kazi</small>
+                  <div className="flex items-center">
+                    <Briefcase size={16} className="text-primary-500 mr-2" />
+                    <span className="text-text-primary font-medium">{user.occupation}</span>
                   </div>
                 </div>
               </div>
@@ -270,126 +164,75 @@ const FullUserModal = ({ user, onClose, notification }) => {
           </div>
 
           {/* Roles Card */}
-          <div 
-            className="mb-4"
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #fef7ff 100%)",
-              borderRadius: "16px",
-              padding: "24px",
-              border: "1px solid rgba(139, 69, 193, 0.1)",
-            }}
-          >
-            <div className="d-flex align-items-center mb-3">
-              <Award size={20} style={{ color: "#8b45c1", marginRight: "8px" }} />
-              <h5 style={{ fontWeight: "600", color: "#8b45c1", margin: 0 }}>
+          <div className="mb-6 bg-gradient-to-br from-white to-lavender-50 rounded-2xl p-6 border border-primary-100">
+            <div className="flex items-center mb-4">
+              <Award size={20} className="text-primary-600 mr-2" />
+              <h5 className="text-lg font-semibold text-primary-700 m-0">
                 Nafasi na Vikundi alivyomo
               </h5>
             </div>
             {user.selectedRoles.length > 0 ? (
-              <div className="d-flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2">
                 {user.selectedRoles.map((role, index) => (
                   <span
                     key={index}
-                    className="badge"
-                    style={{
-                      background: "linear-gradient(135deg, #8b45c1 0%, #9b59b6 100%)",
-                      color: "white",
-                      padding: "8px 16px",
-                      borderRadius: "20px",
-                      fontSize: "0.85rem",
-                      fontWeight: "500",
-                    }}
+                    className="bg-primary-gradient text-white px-4 py-2 rounded-2xl text-sm font-medium"
                   >
                     {role.replace(/_/g, " ")}
                   </span>
                 ))}
               </div>
             ) : (
-              <p style={{ color: "#64748b", fontStyle: "italic", margin: 0 }}>
+              <p className="text-text-tertiary italic m-0">
                 Hakuna majukumu yaliyotolewa.
               </p>
             )}
           </div>
 
           {/* Pledges Card */}
-          <div 
-            className="mb-4"
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)",
-              borderRadius: "16px",
-              padding: "24px",
-              border: "1px solid rgba(139, 69, 193, 0.1)",
-            }}
-          >
-            <div className="d-flex align-items-center mb-3">
-              <Gift size={20} style={{ color: "#8b45c1", marginRight: "8px" }} />
-              <h5 style={{ fontWeight: "600", color: "#8b45c1", margin: 0 }}>
+          <div className="mb-6 bg-gradient-to-br from-white to-success-50 rounded-2xl p-6 border border-primary-100">
+            <div className="flex items-center mb-4">
+              <Gift size={20} className="text-primary-600 mr-2" />
+              <h5 className="text-lg font-semibold text-primary-700 m-0">
                 Ahadi za Msharika
               </h5>
             </div>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <div 
-                  style={{
-                    background: "rgba(139, 69, 193, 0.05)",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    border: "1px solid rgba(139, 69, 193, 0.1)",
-                  }}
-                >
-                  <h6 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "8px" }}>Ahadi</h6>
-                  <p style={{ margin: 0, color: "#334155" }}>
-                    <strong>{user.pledges.ahadi.toLocaleString()}</strong> TZS
-                  </p>
-                  <small style={{ color: "#10b981" }}>
-                    Iliyolipwa: {user.pledges.paidAhadi.toLocaleString()} TZS
-                  </small>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-primary-50 rounded-xl p-4 border border-primary-100">
+                <h6 className="text-primary-700 font-semibold mb-2">Ahadi</h6>
+                <p className="text-text-primary font-bold text-lg mb-1">
+                  {user.pledges.ahadi.toLocaleString()} TZS
+                </p>
+                <small className="text-success-600 font-medium">
+                  Iliyolipwa: {user.pledges.paidAhadi.toLocaleString()} TZS
+                </small>
               </div>
-              <div className="col-md-6">
-                <div 
-                  style={{
-                    background: "rgba(139, 69, 193, 0.05)",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    border: "1px solid rgba(139, 69, 193, 0.1)",
-                  }}
-                >
-                  <h6 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "8px" }}>Jengo</h6>
-                  <p style={{ margin: 0, color: "#334155" }}>
-                    <strong>{user.pledges.jengo.toLocaleString()}</strong> TZS
-                  </p>
-                  <small style={{ color: "#10b981" }}>
-                    Iliyolipwa: {user.pledges.paidJengo.toLocaleString()} TZS
-                  </small>
-                </div>
+              <div className="bg-primary-50 rounded-xl p-4 border border-primary-100">
+                <h6 className="text-primary-700 font-semibold mb-2">Jengo</h6>
+                <p className="text-text-primary font-bold text-lg mb-1">
+                  {user.pledges.jengo.toLocaleString()} TZS
+                </p>
+                <small className="text-success-600 font-medium">
+                  Iliyolipwa: {user.pledges.paidJengo.toLocaleString()} TZS
+                </small>
               </div>
             </div>
             
             {/* Dynamic pledges */}
             {user.pledges.other && Object.keys(user.pledges.other).length > 0 && (
-              <div className="mt-3">
-                <div className="row g-2">
+              <div className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {Object.entries(user.pledges.other).map(([key, { total, paid }]) => (
-                    <div key={key} className="col-md-6">
-                      <div 
-                        style={{
-                          background: "rgba(139, 69, 193, 0.05)",
-                          borderRadius: "12px",
-                          padding: "16px",
-                          border: "1px solid rgba(139, 69, 193, 0.1)",
-                        }}
-                      >
-                        <h6 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "8px" }}>
-                          {key.charAt(0).toUpperCase() + key.slice(1)}
-                        </h6>
-                        <p style={{ margin: 0, color: "#334155" }}>
-                          <strong>{total.toLocaleString()}</strong> TZS
-                        </p>
-                        <small style={{ color: "#10b981" }}>
-                          Iliyolipwa: {paid.toLocaleString()} TZS
-                        </small>
-                      </div>
+                    <div key={key} className="bg-primary-50 rounded-xl p-4 border border-primary-100">
+                      <h6 className="text-primary-700 font-semibold mb-2">
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </h6>
+                      <p className="text-text-primary font-bold text-lg mb-1">
+                        {total.toLocaleString()} TZS
+                      </p>
+                      <small className="text-success-600 font-medium">
+                        Iliyolipwa: {paid.toLocaleString()} TZS
+                      </small>
                     </div>
                   ))}
                 </div>
@@ -398,42 +241,26 @@ const FullUserModal = ({ user, onClose, notification }) => {
           </div>
 
           {/* Dependents Card */}
-          <div 
-            style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #fff1f2 100%)",
-              borderRadius: "16px",
-              padding: "24px",
-              border: "1px solid rgba(139, 69, 193, 0.1)",
-            }}
-          >
-            <div className="d-flex align-items-center mb-3">
-              <Heart size={20} style={{ color: "#8b45c1", marginRight: "8px" }} />
-              <h5 style={{ fontWeight: "600", color: "#8b45c1", margin: 0 }}>
+          <div className="bg-gradient-to-br from-white to-rose-50 rounded-2xl p-6 border border-primary-100">
+            <div className="flex items-center mb-4">
+              <Heart size={20} className="text-primary-600 mr-2" />
+              <h5 className="text-lg font-semibold text-primary-700 m-0">
                 Wategemezi
               </h5>
             </div>
             {user.dependents.length > 0 ? (
-              <div className="row g-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {user.dependents.map((dependent, index) => (
-                  <div key={index} className="col-md-6">
-                    <div 
-                      style={{
-                        background: "rgba(139, 69, 193, 0.05)",
-                        borderRadius: "12px",
-                        padding: "12px 16px",
-                        border: "1px solid rgba(139, 69, 193, 0.1)",
-                      }}
-                    >
-                      <p style={{ margin: 0, color: "#334155", fontWeight: "500" }}>
-                        {dependent.name}
-                      </p>
-                      <small style={{ color: "#64748b" }}>({dependent.relation})</small>
-                    </div>
+                  <div key={index} className="bg-primary-50 rounded-xl px-4 py-3 border border-primary-100">
+                    <p className="text-text-primary font-medium mb-0">
+                      {dependent.name}
+                    </p>
+                    <small className="text-text-tertiary">({dependent.relation})</small>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={{ color: "#64748b", fontStyle: "italic", margin: 0 }}>
+              <p className="text-text-tertiary italic m-0">
                 Hakuna wategemezi waliosajiliwa.
               </p>
             )}
@@ -441,64 +268,18 @@ const FullUserModal = ({ user, onClose, notification }) => {
         </div>
 
         {/* Footer */}
-        <div
-          style={{
-            background: "linear-gradient(135deg, #f8f9fa 0%, #f3f0ff 100%)",
-            padding: "20px 32px",
-            borderTop: "1px solid rgba(139, 69, 193, 0.1)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div className="bg-gradient-to-br from-background-200 to-primary-50 px-8 py-5 border-t border-primary-100 flex justify-between items-center">
           <button
             type="button"
             onClick={onClose}
-            style={{
-              background: "transparent",
-              border: "2px solid #8b45c1",
-              color: "#8b45c1",
-              padding: "12px 24px",
-              borderRadius: "12px",
-              fontSize: "0.9rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#8b45c1";
-              e.target.style.color = "white";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "transparent";
-              e.target.style.color = "#8b45c1";
-            }}
+            className="bg-transparent border-2 border-primary-500 text-primary-700 px-6 py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-primary-500 hover:text-white"
           >
             Funga
           </button>
           <button
             type="button"
             onClick={handleVerification}
-            style={{
-              background: "linear-gradient(135deg, #8b45c1 0%, #9b59b6 100%)",
-              border: "none",
-              color: "white",
-              padding: "12px 32px",
-              borderRadius: "12px",
-              fontSize: "0.9rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              boxShadow: "0 4px 15px rgba(139, 69, 193, 0.3)",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 6px 20px rgba(139, 69, 193, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 15px rgba(139, 69, 193, 0.3)";
-            }}
+            className="bg-primary-gradient border-none text-white px-8 py-3 rounded-xl text-sm font-semibold cursor-pointer shadow-primary transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary-lg"
           >
             Thibitisha
           </button>
@@ -526,22 +307,30 @@ const FullUserModal = ({ user, onClose, notification }) => {
           }
         }
 
-        .modal-content::-webkit-scrollbar {
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slide-up {
+          animation: slideUp 0.4s ease-out;
+        }
+
+        .overflow-auto::-webkit-scrollbar {
           width: 6px;
         }
 
-        .modal-content::-webkit-scrollbar-track {
-          background: rgba(139, 69, 193, 0.1);
+        .overflow-auto::-webkit-scrollbar-track {
+          background: rgba(168, 85, 247, 0.1);
           border-radius: 3px;
         }
 
-        .modal-content::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #8b45c1 0%, #9b59b6 100%);
+        .overflow-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%);
           border-radius: 3px;
         }
 
-        .modal-content::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        .overflow-auto::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #9333EA 0%, #7E22CE 100%);
         }
       `}</style>
     </div>

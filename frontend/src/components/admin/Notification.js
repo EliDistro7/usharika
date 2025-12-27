@@ -5,7 +5,6 @@ import { fetchAdminById, markNotificationAsRead, deleteNotification } from '@/ac
 import { Bell, CheckCircle, Circle, User, Trash2, Eye, X } from 'lucide-react';
 import FullUserModal from '@/components/admin/FullUserModal';
 import axios from 'axios';
-//import {fetchUserById} from '@/actions/users';
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -17,106 +16,12 @@ const Notification = () => {
   const [notific, setCurrentNotification] = useState(null);
   const adminId = process.env.NEXT_PUBLIC_MKUU;
 
-  // Enhanced custom styles
-  const customStyles = {
-    bellButton: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '12px',
-      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-      transition: 'all 0.3s ease',
-      position: 'relative'
-    },
-    badge: {
-      background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
-      color: 'white',
-      fontSize: '10px',
-      fontWeight: 'bold',
-      borderRadius: '10px',
-      padding: '2px 8px',
-      position: 'absolute',
-      top: '-5px',
-      right: '-5px',
-      border: '2px solid white',
-      boxShadow: '0 2px 8px rgba(255, 107, 107, 0.3)'
-    },
-    dropdown: {
-      background: 'rgba(255, 255, 255, 0.95)',
-    
-      borderRadius: '16px',
-      border: '1px solid rgba(102, 126, 234, 0.2)',
-      boxShadow: '0 20px 40px rgba(102, 126, 234, 0.15)',
-      width: '380px',
-      maxHeight: '500px',
-      overflowY: 'auto'
-    },
-    header: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '16px 16px 0 0',
-      padding: '16px 20px',
-      borderBottom: 'none'
-    },
-    notificationItem: {
-      background: 'transparent',
-      border: 'none',
-      borderBottom: '1px solid rgba(102, 126, 234, 0.1)',
-      padding: '16px 20px',
-      transition: 'all 0.3s ease',
-      cursor: 'pointer'
-    },
-    unreadItem: {
-      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
-      borderLeft: '4px solid #667eea'
-    },
-    actionButton: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      border: 'none',
-      borderRadius: '8px',
-      padding: '6px 12px',
-      color: 'white',
-      fontSize: '12px',
-      fontWeight: '500',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 2px 8px rgba(102, 126, 234, 0.2)'
-    },
-    deleteButton: {
-      background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
-      border: 'none',
-      borderRadius: '8px',
-      padding: '6px 12px',
-      color: 'white',
-      fontSize: '12px',
-      fontWeight: '500',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 2px 8px rgba(255, 107, 107, 0.2)'
-    },
-    badge1: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      color: 'white',
-      fontSize: '10px',
-      fontWeight: '600',
-      borderRadius: '12px',
-      padding: '4px 8px',
-      border: 'none'
-    },
-    badge2: {
-      background: 'linear-gradient(135deg, #51cf66 0%, #40c057 100%)',
-      color: 'white',
-      fontSize: '10px',
-      fontWeight: '600',
-      borderRadius: '12px',
-      padding: '4px 8px',
-      border: 'none'
-    }
-  };
-
   // Fetch admin notifications
   useEffect(() => {
     const loadNotifications = async () => {
       try {
         const adminData = await fetchAdminById(adminId);
-        console.log(adminData?.admin.registeringNotifications)
+        console.log(adminData?.admin.registeringNotifications);
         setNotifications(adminData?.admin.registeringNotifications || []);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -180,7 +85,7 @@ const Notification = () => {
   };
 
   const handleNotificationClick = (userId, notification) => {
-    setCurrentNotification(notification)
+    setCurrentNotification(notification);
     fetchUserById(userId);
   };
 
@@ -200,14 +105,8 @@ const Notification = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center py-3">
-        <div 
-          className="spinner-border" 
-          role="status"
-          style={{color: '#667eea', width: '24px', height: '24px'}}
-        >
-          <span className="visually-hidden">Inapakia...</span>
-        </div>
+      <div className="flex justify-center items-center py-3">
+        <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary-500 border-t-transparent"></div>
       </div>
     );
   }
@@ -215,24 +114,15 @@ const Notification = () => {
   const unreadCount = notifications.filter(n => n.status === 'unread').length;
 
   return (
-    <div className="position-relative notification-wrapper" style={{zIndex:2000}} >
+    <div className="relative notification-wrapper" style={{zIndex: 2000}}>
       {/* Enhanced Bell Button */}
       <button
-        style={customStyles.bellButton}
         onClick={toggleDropdown}
-        className="position-relative"
-        onMouseEnter={(e) => {
-          e.target.style.transform = 'translateY(-2px)';
-          e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
-        }}
+        className="relative bg-primary-gradient rounded-xl p-3 shadow-primary transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary-lg border-none z-[10000]"
       >
         <Bell size={20} className="text-white" />
         {unreadCount > 0 && (
-          <span style={customStyles.badge}>
+          <span className="absolute -top-1 -right-1 bg-gradient-to-r from-error-500 to-error-600 text-white text-[10px] font-bold rounded-full px-2 py-0.5 border-2 border-white shadow-soft">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -241,32 +131,24 @@ const Notification = () => {
       {/* Enhanced Notifications Dropdown */}
       {showDropdown && (
         <div
-        
-          className="position-absolute mt-3 notification-dropdown"
-          style={{
-            ...customStyles.dropdown,
-            right: 0,
-            zIndex: 1000,
-            top: '100%',
-            animation: 'slideDown 0.3s ease-out'
-          }}
+          className="absolute mt-3 right-0 w-96 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-md rounded-2xl border border-primary-200 shadow-primary-lg max-h-[500px] overflow-y-auto animate-slide-down"
+          style={{zIndex: 1000}}
         >
           {/* Header */}
-          <div style={customStyles.header} className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <Bell size={18} className="text-white me-2" />
-              <h6 className="fw-bold mb-0 text-white">Taarifa</h6>
+          <div className="bg-primary-gradient rounded-t-2xl px-5 py-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <Bell size={18} className="text-white mr-2" />
+              <h6 className="font-bold text-white mb-0">Taarifa</h6>
             </div>
-            <div className="d-flex align-items-center gap-2">
+            <div className="flex items-center gap-2">
               {unreadCount > 0 && (
-                <span className="badge bg-white text-purple px-2 py-1 rounded-pill">
+                <span className="bg-white text-primary-700 text-xs font-semibold px-2 py-1 rounded-full">
                   {unreadCount} mpya
                 </span>
               )}
               <button
                 onClick={toggleDropdown}
-                className="btn btn-link text-white p-0"
-                style={{border: 'none', background: 'none'}}
+                className="text-white hover:bg-white/20 rounded-lg p-1 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -274,74 +156,65 @@ const Notification = () => {
           </div>
 
           {/* Notifications List */}
-          <div className="notification-list" style={{maxHeight: '400px', overflowY: 'auto'}}>
+          <div className="max-h-96 overflow-y-auto">
             {notifications.length > 0 ? (
               notifications.map((notification, index) => (
                 <div
                   key={notification._id || index}
-                  style={{
-                    ...customStyles.notificationItem,
-                    ...(notification.status === 'unread' ? customStyles.unreadItem : {})
-                  }}
-                  className="notification-item"
-                  onMouseEnter={(e) => {
-                    if (notification.status === 'read') {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.03)';
+                  className={`
+                    border-b border-primary-100 px-5 py-4 transition-all duration-300 cursor-pointer
+                    ${notification.status === 'unread' 
+                      ? 'bg-gradient-to-r from-primary-50/50 to-lavender-50/50 border-l-4 border-l-primary-500' 
+                      : 'hover:bg-primary-50/30'
                     }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (notification.status === 'read') {
-                      e.target.style.background = 'transparent';
-                    }
-                  }}
+                  `}
                 >
-                  <div className="d-flex align-items-start gap-3">
+                  <div className="flex items-start gap-3">
                     {/* Status Icon */}
                     <div className="flex-shrink-0 mt-1">
                       {notification.status === 'unread' ? (
-                        <Circle size={16} style={{color: '#667eea'}} />
+                        <Circle size={16} className="text-primary-500" />
                       ) : (
-                        <CheckCircle size={16} style={{color: '#51cf66'}} />
+                        <CheckCircle size={16} className="text-success-500" />
                       )}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-grow-1">
+                    <div className="flex-1 min-w-0">
                       <div
-                        className="d-flex align-items-start justify-content-between mb-2"
+                        className="flex items-start justify-between mb-2 cursor-pointer"
                         onClick={() => handleNotificationClick(notification.userId, notification)}
-                        style={{cursor: 'pointer'}}
                       >
-                        <div className="flex-grow-1">
-                          <div className="d-flex align-items-center gap-2 mb-1">
-                            <User size={16} style={{color: '#667eea'}} />
-                            <h6 className="mb-0 fw-semibold" style={{color: '#2d3748'}}>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <User size={16} className="text-primary-500" />
+                            <h6 className="font-semibold text-text-primary mb-0">
                               {notification.name}
                             </h6>
                           </div>
                           
-                          <div className="d-flex flex-wrap gap-1 mb-2">
+                          <div className="flex flex-wrap gap-1 mb-2">
                             {notification.type === 'registeringNotification' && (
-                              <span style={customStyles.badge1}>
+                              <span className="bg-primary-gradient text-white text-[10px] font-semibold rounded-xl px-2 py-1">
                                 Maombi ya Usajili
                               </span>
                             )}
                             {notification.type === 'kujiungaKikundi' && (
-                              <span style={customStyles.badge2}>
+                              <span className="bg-gradient-to-r from-success-500 to-success-600 text-white text-[10px] font-semibold rounded-xl px-2 py-1">
                                 Kujiunga Kikundi
                               </span>
                             )}
                           </div>
                           
-                          <small className="text-muted d-flex align-items-center gap-1">
+                          <small className="text-text-tertiary flex items-center gap-1">
                             {notification.status === 'unread' ? (
                               <>
-                                <Circle size={8} style={{color: '#667eea'}} />
+                                <Circle size={8} className="text-primary-500" />
                                 Haijasomwa
                               </>
                             ) : (
                               <>
-                                <CheckCircle size={8} style={{color: '#51cf66'}} />
+                                <CheckCircle size={8} className="text-success-500" />
                                 Imesomwa
                               </>
                             )}
@@ -350,39 +223,27 @@ const Notification = () => {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="d-flex gap-2">
+                      <div className="flex gap-2">
                         {notification.status === 'unread' && (
                           <button
-                            style={customStyles.actionButton}
                             onClick={(e) => {
                               e.stopPropagation();
                               handleMarkAsRead(notification.userId);
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.transform = 'scale(1.05)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.transform = 'scale(1)';
-                            }}
+                            className="bg-primary-gradient text-white text-xs font-medium rounded-lg px-3 py-1.5 shadow-primary transition-all duration-300 hover:scale-105 flex items-center"
                           >
-                            <Eye size={12} className="me-1" />
+                            <Eye size={12} className="mr-1" />
                             Soma
                           </button>
                         )}
                         <button
-                          style={customStyles.deleteButton}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteNotification(notification.userId);
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.transform = 'scale(1.05)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = 'scale(1)';
-                          }}
+                          className="bg-gradient-to-r from-error-500 to-error-600 text-white text-xs font-medium rounded-lg px-3 py-1.5 shadow-soft transition-all duration-300 hover:scale-105 flex items-center"
                         >
-                          <Trash2 size={12} className="me-1" />
+                          <Trash2 size={12} className="mr-1" />
                           Futa
                         </button>
                       </div>
@@ -391,10 +252,10 @@ const Notification = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-5">
-                <Bell size={48} className="text-muted mb-3" style={{opacity: 0.3}} />
-                <p className="text-muted mb-0">Hamna taarifa</p>
-                <small className="text-muted">Taarifa zitaonekana hapa</small>
+              <div className="text-center py-12">
+                <Bell size={48} className="text-text-muted mx-auto mb-3 opacity-30" />
+                <p className="text-text-tertiary mb-0">Hamna taarifa</p>
+                <small className="text-text-muted">Taarifa zitaonekana hapa</small>
               </div>
             )}
           </div>
@@ -410,7 +271,7 @@ const Notification = () => {
         />
       )}
 
-      {/* Custom CSS for animations */}
+      {/* Custom CSS for animations and scrollbar */}
       <style jsx>{`
         @keyframes slideDown {
           from {
@@ -423,26 +284,26 @@ const Notification = () => {
           }
         }
 
-        .notification-dropdown::-webkit-scrollbar {
+        .animate-slide-down {
+          animation: slideDown 0.3s ease-out;
+        }
+
+        .notification-wrapper .overflow-y-auto::-webkit-scrollbar {
           width: 6px;
         }
 
-        .notification-dropdown::-webkit-scrollbar-track {
-          background: rgba(102, 126, 234, 0.1);
+        .notification-wrapper .overflow-y-auto::-webkit-scrollbar-track {
+          background: rgba(168, 85, 247, 0.1);
           border-radius: 3px;
         }
 
-        .notification-dropdown::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .notification-wrapper .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%);
           border-radius: 3px;
         }
 
-        .notification-dropdown::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-        }
-
-        .notification-item:last-child {
-          border-bottom: none;
+        .notification-wrapper .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #9333EA 0%, #7E22CE 100%);
         }
       `}</style>
     </div>

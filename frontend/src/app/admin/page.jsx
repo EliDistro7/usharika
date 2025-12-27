@@ -6,9 +6,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '../../components/admin/PaymentModal';
 import {formatRoleName} from "../../actions/utils"
-import { Dropdown } from 'react-bootstrap';
 import {handleDownloadPDF} from "@/actions/pdf"
-import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle, Plus } from 'lucide-react';
+import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle, Plus, ChevronDown } from 'lucide-react';
 
 import UserTableRows from '../../components/admin/UserTableRows';
 import Notification from '../../components/admin/Notification';
@@ -21,6 +20,7 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('none');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -155,10 +155,7 @@ const AdminDashboard = () => {
       });
       toast.success('Umefanikiwa kuingiza malipo!', { 
         position: 'top-center',
-        style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white'
-        }
+        className: 'bg-primary-gradient text-white'
       });
       setSelectedUser(null);
     } catch (error) {
@@ -173,126 +170,81 @@ const AdminDashboard = () => {
     setSelectedUser(null);
   };
 
-  const customStyles = {
-    container: {
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      minHeight: '100vh',
-      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
-    },
-    headerCard: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '20px',
-      boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)',
-      border: 'none'
-    },
-    controlsCard: {
-      background: 'rgba(255, 255, 255, 0.95)',
-
-      borderRadius: '16px',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)'
-    },
-    summaryCard: {
-      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-      borderRadius: '16px',
-      border: '1px solid rgba(102, 126, 234, 0.2)',
-      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)'
-    },
-    tableCard: {
-      background: 'rgba(255, 255, 255, 0.95)',
-
-      borderRadius: '16px',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)',
-      overflow: 'hidden'
-    },
-    button: {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      border: 'none',
-      borderRadius: '12px',
-      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-      transition: 'all 0.3s ease'
-    },
-    searchInput: {
-      borderRadius: '12px',
-      border: '2px solid rgba(102, 126, 234, 0.2)',
-      background: 'rgba(255, 255, 255, 0.9)',
-      transition: 'all 0.3s ease'
-    },
-    select: {
-      borderRadius: '12px',
-      border: '2px solid rgba(102, 126, 234, 0.2)',
-      background: 'rgba(255, 255, 255, 0.9)',
-      transition: 'all 0.3s ease'
-    }
-  };
-
   return (
-    <div style={customStyles.container} className="min-vh-100 py-4">
-      <div className="container">
+    <div className="min-h-screen bg-gradient-to-br from-background-50 via-white to-primary-50 py-6">
+      <div className="container mx-auto px-4">
         {/* Enhanced Header */}
-        <div className="card mb-4" style={customStyles.headerCard}>
-          <div className="card-body text-center py-5">
-            <div className="d-flex justify-content-center align-items-center mb-3">
-              <Users size={48} className="text-white me-3" />
-              <h1 className="text-white fw-bold mb-0 display-4">Usharika</h1>
+        <div className="bg-primary-gradient rounded-3xl shadow-primary-lg mb-6 overflow-hidden">
+          <div className="text-center py-12 px-4">
+            <div className="flex justify-center items-center mb-4">
+              <Users size={48} className="text-white mr-4" />
+              <h1 className="text-white font-bold text-5xl mb-0">Usharika</h1>
             </div>
-            <p className="text-white-50 mb-0 fs-5">Mfumo wa Usimamizi wa Washarika</p>
+            <p className="text-white/75 text-xl mb-0">Mfumo wa Usimamizi wa Washarika</p>
           </div>
         </div>
 
         {/* Loading State */}
         {isLoading && (
-          <div className="text-center py-5">
-            <div className="spinner-border text-purple" role="status" style={{color: '#667eea'}}>
-              <span className="visually-hidden">Inapakia...</span>
-            </div>
-            <p className="mt-3 text-muted fs-5">Inapakia washarika...</p>
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-text-secondary text-lg">Inapakia washarika...</p>
           </div>
         )}
 
         {/* Enhanced Controls Section */}
-        <div className="card mb-4" style={customStyles.controlsCard}>
-          <div className="card-body p-4">
-            <div className="row align-items-center g-3">
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-primary-100 shadow-soft mb-6">
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
               {/* Left side - Filters and controls */}
-              <div className="col-lg-8">
-                <div className="d-flex flex-wrap gap-3 align-items-center">
+              <div className="lg:col-span-8">
+                <div className="flex flex-wrap gap-3 items-center">
                   {/* Category Filter */}
-                  <Dropdown>
-                    <Dropdown.Toggle 
-                      style={customStyles.button} 
-                      className="d-flex align-items-center px-4 py-2"
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                      className="flex items-center px-5 py-2.5 bg-primary-gradient text-white rounded-xl shadow-primary hover:shadow-primary-lg transition-all duration-300 font-medium"
                     >
-                      <Filter size={18} className="me-2" />
+                      <Filter size={18} className="mr-2" />
                       Chuja
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu className="shadow-lg border-0" style={{borderRadius: '12px'}}>
-                      <Dropdown.Item 
-                        onClick={() => setActiveTab('all')} 
-                        active={activeTab === 'all'}
-                        className="py-2"
-                      >
-                        <Users size={16} className="me-2" />
-                        Washarika ({users.length})
-                      </Dropdown.Item>
-                      {categories.map((category) => (
-                        <Dropdown.Item
-                          key={category._id}
-                          onClick={() => setActiveTab(category._id)}
-                          active={activeTab === category._id}
-                          className="py-2"
+                      <ChevronDown size={16} className="ml-2" />
+                    </button>
+                    
+                    {showFilterDropdown && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-primary-lg border border-primary-200 py-2 z-50">
+                        <button
+                          onClick={() => {
+                            setActiveTab('all');
+                            setShowFilterDropdown(false);
+                          }}
+                          className={`w-full flex items-center px-4 py-2.5 text-left hover:bg-primary-50 transition-colors ${
+                            activeTab === 'all' ? 'bg-primary-100 text-primary-700' : 'text-text-primary'
+                          }`}
                         >
-                          {formatRoleName(category._id.toUpperCase())} ({category.count})
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
+                          <Users size={16} className="mr-3" />
+                          Washarika ({users.length})
+                        </button>
+                        {categories.map((category) => (
+                          <button
+                            key={category._id}
+                            onClick={() => {
+                              setActiveTab(category._id);
+                              setShowFilterDropdown(false);
+                            }}
+                            className={`w-full flex items-center px-4 py-2.5 text-left hover:bg-primary-50 transition-colors ${
+                              activeTab === category._id ? 'bg-primary-100 text-primary-700' : 'text-text-primary'
+                            }`}
+                          >
+                            {formatRoleName(category._id.toUpperCase())} ({category.count})
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Sort Select */}
                   <select
-                    className="form-select px-3 py-2"
-                    style={customStyles.select}
+                    className="px-4 py-2.5 bg-white border-2 border-primary-200 rounded-xl text-text-primary focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                   >
@@ -308,42 +260,30 @@ const AdminDashboard = () => {
 
                   {/* Download Button */}
                   <button 
-                    className="btn px-4 py-2 d-flex align-items-center" 
-                    style={customStyles.button}
+                    className="flex items-center px-5 py-2.5 bg-primary-gradient text-white rounded-xl shadow-primary hover:shadow-primary-lg transition-all duration-300 font-medium"
                     onClick={handleDownloadPDF}
                   >
-                    <Download size={18} className="me-2" />
+                    <Download size={18} className="mr-2" />
                     Pakua
                   </button>
                 </div>
               </div>
 
               {/* Right side - Search and Notification */}
-              <div className="col-lg-4" style={{ position: 'relative', zIndex: 1000 }}>
-                <div className="d-flex gap-3 align-items-center justify-content-lg-end">
+              <div className="lg:col-span-4 relative z-[1000]">
+                <div className="flex gap-3 items-center justify-end">
                   {/* Search Input */}
-                  <div className="input-group">
-                    <span 
-                      className="input-group-text border-0" 
-                      style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        borderRadius: '12px 0 0 12px'
-                      }}
-                    >
+                  <div className="flex items-center flex-1 max-w-sm">
+                    <div className="flex items-center justify-center bg-primary-gradient px-3 py-2.5 rounded-l-xl">
                       <Search size={18} className="text-white" />
-                    </span>
+                    </div>
                     <input
                       type="text"
-                      className="form-control border-0 px-3 py-2"
-                      style={{
-                        ...customStyles.searchInput,
-                        borderRadius: '0 12px 12px 0'
-                      }}
+                      className="flex-1 px-4 py-2.5 bg-white border-2 border-l-0 border-primary-200 rounded-r-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all text-text-primary placeholder-text-tertiary"
                       placeholder="Tafuta jina..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    
                   </div>
                   
                   <Notification />
@@ -355,50 +295,44 @@ const AdminDashboard = () => {
 
         {/* Enhanced Totals Summary */}
         {!isLoading && currentTotals && (
-          <div className=" mb-4" style={customStyles.summaryCard}>
-            <div className=" p-4">
-              <div className="text-center mb-4">
-                <h3 className="fw-bold text-uppercase mb-2" style={{color: '#667eea'}}>
-                  <TrendingUp size={28} className="me-2" />
+          <div className="bg-gradient-to-br from-primary-50/50 to-lavender-50/50 rounded-2xl border border-primary-200 shadow-soft mb-6">
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <h3 className="flex items-center justify-center font-bold text-2xl text-primary-700 uppercase mb-2">
+                  <TrendingUp size={28} className="mr-2" />
                   {sortBy}
                 </h3>
               </div>
               
-              <div className="row g-4">
-                <div className="col-md-4">
-                  <div className="text-center p-3">
-                    <div className="d-flex justify-content-center align-items-center mb-2">
-                      <DollarSign size={24} style={{color: '#28a745'}} />
-                    </div>
-                    <h5 className="text-muted mb-1">Kiasi kilichoahidiwa</h5>
-                    <h2 className="fw-bold mb-0" style={{color: '#28a745'}}>
-                      {currentTotals.totalPledged.toLocaleString()}
-                    </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center p-4 bg-white/60 rounded-xl border border-success-200">
+                  <div className="flex justify-center items-center mb-2">
+                    <DollarSign size={24} className="text-success-600" />
                   </div>
+                  <h5 className="text-text-tertiary mb-2 text-sm font-medium">Kiasi kilichoahidiwa</h5>
+                  <h2 className="font-bold text-3xl text-success-600 mb-0">
+                    {currentTotals.totalPledged.toLocaleString()}
+                  </h2>
                 </div>
                 
-                <div className="col-md-4">
-                  <div className="text-center p-3">
-                    <div className="d-flex justify-content-center align-items-center mb-2">
-                      <DollarSign size={24} style={{color: '#667eea'}} />
-                    </div>
-                    <h5 className="text-muted mb-1">Kiasi kilicholipwa</h5>
-                    <h2 className="fw-bold mb-0" style={{color: '#667eea'}}>
-                      {currentTotals.totalPaid.toLocaleString()}
-                    </h2>
+                <div className="text-center p-4 bg-white/60 rounded-xl border border-primary-200">
+                  <div className="flex justify-center items-center mb-2">
+                    <DollarSign size={24} className="text-primary-600" />
                   </div>
+                  <h5 className="text-text-tertiary mb-2 text-sm font-medium">Kiasi kilicholipwa</h5>
+                  <h2 className="font-bold text-3xl text-primary-600 mb-0">
+                    {currentTotals.totalPaid.toLocaleString()}
+                  </h2>
                 </div>
                 
-                <div className="col-md-4">
-                  <div className="text-center p-3">
-                    <div className="d-flex justify-content-center align-items-center mb-2">
-                      <AlertCircle size={24} style={{color: '#dc3545'}} />
-                    </div>
-                    <h5 className="text-muted mb-1">Kiasi kilichobaki</h5>
-                    <h2 className="fw-bold mb-0" style={{color: '#dc3545'}}>
-                      {currentTotals.totalRemaining.toLocaleString()}
-                    </h2>
+                <div className="text-center p-4 bg-white/60 rounded-xl border border-error-200">
+                  <div className="flex justify-center items-center mb-2">
+                    <AlertCircle size={24} className="text-error-600" />
                   </div>
+                  <h5 className="text-text-tertiary mb-2 text-sm font-medium">Kiasi kilichobaki</h5>
+                  <h2 className="font-bold text-3xl text-error-600 mb-0">
+                    {currentTotals.totalRemaining.toLocaleString()}
+                  </h2>
                 </div>
               </div>
             </div>
@@ -406,105 +340,78 @@ const AdminDashboard = () => {
         )}
 
         {/* Enhanced Users Table */}
-     
-
-        {/* Enhanced Users Table */}
-{!isLoading && (
-  <>
-    {/* Check if there are no users and show message above table */}
-    {sortedUsers().length === 0 ? (
-      <div style={customStyles.tableCard}>
-        <div className="p-5">
-          <div 
-            style={{
-              background: "linear-gradient(135deg, #f8f6ff 0%, #f0f9ff 100%)",
-              borderRadius: "16px",
-              padding: "48px 32px",
-              border: "2px dashed rgba(139, 69, 193, 0.2)",
-              textAlign: "center"
-            }}
-          >
-            <div className="d-flex flex-column align-items-center">
-              <div 
-                style={{
-                  background: "linear-gradient(135deg, rgba(139, 69, 193, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%)",
-                  borderRadius: "50%",
-                  padding: "24px",
-                  marginBottom: "24px",
-                }}
-              >
-                <Users size={64} style={{ color: "#8b45c1" }} />
+        {!isLoading && (
+          <>
+            {sortedUsers().length === 0 ? (
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-soft border border-primary-100">
+                <div className="p-12">
+                  <div className="bg-gradient-to-br from-primary-50 to-peaceful-50 rounded-2xl p-12 border-2 border-dashed border-primary-200 text-center">
+                    <div className="flex flex-col items-center">
+                      <div className="bg-gradient-to-br from-primary-100/50 to-lavender-100/50 rounded-full p-6 mb-6">
+                        <Users size={64} className="text-primary-600" />
+                      </div>
+                      <h3 className="text-primary-700 font-semibold text-2xl mb-3">
+                        Hakuna Washarika
+                      </h3>
+                      <p className="text-text-secondary text-lg max-w-md mb-6">
+                        Hakuna washarika walioorodheshwa bado. Washarika wataonekana hapa baada ya kujiunga.
+                      </p>
+                      <button 
+                        className="flex items-center px-6 py-3 bg-primary-gradient text-white rounded-xl shadow-primary hover:shadow-primary-lg transition-all duration-300 font-semibold"
+                        onClick={() => {
+                          console.log("Add user clicked");
+                        }}
+                      >
+                        <Plus size={18} className="mr-2" />
+                        Ongeza Msharika
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 style={{ color: "#8b45c1", fontWeight: "600", marginBottom: "12px" }}>
-                Hakuna Washarika
-              </h3>
-              <p style={{ color: "#64748b", margin: 0, fontSize: "1.1rem", maxWidth: "400px" }}>
-                Hakuna washarika walioorodheshwa bado. Washarika wataonekana hapa baada ya kujiunga.
-              </p>
-              {/* Optional: Add action button */}
-              <button 
-                className="btn mt-3 px-4 py-2"
-                style={{
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "12px",
-                  fontWeight: "500"
-                }}
-                onClick={() => {
-                  // Add your action here, e.g., navigate to add user page
-                  console.log("Add user clicked");
-                }}
-              >
-                <Plus size={18} className="me-2" />
-                Ongeza Msharika
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    ) : (
-      /* Show table only when there are users */
-      <div >
-        <div className="table-responsive">
-          <table className="table table-hover mb-0">
-            <thead style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
-              <tr>
-                <th className="text-white border-0 py-3">
-                  <Users size={18} className="me-2" />
-                  Profile
-                </th>
-                <th className="text-white border-0 py-3">Jina</th>
-                {sortBy === "none" ? (
-                  <>
-                    <th className="text-white border-0 py-3 d-none d-md-table-cell">Simu</th>
-                    <th className="text-white border-0 py-3 d-none d-sm-table-cell">Jinsia</th>
-                    <th className="text-white border-0 py-3 d-none d-lg-table-cell">Jumuiya</th>
-                    <th className="text-white border-0 py-3">Kazi</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="text-white border-0 py-3">{sortBy}</th>
-                    <th className="text-white border-0 py-3">Alicholipa</th>
-                    <th className="text-white border-0 py-3">Kilichobaki</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              <UserTableRows
-                users={sortedUsers()}
-                sortBy={sortBy}
-                calculatePledgeTotals={calculatePledgeTotals}
-                handleUserClick={handleUserClick}
-              />
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-  </>
-)}
+            ) : (
+              <div className=" backdrop-blur-md rounded-2xl shadow-soft border border-primary-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-primary-gradient">
+                      <tr>
+                        <th className="text-white border-0 py-4 px-4 text-left font-semibold">
+                          <div className="flex items-center">
+                            <Users size={18} className="mr-2" />
+                            Profile
+                          </div>
+                        </th>
+                        <th className="text-white border-0 py-4 px-4 text-left font-semibold">Jina</th>
+                        {sortBy === "none" ? (
+                          <>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold hidden md:table-cell">Simu</th>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold hidden sm:table-cell">Jinsia</th>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold hidden lg:table-cell">Jumuiya</th>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold">Kazi</th>
+                          </>
+                        ) : (
+                          <>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold">{sortBy}</th>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold">Alicholipa</th>
+                            <th className="text-white border-0 py-4 px-4 text-left font-semibold">Kilichobaki</th>
+                          </>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <UserTableRows
+                        users={sortedUsers()}
+                        sortBy={sortBy}
+                        calculatePledgeTotals={calculatePledgeTotals}
+                        handleUserClick={handleUserClick}
+                      />
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
         {/* Payment Modal */}
         {selectedUser && (
@@ -526,10 +433,7 @@ const AdminDashboard = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          toastStyle={{
-            borderRadius: '12px',
-            boxShadow: '0 8px 32px rgba(102, 126, 234, 0.2)'
-          }}
+          className="mt-20"
         />
       </div>
     </div>
