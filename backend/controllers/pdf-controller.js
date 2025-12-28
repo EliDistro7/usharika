@@ -1,9 +1,9 @@
-
 // ============================================
-// 2. PDF Controller (controllers/pdfController.js)
+// PDF Controller (controllers/pdfController.js)
+// Updated to match frontend expectations
 // ============================================
 const PDF = require('../models/yombo/PDFSchema');
-const cloudinary = require('../config/cloudinary.js');
+const cloudinary = require('../config/cloudinary');
 
 // Upload PDF (save metadata to database)
 exports.uploadPDF = async (req, res) => {
@@ -21,10 +21,10 @@ exports.uploadPDF = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!fileName || !fileSize || !cloudinaryUrl || !cloudinaryPublicId) {
+    if (!fileName || !cloudinaryUrl || !cloudinaryPublicId) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields'
+        message: 'Missing required fields: fileName, cloudinaryUrl, cloudinaryPublicId'
       });
     }
 
@@ -41,15 +41,18 @@ exports.uploadPDF = async (req, res) => {
     // Create new PDF document
     const newPDF = new PDF({
       fileName,
-      fileSize,
+      fileSize: fileSize || 0,
       cloudinaryUrl,
       cloudinaryPublicId,
       mimeType: mimeType || 'application/pdf',
       uploadedBy: req.user?._id, // If using authentication
-      description,
-      tags: tags || [],
-      category,
-      metadata
+      description: description || '',
+      tags: Array.isArray(tags) ? tags : [],
+      category: category || 'tangazo',
+      metadata: metadata || {},
+      status: 'active',
+      downloadCount: 0,
+      viewCount: 0
     });
 
     await newPDF.save();
@@ -74,7 +77,7 @@ exports.getAllPDFs = async (req, res) => {
   try {
     const {
       page = 1,
-      limit = 10,
+      limit = 100,
       search,
       category,
       status = 'active',
@@ -95,7 +98,7 @@ exports.getAllPDFs = async (req, res) => {
     }
 
     // Add category filter
-    if (category) {
+    if (category && category !== 'all') {
       query.category = category;
     }
 
@@ -181,6 +184,8 @@ exports.updatePDF = async (req, res) => {
     delete updates.cloudinaryUrl;
     delete updates.uploadedBy;
     delete updates.createdAt;
+    delete updates.downloadCount;
+    delete updates.viewCount;
 
     const pdf = await PDF.findByIdAndUpdate(
       id,
@@ -210,7 +215,7 @@ exports.updatePDF = async (req, res) => {
   }
 };
 
-// Delete PDF (soft delete)
+// Delete PDF (soft delete) - This is what the frontend calls
 exports.softDeletePDF = async (req, res) => {
   try {
     const { id } = req.params;
@@ -224,13 +229,13 @@ exports.softDeletePDF = async (req, res) => {
     if (!pdf) {
       return res.status(404).json({
         success: false,
-        message: 'PDF not found'
+        message: 'PDF haipo'
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'PDF deleted successfully',
+      message: 'Umefanikiwa Kutengeneza Tangazo',
       data: pdf
     });
   } catch (error) {
@@ -257,14 +262,16 @@ exports.permanentDeletePDF = async (req, res) => {
       });
     }
 
-    // Delete from Cloudinary
-    try {
-      await cloudinary.uploader.destroy(pdf.cloudinaryPublicId, {
-        resource_type: 'raw'
-      });
-    } catch (cloudinaryError) {
-      console.error('Cloudinary deletion error:', cloudinaryError);
-      // Continue with database deletion even if Cloudinary fails
+    // Only delete from Cloudinary if it's an actual PDF file (not rich text)
+    if (pdf.mimeType === 'application/pdf' && !pdf.cloudinaryUrl.startsWith('richtext://')) {
+      try {
+        await cloudinary.uploader.destroy(pdf.cloudinaryPublicId, {
+          resource_type: 'raw'
+        });
+      } catch (cloudinaryError) {
+        console.error('Cloudinary deletion error:', cloudinaryError);
+        // Continue with database deletion even if Cloudinary fails
+      }
     }
 
     // Delete from database
@@ -316,21 +323,22 @@ exports.incrementDownload = async (req, res) => {
   }
 };
 
-// Get PDF statistics
+// Get PDF statistics - CRITICAL: This must match frontend expectations
 exports.getPDFStats = async (req, res) => {
   try {
     const totalPDFs = await PDF.countDocuments({ status: 'active' });
-    const totalSize = await PDF.aggregate([
+    
+    const totalSizeResult = await PDF.aggregate([
       { $match: { status: 'active' } },
       { $group: { _id: null, total: { $sum: '$fileSize' } } }
     ]);
 
-    const totalDownloads = await PDF.aggregate([
+    const totalDownloadsResult = await PDF.aggregate([
       { $match: { status: 'active' } },
       { $group: { _id: null, total: { $sum: '$downloadCount' } } }
     ]);
 
-    const totalViews = await PDF.aggregate([
+    const totalViewsResult = await PDF.aggregate([
       { $match: { status: 'active' } },
       { $group: { _id: null, total: { $sum: '$viewCount' } } }
     ]);
@@ -344,15 +352,16 @@ exports.getPDFStats = async (req, res) => {
     const recentUploads = await PDF.find({ status: 'active' })
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('fileName fileSize createdAt');
+      .select('fileName fileSize createdAt category');
 
+    // Frontend expects these exact field names
     res.status(200).json({
       success: true,
       data: {
         totalPDFs,
-        totalSize: totalSize[0]?.total || 0,
-        totalDownloads: totalDownloads[0]?.total || 0,
-        totalViews: totalViews[0]?.total || 0,
+        totalSize: totalSizeResult[0]?.total || 0,
+        totalDownloads: totalDownloadsResult[0]?.total || 0,
+        totalViews: totalViewsResult[0]?.total || 0,
         categoryStats,
         recentUploads
       }
@@ -366,4 +375,3 @@ exports.getPDFStats = async (req, res) => {
     });
   }
 };
-

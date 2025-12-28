@@ -58,6 +58,8 @@ const io = initSocket(server); // Initialize socket instance
 
 // Routes
 
+app.use('/', pdfRoutes);
+
 app.use('/', userRoutesYombo);
 
 app.use('/', adminRoutes);
@@ -68,6 +70,7 @@ app.use('/', updateRoutes);
 app.use('/',rolesRoutes);
 app.use('/', seriesRoutes);
 app.use('/', pushNotificationRoutes);
+
 
 
 // Start the server
