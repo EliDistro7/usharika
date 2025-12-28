@@ -232,7 +232,7 @@ export const NewsTicker = ({
               return (
                 <li
                   key={`${idx}-${update.group}`}
-                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 bg-gradient-to-r from-white/50 via-red-50/40 to-green-50/40 hover:from-red-50/60 hover:via-white/70 hover:to-green-50/60 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-yellow-300/70 hover:border-yellow-400/90 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
+                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 bg-gradient-to-r from-white/50 via-red-50/40 to-green-50/40 hover:from-red-50/60 hover:via-white/70 hover:to-green-50/60 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
                 >
                   {/* Christmas Icon */}
                   <div className="ml-3 mr-2 text-xl animate-bounce-gentle">
