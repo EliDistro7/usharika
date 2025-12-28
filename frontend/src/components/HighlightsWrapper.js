@@ -325,15 +325,15 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group bg-white/80 backdrop-blur-sm shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+      className="group backdrop-blur-sm shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
     >
       {/* Cover Media with Overlay Title */}
-      <div className="relative bg-background-300 overflow-hidden min-h-[280px]">
+      <div className="relative overflow-hidden min-h-[280px]">
         {hasMedia && !mediaError ? (
           <>
             {/* Loading Spinner - only show while loading */}
             {!mediaLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
+              <div className="absolute inset-0 flex items-center justify-center z-10">
                 <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 animate-spin"></div>
               </div>
             )}
@@ -418,7 +418,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
         </div>
       </div>
 
-      {/* Content - Description only */}
+      {/* Content - Description only
       {truncatedDesc && (
         <div className="p-6">
           <p className="text-sm text-text-secondary leading-relaxed">
@@ -426,13 +426,10 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
           </p>
         </div>
       )}
+         */}
 
       {/* Hover Action Indicator */}
-      <div className="px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="text-center text-sm font-semibold text-primary-600">
-          Bonyeza kuona zaidi →
-        </div>
-      </div>
+    
     </div>
   );
 };
