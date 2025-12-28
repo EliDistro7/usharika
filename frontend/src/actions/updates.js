@@ -1,4 +1,4 @@
-
+// frontend/src/actions/updates.js
 
 import axios from "axios";
 const api = process.env.NEXT_PUBLIC_SERVER;
