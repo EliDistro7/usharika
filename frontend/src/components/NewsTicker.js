@@ -196,7 +196,7 @@ export const NewsTicker = ({
           <div className="w-3 h-3 bg-yellow-300 rounded-full animate-pulse" />
           <div className="absolute inset-0 w-3 h-3 bg-yellow-300 rounded-full animate-ping opacity-75" />
         </div>
-       
+      
       </div>
 
       {/* Main Content Container */}
@@ -232,7 +232,7 @@ export const NewsTicker = ({
               return (
                 <li
                   key={`${idx}-${update.group}`}
-                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 bg-gradient-to-r from-white/95 via-red-50/90 to-green-50/90 hover:from-red-50 hover:via-white hover:to-green-50 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-yellow-300/70 hover:border-yellow-400/90 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
+                  className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 bg-gradient-to-r from-white/50 via-red-50/40 to-green-50/40 hover:from-red-50/60 hover:via-white/70 hover:to-green-50/60 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-yellow-300/70 hover:border-yellow-400/90 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
                 >
                   {/* Christmas Icon */}
                   <div className="ml-3 mr-2 text-xl animate-bounce-gentle">
@@ -261,7 +261,7 @@ export const NewsTicker = ({
       </div>
 
       {/* Enhanced Gradient Fade Edges */}
-    
+     
       <div className="absolute right-0 top-0 bottom-0 w-16 pointer-events-none z-10" style={{background: 'linear-gradient(to left, rgba(153, 27, 27, 1), transparent)'}} />
 
       <style jsx>{`
