@@ -325,10 +325,10 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group bg-white/80 backdrop-blur-sm shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+      className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
     >
-      {/* Cover Media - Original Aspect Ratio */}
-      <div className="relative bg-background-300 overflow-hidden min-h-[200px]">
+      {/* Cover Media with Overlay Title */}
+      <div className="relative bg-background-300 overflow-hidden min-h-[280px]">
         {hasMedia && !mediaError ? (
           <>
             {/* Loading Spinner - only show while loading */}
@@ -344,7 +344,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
                 <img
                   src={coverImage}
                   alt={highlight.name}
-                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 min-h-[280px]"
                   onLoad={() => setMediaLoaded(true)}
                   onError={() => {
                     setMediaLoaded(true);
@@ -360,7 +360,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
               <>
                 <video
                   src={coverVideo}
-                  className="w-full h-auto object-contain"
+                  className="w-full h-auto object-cover min-h-[280px]"
                   onLoadedData={() => setMediaLoaded(true)}
                   onError={() => {
                     setMediaLoaded(true);
@@ -385,12 +385,13 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
               </>
             ) : null}
             
+            {/* Gradient overlay for better text visibility */}
             {mediaLoaded && !mediaError && (
-              <div className="absolute inset-0 bg-gradient-to-t from-text-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
             )}
           </>
         ) : (
-          <div className="w-full h-full flex flex-col gap-2 items-center justify-center text-text-tertiary min-h-[200px]">
+          <div className="w-full h-full flex flex-col gap-2 items-center justify-center text-text-tertiary min-h-[280px]">
             <Image size={48} />
             <p className="text-xs">Hakuna media</p>
           </div>
@@ -398,43 +399,33 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
         
         {/* Media Count Badge */}
         {totalImages > 0 && (
-          <div className="absolute top-4 right-4 px-3 py-1.5 bg-text-primary/80 backdrop-blur-sm rounded-full flex items-center gap-2 text-white text-sm font-semibold">
+          <div className="absolute top-4 right-4 px-3 py-1.5 bg-text-primary/80 backdrop-blur-sm rounded-full flex items-center gap-2 text-white text-sm font-semibold shadow-lg">
             <Image size={14} />
             <span>{totalImages}</span>
           </div>
         )}
+
+        {/* Title Overlay at Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <h3 
+            className="text-2xl font-display font-bold text-white group-hover:text-primary-200 transition-colors leading-tight"
+            style={{
+              textShadow: '2px 2px 8px rgba(0, 0, 0, 0.8), 0px 0px 12px rgba(0, 0, 0, 0.6)'
+            }}
+          >
+            {highlight.name}
+          </h3>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-display font-bold text-text-primary mb-3 group-hover:text-primary-600 transition-colors">
-          {highlight.name}
-        </h3>
-
-        {/* Description Preview */}
-        {truncatedDesc && (
-          <p className="text-sm text-text-secondary leading-relaxed mb-0">
+      {/* Content - Description only */}
+      {truncatedDesc && (
+        <div className="p-6">
+          <p className="text-sm text-text-secondary leading-relaxed">
             {truncatedDesc}
           </p>
-        )}
-
-       {/*
-        <div className="flex items-center justify-between pt-3 border-t border-border-light">
-          <div className="flex items-center gap-2 text-sm text-text-tertiary">
-            <Person size={14} className="text-primary-600" />
-            <span>{formatRoleName(author)}</span>
-          </div>
-          
-          <div className="flex items-center gap-2 text-sm text-text-tertiary">
-            <Calendar size={14} className="text-primary-600" />
-            <span>{formatDate(highlight.lastUpdated)}</span>
-          </div>
         </div>
-      */}
-      
-      </div>
-
-     
+      )}
 
       {/* Hover Action Indicator */}
       <div className="px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
