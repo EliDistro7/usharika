@@ -39,6 +39,9 @@ const formatDate = (dateString) => {
 const QuickViewModal = ({ highlight, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [contentOpen, setContentOpen] = useState(false);
   
   if (!highlight) return null;
   
@@ -59,18 +62,46 @@ const QuickViewModal = ({ highlight, onClose }) => {
   const currentImage = allImages[currentImageIndex];
   const totalImages = allImages.length;
 
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
   // Reset loading state when image changes
   React.useEffect(() => {
     setImageLoading(true);
   }, [currentImageIndex]);
 
+  // Touch handlers for swipe
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe && currentImageIndex < totalImages - 1) {
+      nextImage();
+    }
+    if (isRightSwipe && currentImageIndex > 0) {
+      prevImage();
+    }
+  };
+
   // Keyboard navigation
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') {
-        setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+        prevImage();
       } else if (e.key === 'ArrowRight') {
-        setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+        nextImage();
       } else if (e.key === 'Escape') {
         onClose();
       }
@@ -78,14 +109,18 @@ const QuickViewModal = ({ highlight, onClose }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [totalImages, onClose]);
+  }, [currentImageIndex, totalImages, onClose]);
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+    if (currentImageIndex < totalImages - 1) {
+      setCurrentImageIndex((prev) => prev + 1);
+    }
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex((prev) => prev - 1);
+    }
   };
 
   const handleImageLoad = () => {
@@ -97,172 +132,230 @@ const QuickViewModal = ({ highlight, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-text-primary/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
-      <div className="relative w-full h-full bg-white overflow-hidden" onClick={e => e.stopPropagation()}>
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
-        >
-          <X size={24} className="text-text-primary" />
-        </button>
-
-        <div className="flex flex-col md:flex-row h-full">
-          {/* Image Section - Full Height */}
-          <div className="relative flex-1 bg-background-300 flex items-center justify-center overflow-auto min-h-[50vh] md:min-h-full">
-            {currentImage ? (
-              <>
-                {/* Loading Spinner */}
-                {imageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
-                      <p className="text-text-secondary text-sm">Inapakia {currentImage.isVideo ? 'video' : 'picha'}...</p>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Show image or video based on content type */}
-                {currentImage.imageUrl ? (
-                  <img
-                    src={currentImage.imageUrl}
-                    alt={highlight.name}
-                    className="max-w-full max-h-full w-auto h-auto object-contain"
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
-                    style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
-                  />
-                ) : currentImage.videoUrl ? (
-                  <video
-                    src={currentImage.videoUrl}
-                    className="max-w-full max-h-full w-auto h-auto object-contain"
-                    controls
-                    onLoadedData={handleImageLoad}
-                    onError={handleImageError}
-                    style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
-                  />
-                ) : null}
-                
-                {/* Image Navigation */}
-                {totalImages > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-2 md:left-4 p-2 md:p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
-                    >
-                      <ChevronLeft size={20} className="text-text-primary md:w-6 md:h-6" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-2 md:right-4 p-2 md:p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all shadow-soft"
-                    >
-                      <ChevronRight size={20} className="text-text-primary md:w-6 md:h-6" />
-                    </button>
-                    
-                    {/* Image Counter */}
-                    <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-text-primary/80 backdrop-blur-sm rounded-full text-white text-xs md:text-sm font-semibold">
-                      {currentImageIndex + 1} / {totalImages}
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center p-8 text-text-tertiary">
-                <Image size={48} />
-                <p className="mt-2">Hakuna picha au video</p>
+    <div className="fixed inset-0 z-50 bg-black animate-fade-in">
+      {/* Full-Screen Media Container */}
+      <div 
+        className="relative w-full h-full"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {currentImage ? (
+          <>
+            {/* Loading Spinner */}
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
+                  <p className="text-white text-sm">Inapakia {currentImage.isVideo ? 'video' : 'picha'}...</p>
+                </div>
               </div>
             )}
+            
+            {/* Show image or video - Full screen */}
+            {currentImage.imageUrl ? (
+              <img
+                src={currentImage.imageUrl}
+                alt={highlight.name}
+                className="w-full h-full object-contain"
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+              />
+            ) : currentImage.videoUrl ? (
+              <video
+                src={currentImage.videoUrl}
+                className="w-full h-full object-contain"
+                controls
+                onLoadedData={handleImageLoad}
+                onError={handleImageError}
+                style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+              />
+            ) : null}
+            
+            {/* Gradient overlay at bottom for UI elements */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full text-white">
+            <Image size={64} />
+            <p className="mt-4 text-lg">Hakuna picha au video</p>
           </div>
+        )}
 
-          {/* Content Section - Fixed Width Sidebar */}
-          <div className="w-full md:w-96 p-4 md:p-6 overflow-y-auto bg-white md:border-l border-t md:border-t-0 border-border-light max-h-[50vh] md:max-h-full">
-            <h2 className="text-2xl font-display font-bold text-text-primary mb-4">
+        {/* Top Controls - Close & Title */}
+        <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
+          <div className="flex items-start justify-between gap-4">
+            <h2 
+              className="text-xl md:text-2xl font-display font-bold text-white leading-tight flex-1"
+              style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.8)' }}
+            >
               {highlight.name}
             </h2>
-
-            {/* Metadata */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-2 text-sm text-text-secondary">
-                <Calendar size={16} className="text-primary-600" />
-                <span>{formatDate(highlight.lastUpdated)}</span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-sm text-text-secondary">
-                <Person size={16} className="text-primary-600" />
-                <span>{formatRoleName(highlight.author || Object.values(highlight.content)[0]?.content[0]?.author)}</span>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-text-secondary">
-                <Image size={16} className="text-primary-600" />
-                <span>{totalImages} {totalImages === 1 ? 'faili' : 'faili'}</span>
-              </div>
-            </div>
-
-            {/* Current Image Description */}
-            {currentImage && (
-              <div className="bg-lavender-50 rounded-xl p-4 mb-4">
-                <div className="text-xs font-semibold text-primary-700 uppercase tracking-wider mb-2">
-                  {currentImage.groupName}
-                </div>
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  {currentImage.description}
-                </p>
-              </div>
-            )}
-
-            {/* Thumbnail Strip */}
-            {totalImages > 1 && (
-              <div className="mt-6">
-                <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3">
-                  Picha na Video
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {allImages.slice(0, 9).map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentImageIndex(idx)}
-                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all relative ${
-                        idx === currentImageIndex
-                          ? 'border-primary-600 shadow-primary'
-                          : 'border-border-light hover:border-primary-300'
-                      }`}
-                    >
-                      {img.imageUrl ? (
-                        <img
-                          src={img.imageUrl}
-                          alt=""
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : img.videoUrl ? (
-                        <div className="w-full h-full bg-background-400 flex items-center justify-center">
-                          <svg className="w-8 h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                          </svg>
-                        </div>
-                      ) : null}
-                      
-                      {/* Video indicator */}
-                      {img.isVideo && (
-                        <div className="absolute bottom-1 right-1 w-5 h-5 bg-text-primary/80 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-                {totalImages > 9 && (
-                  <p className="text-xs text-text-tertiary mt-2 text-center">
-                    +{totalImages - 9} zaidi
-                  </p>
-                )}
-              </div>
-            )}
+            <button
+              onClick={onClose}
+              className="flex-shrink-0 p-2 md:p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all"
+            >
+              <X size={24} className="text-white" />
+            </button>
           </div>
         </div>
+
+        {/* Navigation Arrows */}
+        {totalImages > 1 && (
+          <>
+            {currentImageIndex > 0 && (
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all"
+              >
+                <ChevronLeft size={28} className="text-white" />
+              </button>
+            )}
+            
+            {currentImageIndex < totalImages - 1 && (
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all"
+              >
+                <ChevronRight size={28} className="text-white" />
+              </button>
+            )}
+          </>
+        )}
+
+        {/* Bottom UI - Counter & Info Button */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 flex items-end justify-between">
+          {/* Image Counter */}
+          {totalImages > 1 && (
+            <div className="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white text-sm font-semibold">
+              {currentImageIndex + 1} / {totalImages}
+            </div>
+          )}
+
+          {/* Info Toggle Button */}
+          <button
+            onClick={() => setContentOpen(!contentOpen)}
+            className="px-5 py-2 bg-primary-600 hover:bg-primary-700 backdrop-blur-sm rounded-full text-white text-sm font-semibold transition-all flex items-center gap-2 ml-auto"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            Taarifa
+          </button>
+        </div>
       </div>
+
+      {/* Sliding Content Panel */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 z-30 bg-white rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out ${
+          contentOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ maxHeight: '80vh' }}
+      >
+        {/* Handle Bar */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto px-6 pb-6" style={{ maxHeight: 'calc(80vh - 40px)' }}>
+          {/* Metadata */}
+          <div className="space-y-3 mb-6 pt-2">
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <Calendar size={16} className="text-primary-600" />
+              <span>{formatDate(highlight.lastUpdated)}</span>
+            </div>
+            
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <Person size={16} className="text-primary-600" />
+              <span>{formatRoleName(highlight.author || Object.values(highlight.content)[0]?.content[0]?.author)}</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <Image size={16} className="text-primary-600" />
+              <span>{totalImages} {totalImages === 1 ? 'faili' : 'faili'}</span>
+            </div>
+          </div>
+
+          {/* Current Image Description */}
+          {currentImage && (
+            <div className="bg-primary-50 rounded-xl p-4 mb-6">
+              <div className="text-xs font-semibold text-primary-700 uppercase tracking-wider mb-2">
+                {currentImage.groupName}
+              </div>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {currentImage.description}
+              </p>
+            </div>
+          )}
+
+          {/* Thumbnail Gallery */}
+          {totalImages > 1 && (
+            <div>
+              <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3">
+                Picha na Video Zote
+              </p>
+              <div className="grid grid-cols-4 gap-2">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setCurrentImageIndex(idx);
+                      setContentOpen(false);
+                    }}
+                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all relative ${
+                      idx === currentImageIndex
+                        ? 'border-primary-600 ring-2 ring-primary-300'
+                        : 'border-gray-200 hover:border-primary-400'
+                    }`}
+                  >
+                    {img.imageUrl ? (
+                      <img
+                        src={img.imageUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : img.videoUrl ? (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                        </svg>
+                      </div>
+                    ) : null}
+                    
+                    {/* Video indicator */}
+                    {img.isVideo && (
+                      <div className="absolute bottom-1 right-1 w-4 h-4 bg-black/70 rounded-full flex items-center justify-center">
+                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Close Button */}
+          <button
+            onClick={() => setContentOpen(false)}
+            className="w-full mt-6 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all"
+          >
+            Funga Taarifa
+          </button>
+        </div>
+      </div>
+
+      {/* Overlay for content panel */}
+      {contentOpen && (
+        <div 
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm"
+          onClick={() => setContentOpen(false)}
+        />
+      )}
     </div>
   );
 };
@@ -417,22 +510,10 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
           </h3>
         </div>
       </div>
-
-      {/* Content - Description only
-      {truncatedDesc && (
-        <div className="p-6">
-          <p className="text-sm text-text-secondary leading-relaxed">
-            {truncatedDesc}
-          </p>
-        </div>
-      )}
-         */}
-
-      {/* Hover Action Indicator */}
-    
     </div>
   );
 };
+
 // Main Component
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
