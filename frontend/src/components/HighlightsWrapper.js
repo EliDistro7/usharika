@@ -334,7 +334,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
             {/* Loading Spinner - only show while loading */}
             {!mediaLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-background-300 z-10">
-                <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-primary-300 border-t-primary-600 animate-spin"></div>
               </div>
             )}
             
@@ -418,7 +418,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
           </p>
         )}
 
-        {/* Metadata */}
+       {/*
         <div className="flex items-center justify-between pt-3 border-t border-border-light">
           <div className="flex items-center gap-2 text-sm text-text-tertiary">
             <Person size={14} className="text-primary-600" />
@@ -430,7 +430,11 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
             <span>{formatDate(highlight.lastUpdated)}</span>
           </div>
         </div>
+      */}
+      
       </div>
+
+     
 
       {/* Hover Action Indicator */}
       <div className="px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
