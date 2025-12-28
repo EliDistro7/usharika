@@ -325,7 +325,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+      className="group bg-white/80 backdrop-blur-sm shadow-soft overflow-hidden hover:shadow-primary-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
     >
       {/* Cover Media with Overlay Title */}
       <div className="relative bg-background-300 overflow-hidden min-h-[280px]">
