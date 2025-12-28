@@ -261,7 +261,7 @@ const getRecentHighlights = async (req, res) => {
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 200);
 
-    // Query highlights created within the last 3 days
+    // Query highlights created within the last 
     const recentHighlights = await Highlight.find({
       createdAt: { $gte: threeDaysAgo },
     }).sort({ createdAt: -1 }); // Sort by most recent

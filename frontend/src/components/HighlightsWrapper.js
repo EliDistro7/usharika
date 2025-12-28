@@ -587,9 +587,9 @@ const HighlightsWrapper = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div className="w-full max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 py-4">
       {/* Compact Controls */}
-      <div className="flex items-center justify-end gap-2 mb-4">
+      <div className="flex items-center justify-end gap-2 mb-4 px-4">
         {/* Search */}
         <div className="flex items-center gap-2">
           {isSearchOpen && (
@@ -698,7 +698,7 @@ const HighlightsWrapper = () => {
 
       {/* Active Filter Badge */}
       {selectedAuthor !== "All" && (
-        <div className="flex items-center justify-end gap-2 mb-4">
+        <div className="flex items-center justify-end gap-2 mb-4 px-4">
           <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-semibold flex items-center gap-2">
             {formatRoleName(selectedAuthor)}
             <button
