@@ -54,8 +54,8 @@ export const sendPushNotification = async (payload: NotificationPayload): Promis
  */
 export const NotificationTemplates = {
   welcome: (): NotificationPayload => ({
-    title: 'Welcome to Yombo KKKT!',
-    body: 'Thank you for joining our church community. Stay connected with us!',
+    title: 'Karibu Yombo KKKT!',
+    body: 'Asante kwa kujiunga na usharika wetu. Tujumuike kumtumikia Mungu!',
     data: { 
       url: '/',
       type: 'welcome'
@@ -81,7 +81,7 @@ export const NotificationTemplates = {
   }),
 
   newSermon: (sermonTitle: string, preacher: string, sermonUrl?: string): NotificationPayload => ({
-    title: `New Sermon: ${sermonTitle}`,
+    title: `Mahubiri: ${sermonTitle}`,
     body: `By ${preacher}`,
     data: { 
       url: sermonUrl || '/sermons',
@@ -90,8 +90,8 @@ export const NotificationTemplates = {
   }),
 
   liveService: (serviceName: string, serviceUrl?: string): NotificationPayload => ({
-    title: `${serviceName} is now live!`,
-    body: 'Join us for worship online',
+    title: `${serviceName} inaendelea sasa!`,
+    body: 'Jiunge nasi mtandaoni',
     data: { 
       url: serviceUrl || '/live',
       type: 'live-service'
@@ -99,7 +99,7 @@ export const NotificationTemplates = {
   }),
 
   announcement: (title: string, message: string, url?: string): NotificationPayload => ({
-    title: `Announcement: ${title}`,
+    title: `Tanganzo: ${title}`,
     body: message,
     data: { 
       url: url || '/',
@@ -108,8 +108,8 @@ export const NotificationTemplates = {
   }),
 
   prayer: (prayerTitle: string, prayerUrl?: string): NotificationPayload => ({
-    title: `Prayer Request: ${prayerTitle}`,
-    body: 'The church community is invited to pray',
+    title: `Maombi: ${prayerTitle}`,
+    body: 'Tunaomba pamoja nawe',
     data: { 
       url: prayerUrl || '/prayers',
       type: 'prayer'
@@ -117,8 +117,8 @@ export const NotificationTemplates = {
   }),
 
   donation: (campaignTitle: string, donationUrl?: string): NotificationPayload => ({
-    title: `Support: ${campaignTitle}`,
-    body: 'Your generosity makes a difference',
+    title: `Diakonia: ${campaignTitle}`,
+    body: 'Ukarimu wako unabadilisha maisha',
     data: { 
       url: donationUrl || '/donate',
       type: 'donation'
@@ -127,7 +127,7 @@ export const NotificationTemplates = {
 
   newsletter: (title: string, newsletterUrl?: string): NotificationPayload => ({
     title: `Newsletter: ${title}`,
-    body: 'Read the latest church news and updates',
+    body: 'Soma taarifa za kipindi cha hivi karibuni',
     data: { 
       url: newsletterUrl || '/newsletter',
       type: 'newsletter'

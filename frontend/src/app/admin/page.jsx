@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '../../components/admin/PaymentModal';
 import {formatRoleName} from "../../actions/utils"
 import {handleDownloadPDF} from "@/actions/pdf"
-import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle, Plus, ChevronDown } from 'lucide-react';
+import { Search, Filter, Download, Users, TrendingUp, DollarSign, AlertCircle, Plus, ChevronDown, Megaphone } from 'lucide-react';
 
 import UserTableRows from '../../components/admin/UserTableRows';
 import Notification from '../../components/admin/Notification';
@@ -175,12 +176,22 @@ const AdminDashboard = () => {
       <div className="container mx-auto px-4">
         {/* Enhanced Header */}
         <div className="bg-primary-gradient rounded-3xl shadow-primary-lg mb-6 overflow-hidden">
-          <div className="text-center py-12 px-4">
+          <div className="text-center py-12 px-4 relative">
             <div className="flex justify-center items-center mb-4">
               <Users size={48} className="text-white mr-4" />
               <h1 className="text-white font-bold text-5xl mb-0">Usharika</h1>
             </div>
-            <p className="text-white/75 text-xl mb-0">Mfumo wa Usimamizi wa Washarika</p>
+            <p className="text-white/75 text-xl mb-6">Mfumo wa Usimamizi wa Washarika</p>
+            
+            {/* Announcements Link */}
+            <div className="flex justify-center">
+              <Link href="/admin/matangazo">
+                <button className="flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-xl border-2 border-white/30 hover:border-white/50 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl">
+                  <Megaphone size={20} className="mr-2" />
+                  Tengeneza Tangazo
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
