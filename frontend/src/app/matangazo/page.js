@@ -114,26 +114,7 @@ const NoticeBoard = () => {
             </p>
             
             {/* Stats Bar */}
-            {stats && (
-              <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-slide-up" style={{animationDelay: '0.2s'}}>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold mb-1">{stats.totalPDFs}</div>
-                  <div className="text-sm text-white/80">Matangazo</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold mb-1">{stats.totalViews}</div>
-                  <div className="text-sm text-white/80">Maoni</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold mb-1">{stats.totalDownloads}</div>
-                  <div className="text-sm text-white/80">Vipakuliwa</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold mb-1">{categories.length - 1}</div>
-                  <div className="text-sm text-white/80">Kategoria</div>
-                </div>
-              </div>
-            )}
+         
           </div>
         </div>
         
