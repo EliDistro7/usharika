@@ -1,3 +1,5 @@
+// frontend/src/actions/series.js
+
 import axios from 'axios';
 const api = process.env.NEXT_PUBLIC_SERVER;
 import { sendPushNotification, NotificationTemplates } from '@/utils/notifications';

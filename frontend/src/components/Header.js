@@ -99,7 +99,7 @@ export default function Header() {
   const primaryNavLinks = [
     { href: '/', icon: Home, text: 'Nyumbani' },
     { href: '/about', icon: Info, text: 'Kuhusu' },
-    { href: '/mahubiri', icon: BookOpen, text: 'Mahubiri' },
+    { href: '/ser', icon: BookOpen, text: 'Mahubiri' },
     { href: '/matangazo', icon: BellIcon, text: 'Matangazo' },
   ];
 
