@@ -247,7 +247,7 @@ export const NewsTicker = ({
                   </div>
 
                   {/* Enhanced Content */}
-                  <div className="flex-1 pr-4 text-sm md:text-base text-gray-800 font-bold leading-tight truncate group-hover:text-gray-900 transition-colors duration-300 drop-shadow-sm">
+                  <div className="flex-1 pr-4 md:text-base text-gray-800 font-thin text-3xl leading-tight truncate group-hover:text-gray-900 transition-colors duration-300 drop-shadow-sm">
                     {parseContentWithLinks(update.content)}
                   </div>
 
