@@ -13,7 +13,7 @@ export const NewsTicker = ({
   const scrollerRef = React.useRef(null);
 
   const [updates, setUpdates] = useState([]);
-  const [animationDuration, setAnimationDuration] = useState("45s"); // Faster for more energy
+  const [animationDuration, setAnimationDuration] = useState("45s");
   const [scrollWidth, setScrollWidth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
@@ -79,10 +79,10 @@ export const NewsTicker = ({
       );
 
       const estimatedCharsPerItem = 180;
-      const secondsPerItem = 3; // Faster scrolling
+      const secondsPerItem = 3;
       const baseDuration = updates.length * secondsPerItem;
 
-      const scaleFactor = 0.015; // Slightly faster
+      const scaleFactor = 0.015;
       const extraTime = totalWidth * scaleFactor;
 
       const totalDuration = (baseDuration + extraTime).toFixed(2);
@@ -129,19 +129,21 @@ export const NewsTicker = ({
   return (
     <div
       className={`relative overflow-hidden h-20 md:h-24 rounded-2xl shadow-2xl ${className}`}
-     
     >
-  
-    
-
-      {/* Enhanced "LIVE" Indicator */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center px-4 py-2 ml-4 bg-gradient-to-r from-red-600 via-red-500 to-pink-500 rounded-xl shadow-2xl z-20 border border-red-400/50">
-        <div className="relative">
-          <div className="w-3 h-3 rounded-full animate-pulse" />
-          <div className="absolute inset-0 w-3 h-3  rounded-full animate-ping opacity-75" />
+      {/* Subtle Festive Overlay Text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden">
+        <div className="festive-text text-6xl md:text-8xl font-black opacity-5 select-none">
+          Merry Christmas
         </div>
-      
       </div>
+      
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden" style={{animationDelay: '3s'}}>
+        <div className="festive-text text-6xl md:text-8xl font-black opacity-5 select-none" style={{animationDelay: '3s'}}>
+          Happy New Year
+        </div>
+      </div>
+
+  
 
       {/* Main Content Container */}
       <div
@@ -177,7 +179,6 @@ export const NewsTicker = ({
                 <li
                   key={`${idx}-${update.group}`}
                   className="flex items-center flex-shrink-0 min-w-[280px] h-14 md:h-16 hover:from-white hover:to-gray-50 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-white/50 hover:border-purple-300/70 transition-all duration-500 cursor-pointer overflow-hidden group backdrop-blur-sm hover:scale-105 transform"
-               
                 >
                   {/* Enhanced Group Badge */}
                   <div className={`flex items-center justify-center px-4 py-2 ml-4 mr-4 ${groupStyle.bg} ${groupStyle.text} rounded-xl shadow-lg ${groupStyle.glow} border border-white/20 transform group-hover:scale-105 transition-all duration-300`}>
@@ -200,10 +201,6 @@ export const NewsTicker = ({
         )}
       </div>
 
-      {/* Enhanced Gradient Fade Edges */}
-   
-
-
       <style jsx>{`
         .hover\\:pause:hover {
           animation-play-state: paused !important;
@@ -221,17 +218,32 @@ export const NewsTicker = ({
         .animate-scroll {
           animation: scroll ${animationDuration} linear infinite;
         }
+
+        @keyframes twinkle-text {
+          0%, 100% {
+            opacity: 0.03;
+          }
+          50% {
+            opacity: 0.08;
+          }
+        }
+
+        .festive-text {
+          animation: twinkle-text 6s ease-in-out infinite;
+          background: linear-gradient(45deg, #dc2626, #16a34a, #eab308, #dc2626);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
         
         @media (max-width: 768px) {
           .news-ticker-container {
             height: 80px;
           }
-        }
-
-        @keyframes gentle-float {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          33% { transform: translateY(-10px) translateX(5px); }
-          66% { transform: translateY(5px) translateX(-5px); }
+          .festive-text {
+            font-size: 3rem;
+          }
         }
       `}</style>
     </div>

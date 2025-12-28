@@ -413,7 +413,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
 
         {/* Description Preview */}
         {truncatedDesc && (
-          <p className="text-sm text-text-secondary leading-relaxed mb-4">
+          <p className="text-sm text-text-secondary leading-relaxed mb-0">
             {truncatedDesc}
           </p>
         )}
