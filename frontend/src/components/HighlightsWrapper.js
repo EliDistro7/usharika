@@ -436,7 +436,6 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
     </div>
   );
 };
-
 // Main Component
 const HighlightsWrapper = () => {
   const [dataSets, setDataSets] = useState([]);
