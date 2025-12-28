@@ -261,7 +261,7 @@ export const NewsTicker = ({
       </div>
 
       {/* Enhanced Gradient Fade Edges */}
-      <div className="absolute left-20 top-0 bottom-0 w-16 pointer-events-none z-10" style={{background: 'linear-gradient(to right, rgba(153, 27, 27, 1), transparent)'}} />
+    
       <div className="absolute right-0 top-0 bottom-0 w-16 pointer-events-none z-10" style={{background: 'linear-gradient(to left, rgba(153, 27, 27, 1), transparent)'}} />
 
       <style jsx>{`
