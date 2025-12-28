@@ -306,15 +306,7 @@ const SeriesDetailModal = ({ series, onClose }) => {
                   {series.description}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3 text-white/90 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Person size={14} />
-                    <span>{formatRoleName(series.author)}</span>
-                  </div>
-                  <div className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    {series.sessions?.length || 0} Vipindi
-                  </div>
-                </div>
+               
               </div>
             </div>
           </div>
