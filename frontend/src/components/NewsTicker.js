@@ -137,7 +137,7 @@ export const NewsTicker = ({
       {/* Enhanced "LIVE" Indicator */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center px-4 py-2 ml-4 bg-gradient-to-r from-red-600 via-red-500 to-pink-500 rounded-xl shadow-2xl z-20 border border-red-400/50">
         <div className="relative">
-          <div className="w-3 h-3rounded-full animate-pulse" />
+          <div className="w-3 h-3 rounded-full animate-pulse" />
           <div className="absolute inset-0 w-3 h-3  rounded-full animate-ping opacity-75" />
         </div>
       
