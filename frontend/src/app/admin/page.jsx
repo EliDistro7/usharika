@@ -183,12 +183,19 @@ const AdminDashboard = () => {
             </div>
             <p className="text-white/75 text-xl mb-6">Mfumo wa Usimamizi wa Washarika</p>
             
-            {/* Updates Management Link */}
-            <div className="flex justify-center">
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Link href="/admin/matangazo">
+                <button className="flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-xl border-2 border-white/30 hover:border-white/50 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                  <Bell size={20} className="mr-2" />
+                  Tengeneza Tangazo
+                </button>
+              </Link>
+              
               <Link href="/admin/updates">
                 <button className="flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-xl border-2 border-white/30 hover:border-white/50 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
                   <Bell size={20} className="mr-2" />
-                  Simamia Matangazo
+                  Tengeneza Update
                 </button>
               </Link>
             </div>
