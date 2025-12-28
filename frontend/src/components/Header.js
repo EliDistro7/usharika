@@ -106,7 +106,7 @@ export default function Header() {
   const moreNavLinks = [
     { href: '/kalenda', icon: Calendar, text: 'Kalenda' },
     { href: '/uongozi', icon: Users, text: 'Uongozi' },
-    { href: '/sadaka', icon: Heart, text: 'Sadaka' },
+  
     { href: '/contact', icon: Mail, text: 'Mawasiliano' },
   ];
 
