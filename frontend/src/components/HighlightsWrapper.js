@@ -207,7 +207,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
             {currentImageIndex > 0 && (
               <button
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4  rounded-full hover:bg-white/30 transition-all"
               >
                 <ChevronLeft size={28} className="text-white" />
               </button>
@@ -216,7 +216,7 @@ const QuickViewModal = ({ highlight, onClose }) => {
             {currentImageIndex < totalImages - 1 && (
               <button
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 rounded-full hover:bg-white/30 transition-all"
               >
                 <ChevronRight size={28} className="text-white" />
               </button>
