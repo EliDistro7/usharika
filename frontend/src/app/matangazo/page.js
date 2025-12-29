@@ -95,31 +95,107 @@ const NoticeBoard = () => {
 
   return (
     <div className="min-h-screen bg-reverent-gradient">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-primary-gradient text-white">
+      {/* Hero Section with Christmas Decorations */}
+      <div className="relative overflow-hidden text-white" style={{
+        background: 'linear-gradient(135deg, #991b1b 0%, #166534 25%, #b91c1c 50%, #15803d 75%, #991b1b 100%)',
+        backgroundSize: '200% 200%',
+        animation: 'christmas-bg 10s ease infinite'
+      }}>
+        {/* Falling Snow Effect */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+          {[...Array(40)].map((_, i) => (
+            <div
+              key={i}
+              className="snowflake"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${6 + Math.random() * 10}s`,
+                fontSize: `${10 + Math.random() * 14}px`,
+                opacity: 0.6 + Math.random() * 0.4
+              }}
+            >
+              ❄
+            </div>
+          ))}
+        </div>
+
+        {/* Christmas Lights Top Border */}
+        <div className="absolute top-0 left-0 right-0 h-3 flex justify-around z-20">
+          {[...Array(40)].map((_, i) => (
+            <div
+              key={i}
+              className="christmas-light"
+              style={{
+                animationDelay: `${i * 0.08}s`,
+                backgroundColor: ['#ef4444', '#22c55e', '#eab308', '#3b82f6', '#ec4899'][i % 5]
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Festive Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"></div>
         </div>
+
+        {/* Festive Overlay Text - Merry Christmas */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5 overflow-hidden">
+          <div className="festive-text text-6xl md:text-8xl font-black opacity-80 select-none text-white/80">
+            🎉 Happy New Year 2026 🎊
+          </div>
+        </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        {/* Festive Overlay Text - Happy New Year */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5 overflow-hidden">
+          <div 
+            className="festive-text-alt text-6xl md:text-8xl font-black opacity-80 select-none text-white/80"
+            style={{animationDelay: '5s'}}
+          > 🎄 Merry Christmas 🎄
+           
+          </div>
+        </div>
+
+        {/* Christmas Ornaments - Floating Decorations */}
+        <div className="absolute top-10 left-10 animate-swing" style={{animationDelay: '0s'}}>
+          <div className="text-5xl opacity-80 drop-shadow-lg">🎄</div>
+        </div>
+        <div className="absolute top-20 right-16 animate-swing" style={{animationDelay: '1s'}}>
+          <div className="text-4xl opacity-80 drop-shadow-lg">⭐</div>
+        </div>
+        <div className="absolute top-32 left-1/4 animate-swing" style={{animationDelay: '0.5s'}}>
+          <div className="text-3xl opacity-70 drop-shadow-lg">🎁</div>
+        </div>
+        <div className="absolute top-24 right-1/3 animate-swing" style={{animationDelay: '1.5s'}}>
+          <div className="text-4xl opacity-75 drop-shadow-lg">🎅</div>
+        </div>
+        <div className="absolute top-40 right-20 animate-swing" style={{animationDelay: '2s'}}>
+          <div className="text-3xl opacity-70 drop-shadow-lg">🔔</div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-15">
           <div className="text-center animate-fade-in">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-pulse-soft">
-              <Bell className="w-10 h-10" />
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-pulse-soft shadow-2xl border-4 border-white/30">
+              <Bell className="w-12 h-12 animate-ring" />
             </div>
-            <h1 className="text-5xl md:text-6xl font-display font-bold mb-4 animate-slide-up">
+            <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 animate-slide-up drop-shadow-2xl">
               Ubao wa Matangazo
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto animate-slide-up" style={{animationDelay: '0.1s'}}>
+            <p className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto animate-slide-up drop-shadow-lg" style={{animationDelay: '0.1s'}}>
               Taarifa na matangazo ya Kanisa
             </p>
             
-            {/* Stats Bar */}
-         
+            {/* Christmas Ribbon Decoration */}
+            <div className="mt-8 flex items-center justify-center gap-4 animate-slide-up" style={{animationDelay: '0.2s'}}>
+              <div className="h-1 w-20 bg-gradient-to-r from-transparent via-red-300 to-green-300 rounded-full"></div>
+              <div className="text-4xl animate-bounce-gentle">🎄</div>
+              <div className="h-1 w-20 bg-gradient-to-r from-green-300 via-red-300 to-transparent rounded-full"></div>
+            </div>
           </div>
         </div>
         
         {/* Decorative wave */}
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="absolute bottom-0 left-0 right-0 z-20">
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-16">
             <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#FAF5FF"></path>
           </svg>
@@ -128,7 +204,7 @@ const NoticeBoard = () => {
 
       {/* Category Filter Pills */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-        <div className="bg-white rounded-3xl shadow-primary-lg p-4 backdrop-blur-lg border border-border-light">
+        <div className="rounded-3xl shadow-primary-lg p-4 backdrop-blur-lg border bg-white/95">
           <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {categories.map((cat) => (
               <button
@@ -369,8 +445,185 @@ const NoticeBoard = () => {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes snowfall {
+          0% {
+            transform: translateY(-20px) translateX(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100vh) translateX(50px) rotate(360deg);
+            opacity: 0;
+          }
+        }
+
+        @keyframes twinkle-lights {
+          0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+            box-shadow: 0 0 10px currentColor;
+          }
+          50% { 
+            opacity: 0.3; 
+            transform: scale(0.7);
+            box-shadow: 0 0 5px currentColor;
+          }
+        }
+
+        @keyframes festive-fade {
+          0%, 100% { 
+            opacity: 0.06; 
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.12; 
+            transform: scale(1.02);
+          }
+        }
+
+        @keyframes bounce-gentle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+
+        @keyframes swing {
+          0%, 100% { 
+            transform: rotate(-5deg); 
+          }
+          50% { 
+            transform: rotate(5deg); 
+          }
+        }
+
+        @keyframes ring {
+          0%, 100% { transform: rotate(0deg); }
+          10% { transform: rotate(-15deg); }
+          20% { transform: rotate(15deg); }
+          30% { transform: rotate(-10deg); }
+          40% { transform: rotate(10deg); }
+          50% { transform: rotate(0deg); }
+        }
+
+        .snowflake {
+          position: absolute;
+          top: -20px;
+          color: white;
+          animation: snowfall linear infinite;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.6);
+          user-select: none;
+        }
+
+        .christmas-light {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          animation: twinkle-lights 1.5s ease-in-out infinite;
+        }
+
+        .festive-text {
+          animation: festive-fade 10s ease-in-out infinite;
+          user-select: none;
+        }
+
+        .festive-text-alt {
+          animation: festive-fade 10s ease-in-out infinite;
+          user-select: none;
+        }
+
+        .animate-bounce-gentle {
+          animation: bounce-gentle 2s ease-in-out infinite;
+        }
+
+        .animate-swing {
+          animation: swing 3s ease-in-out infinite;
+          transform-origin: top center;
+        }
+
+        .animate-ring {
+          animation: ring 2s ease-in-out infinite;
+        }
+
+        .animate-pulse-soft {
+          animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.8s ease-out forwards;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out forwards;
+        }
+
+        @keyframes christmas-bg {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+      `}</style>
     </div>
   );
-};
+}
 
 export default NoticeBoard;
