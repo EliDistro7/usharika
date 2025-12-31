@@ -480,7 +480,7 @@ const EnhancedHighlightCard = ({ highlight, onClick }) => {
             
             {/* Gradient overlay for better text visibility */}
             {mediaLoaded && !mediaError && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/10 to-transparent" />
             )}
           </>
         ) : (
